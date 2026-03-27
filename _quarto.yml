@@ -9,6 +9,8 @@ book:
     - index.qmd
     - intro.qmd
     - 01_intro.qmd
+    - 02.qmd
+    - 03.qmd
     - summary.qmd
     - references.qmd
     - part: "Appendix"

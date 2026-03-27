@@ -6,35 +6,34 @@ In this first week, we introduce the mathematical language and statistical frame
 
 By the end of this week, students should be able to:
 
-> - use standard matrix notation for linear statistical 
-> models;
-> - distinguish between scalars, vectors, matrices, random variables, and random vectors;
-> - compute expectations and covariance matrices for random vectors;
-> - interpret the linear regression model in matrix form;
-> - understand why projection and least squares will play a central role in this course.
+> -   use standard matrix notation for linear statistical models;
+> -   distinguish between scalars, vectors, matrices, random variables, and random vectors;
+> -   compute expectations and covariance matrices for random vectors;
+> -   interpret the linear regression model in matrix form;
+> -   understand why projection and least squares will play a central role in this course.
 
 ## Reading
 
 Recommended reading for this week:
 
-- Seber and Lee, Chapter 1:
-  - 1.1 Notation
-  - 1.2 Statistical Models
-  - 1.3 Linear Regression Models
-  - 1.4 Expectation and Covariance Operators
-- Optional preview:
-  - Chapter 2: Multivariate Normal Distribution
+-   Seber and Lee, Chapter 1:
+    -   1.1 Notation
+    -   1.2 Statistical Models
+    -   1.3 Linear Regression Models
+    -   1.4 Expectation and Covariance Operators
+-   Optional preview:
+    -   Chapter 2: Multivariate Normal Distribution
 
-# 1. Why Linear Statistical Analysis?
+## Why Linear Statistical Analysis?
 
 Linear statistical analysis is one of the central foundations of graduate statistics. Many methods that at first look different are built on the same underlying structure:
 
-- regression,
-- analysis of variance,
-- analysis of covariance,
-- prediction,
-- model comparison,
-- and parts of generalized linear modelling.
+-   regression,
+-   analysis of variance,
+-   analysis of covariance,
+-   prediction,
+-   model comparison,
+-   and parts of generalized linear modelling.
 
 A major goal of this course is to see these topics under a unified framework.
 
@@ -48,24 +47,24 @@ $$
 
 where
 
-- $Y$ is a response vector,
-- $X$ is a design matrix,
-- $\beta$ is an unknown parameter vector,
-- $\varepsilon$ is a random error vector.
+-   $Y$ is a response vector,
+-   $X$ is a design matrix,
+-   $\beta$ is an unknown parameter vector,
+-   $\varepsilon$ is a random error vector.
 
 This compact expression contains a great deal of statistical structure. Over the semester, we will study how to estimate $\beta$, quantify uncertainty, test hypotheses, diagnose model failures, and make predictions.
 
-# 2. Basic Notation
+## Basic Notation
 
 ## Scalars, vectors, and matrices
 
 We use the following conventions throughout the course:
 
-- scalars are written in lowercase italic letters, such as $a$, $b$, $n$;
-- vectors are written in bold lowercase letters, such as $\mathbf{x}$, $\mathbf{y}$;
-- matrices are written in bold uppercase letters, such as $\mathbf{X}$, $\mathbf{A}$;
-- random variables are often written in uppercase letters, such as $Y$;
-- realizations of random variables are written in lowercase letters, such as $y$.
+-   scalars are written in lowercase italic letters, such as $a$, $b$, $n$;
+-   vectors are written in bold lowercase letters, such as $\mathbf{x}$, $\mathbf{y}$;
+-   matrices are written in bold uppercase letters, such as $\mathbf{X}$, $\mathbf{A}$;
+-   random variables are often written in uppercase letters, such as $Y$;
+-   realizations of random variables are written in lowercase letters, such as $y$.
 
 A column vector in $\mathbb{R}^n$ is written as
 
@@ -97,10 +96,10 @@ $$
 
 If $\mathbf{A}$ is a matrix, then:
 
-- $\mathbf{A}^\top$ denotes its transpose;
-- $\mathbf{A}^{-1}$ denotes its inverse, when it exists;
-- $\mathrm{rank}(\mathbf{A})$ denotes its rank;
-- $\mathbf{I}_n$ denotes the $n \times n$ identity matrix.
+-   $\mathbf{A}^\top$ denotes its transpose;
+-   $\mathbf{A}^{-1}$ denotes its inverse, when it exists;
+-   $\mathrm{rank}(\mathbf{A})$ denotes its rank;
+-   $\mathbf{I}_n$ denotes the $n \times n$ identity matrix.
 
 ## Inner product and norm
 
@@ -122,9 +121,9 @@ $$
 
 These ideas are fundamental because least squares estimation is based on minimizing squared Euclidean distance.
 
-# 3. Random Vectors
+## Random Vectors
 
-## Definition
+### Definition
 
 A random vector is a vector whose entries are random variables. For example,
 
@@ -208,9 +207,9 @@ $$
 \end{bmatrix}.
 $$
 
-# 4. Expectation and Covariance Operators
+##Expectation and Covariance Operators
 
-## Linearity of expectation
+### Linearity of expectation
 
 If $\mathbf{A}$ is a constant matrix and $\mathbf{b}$ is a constant vector, then
 
@@ -222,7 +221,7 @@ $$
 
 This is one of the most useful identities in the course.
 
-## Covariance of linear transformations
+### Covariance of linear transformations
 
 If $\mathbf{A}$ is a constant matrix, then
 
@@ -242,7 +241,7 @@ $$
 
 These formulas are essential for deriving the variance of estimators later.
 
-## Special case: independent components
+### Special case: independent components
 
 If $Y_1,\dots,Y_n$ are independent and each has variance $\sigma^2$, then
 
@@ -252,11 +251,11 @@ $$
 
 This is the most common starting assumption in classical linear regression.
 
-# 5. Statistical Models
+## Statistical Models
 
 A statistical model is a set of probability distributions that may plausibly describe the data-generating mechanism.
 
-## General idea
+### General idea
 
 Suppose we observe data $y$ from a random quantity $Y$. A model introduces assumptions about the distribution of $Y$, often indexed by an unknown parameter $\theta$.
 
@@ -270,7 +269,7 @@ with unknown parameters $\mu$ and $\sigma^2$.
 
 In regression, the model is not only about the marginal distribution of the response but also about how the mean changes with explanatory variables.
 
-## Deterministic part and random part
+### Deterministic part and random part
 
 A useful way to think about a statistical model is:
 
@@ -286,8 +285,8 @@ $$
 
 Here,
 
-- $\beta_0 + \beta_1 x_i$ is the systematic part;
-- $\varepsilon_i$ is the random part.
+-   $\beta_0 + \beta_1 x_i$ is the systematic part;
+-   $\varepsilon_i$ is the random part.
 
 ## The Linear Regression Model
 
@@ -454,8 +453,6 @@ For now, the main point is to understand how the model is written and how the da
 
 # R Demonstration
 
-
-
 ```{r}
 x <- c(0, 1, 2, 3)
 y <- c(1, 3, 3, 5)
@@ -476,18 +473,11 @@ abline(fit, lwd = 2)
 
 # In-Class Discussion Questions
 
-
-.	Why is it helpful to write regression models in matrix form rather than only scalar notation?
-	2.	What does the covariance matrix tell us that separate variances do not?
-	3.	What is the interpretation of the column space of $\mathbf{X}$?
-	4.	In what sense is regression a projection problem?
+. Why is it helpful to write regression models in matrix form rather than only scalar notation? 2. What does the covariance matrix tell us that separate variances do not? 3. What is the interpretation of the column space of $\mathbf{X}$? 4. In what sense is regression a projection problem?
 
 # Practice Problems
 
-Conceptual
-	1.	Explain the difference between a random variable and a random vector.
-	2.	Explain why $\mathrm{Var}(\mathbf{Y})$ must be a symmetric matrix.
-	3.	Give an example of a statistical model outside regression.
+Conceptual 1. Explain the difference between a random variable and a random vector. 2. Explain why $\mathrm{Var}(\mathbf{Y})$ must be a symmetric matrix. 3. Give an example of a statistical model outside regression.
 
 Computational
 
@@ -540,8 +530,8 @@ $$
 
 Compute:
 
-1.	$\mathbb{E}[\mathbf{A}\mathbf{Y} + \mathbf{b}]$
-2.	$\mathrm{Var}(\mathbf{A}\mathbf{Y})$
+1.  $\mathbb{E}[\mathbf{A}\mathbf{Y} + \mathbf{b}]$
+2.  $\mathrm{Var}(\mathbf{A}\mathbf{Y})$
 
 **Regression setup**
 
@@ -557,15 +547,15 @@ write out the matrices $\mathbf{Y}$, $\mathbf{X}$, $\boldsymbol{\beta}$, and $\b
 
 Complete the following:
 
-+ review matrix multiplication and transpose rules;
-+ derive $\mathbb{E}[\mathbf{A}\mathbf{Y}+\mathbf{b}]$ from first principles;
-+ derive $\mathrm{Var}(\mathbf{A}\mathbf{Y})$ using the definition of covariance;
-+ write the simple linear regression model in matrix form for a dataset of your choice;
-+ fit a simple regression in R and report:
-+ the estimated coefficients,
-+ fitted values,
-+ residuals,
-+ and a scatterplot with the fitted line.
+-   review matrix multiplication and transpose rules;
+-   derive $\mathbb{E}[\mathbf{A}\mathbf{Y}+\mathbf{b}]$ from first principles;
+-   derive $\mathrm{Var}(\mathbf{A}\mathbf{Y})$ using the definition of covariance;
+-   write the simple linear regression model in matrix form for a dataset of your choice;
+-   fit a simple regression in R and report:
+-   the estimated coefficients,
+-   fitted values,
+-   residuals,
+-   and a scatterplot with the fitted line.
 
 ## Summary
 
