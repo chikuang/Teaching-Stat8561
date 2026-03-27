@@ -6,25 +6,25 @@ In this week, we study the ANOVA decomposition for linear regression, the overal
 
 By the end of this week, students should be able to:
 
-- define the total, regression, and error sums of squares;
-- explain the ANOVA decomposition in regression with an intercept;
-- interpret the degrees of freedom associated with SST, SSR, and SSE;
-- perform the overall $F$ test for regression;
-- compare nested linear models using extra sums of squares;
-- interpret ANOVA tables produced by statistical software.
+-   define the total, regression, and error sums of squares;
+-   explain the ANOVA decomposition in regression with an intercept;
+-   interpret the degrees of freedom associated with SST, SSR, and SSE;
+-   perform the overall $F$ test for regression;
+-   compare nested linear models using extra sums of squares;
+-   interpret ANOVA tables produced by statistical software.
 
 ## Reading
 
 Recommended reading for this week:
 
-- Seber and Lee:
-  - sections on analysis of variance in regression
-  - sums of squares and decomposition of variability
-  - tests for nested models
-- Montgomery, Peck, and Vining:
-  - sections on the ANOVA table
-  - overall model significance
-  - partial and sequential sums of squares
+-   Seber and Lee:
+    -   sections on analysis of variance in regression
+    -   sums of squares and decomposition of variability
+    -   tests for nested models
+-   Montgomery, Peck, and Vining:
+    -   sections on the ANOVA table
+    -   overall model significance
+    -   partial and sequential sums of squares
 
 ## Review of the Linear Model
 
@@ -68,8 +68,8 @@ How much of the variation in the response can be explained by the model?
 
 To answer this, we decompose the total variation in $\mathbf{Y}$ into:
 
-- variation explained by regression;
-- variation left unexplained by the model.
+-   variation explained by regression;
+-   variation left unexplained by the model.
 
 When the model includes an intercept, this decomposition takes a particularly simple and important form.
 
@@ -149,8 +149,8 @@ This is one of the most important identities in regression.
 
 It says that the total variation around the sample mean can be decomposed into:
 
-- variation explained by the regression model;
-- variation remaining in the residuals.
+-   variation explained by the regression model;
+-   variation remaining in the residuals.
 
 ## Why the Decomposition Holds
 
@@ -204,9 +204,9 @@ The ANOVA decomposition is accompanied by a decomposition of degrees of freedom.
 
 When the model includes an intercept and $\mathbf{X}$ has rank $p$, we have:
 
-- total degrees of freedom: $n-1$;
-- regression degrees of freedom: $p-1$;
-- error degrees of freedom: $n-p$.
+-   total degrees of freedom: $n-1$;
+-   regression degrees of freedom: $p-1$;
+-   error degrees of freedom: $n-p$.
 
 Thus,
 
@@ -280,8 +280,8 @@ The denominator measures unexplained variation per residual degree of freedom.
 
 So the $F$ statistic compares:
 
-- how much signal the model explains;
-- how much noise remains in the residuals.
+-   how much signal the model explains;
+-   how much noise remains in the residuals.
 
 If the predictors have no effect, then both quantities should be of similar size, and the ratio should not be unusually large.
 
@@ -291,8 +291,8 @@ If the predictors explain substantial variation, then the numerator should be mu
 
 The overall $F$ test compares two models:
 
-- the reduced model: intercept only;
-- the full model: intercept plus predictors.
+-   the reduced model: intercept only;
+-   the full model: intercept plus predictors.
 
 Thus the ANOVA decomposition provides the basis for formal model comparison.
 
@@ -304,15 +304,13 @@ Two models are **nested** if the reduced model is obtained by imposing constrain
 
 For example:
 
-- reduced model:
-  $$
-  Y_i = \beta_0 + \beta_1 x_{i1} + \varepsilon_i;
-  $$
+-   reduced model: $$
+    Y_i = \beta_0 + \beta_1 x_{i1} + \varepsilon_i;
+    $$
 
-- full model:
-  $$
-  Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
-  $$
+-   full model: $$
+    Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
+    $$
 
 The reduced model is nested within the full model because it is obtained by setting
 
@@ -324,8 +322,8 @@ $$
 
 Suppose:
 
-- the reduced model has error sum of squares $\mathrm{SSE}_R$ and rank $p_R$;
-- the full model has error sum of squares $\mathrm{SSE}_F$ and rank $p_F$.
+-   the reduced model has error sum of squares $\mathrm{SSE}_R$ and rank $p_R$;
+-   the full model has error sum of squares $\mathrm{SSE}_F$ and rank $p_F$.
 
 Since the full model has more flexibility, it cannot fit worse, so
 
@@ -383,8 +381,8 @@ In multiple regression, sums of squares can be defined in different ways dependi
 
 Two common ideas are:
 
-- **sequential sums of squares**: terms are added in a specified order;
-- **partial sums of squares**: each term is tested after adjusting for the others.
+-   **sequential sums of squares**: terms are added in a specified order;
+-   **partial sums of squares**: each term is tested after adjusting for the others.
 
 This distinction becomes important when predictors are correlated.
 
@@ -404,8 +402,8 @@ Its values lie between 0 and 1.
 
 ## Interpretation of R Squared
 
-- If $R^2$ is close to 1, the model explains a large proportion of the variation in the response.
-- If $R^2$ is close to 0, the model explains little of the variation.
+-   If $R^2$ is close to 1, the model explains a large proportion of the variation in the response.
+-   If $R^2$ is close to 0, the model explains little of the variation.
 
 However, $R^2$ alone does not guarantee that the model is appropriate. A high $R^2$ does not ensure that assumptions are satisfied, and a low $R^2$ does not necessarily imply the model is useless.
 
@@ -519,9 +517,9 @@ $$
 
 Here $n=4$ and $p=2$, so:
 
-- total df: $4-1=3$;
-- regression df: $2-1=1$;
-- error df: $4-2=2$.
+-   total df: $4-1=3$;
+-   regression df: $2-1=1$;
+-   error df: $4-2=2$.
 
 ### Mean squares
 
@@ -543,17 +541,17 @@ This is the overall significance test for the regression.
 
 A standard regression ANOVA table has the following structure:
 
-| Source      | Sum of Squares | Degrees of Freedom | Mean Square | F |
-|-------------|----------------|--------------------|-------------|---|
-| Regression  | SSR            | $p-1$              | MSR         | MSR/MSE |
-| Error       | SSE            | $n-p$              | MSE         |   |
-| Total       | SST            | $n-1$              |             |   |
+| Source     | Sum of Squares | Degrees of Freedom | Mean Square | F       |
+|------------|----------------|--------------------|-------------|---------|
+| Regression | SSR            | $p-1$              | MSR         | MSR/MSE |
+| Error      | SSE            | $n-p$              | MSE         |         |
+| Total      | SST            | $n-1$              |             |         |
 
 Students should learn to move fluently between:
 
-- formulas;
-- geometric interpretation;
-- software output.
+-   formulas;
+-   geometric interpretation;
+-   software output.
 
 ## R Demonstration
 
@@ -623,44 +621,44 @@ summary(fit_full)
 
 For a fitted model in R:
 
-- `anova(fit)` gives the ANOVA decomposition for a single model;
-- `anova(fit_reduced, fit_full)` compares nested models;
-- `summary(fit)` reports the overall $F$ statistic, $R^2$, and adjusted $R^2$.
+-   `anova(fit)` gives the ANOVA decomposition for a single model;
+-   `anova(fit_reduced, fit_full)` compares nested models;
+-   `summary(fit)` reports the overall $F$ statistic, $R^2$, and adjusted $R^2$.
 
 Students should understand that these outputs are not separate topics. They are all built from the same least squares geometry and distribution theory.
 
 ## In-Class Discussion Questions
 
-1. Why does the ANOVA decomposition require an intercept for the usual SST = SSR + SSE identity?
-2. Why must $\mathrm{SSE}_F \le \mathrm{SSE}_R$ for nested models?
-3. What does the overall $F$ test tell us that individual $t$ tests do not?
-4. Why can $R^2$ be misleading if used alone?
+1.  Why does the ANOVA decomposition require an intercept for the usual SST = SSR + SSE identity?
+2.  Why must $\mathrm{SSE}_F \le \mathrm{SSE}_R$ for nested models?
+3.  What does the overall $F$ test tell us that individual $t$ tests do not?
+4.  Why can $R^2$ be misleading if used alone?
 
 ## Practice Problems
 
 ## Conceptual
 
-1. Explain the meaning of SST, SSR, and SSE in words.
-2. Explain why the regression degrees of freedom are $p-1$ when the model includes an intercept.
-3. Explain the difference between the overall $F$ test and a test for a single coefficient.
+1.  Explain the meaning of SST, SSR, and SSE in words.
+2.  Explain why the regression degrees of freedom are $p-1$ when the model includes an intercept.
+3.  Explain the difference between the overall $F$ test and a test for a single coefficient.
 
 ## Computational
 
 Suppose a regression model with intercept has:
 
-- $n=20$,
-- $p=4$,
-- $\mathrm{SST}=100$,
-- $\mathrm{SSE}=40$.
+-   $n=20$,
+-   $p=4$,
+-   $\mathrm{SST}=100$,
+-   $\mathrm{SSE}=40$.
 
 Compute:
 
-1. $\mathrm{SSR}$,
-2. the degrees of freedom for regression and error,
-3. $\mathrm{MSR}$,
-4. $\mathrm{MSE}$,
-5. the overall $F$ statistic,
-6. $R^2$.
+1.  $\mathrm{SSR}$,
+2.  the degrees of freedom for regression and error,
+3.  $\mathrm{MSR}$,
+4.  $\mathrm{MSE}$,
+5.  the overall $F$ statistic,
+6.  $R^2$.
 
 ## Nested Model Problem
 
@@ -684,11 +682,11 @@ If $n=30$, compute the nested-model $F$ statistic.
 
 Complete the following tasks:
 
-- prove the decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ when the model includes an intercept;
-- derive the overall $F$ statistic from the ANOVA decomposition;
-- fit a regression model in R and reproduce the ANOVA table by hand;
-- compare two nested models using an extra sum of squares test;
-- interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
+-   prove the decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ when the model includes an intercept;
+-   derive the overall $F$ statistic from the ANOVA decomposition;
+-   fit a regression model in R and reproduce the ANOVA table by hand;
+-   compare two nested models using an extra sum of squares test;
+-   interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
 
 ## Summary
 
@@ -708,10 +706,10 @@ $$
 
 This decomposition led to:
 
-- the ANOVA table;
-- the overall $F$ test for regression;
-- the comparison of nested models through extra sums of squares;
-- the interpretation of $R^2$ and adjusted $R^2$.
+-   the ANOVA table;
+-   the overall $F$ test for regression;
+-   the comparison of nested models through extra sums of squares;
+-   the interpretation of $R^2$ and adjusted $R^2$.
 
 Next week, a natural continuation is to study multiple regression in greater depth, including interpretation of partial regression coefficients and multicollinearity, or to move into matrix-based general linear hypotheses and estimability, depending on the course emphasis.
 
