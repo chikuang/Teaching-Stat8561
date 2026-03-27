@@ -1,9 +1,50 @@
 # Preface {.unnumbered}
 
-This is a Quarto book.
+## Description
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+Linear Statistical Analysis I. The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-```{r}
-1 + 1
-```
+### Prerequisites
+
+Math 4751/6751 and Math 4752/6752.
+
+### Instructor
+
+[Chi-Kuang Yeh](https://chikuang.github.io/), Assistant Professor in the [Department of Mathematics and Statistics](https://mathstat.gsu.edu/), [Georgia State University](https://www.gsu.edu/).
+
+-   Office: Suite 1407, 25 Park Place.
+-   Email: [cyeh\@gsu.edu](mailto:cyeh@gsu.edu).
+
+## Office Hour
+
+TBA
+
+## Grade Distribution
+
++ TBA
+
+## Assignment
+
++   [x] A1, TBA
+
+## Midterm
+
++ TBA
+
+## Topics and Corresponding Lectures
+
+Those chapters are based on the lecture notes. This part will be updated frequently.
+
+| Status | Chapter |              Topic              |     Lecture     |
+|:------:|:-------:|:-------------------------------:|:---------------:|
+|   ️⏳  |  Ch. 1  |      Welcome and Overview       |        1        |
+
+<!-- 🚧🛠️⏳   -->
+
+## Recommended Textbooks
+
+-   TBA
+
+## Side Readings
+
++ TBA
