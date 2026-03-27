@@ -17,6 +17,8 @@ book:
     - 07.qmd
     - 08.qmd
     - 09.qmd
+    - 10.qmd
+    - 11.qmd
     - summary.qmd
     - references.qmd
     - part: "Appendix"

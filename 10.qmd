@@ -1,0 +1,674 @@
+# Week 10: One-Way ANOVA, Two-Way ANOVA, and ANCOVA in the Linear Model Framework
+
+In this week, we study one-way ANOVA, two-way ANOVA, and analysis of covariance as special cases of the general linear model. The main goal is to show that these topics are not separate from regression, but are natural modelling frameworks within the same matrix-based system. This helps students unify mean comparisons, factor effects, covariate adjustment, and interaction analysis under one common language.
+
+## Learning Objectives
+
+By the end of this week, students should be able to:
+
+- explain how one-way ANOVA is a special case of the linear model;
+- formulate and interpret two-way ANOVA models with and without interaction;
+- explain the role of a covariate in ANCOVA;
+- distinguish between main effects and interaction effects in factorial models;
+- interpret ANOVA and ANCOVA models using regression notation and software output;
+- compare group means appropriately after adjusting for covariates.
+
+## Reading
+
+Recommended reading for this week:
+
+- Seber and Lee:
+  - sections on analysis of variance
+  - analysis of covariance
+  - linear model treatment of factor and covariate effects
+- Montgomery, Peck, and Vining:
+  - sections on qualitative predictors
+  - ANOVA-style linear models
+  - ANCOVA and adjusted comparisons
+
+## Why These Topics Belong Together
+
+Students often first encounter ANOVA and regression as if they were separate techniques.
+
+But in fact, they are part of the same linear modelling framework.
+
+For example:
+
+- one-way ANOVA compares group means;
+- two-way ANOVA studies the effects of two factors and possibly their interaction;
+- ANCOVA compares groups while adjusting for a continuous covariate.
+
+All of these can be written as linear models using an appropriate design matrix.
+
+This week emphasizes that unification.
+
+## Review of the General Linear Model
+
+Recall the linear model
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+$$
+
+with
+
+$$
+\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta},
+\qquad
+\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I}_n.
+$$
+
+The content of the model depends on how we construct $\mathbf{X}$.
+
+If $\mathbf{X}$ contains continuous predictors, we obtain regression models.
+
+If $\mathbf{X}$ contains indicator variables for factor levels, we obtain ANOVA-type models.
+
+If $\mathbf{X}$ contains both factor indicators and continuous covariates, we obtain ANCOVA-type models.
+
+## One-Way ANOVA
+
+Suppose observations are divided into $g$ groups, and we want to compare their means.
+
+One-way ANOVA can be written as
+
+$$
+Y_{ij} = \mu_i + \varepsilon_{ij},
+\qquad
+i = 1,\dots,g,
+$$
+
+where:
+
+- $\mu_i$ is the mean of group $i$;
+- $\varepsilon_{ij}$ are independent errors with mean zero and common variance $\sigma^2$.
+
+This is sometimes called the cell-means model.
+
+## Alternative Parameterization of One-Way ANOVA
+
+Another common parameterization is
+
+$$
+Y_{ij} = \mu + \tau_i + \varepsilon_{ij},
+\qquad
+i = 1,\dots,g,
+$$
+
+where:
+
+- $\mu$ is an overall baseline level;
+- $\tau_i$ is the effect of group $i$.
+
+To identify the model, we usually impose a constraint such as
+
+$$
+\sum_{i=1}^g \tau_i = 0.
+$$
+
+Different coding schemes lead to different coefficient interpretations, but the fitted group means are the same.
+
+## Null Hypothesis in One-Way ANOVA
+
+The usual one-way ANOVA null hypothesis is
+
+$$
+H_0: \mu_1 = \mu_2 = \cdots = \mu_g.
+$$
+
+Equivalently, in the effect parameterization, this is
+
+$$
+H_0: \tau_1 = \tau_2 = \cdots = \tau_g = 0
+$$
+
+subject to the model constraints.
+
+This is a general linear hypothesis and can be tested by an $F$ test.
+
+## One-Way ANOVA as Regression With Indicators
+
+Suppose there are three groups: A, B, and C.
+
+Using treatment coding with group A as the reference group, we may write
+
+$$
+Y_i = \beta_0 + \beta_1 z_{1i} + \beta_2 z_{2i} + \varepsilon_i,
+$$
+
+where:
+
+- $z_{1i}=1$ if observation $i$ is in group B and 0 otherwise;
+- $z_{2i}=1$ if observation $i$ is in group C and 0 otherwise.
+
+Then:
+
+- mean of group A: $\beta_0$;
+- mean of group B: $\beta_0 + \beta_1$;
+- mean of group C: $\beta_0 + \beta_2$.
+
+Thus one-way ANOVA is simply a regression model with categorical predictors.
+
+## ANOVA Table Interpretation
+
+For one-way ANOVA, the total variation is decomposed into:
+
+- variation between groups;
+- variation within groups.
+
+The standard ANOVA table compares the mean square for groups to the mean square for error.
+
+This is an $F$ test for whether the group means are all equal.
+
+Within the linear model framework, this is just a comparison of a reduced intercept-only model and a fuller model that includes group indicators.
+
+## Two-Way ANOVA
+
+Now suppose there are two factors:
+
+- factor A with levels $i=1,\dots,a$;
+- factor B with levels $j=1,\dots,b$.
+
+A general two-way ANOVA model with interaction is
+
+$$
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}.
+$$
+
+Here:
+
+- $\alpha_i$ is the effect of level $i$ of factor A;
+- $\beta_j$ is the effect of level $j$ of factor B;
+- $(\alpha\beta)_{ij}$ is the interaction effect for the combination of levels $(i,j)$.
+
+## Main Effects in Two-Way ANOVA
+
+A **main effect** describes how the mean response changes across levels of one factor, averaging over the levels of the other factor, when the interaction is absent or appropriately interpreted.
+
+For example:
+
+- factor A main effect asks whether changing the level of A shifts the mean response;
+- factor B main effect asks the analogous question for B.
+
+However, if interaction is strong, main effects must be interpreted with care.
+
+## Interaction in Two-Way ANOVA
+
+Interaction means that the effect of one factor depends on the level of the other factor.
+
+If there is no interaction, the mean structure is additive:
+
+$$
+Y_{ijk} = \mu + \alpha_i + \beta_j + \varepsilon_{ijk}.
+$$
+
+If interaction is present, the difference among levels of factor A changes across levels of factor B, or vice versa.
+
+Graphically, in an interaction plot, no interaction corresponds roughly to parallel profiles.
+
+## Null Hypotheses in Two-Way ANOVA
+
+Common hypotheses include:
+
+- no main effect of factor A;
+- no main effect of factor B;
+- no interaction between A and B.
+
+Each of these is a general linear hypothesis and can be tested with an $F$ statistic by comparing appropriate reduced and full models.
+
+## Importance of Testing Interaction First
+
+In practice, it is often wise to assess the interaction term before making strong statements about main effects.
+
+Why?
+
+Because if interaction is present, the effect of factor A is not the same at all levels of factor B, and vice versa.
+
+So a marginal main-effect interpretation may be misleading.
+
+## Balanced and Unbalanced Designs
+
+A design is **balanced** if each factor combination has the same number of observations.
+
+Balanced designs have many nice algebraic properties:
+
+- sums of squares decompose cleanly;
+- effects are more orthogonal;
+- interpretations are often simpler.
+
+In unbalanced designs, sums of squares and hypothesis tests depend more strongly on the model specification and coding choices.
+
+Students should be aware that real data are often unbalanced.
+
+## Two-Way ANOVA as Regression
+
+Just as in one-way ANOVA, two-way ANOVA can be represented using indicator variables.
+
+The design matrix can include:
+
+- indicators for levels of factor A;
+- indicators for levels of factor B;
+- products of indicators for interaction terms.
+
+So two-way ANOVA is also just a regression model with categorical predictors and possible interactions.
+
+## Analysis of Covariance
+
+Analysis of covariance, or **ANCOVA**, combines:
+
+- one or more categorical predictors;
+- one or more continuous covariates.
+
+A simple ANCOVA model is
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
+$$
+
+where:
+
+- $x_i$ is a continuous covariate;
+- $z_i$ is a group indicator.
+
+This model compares groups while adjusting for the covariate.
+
+## Why ANCOVA Is Useful
+
+Suppose two groups differ in an outcome, but also differ in a background variable related to the outcome.
+
+If we compare the raw group means, the comparison may be confounded by the background variable.
+
+ANCOVA adjusts for the covariate so that the group comparison is made at a common covariate level.
+
+This often improves both fairness of comparison and precision of inference.
+
+## Interpreting an ANCOVA Model
+
+Suppose
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
+$$
+
+with $z_i \in \{0,1\}$.
+
+Then:
+
+- $\beta_1$ is the change in the mean response associated with a one-unit increase in $x$, holding group fixed;
+- $\beta_2$ is the difference between groups, holding the covariate fixed.
+
+Thus ANCOVA is a regression model in which one of the predictors is a factor.
+
+## Parallel Slopes Assumption
+
+A standard ANCOVA model without interaction assumes the relationship between the response and the covariate has the same slope in all groups.
+
+That is, if
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
+$$
+
+then both groups share the same slope $\beta_1$.
+
+This is often called the **parallel slopes assumption**.
+
+## ANCOVA With Interaction
+
+If we want to allow the covariate effect to differ by group, we add an interaction:
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i.
+$$
+
+Now the slope in $x$ depends on the group.
+
+This model should be considered when the relationship between the response and the covariate appears different across groups.
+
+## Why the Parallel Slopes Assumption Matters
+
+If the slopes are not truly parallel but we fit a common-slope ANCOVA model, then the adjusted group comparison may be misleading.
+
+So a practical workflow is often:
+
+- fit the interaction model first;
+- assess whether the interaction is needed;
+- if the interaction is not important, use the simpler common-slope ANCOVA model.
+
+## Adjusted Means
+
+A major idea in ANCOVA is the comparison of **adjusted means**.
+
+These are group means adjusted to a common covariate value, often the overall mean of the covariate.
+
+Adjusted means are useful because they allow group comparison after accounting for systematic covariate differences.
+
+## One-Way ANOVA, Two-Way ANOVA, and ANCOVA as Nested Models
+
+These topics can all be understood through model comparison.
+
+Examples:
+
+- one-way ANOVA compares the intercept-only model to a model with group effects;
+- two-way ANOVA compares models with and without main effects or interaction;
+- ANCOVA compares models with and without the covariate, group effect, or interaction.
+
+This nested-model view links directly back to the general linear hypothesis framework.
+
+## Post Hoc Comparisons
+
+After a significant ANOVA result, we may wish to compare specific groups.
+
+Examples include:
+
+- all pairwise comparisons;
+- treatment versus control;
+- preplanned contrasts.
+
+These are again linear functions of model parameters.
+
+So post hoc or planned comparisons fit naturally into the contrast framework from the previous week.
+
+## Interpretation and Caution
+
+In factor models, coefficient interpretation depends on coding.
+
+For example, treatment coding, sum-to-zero coding, and cell-means coding all yield different raw coefficients.
+
+Therefore students should focus on:
+
+- fitted means;
+- differences among means;
+- interactions;
+- clearly defined hypotheses.
+
+These are more stable and meaningful than memorizing one coding-specific coefficient interpretation.
+
+## Worked Example With One-Way ANOVA
+
+Suppose three teaching methods are compared.
+
+A one-way ANOVA model asks whether the mean outcome differs across the three methods.
+
+This can be written either as a group-means model or as a regression with two indicators and an intercept.
+
+The overall $F$ test asks whether all three group means are equal.
+
+If the null is rejected, further contrasts can be used to compare specific methods.
+
+## Worked Example With Two-Way ANOVA
+
+Suppose yield is measured under:
+
+- three fertilizer types;
+- two irrigation levels.
+
+A two-way ANOVA model can assess:
+
+- whether fertilizer matters;
+- whether irrigation matters;
+- whether the effect of fertilizer depends on irrigation.
+
+This is a direct example of main effects and interaction in a factorial design.
+
+## Worked Example With ANCOVA
+
+Suppose two treatment groups are compared on a final score, and baseline score is available as a covariate.
+
+A simple ANCOVA model adjusts the treatment comparison for baseline.
+
+This often provides a more precise and fairer comparison than comparing final means alone.
+
+## R Demonstration With One-Way ANOVA
+
+## Simulate one-way ANOVA data
+
+```{r}
+set.seed(123)
+group <- factor(rep(c("A", "B", "C"), each = 12))
+mu <- c(A = 10, B = 13, C = 15)
+y <- mu[group] + rnorm(length(group), sd = 2)
+
+dat1 <- data.frame(y = y, group = group)
+fit1 <- lm(y ~ group, data = dat1)
+
+summary(fit1)
+anova(fit1)
+```
+
+## Group means and model matrix
+
+```{r}
+tapply(dat1$y, dat1$group, mean)
+model.matrix(fit1)[1:10, ]
+```
+
+## Pairwise comparisons through linear contrasts
+
+```{r}
+b <- coef(fit1)
+V <- vcov(fit1)
+
+# Under treatment coding with A as reference:
+# mean_A = beta0
+# mean_B = beta0 + beta_groupB
+# mean_C = beta0 + beta_groupC
+
+# Compare B and C
+a <- c(0, 1, -1)
+est <- sum(a * b)
+se <- sqrt(t(a) %*% V %*% a)
+t_stat <- est / se
+df <- df.residual(fit1)
+p_val <- 2 * pt(abs(t_stat), df = df, lower.tail = FALSE)
+
+c(estimate = est, se = se, t = t_stat, p_value = p_val)
+```
+
+## R Demonstration With Two-Way ANOVA
+
+## Simulate factorial data
+
+```{r}
+set.seed(456)
+A <- factor(rep(c("Low", "Medium", "High"), each = 16))
+B <- factor(rep(rep(c("I1", "I2"), each = 8), times = 3))
+
+mean_table <- matrix(c(
+  10, 12,
+  13, 15,
+  16, 20
+), nrow = 3, byrow = TRUE)
+
+mu2 <- numeric(length(A))
+for (i in seq_along(mu2)) {
+  mu2[i] <- mean_table[which(levels(A) == A[i]), which(levels(B) == B[i])]
+}
+
+y2 <- mu2 + rnorm(length(mu2), sd = 1.8)
+dat2 <- data.frame(y = y2, A = A, B = B)
+```
+
+## Fit additive and interaction models
+
+```{r}
+fit2_add <- lm(y ~ A + B, data = dat2)
+fit2_int <- lm(y ~ A * B, data = dat2)
+
+summary(fit2_add)
+summary(fit2_int)
+anova(fit2_add, fit2_int)
+anova(fit2_int)
+```
+
+## Interaction plot
+
+```{r}
+with(dat2, interaction.plot(x.factor = B, trace.factor = A, response = y,
+                            fun = mean, type = "b", legend = TRUE))
+```
+
+## R Demonstration With ANCOVA
+
+## Simulate ANCOVA-style data
+
+```{r}
+set.seed(789)
+n <- 80
+group3 <- factor(rep(c("Control", "Treatment"), each = n / 2))
+x <- rnorm(n, mean = 50, sd = 10)
+y3 <- 20 + 0.7 * x + ifelse(group3 == "Treatment", 4, 0) + rnorm(n, sd = 4)
+
+dat3 <- data.frame(y = y3, x = x, group = group3)
+fit3 <- lm(y ~ x + group, data = dat3)
+fit3_int <- lm(y ~ x * group, data = dat3)
+
+summary(fit3)
+summary(fit3_int)
+anova(fit3, fit3_int)
+```
+
+## Plot ANCOVA fit
+
+```{r}
+plot(dat3$x, dat3$y,
+     pch = ifelse(dat3$group == "Control", 1, 19),
+     xlab = "Covariate x",
+     ylab = "Response y")
+abline(a = coef(fit3)[1], b = coef(fit3)[2], lwd = 2)
+abline(a = coef(fit3)[1] + coef(fit3)[3], b = coef(fit3)[2], lwd = 2, lty = 2)
+legend("topleft",
+       legend = c("Control", "Treatment"),
+       pch = c(1, 19),
+       lty = c(1, 2),
+       bty = "n")
+```
+
+## Interpreting Software Output
+
+In R:
+
+- `lm(y ~ group)` fits a one-way ANOVA model;
+- `lm(y ~ A * B)` fits a two-way ANOVA model with interaction;
+- `lm(y ~ x + group)` fits a common-slope ANCOVA model;
+- `lm(y ~ x * group)` fits an ANCOVA model with group-specific slopes.
+
+Students should recognize that these are all regression models differing only in the structure of the design matrix.
+
+## A Practical Workflow
+
+A useful modelling workflow is:
+
+- identify whether predictors are factors, covariates, or both;
+- decide whether interactions are scientifically plausible;
+- fit the more complete model when appropriate;
+- test whether interaction is needed;
+- interpret fitted means or adjusted means rather than raw coding-specific coefficients;
+- use contrasts for focused follow-up questions.
+
+## In-Class Discussion Questions
+
+1. Why is one-way ANOVA just a regression model with indicator variables?
+2. Why should interaction be considered before interpreting main effects in two-way ANOVA?
+3. What does ANCOVA adjust for that ordinary group-mean comparison does not?
+4. Why can coefficient interpretation depend on coding while fitted means do not?
+
+## Practice Problems
+
+## Conceptual
+
+1. Explain the difference between a one-way ANOVA model and an ANCOVA model.
+2. Explain what interaction means in a two-way ANOVA setting.
+3. Explain why adjusted means are useful in ANCOVA.
+
+## Computational
+
+Suppose there are three groups A, B, and C, and treatment coding is used with A as the reference group. The fitted model is
+
+$$
+\hat{Y} = 8 + 2z_1 + 5z_2.
+$$
+
+1. What is the fitted mean for group A?
+2. What is the fitted mean for group B?
+3. What is the fitted mean for group C?
+4. What is the estimated difference between groups B and C?
+
+Now consider the ANCOVA model
+
+$$
+\hat{Y} = 12 + 0.6x + 3z,
+$$
+
+where $z=1$ for treatment and $z=0$ for control.
+
+1. Interpret the coefficient of $x$.
+2. Interpret the coefficient of $z$.
+3. Compute the fitted mean when $x=10$ for control and treatment.
+
+## Model-Comparison Problem
+
+You fit the following two models:
+
+- Model 1: `y ~ x + group`
+- Model 2: `y ~ x * group`
+
+1. What extra term is in Model 2?
+2. What scientific question does the comparison test?
+3. Why would a significant interaction affect the interpretation of the group effect?
+
+## Suggested Homework
+
+Complete the following tasks:
+
+- fit a one-way ANOVA model and interpret the overall $F$ test;
+- carry out at least two follow-up contrasts among group means;
+- fit a two-way ANOVA model with interaction and interpret the interaction term;
+- fit an ANCOVA model and explain the meaning of adjusted group comparison;
+- compare an ANCOVA model with and without interaction and explain which one you prefer.
+
+## Summary
+
+In this week, we studied one-way ANOVA, two-way ANOVA, and ANCOVA within the general linear model framework.
+
+We emphasized that:
+
+- ANOVA models are regression models with categorical predictors;
+- two-way ANOVA introduces main effects and interaction;
+- ANCOVA combines factor effects with continuous covariate adjustment;
+- fitted means, adjusted means, and contrasts are often more meaningful than raw coding-specific coefficients;
+- model comparison through general linear hypotheses unifies all these settings.
+
+Next week, a natural continuation is to study generalized least squares and correlated errors, or to move toward repeated-measures and mixed-model ideas, depending on the course emphasis.
+
+## Appendix: Compact Formula Summary
+
+One-way ANOVA cell-means model:
+
+$$
+Y_{ij} = \mu_i + \varepsilon_{ij}.
+$$
+
+Two-way ANOVA with interaction:
+
+$$
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}.
+$$
+
+Simple ANCOVA model:
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i.
+$$
+
+ANCOVA with interaction:
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i.
+$$
+
+Unifying principle:
+
+- factors enter through indicator variables;
+- interactions enter through products of model terms;
+- ANOVA, ANCOVA, and regression are all linear models.
