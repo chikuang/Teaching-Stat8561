@@ -19,30 +19,32 @@ TBA
 
 ## Grade Distribution
 
-+ TBA
+-   TBA
 
 ## Assignment
 
-+   [x] A1, TBA
+-   [ ] A1, TBA
 
 ## Exam
 
-+ TBA
+-   TBA
 
 ## Topics and Corresponding Lectures
 
 Those chapters are based on the lecture notes. This part will be updated frequently.
 
-| Status | Chapter |              Topic              |     Lecture     |
-|:------:|:-------:|:-------------------------------:|:---------------:|
-|   ️⏳  |  Ch. 1  |      Welcome and Overview       |        1        |
+| Status | Chapter |        Topic         | Lecture |
+|:------:|:-------:|:--------------------:|:-------:|
+|   ️⏳   |  Ch. 1  | Welcome and Overview |    1    |
 
 <!-- 🚧🛠️⏳   -->
 
 ## Recommended Textbooks
 
--   TBA
+-   Montgomery, Douglas C., Elizabeth A. Peck, and G. Geoffrey Vining. *Introduction to Linear Regression Analysis*. John Wiley & Sons, 2021. [@montgomery:2021:book]
+
+-   Seber, George AF, and Alan J. Lee. *Linear Regression Analysis*. John Wiley & Sons, 2003. [@seber:2003:book]
 
 ## Side Readings
 
-+ TBA
+-   Montgomery, Douglas C. (2017). *Design and Analysis of Experiments*. John Wiley & Sons. [@montgomery:2017:doe]

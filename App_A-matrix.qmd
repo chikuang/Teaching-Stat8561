@@ -1,0 +1,33 @@
+# Matrix Algebra Review {#sec-matrix}
+
+Appendix: Optional Review of Matrix Facts
+
+Matrix dimensions
+
+If $\mathbf{A}$ is $m \times n$ and $\mathbf{B}$ is $n \times p$, then $\mathbf{A}\mathbf{B}$ is defined and is $m \times p$.
+
+Transpose rules
+
+For conformable matrices,
+
+$$
+(\mathbf{A}\mathbf{B})^\top = \mathbf{B}^\top \mathbf{A}^\top.
+$$
+
+Inverse rule
+
+If $\mathbf{A}$ and $\mathbf{B}$ are invertible, then
+
+$$
+(\mathbf{A}\mathbf{B})^{-1} = \mathbf{B}^{-1}\mathbf{A}^{-1}.
+$$
+
+Symmetric matrices
+
+A matrix $\mathbf{A}$ is symmetric if
+
+$$
+\mathbf{A}^\top = \mathbf{A}.
+$$
+
+Covariance matrices are always symmetric.

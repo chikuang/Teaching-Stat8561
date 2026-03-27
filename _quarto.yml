@@ -8,14 +8,13 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - 01_intro.qmd
     - summary.qmd
     - references.qmd
-    # 
-    # 
-    # - part: "Appendix"
-    #   chapters:
-    #     - App_A-intro-R.qmd
-    #     - App_B-jags.qmd
+    - part: "Appendix"
+      chapters:
+        - App_A-matrix.qmd
+        # - App_B-jags.qmd
     # - references.qmd
   navbar:
     right:
