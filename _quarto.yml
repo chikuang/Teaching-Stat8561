@@ -11,6 +11,7 @@ book:
     - 01_intro.qmd
     - 02.qmd
     - 03.qmd
+    - 04.qmd
     - summary.qmd
     - references.qmd
     - part: "Appendix"

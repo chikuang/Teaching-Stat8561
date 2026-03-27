@@ -1,0 +1,760 @@
+# Week 4: ANOVA Decomposition, Overall F Test, and Nested Models
+
+In this week, we study the ANOVA decomposition for linear regression, the overall significance test, and the comparison of nested models. These ideas connect the geometry of least squares with the inferential tools developed in previous weeks.
+
+## Learning Objectives
+
+By the end of this week, students should be able to:
+
+- define the total, regression, and error sums of squares;
+- explain the ANOVA decomposition in regression with an intercept;
+- interpret the degrees of freedom associated with SST, SSR, and SSE;
+- perform the overall $F$ test for regression;
+- compare nested linear models using extra sums of squares;
+- interpret ANOVA tables produced by statistical software.
+
+## Reading
+
+Recommended reading for this week:
+
+- Seber and Lee:
+  - sections on analysis of variance in regression
+  - sums of squares and decomposition of variability
+  - tests for nested models
+- Montgomery, Peck, and Vining:
+  - sections on the ANOVA table
+  - overall model significance
+  - partial and sequential sums of squares
+
+## Review of the Linear Model
+
+Recall the normal linear model
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+\qquad
+\boldsymbol{\varepsilon} \sim N_n(\mathbf{0}, \sigma^2 \mathbf{I}_n).
+$$
+
+When $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y},
+$$
+
+and the fitted values are
+
+$$
+\hat{\mathbf{Y}} = \mathbf{X}\hat{\boldsymbol{\beta}}.
+$$
+
+The residual vector is
+
+$$
+\mathbf{e} = \mathbf{Y} - \hat{\mathbf{Y}}.
+$$
+
+From Week 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Week 3, we know that this leads to useful distributional results for inference.
+
+This week, we organize these ideas into the ANOVA framework.
+
+## Total, Explained, and Unexplained Variation
+
+A central question in regression is:
+
+How much of the variation in the response can be explained by the model?
+
+To answer this, we decompose the total variation in $\mathbf{Y}$ into:
+
+- variation explained by regression;
+- variation left unexplained by the model.
+
+When the model includes an intercept, this decomposition takes a particularly simple and important form.
+
+## Total Sum of Squares
+
+Assume the model contains an intercept.
+
+The total variation in the response is measured by the **total sum of squares**
+
+$$
+\mathrm{SST}
+=
+\sum_{i=1}^n (Y_i - \bar{Y})^2,
+$$
+
+where
+
+$$
+\bar{Y} = \frac{1}{n}\sum_{i=1}^n Y_i.
+$$
+
+In vector form, if $\mathbf{1}$ denotes the vector of ones, then
+
+$$
+\mathrm{SST}
+=
+(\mathbf{Y} - \bar{Y}\mathbf{1})^\top(\mathbf{Y} - \bar{Y}\mathbf{1}).
+$$
+
+This measures variation around the sample mean.
+
+## Error Sum of Squares
+
+The error sum of squares is
+
+$$
+\mathrm{SSE}
+=
+\sum_{i=1}^n (Y_i - \hat{Y}_i)^2
+=
+\mathbf{e}^\top \mathbf{e}.
+$$
+
+This is the variation not explained by the fitted regression model.
+
+It measures how far the observed responses are from the fitted values.
+
+## Regression Sum of Squares
+
+The regression sum of squares is
+
+$$
+\mathrm{SSR}
+=
+\sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2.
+$$
+
+This measures the part of the total variation explained by the regression model.
+
+In vector form,
+
+$$
+\mathrm{SSR}
+=
+(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})^\top(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}).
+$$
+
+## The ANOVA Decomposition
+
+When the model includes an intercept, we have the decomposition
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+This is one of the most important identities in regression.
+
+It says that the total variation around the sample mean can be decomposed into:
+
+- variation explained by the regression model;
+- variation remaining in the residuals.
+
+## Why the Decomposition Holds
+
+The key reason is orthogonality.
+
+We can write
+
+$$
+\mathbf{Y} - \bar{Y}\mathbf{1}
+=
+(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})
++
+(\mathbf{Y} - \hat{\mathbf{Y}}).
+$$
+
+That is,
+
+$$
+\mathbf{Y} - \bar{Y}\mathbf{1}
+=
+(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}) + \mathbf{e}.
+$$
+
+Because the model contains an intercept, the vector $\bar{Y}\mathbf{1}$ lies in the column space of $\mathbf{X}$. Hence both $\hat{\mathbf{Y}}$ and $\bar{Y}\mathbf{1}$ lie in the model space, so their difference also lies in the model space.
+
+Since the residual vector $\mathbf{e}$ is orthogonal to the model space, we have
+
+$$
+(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})^\top \mathbf{e} = 0.
+$$
+
+Therefore, by the Pythagorean theorem,
+
+$$
+\|\mathbf{Y} - \bar{Y}\mathbf{1}\|^2
+=
+\|\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}\|^2
++
+\|\mathbf{e}\|^2,
+$$
+
+which is exactly
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+## Degrees of Freedom
+
+The ANOVA decomposition is accompanied by a decomposition of degrees of freedom.
+
+When the model includes an intercept and $\mathbf{X}$ has rank $p$, we have:
+
+- total degrees of freedom: $n-1$;
+- regression degrees of freedom: $p-1$;
+- error degrees of freedom: $n-p$.
+
+Thus,
+
+$$
+n-1 = (p-1) + (n-p).
+$$
+
+These match the sum of squares decomposition:
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+## Mean Squares
+
+To compare sums of squares on a common scale, we divide by their associated degrees of freedom.
+
+The **mean square for regression** is
+
+$$
+\mathrm{MSR} = \frac{\mathrm{SSR}}{p-1}.
+$$
+
+The **mean square error** is
+
+$$
+\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}.
+$$
+
+From Week 3, we know that MSE is an unbiased estimator of $\sigma^2$.
+
+## The Overall F Test
+
+A major inferential question is whether the regression model provides any explanatory power beyond the intercept-only model.
+
+Suppose the model includes an intercept and $p-1$ additional predictors. The null hypothesis is
+
+$$
+H_0: \beta_2 = \beta_3 = \cdots = \beta_p = 0,
+$$
+
+if the first coefficient corresponds to the intercept.
+
+Equivalently, under $H_0$, the mean response does not depend on the predictors.
+
+The alternative is that at least one non-intercept coefficient is nonzero.
+
+## Test Statistic
+
+The overall $F$ statistic is
+
+$$
+F = \frac{\mathrm{MSR}}{\mathrm{MSE}}
+=
+\frac{\mathrm{SSR}/(p-1)}{\mathrm{SSE}/(n-p)}.
+$$
+
+Under the null hypothesis,
+
+$$
+F \sim F_{p-1,\;n-p}.
+$$
+
+Large values of $F$ provide evidence against $H_0$.
+
+## Interpretation of the Overall F Test
+
+The numerator measures explained variation per regression degree of freedom.
+
+The denominator measures unexplained variation per residual degree of freedom.
+
+So the $F$ statistic compares:
+
+- how much signal the model explains;
+- how much noise remains in the residuals.
+
+If the predictors have no effect, then both quantities should be of similar size, and the ratio should not be unusually large.
+
+If the predictors explain substantial variation, then the numerator should be much larger than the denominator.
+
+## Relationship to the Intercept-Only Model
+
+The overall $F$ test compares two models:
+
+- the reduced model: intercept only;
+- the full model: intercept plus predictors.
+
+Thus the ANOVA decomposition provides the basis for formal model comparison.
+
+This leads naturally to the idea of nested models.
+
+## Nested Models
+
+Two models are **nested** if the reduced model is obtained by imposing constraints on the full model.
+
+For example:
+
+- reduced model:
+  $$
+  Y_i = \beta_0 + \beta_1 x_{i1} + \varepsilon_i;
+  $$
+
+- full model:
+  $$
+  Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
+  $$
+
+The reduced model is nested within the full model because it is obtained by setting
+
+$$
+\beta_2 = 0.
+$$
+
+## Extra Sum of Squares Principle
+
+Suppose:
+
+- the reduced model has error sum of squares $\mathrm{SSE}_R$ and rank $p_R$;
+- the full model has error sum of squares $\mathrm{SSE}_F$ and rank $p_F$.
+
+Since the full model has more flexibility, it cannot fit worse, so
+
+$$
+\mathrm{SSE}_F \le \mathrm{SSE}_R.
+$$
+
+The quantity
+
+$$
+\mathrm{SSE}_R - \mathrm{SSE}_F
+$$
+
+measures the reduction in error due to adding the extra predictors.
+
+This is called the **extra sum of squares** due to the added terms.
+
+## F Test for Nested Models
+
+To test whether the extra predictors in the full model are needed, we use
+
+$$
+F
+=
+\frac{
+(\mathrm{SSE}_R - \mathrm{SSE}_F)/(p_F - p_R)
+}{
+\mathrm{SSE}_F/(n-p_F)
+}.
+$$
+
+Under the null hypothesis that the additional parameters are unnecessary,
+
+$$
+F \sim F_{p_F-p_R,\;n-p_F}.
+$$
+
+Large values indicate that the full model provides a significantly better fit.
+
+## Connection with General Linear Hypotheses
+
+This nested-model $F$ test is equivalent to testing a general linear hypothesis of the form
+
+$$
+H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}.
+$$
+
+So the ANOVA comparison of nested models is another way of expressing the general $F$ test from Week 3.
+
+In practice, this is one of the most common uses of regression ANOVA tables.
+
+## Sequential and Partial Sums of Squares
+
+In multiple regression, sums of squares can be defined in different ways depending on what is being adjusted for.
+
+Two common ideas are:
+
+- **sequential sums of squares**: terms are added in a specified order;
+- **partial sums of squares**: each term is tested after adjusting for the others.
+
+This distinction becomes important when predictors are correlated.
+
+In this course, the main conceptual priority is to understand the extra sum of squares principle. Details of Type I, Type II, and Type III sums of squares can be introduced later if needed.
+
+## Coefficient of Determination
+
+The coefficient of determination is
+
+$$
+R^2 = \frac{\mathrm{SSR}}{\mathrm{SST}} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}}.
+$$
+
+It measures the proportion of total variation explained by the regression model.
+
+Its values lie between 0 and 1.
+
+## Interpretation of R Squared
+
+- If $R^2$ is close to 1, the model explains a large proportion of the variation in the response.
+- If $R^2$ is close to 0, the model explains little of the variation.
+
+However, $R^2$ alone does not guarantee that the model is appropriate. A high $R^2$ does not ensure that assumptions are satisfied, and a low $R^2$ does not necessarily imply the model is useless.
+
+## Adjusted R Squared
+
+Because $R^2$ never decreases when additional predictors are added, it can overstate improvement.
+
+A commonly used adjustment is
+
+$$
+R^2_{\mathrm{adj}}
+=
+1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+$$
+
+Adjusted $R^2$ penalizes the inclusion of unnecessary predictors.
+
+## Worked Example by Hand
+
+Consider the data
+
+$$
+\begin{array}{c|cccc}
+x_i & 0 & 1 & 2 & 3 \\
+\hline
+y_i & 1 & 3 & 3 & 5
+\end{array}
+$$
+
+We already found that the fitted regression line is
+
+$$
+\hat{Y} = 1.2 + 1.2x.
+$$
+
+The observed response vector is
+
+$$
+\mathbf{Y}
+=
+\begin{bmatrix}
+1 \\ 3 \\ 3 \\ 5
+\end{bmatrix},
+$$
+
+and the fitted values are
+
+$$
+\hat{\mathbf{Y}}
+=
+\begin{bmatrix}
+1.2 \\ 2.4 \\ 3.6 \\ 4.8
+\end{bmatrix}.
+$$
+
+The sample mean is
+
+$$
+\bar{Y} = 3.
+$$
+
+### Compute SST
+
+$$
+\mathrm{SST}
+=
+(1-3)^2 + (3-3)^2 + (3-3)^2 + (5-3)^2
+=
+4 + 0 + 0 + 4
+=
+8.
+$$
+
+### Compute SSE
+
+The residuals are
+
+$$
+\mathbf{e}
+=
+\begin{bmatrix}
+-0.2 \\ 0.6 \\ -0.6 \\ 0.2
+\end{bmatrix},
+$$
+
+so
+
+$$
+\mathrm{SSE}
+=
+(-0.2)^2 + 0.6^2 + (-0.6)^2 + 0.2^2
+=
+0.8.
+$$
+
+### Compute SSR
+
+Using $\mathrm{SSR} = \mathrm{SST} - \mathrm{SSE}$,
+
+$$
+\mathrm{SSR} = 8 - 0.8 = 7.2.
+$$
+
+### Check the decomposition
+
+$$
+8 = 7.2 + 0.8.
+$$
+
+### Degrees of freedom
+
+Here $n=4$ and $p=2$, so:
+
+- total df: $4-1=3$;
+- regression df: $2-1=1$;
+- error df: $4-2=2$.
+
+### Mean squares
+
+$$
+\mathrm{MSR} = \frac{7.2}{1} = 7.2,
+\qquad
+\mathrm{MSE} = \frac{0.8}{2} = 0.4.
+$$
+
+### F statistic
+
+$$
+F = \frac{7.2}{0.4} = 18.
+$$
+
+This is the overall significance test for the regression.
+
+## ANOVA Table Structure
+
+A standard regression ANOVA table has the following structure:
+
+| Source      | Sum of Squares | Degrees of Freedom | Mean Square | F |
+|-------------|----------------|--------------------|-------------|---|
+| Regression  | SSR            | $p-1$              | MSR         | MSR/MSE |
+| Error       | SSE            | $n-p$              | MSE         |   |
+| Total       | SST            | $n-1$              |             |   |
+
+Students should learn to move fluently between:
+
+- formulas;
+- geometric interpretation;
+- software output.
+
+## R Demonstration
+
+## Fit a simple regression model
+
+```{r}
+x <- c(0, 1, 2, 3)
+y <- c(1, 3, 3, 5)
+
+fit <- lm(y ~ x)
+summary(fit)
+```
+
+## Obtain the ANOVA table
+
+```{r}
+anova(fit)
+```
+
+## Verify sums of squares manually
+
+```{r}
+ybar <- mean(y)
+yhat <- fitted(fit)
+e <- resid(fit)
+
+SST <- sum((y - ybar)^2)
+SSE <- sum(e^2)
+SSR <- sum((yhat - ybar)^2)
+
+c(SST = SST, SSR = SSR, SSE = SSE)
+SST - SSR - SSE
+```
+
+## Compute R squared manually
+
+```{r}
+R2 <- SSR / SST
+R2
+summary(fit)$r.squared
+summary(fit)$adj.r.squared
+```
+
+## Compare nested models
+
+```{r}
+dat <- data.frame(
+  y = c(4, 5, 7, 10, 8, 12, 13, 14),
+  x1 = c(1, 2, 3, 4, 5, 6, 7, 8),
+  x2 = c(2, 1, 3, 2, 5, 4, 6, 5)
+)
+
+fit_reduced <- lm(y ~ x1, data = dat)
+fit_full <- lm(y ~ x1 + x2, data = dat)
+
+anova(fit_reduced, fit_full)
+```
+
+## Inspect the two fitted models
+
+```{r}
+summary(fit_reduced)
+summary(fit_full)
+```
+
+## Interpretation of Software Output
+
+For a fitted model in R:
+
+- `anova(fit)` gives the ANOVA decomposition for a single model;
+- `anova(fit_reduced, fit_full)` compares nested models;
+- `summary(fit)` reports the overall $F$ statistic, $R^2$, and adjusted $R^2$.
+
+Students should understand that these outputs are not separate topics. They are all built from the same least squares geometry and distribution theory.
+
+## In-Class Discussion Questions
+
+1. Why does the ANOVA decomposition require an intercept for the usual SST = SSR + SSE identity?
+2. Why must $\mathrm{SSE}_F \le \mathrm{SSE}_R$ for nested models?
+3. What does the overall $F$ test tell us that individual $t$ tests do not?
+4. Why can $R^2$ be misleading if used alone?
+
+## Practice Problems
+
+## Conceptual
+
+1. Explain the meaning of SST, SSR, and SSE in words.
+2. Explain why the regression degrees of freedom are $p-1$ when the model includes an intercept.
+3. Explain the difference between the overall $F$ test and a test for a single coefficient.
+
+## Computational
+
+Suppose a regression model with intercept has:
+
+- $n=20$,
+- $p=4$,
+- $\mathrm{SST}=100$,
+- $\mathrm{SSE}=40$.
+
+Compute:
+
+1. $\mathrm{SSR}$,
+2. the degrees of freedom for regression and error,
+3. $\mathrm{MSR}$,
+4. $\mathrm{MSE}$,
+5. the overall $F$ statistic,
+6. $R^2$.
+
+## Nested Model Problem
+
+A reduced model has
+
+$$
+\mathrm{SSE}_R = 120
+$$
+
+with $p_R = 3$, and a full model has
+
+$$
+\mathrm{SSE}_F = 90
+$$
+
+with $p_F = 5$.
+
+If $n=30$, compute the nested-model $F$ statistic.
+
+## Suggested Homework
+
+Complete the following tasks:
+
+- prove the decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ when the model includes an intercept;
+- derive the overall $F$ statistic from the ANOVA decomposition;
+- fit a regression model in R and reproduce the ANOVA table by hand;
+- compare two nested models using an extra sum of squares test;
+- interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
+
+## Summary
+
+In this week, we developed the ANOVA framework for linear regression.
+
+We defined:
+
+$$
+\mathrm{SST}, \qquad \mathrm{SSR}, \qquad \mathrm{SSE},
+$$
+
+and showed that, with an intercept,
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+This decomposition led to:
+
+- the ANOVA table;
+- the overall $F$ test for regression;
+- the comparison of nested models through extra sums of squares;
+- the interpretation of $R^2$ and adjusted $R^2$.
+
+Next week, a natural continuation is to study multiple regression in greater depth, including interpretation of partial regression coefficients and multicollinearity, or to move into matrix-based general linear hypotheses and estimability, depending on the course emphasis.
+
+## Appendix: Compact Formula Summary
+
+With an intercept in the model,
+
+$$
+\mathrm{SST}
+=
+\sum_{i=1}^n (Y_i-\bar{Y})^2,
+$$
+
+$$
+\mathrm{SSE}
+=
+\sum_{i=1}^n (Y_i-\hat{Y}_i)^2,
+$$
+
+$$
+\mathrm{SSR}
+=
+\sum_{i=1}^n (\hat{Y}_i-\bar{Y})^2,
+$$
+
+and
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+Also,
+
+$$
+\mathrm{MSR} = \frac{\mathrm{SSR}}{p-1},
+\qquad
+\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p},
+\qquad
+F = \frac{\mathrm{MSR}}{\mathrm{MSE}},
+$$
+
+and
+
+$$
+R^2 = \frac{\mathrm{SSR}}{\mathrm{SST}} = 1-\frac{\mathrm{SSE}}{\mathrm{SST}}.
+$$
