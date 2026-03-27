@@ -1,12 +1,10 @@
 # Preface {.unnumbered}
 
-## Description
-
-Linear Statistical Analysis I. The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
+The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
 ### Prerequisites
 
-Math 4751/6751 and Math 4752/6752.
+Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Statistics II.
 
 ### Instructor
 
@@ -27,7 +25,7 @@ TBA
 
 +   [x] A1, TBA
 
-## Midterm
+## Exam
 
 + TBA
 
