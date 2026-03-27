@@ -1,0 +1,738 @@
+# Week 8: Multicollinearity, Variable Selection, and Model Building
+
+In this week, we study how regression models behave when predictors are strongly related to one another, how this affects interpretation and inference, and how to think carefully about selecting variables for a useful final model. The emphasis is on understanding multicollinearity, model-building principles, and the strengths and limitations of common selection procedures.
+
+## Learning Objectives
+
+By the end of this week, students should be able to:
+
+- explain what multicollinearity is and why it matters in multiple regression;
+- distinguish between good prediction and stable coefficient interpretation;
+- diagnose multicollinearity using correlations, variance inflation factors, and related tools;
+- explain the ideas behind forward selection, backward elimination, and stepwise procedures;
+- compare model selection based on adjusted $R^2$, AIC, BIC, and cross-validation style thinking;
+- discuss principled strategies for building and comparing regression models.
+
+## Reading
+
+Recommended reading for this week:
+
+- Seber and Lee:
+  - sections on collinearity
+  - model-building considerations
+  - variable selection and related issues
+- Montgomery, Peck, and Vining:
+  - sections on multicollinearity
+  - variable selection methods
+  - model-building strategies and cautions
+
+## Why Model Building Is Difficult
+
+In multiple regression, it is often easy to write down many candidate predictors, transformations, and interactions.
+
+The harder questions are:
+
+- Which variables should be included?
+- Which effects are scientifically meaningful?
+- Are some predictors redundant?
+- Can we trust the estimated coefficients?
+- Are we building a model for explanation, inference, or prediction?
+
+A good model is rarely defined only by having the largest possible $R^2$. We also care about interpretability, stability, scientific plausibility, and predictive usefulness.
+
+## Review of the Multiple Regression Model
+
+Recall the multiple linear regression model
+
+$$
+Y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+$$
+
+or in matrix form,
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}.
+$$
+
+When predictors are moderately distinct and the design matrix is well behaved, the least squares estimator
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}
+$$
+
+can be interpreted in the usual way.
+
+But when predictors are strongly related to one another, estimation becomes more delicate.
+
+## What Is Multicollinearity
+
+**Multicollinearity** means that one predictor is highly linearly related to one or more of the other predictors.
+
+At an extreme, one predictor may be an exact linear combination of others. Then the design matrix loses full rank, and the OLS estimator is not uniquely defined.
+
+More commonly, the relationship is not exact, but is still strong enough to cause instability. This is often called **near multicollinearity**.
+
+## Why Multicollinearity Matters
+
+Multicollinearity does not necessarily harm the fitted values very much. In fact, a model can still predict reasonably well.
+
+The main problems are:
+
+- coefficient estimates can become unstable;
+- standard errors can become large;
+- signs and magnitudes of coefficients can become counterintuitive;
+- individual $t$ tests can become weak even when the overall model is useful;
+- small changes in the data can lead to large changes in estimated coefficients.
+
+Thus multicollinearity is especially important when interpretation and inference on individual coefficients matter.
+
+## A Simple Intuition
+
+Suppose two predictors measure almost the same underlying quantity.
+
+Then the model has difficulty deciding how much of the fitted effect should be attributed to one predictor and how much to the other.
+
+The sum of their contributions may be estimated fairly well, but the individual coefficients may not be.
+
+This is why high collinearity often affects coefficient interpretation more than overall model fit.
+
+## Exact Collinearity
+
+If one column of $\mathbf{X}$ is an exact linear combination of the others, then
+
+$$
+\mathrm{rank}(\mathbf{X}) < p,
+$$
+
+and
+
+$$
+\mathbf{X}^\top \mathbf{X}
+$$
+
+is singular.
+
+In that case, ordinary least squares does not produce a unique coefficient vector without imposing additional constraints.
+
+This can happen, for example, if we include all indicator variables for a factor together with an intercept.
+
+## Near Collinearity
+
+In many applications, the problem is not exact singularity but near singularity.
+
+Then
+
+$$
+\mathbf{X}^\top \mathbf{X}
+$$
+
+is invertible, but poorly conditioned.
+
+This makes
+
+$$
+(\mathbf{X}^\top \mathbf{X})^{-1}
+$$
+
+numerically and statistically unstable, which inflates the variance of coefficient estimates.
+
+## Multicollinearity and Variance
+
+Recall that under the standard linear model,
+
+$$
+\mathrm{Var}(\hat{\boldsymbol{\beta}})
+=
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}.
+$$
+
+So when the columns of $\mathbf{X}$ are highly correlated, the inverse matrix tends to have large diagonal entries.
+
+This leads to large coefficient variances and hence large standard errors.
+
+That is the algebraic reason multicollinearity makes inference unstable.
+
+## Pairwise Correlations
+
+A simple first check is to inspect the pairwise correlations among predictors.
+
+Large pairwise correlations may suggest multicollinearity.
+
+However, this is not a complete diagnostic, because a predictor can be strongly related to a combination of several others even if no single pairwise correlation is extreme.
+
+So pairwise correlations are useful, but not sufficient.
+
+## Variance Inflation Factor
+
+One of the most common diagnostics is the **variance inflation factor**, or VIF.
+
+For predictor $x_j$, the VIF is
+
+$$
+\mathrm{VIF}_j = \frac{1}{1-R_j^2},
+$$
+
+where $R_j^2$ is the coefficient of determination obtained by regressing $x_j$ on the remaining predictors.
+
+Interpretation:
+
+- if $x_j$ is almost unrelated to the others, then $R_j^2$ is small and the VIF is close to 1;
+- if $x_j$ is highly explained by the others, then $R_j^2$ is close to 1 and the VIF is large.
+
+So the VIF measures how much the variance of $\hat{\beta}_j$ is inflated by collinearity.
+
+## Interpreting VIF Values
+
+There is no universal cutoff, but common informal rules are:
+
+- VIF near 1: little concern;
+- VIF above 5: possible concern;
+- VIF above 10: serious concern in many applications.
+
+These are only rough guidelines. The seriousness depends on the context, the sample size, and the goal of the analysis.
+
+## Tolerance
+
+A related quantity is **tolerance**, defined as
+
+$$
+\mathrm{Tolerance}_j = 1 - R_j^2 = \frac{1}{\mathrm{VIF}_j}.
+$$
+
+Small tolerance indicates that the predictor is largely explained by the others.
+
+Some software reports tolerance instead of VIF.
+
+## Consequences for Hypothesis Tests
+
+A common symptom of multicollinearity is the following:
+
+- the overall $F$ test is significant;
+- individual $t$ tests are weak or nonsignificant.
+
+This can happen because the predictors collectively explain the response well, but it is difficult to estimate the separate contribution of each one.
+
+Students often find this confusing at first, but it is a standard effect of collinearity.
+
+## Condition Number and Eigenvalue Thinking
+
+Another way to view multicollinearity is through the eigenstructure of the predictor matrix or the correlation matrix of predictors.
+
+If the design is nearly singular, then some directions in predictor space are weakly supported by the data.
+
+This is often summarized through condition numbers or condition indices.
+
+A large condition number indicates that the model matrix is close to singular in some direction.
+
+For an introductory course, VIFs and predictor correlations are often enough, but it is useful to mention the geometric idea.
+
+## Remedies for Multicollinearity
+
+Possible responses to multicollinearity include:
+
+- removing one of several redundant predictors;
+- combining related predictors into a single summary variable;
+- centring variables, especially when polynomial or interaction terms are present;
+- collecting more data, if possible;
+- focusing on prediction rather than individual coefficient interpretation;
+- using regularization methods such as ridge regression, if the course later extends in that direction.
+
+The best remedy depends on the scientific objective.
+
+## Centering and Polynomial Terms
+
+When polynomial terms such as $x$ and $x^2$ are both included, the terms can be highly correlated.
+
+A common remedy is to centre the predictor first:
+
+$$
+x_i^* = x_i - \bar{x}.
+$$
+
+Then the model may be written using $x_i^*$ and $(x_i^*)^2$.
+
+This often improves numerical stability and makes the intercept more interpretable, though it does not solve all collinearity issues.
+
+## Variable Selection as a Modelling Problem
+
+Beyond collinearity, regression analysts must often decide which predictors belong in the model.
+
+This is called **variable selection** or **model selection**.
+
+The central challenge is that adding variables can improve apparent fit in the sample, but may produce a model that is unstable, hard to interpret, or overly tailored to the data.
+
+Thus variable selection is not just a computational problem. It is a statistical and scientific problem.
+
+## Goals of Variable Selection
+
+Variable selection may be done for different reasons:
+
+- to improve prediction;
+- to simplify interpretation;
+- to reduce cost of measurement;
+- to remove irrelevant or redundant predictors;
+- to identify a scientifically meaningful parsimonious model.
+
+Because these goals differ, there is no single best selection rule for every application.
+
+## Forward Selection
+
+In **forward selection**, we begin with a small model, often the intercept-only model, and add predictors one at a time.
+
+At each step, we add the variable that gives the best improvement according to some criterion, such as:
+
+- partial $F$ test;
+- smallest $p$-value;
+- largest drop in AIC;
+- largest increase in adjusted $R^2$.
+
+This continues until no candidate addition meets the chosen rule.
+
+## Backward Elimination
+
+In **backward elimination**, we begin with a larger model and remove predictors one at a time.
+
+At each step, we remove the least useful variable according to a chosen rule.
+
+This continues until all remaining variables satisfy the stopping criterion.
+
+Backward elimination requires that the initial model be estimable, and it may be sensitive to collinearity and hierarchical structure.
+
+## Stepwise Selection
+
+**Stepwise selection** combines forward and backward ideas.
+
+A variable may enter at one stage and later be removed if its contribution becomes weak after other variables enter the model.
+
+This procedure is popular in software because it is automated, but it should be used cautiously.
+
+Automatic procedures can be unstable and may encourage overly mechanical modelling.
+
+## Problems With Automatic Selection
+
+Automatic variable selection can create several difficulties:
+
+- it ignores model uncertainty;
+- repeated searching inflates the chance of false discoveries;
+- selected coefficients and $p$-values may look more certain than they really are;
+- different but similar datasets may lead to different selected models;
+- scientific structure may be lost if the procedure is used blindly.
+
+So automated methods should be treated as exploratory tools, not as final arbiters of truth.
+
+## Hierarchical Principle
+
+When interactions or polynomial terms are included, the **hierarchical principle** is often recommended.
+
+For example, if the model contains
+
+$$
+x_1x_2,
+$$
+
+then it is usually sensible to keep the corresponding main effects $x_1$ and $x_2$ in the model as well.
+
+Similarly, if a quadratic term $x^2$ is included, then it is usually sensible to keep the linear term $x$.
+
+This helps preserve interpretability and avoids awkward models.
+
+## Criteria for Comparing Models
+
+Several criteria are commonly used in model comparison.
+
+### Adjusted R Squared
+
+Adjusted $R^2$ is
+
+$$
+R^2_{\mathrm{adj}}
+=
+1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+$$
+
+Unlike ordinary $R^2$, adjusted $R^2$ can decrease when unnecessary predictors are added.
+
+It rewards fit but penalizes unnecessary complexity in a simple way.
+
+### AIC
+
+The Akaike information criterion is typically written as
+
+$$
+\mathrm{AIC} = -2\log L + 2k,
+$$
+
+where $L$ is the fitted likelihood and $k$ is the number of estimated parameters.
+
+Smaller AIC indicates a better tradeoff between fit and complexity.
+
+AIC is often more prediction-oriented than strict parsimony-oriented.
+
+### BIC
+
+The Bayesian information criterion is
+
+$$
+\mathrm{BIC} = -2\log L + k\log n.
+$$
+
+Because the penalty term is stronger than that of AIC when $n$ is moderate or large, BIC tends to favor smaller models.
+
+### Mallows' Cp
+
+Another classical criterion is Mallows' $C_p$, which compares model bias and variance relative to a fuller model.
+
+It is less frequently emphasized in introductory software workflows today, but it remains conceptually important in regression theory.
+
+## Prediction-Oriented Thinking
+
+If the main goal is prediction rather than interpretation, then the evaluation should focus more on performance on new data.
+
+This leads naturally to validation ideas such as:
+
+- training and test set comparison;
+- cross-validation;
+- prediction error rather than coefficient significance.
+
+Even if a course stays within classical regression, it is valuable for students to know that in-sample fit is not the same as out-of-sample performance.
+
+## Overfitting
+
+A model is **overfit** when it captures not only real structure but also noise specific to the sample.
+
+Symptoms include:
+
+- excellent fit on the observed data;
+- unstable coefficients;
+- poor performance on new data;
+- excessive complexity relative to the available sample size.
+
+Variable selection is closely tied to the problem of overfitting.
+
+## Parsimony
+
+A guiding principle in model building is **parsimony**.
+
+A parsimonious model is one that is no more complicated than necessary for the purpose at hand.
+
+This does not mean the smallest possible model. It means a model that balances:
+
+- adequacy of fit;
+- interpretability;
+- stability;
+- scientific usefulness.
+
+## Subject-Matter Knowledge
+
+No model-building strategy should rely only on algorithmic output.
+
+Subject-matter knowledge can help determine:
+
+- which variables are essential controls;
+- which interactions are scientifically plausible;
+- which terms should remain in the model even if their $p$-values are not small;
+- whether a selected model is substantively reasonable.
+
+This is especially important when the goal is explanation or causal interpretation.
+
+## A Practical Model-Building Strategy
+
+A reasonable workflow is:
+
+- start from the scientific question;
+- define a set of plausible predictors and model terms;
+- fit an initial model;
+- assess collinearity and diagnostics;
+- simplify or revise where appropriate;
+- compare a small number of meaningful candidate models;
+- justify the final choice in words, not just by one number.
+
+This approach is often more reliable than indiscriminate stepwise searching.
+
+## Worked Example With Strongly Correlated Predictors
+
+Suppose we fit a model with two predictors, $x_1$ and $x_2$, that are highly correlated.
+
+We may find that:
+
+- both variables together give a strong overall fit;
+- the overall $F$ test is significant;
+- one or both individual coefficient tests are weak;
+- the signs of coefficients may look unstable or surprising.
+
+This is a classic signature of multicollinearity.
+
+## Worked Example With Competing Models
+
+Suppose we have candidate models:
+
+- a small model with two predictors;
+- a medium model with four predictors;
+- a larger model with six predictors and interactions.
+
+The best choice may differ depending on whether we care most about:
+
+- interpretability;
+- inference on key coefficients;
+- predictive performance;
+- scientific completeness.
+
+This is why model-building decisions should be tied to the purpose of the analysis.
+
+## R Demonstration With Correlated Predictors
+
+## Generate data with multicollinearity
+
+```{r}
+set.seed(123)
+n <- 80
+x1 <- rnorm(n)
+x2 <- 0.92 * x1 + rnorm(n, sd = 0.25)
+x3 <- rnorm(n)
+y <- 3 + 2 * x1 - 1.5 * x2 + 1.2 * x3 + rnorm(n, sd = 1)
+
+dat <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+
+fit_full <- lm(y ~ x1 + x2 + x3, data = dat)
+summary(fit_full)
+```
+
+## Inspect predictor correlations
+
+```{r}
+round(cor(dat[, c("x1", "x2", "x3")]), 3)
+```
+
+## Compute VIF values
+
+```{r}
+vif_manual <- function(model) {
+  X <- model.matrix(model)[, -1, drop = FALSE]
+  out <- numeric(ncol(X))
+  names(out) <- colnames(X)
+  for (j in seq_len(ncol(X))) {
+    fit_j <- lm(X[, j] ~ X[, -j, drop = FALSE])
+    r2_j <- summary(fit_j)$r.squared
+    out[j] <- 1 / (1 - r2_j)
+  }
+  out
+}
+
+vif_manual(fit_full)
+```
+
+## Compare with simpler models
+
+```{r}
+fit_small <- lm(y ~ x1 + x3, data = dat)
+fit_alt <- lm(y ~ x2 + x3, data = dat)
+
+summary(fit_small)
+summary(fit_alt)
+anova(fit_small, fit_full)
+```
+
+## R Demonstration With Automatic Selection
+
+## Use AIC-based stepwise selection
+
+```{r}
+fit_null <- lm(y ~ 1, data = dat)
+fit_scope <- lm(y ~ x1 + x2 + x3, data = dat)
+
+step_forward <- step(fit_null,
+                     scope = list(lower = fit_null, upper = fit_scope),
+                     direction = "forward",
+                     trace = 0)
+
+step_backward <- step(fit_scope, direction = "backward", trace = 0)
+
+summary(step_forward)
+summary(step_backward)
+```
+
+## Compare AIC, BIC, and adjusted R squared
+
+```{r}
+model_summary <- function(model) {
+  c(
+    AIC = AIC(model),
+    BIC = BIC(model),
+    adj_R2 = summary(model)$adj.r.squared
+  )
+}
+
+rbind(
+  small = model_summary(fit_small),
+  alt = model_summary(fit_alt),
+  full = model_summary(fit_full),
+  step_forward = model_summary(step_forward),
+  step_backward = model_summary(step_backward)
+)
+```
+
+## Example With Polynomial Terms and Centering
+
+```{r}
+set.seed(456)
+x <- seq(1, 20, length.out = 60)
+y2 <- 5 + 1.2 * x - 0.05 * x^2 + rnorm(length(x), sd = 2)
+
+dat2 <- data.frame(y = y2, x = x, xc = x - mean(x))
+
+fit_poly_raw <- lm(y ~ x + I(x^2), data = dat2)
+fit_poly_center <- lm(y ~ xc + I(xc^2), data = dat2)
+
+summary(fit_poly_raw)
+summary(fit_poly_center)
+```
+
+## Compare collinearity before and after centering
+
+```{r}
+cor(cbind(dat2$x, dat2$x^2))
+cor(cbind(dat2$xc, dat2$xc^2))
+```
+
+## Interpreting Software Output
+
+Useful commands in R include:
+
+- `cor()` for predictor correlations;
+- `summary(lm(...))` for coefficient estimates and overall fit;
+- `AIC()` and `BIC()` for model comparison;
+- `step()` for automated exploratory selection;
+- `model.matrix()` for checking the design matrix.
+
+Students should remember that software can rank candidate models, but interpretation and final justification must still come from statistical reasoning.
+
+## A Practical Collinearity and Selection Workflow
+
+A sensible workflow is:
+
+- inspect the scientific role of each predictor;
+- examine predictor correlations and VIFs;
+- identify redundant or unstable terms;
+- compare a small set of plausible models;
+- avoid blind selection when interactions or scientific controls are important;
+- interpret the final model in light of both diagnostics and the original research question.
+
+## In-Class Discussion Questions
+
+1. Why can a model have a significant overall $F$ test but weak individual $t$ tests?
+2. Why does high collinearity affect coefficient interpretation more than fitted values?
+3. What are the dangers of relying entirely on stepwise selection?
+4. In what situations is a larger model worth keeping even if some terms are not individually significant?
+
+## Practice Problems
+
+## Conceptual
+
+1. Explain multicollinearity in your own words.
+2. Explain why VIF is connected to regressing one predictor on the others.
+3. Explain the difference between a model selected for interpretation and a model selected for prediction.
+
+## Computational
+
+Suppose a predictor $x_j$ has
+
+$$
+R_j^2 = 0.90
+$$
+
+when regressed on the remaining predictors.
+
+1. Compute the VIF.
+2. Compute the tolerance.
+3. Explain what these values imply.
+
+Now suppose a model has
+
+- AIC = 210 for Model A,
+- AIC = 205 for Model B,
+- BIC = 220 for Model A,
+- BIC = 225 for Model B.
+
+1. Which model is preferred by AIC?
+2. Which model is preferred by BIC?
+3. What does this tell you about the fit-complexity tradeoff?
+
+## Model-Building Problem
+
+You are comparing two models:
+
+- Model 1 contains age, income, and education;
+- Model 2 contains age, income, education, and an age-by-income interaction.
+
+1. Why should the interaction model usually retain the main effects?
+2. What statistical and scientific questions would guide whether the interaction should remain?
+3. Why is it not enough to choose only by the smallest $p$-value?
+
+## Suggested Homework
+
+Complete the following tasks:
+
+- fit a multiple regression model with at least four predictors;
+- compute predictor correlations and VIFs;
+- identify any signs of multicollinearity and explain their consequences;
+- compare several candidate models using adjusted $R^2$, AIC, and BIC;
+- write a short justification for your preferred final model, explicitly discussing both statistical and subject-matter considerations.
+
+## Summary
+
+In this week, we studied multicollinearity, variable selection, and model building in multiple regression.
+
+We emphasized that:
+
+- collinearity can make coefficients unstable even when overall fit is good;
+- VIFs and related tools help diagnose this problem;
+- automatic selection procedures are useful but limited;
+- model comparison criteria such as adjusted $R^2$, AIC, and BIC serve different goals;
+- good model building requires both statistical judgment and scientific context.
+
+Next week, a natural continuation is to study formal general linear hypotheses, estimability, and matrix-based inference in more depth, or to move toward regularization methods such as ridge regression and lasso if the course is oriented toward modern regression.
+
+## Appendix: Compact Formula Summary
+
+Variance inflation factor:
+
+$$
+\mathrm{VIF}_j = \frac{1}{1-R_j^2}.
+$$
+
+Tolerance:
+
+$$
+\mathrm{Tolerance}_j = 1 - R_j^2 = \frac{1}{\mathrm{VIF}_j}.
+$$
+
+Adjusted $R^2$:
+
+$$
+R^2_{\mathrm{adj}}
+=
+1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+$$
+
+AIC:
+
+$$
+\mathrm{AIC} = -2\log L + 2k.
+$$
+
+BIC:
+
+$$
+\mathrm{BIC} = -2\log L + k\log n.
+$$
+
+Typical model-building questions:
+
+- Are the predictors interpretable?
+- Are some predictors redundant?
+- Is collinearity harming coefficient stability?
+- Does the model answer the scientific question?
+- Will the model likely generalize beyond the observed data?
+

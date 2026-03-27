@@ -1,0 +1,743 @@
+# Week 7: Transformations, Weighted Least Squares, and Remedial Measures
+
+In this week, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from the previous week, we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
+
+## Learning Objectives
+
+By the end of this week, students should be able to:
+
+- explain why transformations are used in regression analysis;
+- distinguish between transforming the response and transforming predictors;
+- interpret common response transformations such as logarithms and square roots;
+- explain the basic idea of weighted least squares;
+- derive the weighted least squares estimator;
+- recognize situations where weighted least squares is appropriate;
+- compare model improvement strategies based on diagnostics and scientific context.
+
+## Reading
+
+Recommended reading for this week:
+
+- @seber:2003:book :
+  - sections on transformations
+  - weighted least squares
+  - remedial measures for model inadequacy
+- @montgomery:2021:book :
+  - sections on transformations and model adequacy
+  - weighted least squares
+  - variance stabilization and practical remedies
+
+## Why Remedies Are Needed
+
+Diagnostics often reveal that a fitted linear model is inadequate.
+
+Common problems include:
+
+- curvature in the mean structure;
+- nonconstant error variance;
+- skewed response distributions;
+- influential observations;
+- omitted interactions or nonlinear effects.
+
+When this happens, we should not stop at saying the model is flawed. We should also ask how the model might be improved.
+
+Some common remedies are:
+
+- transforming the response;
+- transforming predictors;
+- adding polynomial or interaction terms;
+- using weighted least squares;
+- reconsidering the scope of the scientific question.
+
+## Review of the Ordinary Linear Model
+
+The ordinary linear regression model is
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+\qquad
+\mathbb{E}[\boldsymbol{\varepsilon}] = \mathbf{0},
+\qquad
+\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n.
+$$
+
+The ordinary least squares estimator is
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y},
+$$
+
+provided that $\mathbf{X}$ has full column rank.
+
+When the variance is not constant, or when the mean structure is poorly represented by a linear form, OLS may still be computable, but its interpretation and inferential properties can become unsatisfactory.
+
+## Transformations in Regression
+
+A transformation changes the scale on which a variable is analysed.
+
+For example:
+
+- logarithm;
+- square root;
+- reciprocal;
+- power transformation.
+
+Transformations are often used for one or more of the following reasons:
+
+- to improve linearity;
+- to stabilize variance;
+- to reduce skewness;
+- to make the model more scientifically interpretable;
+- to reduce the impact of extreme values.
+
+Transformations should not be viewed as purely mechanical. They should be guided by diagnostics and by substantive understanding of the problem.
+
+## Transforming the Response
+
+Suppose the original response is $Y$, but instead of modelling $Y$ directly, we model
+
+$$
+g(Y)
+$$
+
+for some transformation $g$.
+
+Then the model becomes
+
+$$
+g(Y_i) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i.
+$$
+
+This can help if the original relationship between the mean and the predictors is nonlinear, or if the variability of $Y$ changes with its level.
+
+## Log Transformation of the Response
+
+A very common choice is the logarithm:
+
+$$
+\log(Y_i) = \beta_0 + \beta_1 x_i + \varepsilon_i.
+$$
+
+This is often useful when:
+
+- the response is positive;
+- the variance increases with the mean;
+- the relationship is multiplicative rather than additive;
+- the response distribution is right-skewed.
+
+In this model, the interpretation of coefficients changes.
+
+If $x$ increases by one unit, then the expected log response changes by $\beta_1$. On the original scale, this corresponds approximately to a multiplicative change.
+
+More precisely, if
+
+$$
+\log(Y_i) = \beta_0 + \beta_1 x_i + \varepsilon_i,
+$$
+
+then increasing $x$ by one unit multiplies the fitted median response approximately by
+
+$$
+e^{\beta_1}.
+$$
+
+## Square-Root Transformation
+
+Another common response transformation is the square root:
+
+$$
+\sqrt{Y_i} = \beta_0 + \beta_1 x_i + \varepsilon_i.
+$$
+
+This is often used for count-like responses or responses whose variance tends to increase with the mean.
+
+Compared with the log transformation, the square-root transformation is milder and can still be used when the response includes zeros.
+
+## Reciprocal and Other Power Transformations
+
+In some settings, transformations such as
+
+$$
+\frac{1}{Y}, \qquad Y^\lambda
+$$
+
+or more general Box-Cox type power transformations may be useful.
+
+These transformations can sometimes help linearize relationships or stabilize variance, but they may make interpretation more difficult. So one should balance statistical convenience and interpretability.
+
+## Transforming Predictors
+
+Instead of transforming the response, we may transform one or more predictors.
+
+For example, if the relationship between $Y$ and $x$ is curved, we might consider
+
+- $\log(x)$;
+- $\sqrt{x}$;
+- $x^2$ or higher-order polynomial terms.
+
+A model such as
+
+$$
+Y_i = \beta_0 + \beta_1 \log(x_i) + \varepsilon_i
+$$
+
+is still linear in the parameters, even though it is nonlinear in the original predictor.
+
+This is an important distinction: the model remains a linear model as long as it is linear in the coefficients.
+
+## Polynomial Terms as a Remedy
+
+Suppose residual plots suggest curvature in the relationship between $Y$ and $x$.
+
+A common remedy is to add a quadratic term:
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \varepsilon_i.
+$$
+
+This is still a linear model because it is linear in $\beta_0$, $\beta_1$, and $\beta_2$.
+
+Polynomial terms often provide a more interpretable remedy than transforming the response, depending on the scientific context.
+
+## Choosing Between Transformations and Added Terms
+
+Suppose diagnostics show nonlinearity.
+
+Then several remedies may be reasonable:
+
+- transform the predictor;
+- transform the response;
+- add polynomial terms;
+- include an interaction;
+- restrict attention to a smaller range of the data.
+
+There is often no single automatic answer. Choice depends on:
+
+- what shape is suggested by diagnostics;
+- which form is scientifically meaningful;
+- how easy the resulting model is to explain;
+- whether inference or prediction is the main goal.
+
+## Heteroscedasticity and Variance Stabilization
+
+A common problem in regression is heteroscedasticity, meaning that
+
+$$
+\mathrm{Var}(\varepsilon_i)
+$$
+
+is not constant across observations.
+
+Residual plots may reveal a funnel shape or changing spread.
+
+Sometimes a response transformation can reduce this problem.
+
+For example:
+
+- a log transformation often helps when the standard deviation is roughly proportional to the mean;
+- a square-root transformation often helps for count-like data.
+
+But in other cases, it is better to model the unequal variance directly. This leads to weighted least squares.
+
+## Weighted Least Squares
+
+Suppose the observations still satisfy
+
+$$
+\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta},
+$$
+
+but now the variance is
+
+$$
+\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{V},
+$$
+
+where $\mathbf{V}$ is not the identity matrix.
+
+A particularly common case is when the errors are uncorrelated but have unequal variances:
+
+$$
+\mathrm{Var}(\varepsilon_i) = \sigma^2 v_i.
+$$
+
+Then observations have different levels of reliability.
+
+Ordinary least squares treats all observations equally. Weighted least squares gives more weight to observations with smaller variance.
+
+## Basic Idea of Weights
+
+If an observation has high variance, it contains less precise information about the mean.
+
+If an observation has low variance, it contains more precise information.
+
+So a sensible idea is to weight observations inversely to their variance.
+
+If
+
+$$
+\mathrm{Var}(\varepsilon_i) = \sigma^2 v_i,
+$$
+
+then we often use weights
+
+$$
+w_i = \frac{1}{v_i}.
+$$
+
+Larger weights correspond to more precise observations.
+
+## Weighted Least Squares Criterion
+
+In weighted least squares, we minimize
+
+$$
+Q(\boldsymbol{\beta})
+=
+\sum_{i=1}^n w_i (Y_i - x_i^\top \boldsymbol{\beta})^2.
+$$
+
+In matrix form, if
+
+$$
+\mathbf{W} = \mathrm{diag}(w_1,\dots,w_n),
+$$
+
+then the criterion is
+
+$$
+Q(\boldsymbol{\beta})
+=
+(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})^\top
+\mathbf{W}
+(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}).
+$$
+
+This is the weighted analogue of the ordinary residual sum of squares.
+
+## Derivation of the Weighted Least Squares Estimator
+
+Differentiate the weighted criterion with respect to $\boldsymbol{\beta}$ and set the derivative equal to zero.
+
+The weighted normal equations are
+
+$$
+\mathbf{X}^\top \mathbf{W}\mathbf{X}\,\hat{\boldsymbol{\beta}}_{WLS}
+=
+\mathbf{X}^\top \mathbf{W}\mathbf{Y}.
+$$
+
+Assuming invertibility, the weighted least squares estimator is
+
+$$
+\hat{\boldsymbol{\beta}}_{WLS}
+=
+(\mathbf{X}^\top \mathbf{W}\mathbf{X})^{-1}\mathbf{X}^\top \mathbf{W}\mathbf{Y}.
+$$
+
+This has exactly the same structural form as OLS, but with $\mathbf{W}$ inserted to reflect unequal precision.
+
+## Transformation View of Weighted Least Squares
+
+Weighted least squares can also be understood as transforming the model.
+
+If $\mathbf{W}^{1/2}$ is the diagonal matrix with entries $\sqrt{w_i}$, then multiplying the model by $\mathbf{W}^{1/2}$ gives
+
+$$
+\mathbf{W}^{1/2}\mathbf{Y}
+=
+\mathbf{W}^{1/2}\mathbf{X}\boldsymbol{\beta}
++
+\mathbf{W}^{1/2}\boldsymbol{\varepsilon}.
+$$
+
+If the weights are chosen appropriately, the transformed errors have constant variance, and ordinary least squares on the transformed system becomes appropriate.
+
+This is a very useful conceptual link between WLS and OLS.
+
+## Interpreting Weighted Least Squares
+
+Weighted least squares does not change the target mean model
+
+$$
+\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta}.
+$$
+
+Instead, it changes how observations are used in estimation.
+
+Observations with smaller variance have more influence on the fitted coefficients.
+
+Thus WLS is often best viewed as a remedy for unequal precision rather than a new mean model.
+
+## When Weighted Least Squares Is Appropriate
+
+Weighted least squares is particularly useful when:
+
+- variance is known up to a proportional constant;
+- variance can be reasonably modelled as a function of the mean or a predictor;
+- observations are averages based on different sample sizes;
+- some observations are measured more precisely than others.
+
+For example, if each response is an average based on $m_i$ repeated measurements, then the variance may be proportional to $1/m_i$, so weights proportional to $m_i$ are natural.
+
+## Feasible Weighted Least Squares
+
+In many applications, the variances are not known exactly.
+
+Instead, we estimate the variance pattern from the data and then use estimated weights. This is often called **feasible weighted least squares**.
+
+Typical workflow:
+
+- fit an initial OLS model;
+- inspect residuals to understand how variance changes;
+- propose a variance model;
+- compute estimated weights;
+- refit using WLS.
+
+This approach is practical, though it introduces additional modelling decisions.
+
+## Example of a Mean-Variance Relationship
+
+Suppose residual plots suggest
+
+$$
+\mathrm{Var}(Y_i) \propto x_i^2.
+$$
+
+Then it may be appropriate to use weights
+
+$$
+w_i = \frac{1}{x_i^2}.
+$$
+
+Alternatively, dividing the model through by $x_i$ may also lead to a transformed model with approximately constant variance.
+
+This illustrates the close connection between variance modelling and transformation.
+
+## Response Transformation Versus WLS
+
+Both response transformation and WLS can address heteroscedasticity, but they do so differently.
+
+A response transformation changes the scale of the response and often changes interpretation.
+
+Weighted least squares keeps the response on its original scale, but changes the estimation procedure.
+
+Which is better depends on the context.
+
+Students should compare:
+
+- interpretability;
+- adequacy of the residual plots after refitting;
+- scientific plausibility of the variance model.
+
+## Practical Caveats
+
+No remedy should be applied blindly.
+
+Questions to ask include:
+
+- Does the transformed model make scientific sense?
+- Does the transformed scale improve diagnostics meaningfully?
+- Are the chosen weights justified?
+- Does a more flexible mean model explain the apparent variance pattern?
+- Would a different modelling framework be more appropriate?
+
+Model repair is not merely technical. It should remain connected to the original scientific problem.
+
+## Worked Example With a Log Transformation
+
+Suppose the response increases rapidly with the predictor and residual plots show larger spread for larger fitted values.
+
+A model for the original scale may look like
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+$$
+
+but the diagnostics suggest increasing variance and curvature.
+
+We might instead fit
+
+$$
+\log(Y_i) = \beta_0 + \beta_1 x_i + \varepsilon_i.
+$$
+
+If the transformed residual plots look more stable and more linear, then the log model may be preferable.
+
+Interpretation then becomes multiplicative rather than additive.
+
+## Worked Example With Weighted Least Squares
+
+Suppose we observe responses with variance increasing as the predictor grows.
+
+If residual analysis suggests
+
+$$
+\mathrm{Var}(Y_i) \propto x_i^2,
+$$
+
+then we may fit a weighted model with weights
+
+$$
+w_i = \frac{1}{x_i^2}.
+$$
+
+This gives lower weight to high-variance observations and can produce more stable coefficient estimates and more appropriate standard errors.
+
+## R Demonstration With a Log Transformation
+
+## Generate heteroscedastic data
+
+```{r}
+set.seed(123)
+x <- seq(1, 20, by = 1)
+y <- exp(1 + 0.12 * x + rnorm(length(x), sd = 0.25))
+
+dat <- data.frame(x = x, y = y)
+
+fit_raw <- lm(y ~ x, data = dat)
+fit_log <- lm(log(y) ~ x, data = dat)
+```
+
+## Compare the fitted models
+
+```{r}
+summary(fit_raw)
+summary(fit_log)
+```
+
+## Diagnostic plots for the untransformed model
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_raw)
+par(mfrow = c(1, 1))
+```
+
+## Diagnostic plots for the log-transformed model
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_log)
+par(mfrow = c(1, 1))
+```
+
+## Plot data on original and transformed scales
+
+```{r}
+plot(dat$x, dat$y, pch = 19, xlab = "x", ylab = "y")
+abline(fit_raw, lwd = 2)
+
+plot(dat$x, log(dat$y), pch = 19, xlab = "x", ylab = "log(y)")
+abline(fit_log, lwd = 2)
+```
+
+## R Demonstration With Weighted Least Squares
+
+## Generate data with variance increasing in x
+
+```{r}
+set.seed(456)
+x2 <- seq(1, 15, by = 1)
+y2 <- 5 + 2 * x2 + rnorm(length(x2), sd = 0.6 * x2)
+
+dat2 <- data.frame(x = x2, y = y2)
+
+fit_ols <- lm(y ~ x, data = dat2)
+fit_wls <- lm(y ~ x, data = dat2, weights = 1 / x^2)
+```
+
+## Compare summaries
+
+```{r}
+summary(fit_ols)
+summary(fit_wls)
+```
+
+## Compare diagnostic plots
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_ols)
+par(mfrow = c(1, 1))
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_wls)
+par(mfrow = c(1, 1))
+```
+
+## Plot fitted lines
+
+```{r}
+plot(dat2$x, dat2$y, pch = 19, xlab = "x", ylab = "y")
+abline(fit_ols, lwd = 2)
+abline(fit_wls, lwd = 2, lty = 2)
+legend("topleft",
+       legend = c("OLS", "WLS"),
+       lty = c(1, 2),
+       lwd = 2,
+       bty = "n")
+```
+
+## Example With a Quadratic Remedy for Curvature
+
+```{r}
+set.seed(789)
+x3 <- seq(-3, 3, length.out = 50)
+y3 <- 3 + 2 * x3 + 1.8 * x3^2 + rnorm(length(x3), sd = 1)
+
+dat3 <- data.frame(x = x3, y = y3)
+
+fit_lin <- lm(y ~ x, data = dat3)
+fit_quad <- lm(y ~ x + I(x^2), data = dat3)
+
+summary(fit_lin)
+summary(fit_quad)
+anova(fit_lin, fit_quad)
+```
+
+## Compare diagnostic plots for linear and quadratic fits
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_lin)
+par(mfrow = c(1, 1))
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fit_quad)
+par(mfrow = c(1, 1))
+```
+
+## Interpreting Software Output
+
+Useful commands in R include:
+
+- `lm(..., weights = ...)` for weighted least squares;
+- `plot(fit)` for standard diagnostic plots;
+- `anova(fit1, fit2)` for comparing nested mean models;
+- `predict()` for fitted values on the chosen modelling scale.
+
+Students should always keep track of the scale on which the model is fitted. This is especially important when the response is transformed.
+
+## A Practical Remedy Workflow
+
+A useful workflow after diagnostics is:
+
+- identify the main problem from residual analysis;
+- decide whether the issue concerns the mean structure, the variance structure, or both;
+- try a scientifically reasonable remedy;
+- refit the model;
+- compare diagnostics before and after the change;
+- interpret the new model on the correct scale.
+
+This encourages disciplined model improvement rather than ad hoc trial and error.
+
+## In-Class Discussion Questions
+
+1. When is a response transformation preferable to adding polynomial terms?
+2. How does the interpretation of coefficients change under a log transformation?
+3. Why does weighted least squares downweight high-variance observations?
+4. Why should model remedies be guided by both diagnostics and subject-matter knowledge?
+
+## Practice Problems
+
+## Conceptual
+
+1. Explain the difference between transforming the response and transforming a predictor.
+2. Explain why a log transformation may help when the variance grows with the mean.
+3. Explain why weighted least squares can be viewed as ordinary least squares on a transformed system.
+
+## Computational
+
+Suppose a regression model has
+
+$$
+\mathrm{Var}(\varepsilon_i) = \sigma^2 x_i^2.
+$$
+
+1. What weights would be natural for weighted least squares?
+2. Which observations receive the largest weights?
+3. Why do these weights make sense?
+
+Now suppose the fitted model is
+
+$$
+\log(Y_i) = 1.5 + 0.2x_i.
+$$
+
+1. What is the fitted log response when $x_i = 3$?
+2. What is the fitted value on the original response scale if you exponentiate the fitted mean?
+3. Why should interpretation on the original scale be made carefully?
+
+## Model-Improvement Problem
+
+A residual-versus-fitted plot shows both a curved pattern and increasing spread.
+
+1. What kinds of model inadequacy does this suggest?
+2. Name two possible remedies.
+3. How would you decide which remedy is more appropriate?
+
+## Suggested Homework
+
+Complete the following tasks:
+
+- fit a regression model that shows heteroscedasticity or curvature;
+- apply one response transformation and assess whether the diagnostics improve;
+- fit a weighted least squares model with a justified set of weights;
+- compare OLS and WLS fits both numerically and graphically;
+- write a short discussion explaining which remedy you prefer and why.
+
+## Summary
+
+In this week, we studied practical remedies for model inadequacy in linear regression.
+
+We focused on:
+
+- transforming the response or predictors;
+- using polynomial terms to address curvature;
+- stabilizing variance through transformation;
+- using weighted least squares when error variances differ across observations;
+- comparing alternative remedies using diagnostics and interpretation.
+
+These ideas help students move from model criticism to model improvement.
+
+Next week, a natural continuation is to study multicollinearity, variable selection, and model-building strategies, or to move into generalized least squares and correlated errors, depending on the course emphasis.
+
+## Appendix: Compact Formula Summary
+
+Response transformation model:
+
+$$
+g(Y_i) = x_i^\top \boldsymbol{\beta} + \varepsilon_i.
+$$
+
+Weighted least squares criterion:
+
+$$
+Q(\boldsymbol{\beta})
+=
+(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})^\top
+\mathbf{W}
+(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}).
+$$
+
+Weighted least squares estimator:
+
+$$
+\hat{\boldsymbol{\beta}}_{WLS}
+=
+(\mathbf{X}^\top \mathbf{W}\mathbf{X})^{-1}\mathbf{X}^\top \mathbf{W}\mathbf{Y}.
+$$
+
+Typical diagnostic questions after a remedy:
+
+- Is the mean structure more adequate?
+- Is the variance more stable?
+- Is interpretation still meaningful?
+- Does the new model answer the scientific question well?

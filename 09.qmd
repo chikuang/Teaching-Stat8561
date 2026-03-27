@@ -1,0 +1,811 @@
+
+# Week 9: General Linear Hypotheses, Contrasts, and Estimability
+
+In this week, we bring together many earlier ideas into the general framework of linear inference in regression models. The focus is on linear functions of parameters, contrasts, general linear hypotheses, and the important issue of estimability. This week helps students move from coefficient-by-coefficient thinking to a broader matrix-based understanding of inference in linear models.
+
+## Learning Objectives
+
+By the end of this week, students should be able to:
+
+- define a linear function of regression parameters;
+- explain what a contrast is and why contrasts are useful;
+- formulate general linear hypotheses in matrix form;
+- carry out inference for linear combinations of parameters;
+- explain the meaning of estimability in linear models;
+- distinguish between full-rank and rank-deficient settings;
+- interpret software output for linear hypothesis tests and contrasts.
+
+## Reading
+
+Recommended reading for this week:
+
+- Seber and Lee:
+  - sections on linear functions of parameters
+  - general linear hypotheses
+  - estimability and rank-deficient models
+- Montgomery, Peck, and Vining:
+  - sections on tests for combinations of parameters
+  - qualitative predictors and comparisons among means
+  - extra sum of squares and related inference
+
+## Why This Week Matters
+
+In earlier weeks, we tested individual coefficients and compared nested models.
+
+But many important questions in regression are not of the form:
+
+- is one coefficient equal to zero?
+
+Instead, they are questions such as:
+
+- are two slopes equal?
+- is the average of two treatment effects equal to a third?
+- are all group means the same?
+- is a certain interaction effect absent?
+- does a linear combination of parameters equal a specified value?
+
+These are all questions about linear functions of the parameter vector.
+
+This week provides the general language for expressing and testing such questions.
+
+## Review of the Linear Model
+
+Recall the linear model
+
+$$
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
+$$
+
+with
+
+$$
+\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta},
+\qquad
+\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I}_n.
+$$
+
+Under the normal linear model,
+
+$$
+\mathbf{Y} \sim N_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n).
+$$
+
+When $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
+$$
+
+We also know that
+
+$$
+\hat{\boldsymbol{\beta}}
+\sim
+N_p\!\left(
+\boldsymbol{\beta},
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}
+\right).
+$$
+
+This makes linear combinations of $\hat{\boldsymbol{\beta}}$ especially important.
+
+## Linear Functions of Parameters
+
+A **linear function** of the parameter vector is any quantity of the form
+
+$$
+a^\top \boldsymbol{\beta},
+$$
+
+where $a$ is a fixed vector.
+
+Examples include:
+
+- a single coefficient, such as $\beta_2$;
+- the sum $\beta_1 + \beta_2$;
+- the difference $\beta_3 - \beta_4$;
+- the average $\frac{1}{2}(\beta_2 + \beta_3)$.
+
+These are all linear in $\boldsymbol{\beta}$.
+
+The corresponding estimator is
+
+$$
+a^\top \hat{\boldsymbol{\beta}}.
+$$
+
+## Distribution of a Linear Function
+
+Since $\hat{\boldsymbol{\beta}}$ is multivariate normal, any linear function of it is normal.
+
+Thus,
+
+$$
+a^\top \hat{\boldsymbol{\beta}}
+\sim
+N\!\left(
+a^\top \boldsymbol{\beta},
+\sigma^2 a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a
+\right).
+$$
+
+If $\sigma^2$ is estimated by
+
+$$
+\hat{\sigma}^2 = \frac{\mathrm{SSE}}{n-p},
+$$
+
+then
+
+$$
+\frac{
+a^\top \hat{\boldsymbol{\beta}} - a^\top \boldsymbol{\beta}
+}{
+\hat{\sigma}\sqrt{a^\top(\mathbf{X}^\top \mathbf{X})^{-1}a}
+}
+\sim t_{n-p}.
+$$
+
+So the familiar single-coefficient $t$ test is just a special case of inference for a linear combination.
+
+## Contrasts
+
+A **contrast** is a special linear combination whose coefficients sum to zero.
+
+That is, a linear function
+
+$$
+\sum_{j=1}^k c_j \mu_j
+$$
+
+is a contrast if
+
+$$
+\sum_{j=1}^k c_j = 0.
+$$
+
+Contrasts are especially important when comparing treatment means or group means.
+
+Examples:
+
+- $\mu_1 - \mu_2$;
+- $\mu_1 - \frac{\mu_2 + \mu_3}{2}$;
+- $\mu_1 + \mu_2 - \mu_3 - \mu_4$.
+
+Contrasts measure relative differences rather than overall level.
+
+## Why Contrasts Are Useful
+
+Suppose we have several group means.
+
+Questions like the following are naturally expressed as contrasts:
+
+- is treatment A different from treatment B?
+- is the control mean equal to the average of two treatment means?
+- are two pairs of means equally separated?
+
+Contrasts give a flexible and interpretable way to express these comparisons.
+
+They are central in ANOVA and regression models with categorical predictors.
+
+## Contrasts in a Regression Framework
+
+Suppose a factor with three levels is coded with an intercept and two indicator variables.
+
+Then the regression coefficients determine the group means, and comparisons among means can be written as linear functions of $\boldsymbol{\beta}$.
+
+So the contrast framework and the regression framework are fully connected.
+
+This is one of the reasons the general linear model is so powerful.
+
+## Confidence Intervals for Linear Functions
+
+For a linear function $a^\top \boldsymbol{\beta}$, a confidence interval is
+
+$$
+a^\top \hat{\boldsymbol{\beta}}
+\pm
+t_{1-\alpha/2,\;n-p}
+\hat{\sigma}
+\sqrt{a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a}.
+$$
+
+This formula allows us to make inference for any estimable linear combination, not just a single coefficient.
+
+## Testing a Single Linear Function
+
+To test
+
+$$
+H_0: a^\top \boldsymbol{\beta} = c,
+$$
+
+we use the test statistic
+
+$$
+T
+=
+\frac{
+a^\top \hat{\boldsymbol{\beta}} - c
+}{
+\hat{\sigma}
+\sqrt{a^\top(\mathbf{X}^\top \mathbf{X})^{-1}a}
+}.
+$$
+
+Under $H_0$,
+
+$$
+T \sim t_{n-p}.
+$$
+
+Again, this is just the general version of the usual coefficient $t$ test.
+
+## General Linear Hypotheses
+
+A **general linear hypothesis** has the form
+
+$$
+H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d},
+$$
+
+where:
+
+- $\mathbf{C}$ is an $r \times p$ matrix;
+- $\mathbf{d}$ is an $r \times 1$ vector;
+- $r$ is the number of linear restrictions.
+
+This framework includes many important hypothesis tests as special cases.
+
+## Examples of General Linear Hypotheses
+
+Examples include:
+
+- testing one coefficient:
+  $$
+  H_0: \beta_2 = 0;
+  $$
+
+- testing equality of two coefficients:
+  $$
+  H_0: \beta_2 - \beta_3 = 0;
+  $$
+
+- testing two restrictions simultaneously:
+  $$
+  H_0:
+  \begin{cases}
+  \beta_2 = 0,\\
+  \beta_3 = 0;
+  \end{cases}
+  $$
+
+- testing whether three group means are equal.
+
+All of these can be written in the form
+
+$$
+\mathbf{C}\boldsymbol{\beta} = \mathbf{d}.
+$$
+
+## F Test for a General Linear Hypothesis
+
+Under the normal linear model, the hypothesis
+
+$$
+H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}
+$$
+
+is tested by
+
+$$
+F
+=
+\frac{
+(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})^\top
+\left[
+\mathbf{C}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{C}^\top
+\right]^{-1}
+(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})/r
+}{
+\hat{\sigma}^2
+}.
+$$
+
+Under $H_0$,
+
+$$
+F \sim F_{r,\;n-p}.
+$$
+
+This is the general matrix form of the regression $F$ test.
+
+## Connection With Nested Models
+
+The general linear hypothesis test is equivalent to comparing a reduced model and a full model when the reduced model is obtained by imposing linear restrictions.
+
+So the extra sum of squares $F$ test from Week 4 is a special case of the general linear hypothesis test.
+
+This is an important unifying idea.
+
+## When r = 1
+
+If there is only one restriction, then the general $F$ test reduces to the square of a $t$ test.
+
+That is, when $r=1$,
+
+$$
+F = T^2.
+$$
+
+So single-parameter inference and multi-parameter inference are part of the same framework.
+
+## Matrix Formulation of Contrasts
+
+If we are interested in several contrasts at once, we can stack them into a matrix.
+
+For example, if we want to test
+
+$$
+\beta_2 - \beta_3 = 0
+\qquad \text{and} \qquad
+\beta_3 - \beta_4 = 0,
+$$
+
+then we may write
+
+$$
+\mathbf{C}
+=
+\begin{bmatrix}
+0 & 1 & -1 & 0 \\
+0 & 0 & 1 & -1
+\end{bmatrix},
+\qquad
+\mathbf{d}
+=
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix}.
+$$
+
+This turns several related coefficient comparisons into one unified hypothesis.
+
+## Estimability
+
+So far, we have mostly assumed that $\mathbf{X}$ has full column rank.
+
+But in some important cases, the design matrix is rank-deficient. Then the parameter vector itself is not uniquely identifiable.
+
+In such settings, we ask a more refined question:
+
+Which linear functions of $\boldsymbol{\beta}$ can still be estimated uniquely from the model?
+
+This leads to the concept of **estimability**.
+
+## Why Estimability Is Needed
+
+Suppose two different parameter vectors, say $\boldsymbol{\beta}$ and $\boldsymbol{\beta}^*$, produce the same mean vector:
+
+$$
+\mathbf{X}\boldsymbol{\beta} = \mathbf{X}\boldsymbol{\beta}^*.
+$$
+
+Then the data cannot distinguish between these two parameter vectors.
+
+So a particular coefficient may not be uniquely meaningful.
+
+However, some combinations of coefficients may still be uniquely determined by the mean structure. Those combinations are estimable.
+
+## Definition of Estimability
+
+A linear function
+
+$$
+a^\top \boldsymbol{\beta}
+$$
+
+is **estimable** if there exists a vector $t$ such that
+
+$$
+a^\top = t^\top \mathbf{X}.
+$$
+
+Equivalently, $a$ must lie in the row space of $\mathbf{X}$.
+
+This condition ensures that the target quantity depends only on the mean vector $\mathbf{X}\boldsymbol{\beta}$, and not on the particular parameterization used.
+
+## Interpretation of Estimability
+
+Estimability means that the quantity is determined by the model's observable mean structure.
+
+If a linear function is not estimable, then different parameter vectors producing the same fitted mean can give different values of that function.
+
+So no unbiased linear estimator can uniquely recover it.
+
+## Example With a Factor Model
+
+Suppose we write a one-way mean model as
+
+$$
+Y_{ij} = \mu + \tau_i + \varepsilon_{ij},
+$$
+
+for groups $i=1,\dots,g$.
+
+If we include all group indicators together with an intercept, then the parameters are not uniquely identified, because adding a constant to all $\tau_i$ and subtracting it from $\mu$ gives the same mean structure.
+
+In this case:
+
+- $\mu$ alone is not uniquely defined;
+- $\tau_i$ alone is not uniquely defined;
+- but differences such as $\tau_i - \tau_j$ are estimable.
+
+This is a classic example.
+
+## Estimable Functions in Rank-Deficient Models
+
+Even when the coefficient vector is not unique, fitted values are still unique, provided we project onto the column space of $\mathbf{X}$.
+
+Likewise, every estimable linear function has a unique value determined by the model.
+
+So regression analysis in rank-deficient settings often focuses on estimable functions rather than on individual raw coefficients.
+
+## Parameterization Matters for Coefficients, but Not for Estimable Functions
+
+A factor can be parameterized in several ways:
+
+- treatment coding;
+- sum-to-zero coding;
+- cell-means coding.
+
+The individual coefficients change across parameterizations.
+
+But meaningful estimable comparisons, such as differences between group means, do not depend on the coding scheme.
+
+This is a key conceptual lesson.
+
+## Contrasts and Estimability
+
+In many ANOVA-type models, contrasts among means are estimable even when the raw parameter vector is overparameterized.
+
+This is one reason contrasts are so central: they often represent the scientifically meaningful and estimable quantities.
+
+## Least Squares in Rank-Deficient Models
+
+When $\mathbf{X}$ is rank-deficient, the normal equations do not yield a unique coefficient vector.
+
+Different generalized inverse solutions may produce different coefficient vectors.
+
+However:
+
+- the fitted values are unique;
+- the residual sum of squares is unique;
+- estimable linear functions have unique least squares estimates.
+
+So the inferential target should be framed carefully.
+
+## Generalized Inverse View
+
+A generalized inverse of $\mathbf{X}^\top \mathbf{X}$ can be used to write one least squares solution.
+
+This leads to expressions similar to the full-rank case, but students should remember that not every coefficient itself is uniquely meaningful.
+
+What matters most is whether the function of interest is estimable.
+
+## Software and Estimability
+
+Modern software often handles rank deficiency automatically.
+
+It may:
+
+- drop aliased columns;
+- report coefficients as not estimable;
+- use a default parameterization that makes the fit identifiable.
+
+Students should not interpret every reported coefficient mechanically. They should understand the underlying estimable structure.
+
+## Worked Example With Equality of Slopes
+
+Suppose we fit a regression model with two predictors and want to test whether their coefficients are equal:
+
+$$
+H_0: \beta_1 = \beta_2.
+$$
+
+This can be written as
+
+$$
+H_0: \beta_1 - \beta_2 = 0,
+$$
+
+so
+
+$$
+a^\top = \begin{bmatrix}0 & 1 & -1\end{bmatrix}.
+$$
+
+The corresponding estimate is
+
+$$
+\hat{\beta}_1 - \hat{\beta}_2,
+$$
+
+and inference follows from the general linear function formula.
+
+## Worked Example With Group Means
+
+Suppose three group means are
+
+$$
+\mu_A,\quad \mu_B,\quad \mu_C.
+$$
+
+If we want to compare group A with the average of groups B and C, we consider the contrast
+
+$$
+\mu_A - \frac{1}{2}\mu_B - \frac{1}{2}\mu_C.
+$$
+
+The coefficients sum to zero, so this is a contrast.
+
+This question arises naturally in designed experiments and treatment comparisons.
+
+## R Demonstration With a Linear Hypothesis
+
+## Fit a multiple regression model
+
+```{r}
+set.seed(123)
+n <- 60
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+x3 <- rnorm(n)
+y <- 2 + 1.5 * x1 + 1.5 * x2 - 0.8 * x3 + rnorm(n, sd = 1)
+
+dat <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+fit <- lm(y ~ x1 + x2 + x3, data = dat)
+summary(fit)
+```
+
+## Test whether two coefficients are equal
+
+```{r}
+b <- coef(fit)
+V <- vcov(fit)
+
+a <- c(0, 1, -1, 0)
+est <- sum(a * b)
+se <- sqrt(t(a) %*% V %*% a)
+t_stat <- est / se
+df <- df.residual(fit)
+p_value <- 2 * pt(abs(t_stat), df = df, lower.tail = FALSE)
+
+c(estimate = est, se = se, t = t_stat, p_value = p_value)
+```
+
+## Confidence interval for a linear combination
+
+```{r}
+tcrit <- qt(0.975, df = df)
+c(lower = est - tcrit * se,
+  estimate = est,
+  upper = est + tcrit * se)
+```
+
+## Test two restrictions simultaneously
+
+```{r}
+Cmat <- rbind(
+  c(0, 1, -1, 0),
+  c(0, 0, 1, 1)
+)
+dvec <- c(0, 0)
+
+Cb_minus_d <- Cmat %*% b - dvec
+middle <- solve(Cmat %*% V %*% t(Cmat))
+r <- nrow(Cmat)
+
+F_stat <- as.numeric(t(Cb_minus_d) %*% middle %*% Cb_minus_d / r)
+p_F <- pf(F_stat, df1 = r, df2 = df, lower.tail = FALSE)
+
+c(F_stat = F_stat, p_value = p_F)
+```
+
+## Demonstration With a Factor and Contrasts
+
+```{r}
+set.seed(456)
+group <- factor(rep(c("A", "B", "C"), each = 12))
+mu <- c(A = 10, B = 13, C = 15)
+y2 <- mu[group] + rnorm(length(group), sd = 2)
+
+dat2 <- data.frame(y = y2, group = group)
+fit_group <- lm(y ~ group, data = dat2)
+summary(fit_group)
+model.matrix(fit_group)[1:8, ]
+```
+
+## Estimate the contrast A minus average of B and C
+
+```{r}
+b2 <- coef(fit_group)
+V2 <- vcov(fit_group)
+
+# Under treatment coding:
+# mean_A = beta0
+# mean_B = beta0 + beta_B
+# mean_C = beta0 + beta_C
+# contrast = mean_A - (mean_B + mean_C)/2 = -(beta_B + beta_C)/2
+
+a2 <- c(0, -1/2, -1/2)
+est2 <- sum(a2 * b2)
+se2 <- sqrt(t(a2) %*% V2 %*% a2)
+t2 <- est2 / se2
+df2 <- df.residual(fit_group)
+p2 <- 2 * pt(abs(t2), df = df2, lower.tail = FALSE)
+
+c(estimate = est2, se = se2, t = t2, p_value = p2)
+```
+
+## Example of rank deficiency
+
+```{r}
+X_bad <- cbind(1, diag(3))
+X_bad <- rbind(X_bad, X_bad)
+colnames(X_bad) <- c("Intercept", "G1", "G2", "G3")
+
+qr(X_bad)$rank
+ncol(X_bad)
+X_bad
+```
+
+## Interpreting Software Output
+
+Useful commands in R include:
+
+- `coef()` for estimated coefficients;
+- `vcov()` for the covariance matrix of coefficient estimates;
+- `model.matrix()` for inspecting the design matrix;
+- `anova()` for nested-model versions of linear hypothesis tests.
+
+Even when software provides default hypothesis tests, students should learn to express the hypothesis itself in matrix form. That is often the most important conceptual step.
+
+## A Practical Workflow for Linear Hypotheses
+
+A useful workflow is:
+
+- identify the scientific question;
+- express the target as a linear function or a set of linear restrictions;
+- write down the vector $a$ or matrix $\mathbf{C}$;
+- compute the estimate and its standard error;
+- interpret the result on the original scientific scale.
+
+This approach makes regression inference more flexible and more transparent.
+
+## In-Class Discussion Questions
+
+1. Why is a contrast defined by coefficients summing to zero?
+2. Why are some functions estimable even when the full parameter vector is not uniquely identifiable?
+3. Why is the general linear hypothesis framework more powerful than testing coefficients one by one?
+4. Why should interpretation focus on estimable functions rather than arbitrary parameterizations?
+
+## Practice Problems
+
+## Conceptual
+
+1. Explain the difference between a coefficient and a general linear function of coefficients.
+2. Explain why treatment comparisons are often naturally expressed as contrasts.
+3. Explain estimability in your own words.
+
+## Computational
+
+Suppose
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\begin{bmatrix}
+4 \\ 1 \\ -2
+\end{bmatrix},
+\qquad
+\widehat{\mathrm{Var}}(\hat{\boldsymbol{\beta}})
+=
+\begin{bmatrix}
+0.5 & 0.1 & 0.0 \\
+0.1 & 0.4 & 0.2 \\
+0.0 & 0.2 & 0.6
+\end{bmatrix}.
+$$
+
+Let
+
+$$
+a =
+\begin{bmatrix}
+0 \\ 1 \\ -1
+\end{bmatrix}.
+$$
+
+1. Compute the estimate of $a^\top \boldsymbol{\beta}$.
+2. Compute its estimated variance.
+3. Write the corresponding $t$ statistic for testing whether $a^\top \boldsymbol{\beta} = 0$.
+
+## Hypothesis-Matrix Problem
+
+Write the matrix $\mathbf{C}$ and vector $\mathbf{d}$ for each hypothesis:
+
+1. $H_0: \beta_2 = \beta_3$;
+2. $H_0: \beta_2 = 0$ and $\beta_4 = 0$;
+3. $H_0: \beta_2 + \beta_3 - 2\beta_4 = 1$.
+
+## Suggested Homework
+
+Complete the following tasks:
+
+- fit a regression model and test at least two nontrivial linear combinations of coefficients;
+- write each scientific question first in words and then in matrix form;
+- compute a confidence interval for one contrast of interest;
+- fit a model with a factor and interpret at least two group comparisons as contrasts;
+- write a short reflection explaining why estimability matters in categorical models.
+
+## Summary
+
+In this week, we studied the general framework of linear inference in regression.
+
+We emphasized that:
+
+- many meaningful questions involve linear combinations of parameters rather than single coefficients;
+- contrasts are important special cases of linear functions;
+- general linear hypotheses unify many common tests;
+- estimability determines which parameter functions are uniquely learnable from the model;
+- meaningful inference should focus on estimable functions, especially in rank-deficient settings.
+
+Next week, a natural continuation is to move into analysis of covariance, one-way and two-way ANOVA as special cases of the linear model, or to extend toward generalized least squares and correlated errors, depending on the course emphasis.
+
+## Appendix: Compact Formula Summary
+
+Linear function of parameters:
+
+$$
+a^\top \boldsymbol{\beta}.
+$$
+
+Estimated variance of its estimator:
+
+$$
+\widehat{\mathrm{Var}}(a^\top \hat{\boldsymbol{\beta}})
+=
+\hat{\sigma}^2 a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a.
+$$
+
+General linear hypothesis:
+
+$$
+H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}.
+$$
+
+General $F$ statistic:
+
+$$
+F
+=
+\frac{
+(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})^\top
+\left[
+\mathbf{C}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{C}^\top
+\right]^{-1}
+(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})/r
+}{
+\hat{\sigma}^2
+}.
+$$
+
+Estimability condition:
+
+$$
+a^\top \text{ is estimable if } a^\top = t^\top \mathbf{X} \text{ for some } t.
+$$
