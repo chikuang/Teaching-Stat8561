@@ -1,0 +1,25 @@
+project:
+  type: book
+
+book:
+  title: "Stat8561"
+  author: "Norah Jones"
+  date: "3/27/2026"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
