@@ -32,7 +32,7 @@ book:
         href: https://github.com/chikuang/Teaching-Stat8561
         aria-label: GitHub
       - icon: file-pdf
-        href: ./STAT8561---Linear-Statistical-Analysis- I.pdf
+        href: ./STAT8561---Linear-Statistical-Analysis-I.pdf
         aria-label: Download PDF
 
 bibliography: references.bib

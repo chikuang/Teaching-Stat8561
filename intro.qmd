@@ -39,4 +39,5 @@ ggplot(data, aes(x = heights, y = weights)) +
 ```
 
 In this example, we generated a data set of heights and weights, fitted a linear regression model to the data, and visualized the relationship between height and weight. This is just a simple example, but it illustrates the types of analyses we will be doing in this course. We will be covering much more complex models and data sets as we progress through the semester.
+
 :::
