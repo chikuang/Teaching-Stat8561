@@ -41,9 +41,11 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 
 ## Recommended Textbooks
 
--   Montgomery, Douglas C., Elizabeth A. Peck, and G. Geoffrey Vining. *Introduction to Linear Regression Analysis*. John Wiley & Sons, 2021. [@montgomery:2021:book]
+- Ding, Peng. *Linear Model and Extensions*. CRC Press, 2027.  [arXiv link](https://arxiv.org/abs/2401.00649)
 
--   Seber, George AF, and Alan J. Lee. *Linear Regression Analysis*. John Wiley & Sons, 2003. [@seber:2003:book]
+- Montgomery, Douglas C., Elizabeth A. Peck, and G. Geoffrey Vining. *Introduction to Linear Regression Analysis*. John Wiley & Sons, 2021. [@montgomery:2021:book]
+
+- Seber, George AF, and Alan J. Lee. *Linear Regression Analysis*. John Wiley & Sons, 2003. [@seber:2003:book]
 
 ## Side Readings
 
