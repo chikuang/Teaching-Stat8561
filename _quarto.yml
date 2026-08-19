@@ -24,7 +24,6 @@ book:
     - part: "Appendix"
       chapters:
         - App_A-matrix.qmd
-        # - App_B-jags.qmd
     # - references.qmd
   navbar:
     right:
@@ -54,4 +53,4 @@ format:
     filters: []
     cache: true
 
-editor: visual
+editor: source
