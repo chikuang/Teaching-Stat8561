@@ -1,12 +1,10 @@
-# Matrix Algebra Review {#sec-matrix}
+# Matrix Algebra Review {#sec-matrix .unnumbered}
 
-Appendix: Optional Review of Matrix Facts
-
-Matrix dimensions
+## Matrix dimensions
 
 If $\mathbf{A}$ is $m \times n$ and $\mathbf{B}$ is $n \times p$, then $\mathbf{A}\mathbf{B}$ is defined and is $m \times p$.
 
-Transpose rules
+## Transpose rules
 
 For conformable matrices,
 
@@ -14,7 +12,7 @@ $$
 (\mathbf{A}\mathbf{B})^\top = \mathbf{B}^\top \mathbf{A}^\top.
 $$
 
-Inverse rule
+## Inverse rule
 
 If $\mathbf{A}$ and $\mathbf{B}$ are invertible, then
 
@@ -31,3 +29,10 @@ $$
 $$
 
 Covariance matrices are always symmetric.
+
+
+--- 
+
+A good reference of the linear algebra can be found from @matrix-book.
+
++ Petersen, Kaare Brandt, and Michael Syskind Pedersen. (2008). *The Matrix Cookbook*. Technical University of Denmark.
