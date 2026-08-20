@@ -2,10 +2,10 @@
 
 In this first week, we introduce the mathematical language and statistical framework that will be used throughout the course. Our focus is on the notation of vectors and matrices, vectors of random variables, expectation and covariance operators, and the basic form of the linear regression model.
 
-**Learning Objectives**
-
-By the end of this week, students should be able to:
-
+> **Learning Objectives**
+>
+> By the end of this week, students should be able to:
+>
 > -   use standard matrix notation for linear statistical models;
 > -   distinguish between scalars, vectors, matrices, random variables, and random vectors;
 > -   compute expectations and covariance matrices for random vectors;
@@ -76,7 +76,7 @@ x_1 \\
 x_2 \\
 \vdots \\
 x_n
-\end{pmatrix}.
+\end{pmatrix} = (x_1,x_2,\dots,x_n).
 $$
 
 An $n \times p$ matrix is written as
@@ -101,7 +101,7 @@ If $\mathbf{A}$ is a matrix, then:
 -   $\mathrm{rank}(\mathbf{A})$ denotes its rank;
 -   $\mathbf{I}_n$ denotes the $n \times n$ identity matrix.
 
-**Inner product and norm**
+### Inner product and norm
  
 ::: {.callout-definition title="inner product in Eucludean space"} 
  
@@ -129,9 +129,7 @@ $$
 
 These ideas are fundamental because least squares estimation is based on minimizing squared Euclidean distance.
 
-## Random Vectors
-
-### Definition
+::: {.callout-definition title="Random Vectors"}
 
 A random vector is a vector whose entries are random variables. For example,
 
@@ -148,9 +146,11 @@ $$
 
 is an $n$-dimensional random vector.
 
+:::
+
 In linear models, the response is naturally treated as a random vector.
 
-## Mean vector
+::: {.callout-definition title="Mean vector"}
 
 The mean vector of $\mathbf{Y}$ is
 
@@ -171,7 +171,9 @@ $$
 \mathbb{E}[\mathbf{Y}] = \boldsymbol{\mu}.
 $$
 
-## Covariance matrix
+:::
+
+::: {.callout-definition title="Covariance matrix"}
 
 The covariance matrix of $\mathbf{Y}$ is
 
@@ -215,7 +217,9 @@ $$
 \end{pmatrix}.
 $$
 
-## Expectation and Covariance Operators
+:::
+
+### Expectation and Covariance Operators
 
 ::: {.callout-property title="Linearity of expectation"}
 
@@ -491,7 +495,7 @@ abline(mod, lwd = 2)
 
 :::
 
-# Discussion
+## Discussion
 
 1. Why is it helpful to write regression models in matrix form rather than only scalar notation? 
 
@@ -501,11 +505,17 @@ abline(mod, lwd = 2)
 
 4. In what sense is regression a projection problem?
 
-# Practice Problems
+## Practice Problems
 
-Conceptual 1. Explain the difference between a random variable and a random vector. 2. Explain why $\mathrm{Var}(\mathbf{Y})$ must be a symmetric matrix. 3. Give an example of a statistical model outside regression.
+**Conceptual**
 
-Computational
+1. Explain the difference between a random variable and a random vector. 
+
+2. Explain why $\mathrm{Var}(\mathbf{Y})$ must be a symmetric matrix. 
+
+3. Give an example of a statistical model outside regression.
+
+**Computational**
 
 Let
 
@@ -569,7 +579,7 @@ $$
 
 write out the matrices $\mathbf{Y}$, $\mathbf{X}$, $\boldsymbol{\beta}$, and $\boldsymbol{\varepsilon}$ for $n=5$ observations.
 
-## Suggested Homework
+## Take home Practice
 
 Complete the following:
 
