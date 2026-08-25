@@ -15,11 +15,15 @@ Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Stat
 
 ## Office Hour
 
-TBA
+9:00 - 12:00 on Wednesday
 
 ## Grade Distribution
 
--   TBA
+- Homework – 40%
+- Exam 1 – 20%
+- Exam 2 – 20%
+- Final – 20%
+- Attendance – *7%
 
 ## Assignment
 
@@ -35,7 +39,8 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 
 | Status | Chapter |        Topic         | Lecture |
 |:------:|:-------:|:--------------------:|:-------:|
-|   ️⏳   |  Ch. 1  | Welcome and Overview |    1    |
+|  ✅  | 0  | Welcome and Overview |    1    |
+|    ️⏳ ️   |  Ch. 1  | R programming |    2--   |
 
 <!-- 🚧🛠️⏳   -->
 
