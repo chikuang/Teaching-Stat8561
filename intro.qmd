@@ -25,7 +25,8 @@ To illustrate the concepts we will be covering in this course, let's consider a 
 library(ggplot2)
 library(dplyr)
 # Create a sample data set
-set.seed(123)
+
+set.seed(8561)
 
 theme_set(theme_minimal())
 

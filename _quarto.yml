@@ -8,18 +8,18 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - 01_intro.qmd
-    - 02.qmd
-    - 03.qmd
-    - 04.qmd
-    - 05.qmd
-    - 06.qmd
-    - 07.qmd
-    - 08.qmd
-    - 09.qmd
-    - 10.qmd
-    - 11.qmd
-    - summary.qmd
+    - 01_matrix_representation.qmd
+    # - 02.qmd
+    # - 03.qmd
+    # - 04.qmd
+    # - 05.qmd
+    # - 06.qmd
+    # - 07.qmd
+    # - 08.qmd
+    # - 09.qmd
+    # - 10.qmd
+    # - 11.qmd
+    # - summary.qmd
     - references.qmd
     - part: "Appendix"
       chapters:

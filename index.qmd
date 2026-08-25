@@ -39,8 +39,8 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 
 | Status | Chapter |        Topic         | Lecture |
 |:------:|:-------:|:--------------------:|:-------:|
-|  ✅  | 0  | Welcome and Overview |    1    |
-|    ️⏳ ️   |  Ch. 1  | R programming |    2--   |
+|  ✅      | | [Welcome and Overview](intro.qmd)|    1    |
+|    ️⏳ ️   |  Ch. 1  |Math Notation |    2--   |
 
 <!-- 🚧🛠️⏳   -->
 
