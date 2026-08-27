@@ -3,6 +3,7 @@ project:
 
 book:
   title: "STAT8561 - Linear Statistical Analysis I"
+  subtitle: "2026 Fall Lecture Notes"
   author: "Chi-Kuang Yeh"
   date: today
   chapters:

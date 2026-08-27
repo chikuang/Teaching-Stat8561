@@ -392,15 +392,16 @@ Here,
 
 ## The Linear Regression Model
 
-### Simple linear regression
+Perhaps the most simple model is the simple linear regression where there are only **one** independent variable and **one** response variable.
 
-The simplest regression model is
+::: {.callout-definition title = "Simple linear regression"}
+
+A simple linear regression model is defined as
 
 $$
-Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \qquad i=1,\dots,n.
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \qquad i=1,\dots,n,
 $$
-
-Typical assumptions are
+with the typical assumption as
 
 $$
 \mathbb{E}[\varepsilon_i] = 0,
@@ -410,7 +411,10 @@ $$
 \mathrm{Cov}(\varepsilon_i,\varepsilon_j)=0 \text{ for } i \ne j.
 $$
 
-### Matrix form
+:::
+
+
+**Matrix form**
 
 We can write the model compactly as
 
@@ -458,26 +462,16 @@ $$
 
 This notation will allow us to treat simple regression, multiple regression, ANOVA, and ANCOVA in one common language.
 
-### Mean and variance under the model
-
-If
-
+Under the same assumption,  
 $$
 \mathbb{E}[\boldsymbol{\varepsilon}] = \mathbf{0}
 \qquad \text{and} \qquad
 \mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n,
 $$
-
-then
-
-$$
-\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta}
-$$
-
-and
+we have the following.
 
 $$
-\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I}_n.
+\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta},\quad  \mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I}_n.
 $$
 
 These are immediate consequences of the expectation and covariance rules above.
@@ -488,7 +482,8 @@ A central idea in linear regression is projection.
 
 The fitted values $\hat{\mathbf{Y}}$ will later be obtained by projecting $\mathbf{Y}$ onto the column space of $\mathbf{X}$.
 
-### Column space
+
+::: {.callout-definition title = "Column space"}
 
 The column space of $\mathbf{X}$ is
 
@@ -497,8 +492,11 @@ $$
 =
 \{ \mathbf{X}\boldsymbol{\beta} : \boldsymbol{\beta} \in \mathbb{R}^p \}.
 $$
-
 This is the set of all mean vectors that the model can represent.
+
+:::
+
+
 
 ## Why projection matters
 

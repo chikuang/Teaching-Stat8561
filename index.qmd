@@ -15,7 +15,7 @@ Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Stat
 
 ## Office Hour
 
-9:00 - 12:00 on Wednesday
+9:00 - 12:00 on Wednesday or by appointment
 
 ## Grade Distribution
 
@@ -40,7 +40,7 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | Status | Chapter |        Topic         | Lecture |
 |:------:|:-------:|:--------------------:|:-------:|
 |  ✅      | | [Welcome and Overview](intro.qmd)|    1    |
-|    ️⏳ ️   |  Ch. 1  |Math Notation |    2--   |
+|    ️⏳ ️   |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--   |
 
 <!-- 🚧🛠️⏳   -->
 
