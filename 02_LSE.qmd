@@ -176,8 +176,7 @@ This means the columns of $\mathbf{X}$ are linearly independent. If they are not
 
 
 
-# 4. Geometric Interpretation
-
+## Geometric Interpretation
 
 ::: {.callout-note title="Recap of Column space of the design matrix"}
 
@@ -228,11 +227,11 @@ Geometrically, $\mathbf{e}$ is the part of $\mathbf{Y}$ orthogonal to the model 
 
 
 
-# Orthogonality Properties
+## Orthogonality Properties
 
 A central property of least squares is that the residual vector is orthogonal to every column of $\mathbf{X}$.
 
-## 5.1 Algebraic proof
+### Algebraic proof
 
 Starting from the normal equations,
 
@@ -254,7 +253,7 @@ $$
 
 Therefore, $\mathbf{e}$ is orthogonal to every column of $\mathbf{X}$.
 
-## 5.2 Consequences
+###  Consequences
 
 This implies:
 
@@ -274,9 +273,8 @@ $$
 \sum_{i=1}^n e_i = 0.
 $$
 
-# 6. The Hat Matrix
 
-## 6.1 Definition
+::: {.callout-definition title="The Hat Matrix"}
 
 In the full rank case,
 
@@ -304,17 +302,19 @@ $$
 
 The matrix $\mathbf{H}$ is called the **hat matrix** because it puts the “hat” on $\mathbf{Y}$.
 
-## 6.2 Properties of the hat matrix
+:::
+
+::: {.callout-property title="Properties of the hat matrix"}
 
 The hat matrix satisfies two important properties:
 
-### Symmetry
+**Symmetry**
 
 $$
 \mathbf{H}^\top = \mathbf{H}.
 $$
 
-### Idempotence
+**Idempotence**
 
 $$
 \mathbf{H}^2 = \mathbf{H}.
@@ -324,7 +324,11 @@ A matrix that is both symmetric and idempotent is the matrix of an orthogonal pr
 
 Thus, $\mathbf{H}$ projects vectors onto $\mathcal{C}(\mathbf{X})$.
 
-## 6.3 Residual maker matrix
+:::
+
+
+
+### Residual maker matrix
 
 Define
 
@@ -340,7 +344,7 @@ $$
 
 The matrix $\mathbf{M}$ is also symmetric and idempotent, and it projects onto the orthogonal complement of $\mathcal{C}(\mathbf{X})$.
 
-# 7. Sum of Squares Decomposition
+## Sum of Squares Decomposition
 
 Because $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal, we have
 
@@ -378,7 +382,7 @@ Later we will call these:
 - regression sum of squares (SSR),
 - error sum of squares (SSE).
 
-# 8. Statistical Properties of the OLS Estimator
+## Statistical Properties of the OLS Estimator
 
 Assume
 
@@ -390,7 +394,7 @@ $$
 \mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n.
 $$
 
-## 8.1 Expectation
+**Expectation**
 
 Using
 
@@ -410,9 +414,9 @@ $$
 \boldsymbol{\beta}.
 $$
 
-Thus, OLS is unbiased.
+Thus, OLS is *unbiased*.
 
-## 8.2 Variance
+**Variance**
 
 Also,
 
@@ -453,18 +457,18 @@ Then
 $$
 \mathbf{Y}
 =
-\begin{bmatrix}
+\begin{pmatrix}
 1 \\ 3 \\ 3 \\ 5
-\end{bmatrix},
+\end{pmatrix},
 \qquad
 \mathbf{X}
 =
-\begin{bmatrix}
+\begin{pmatrix}
 1 & 0 \\
 1 & 1 \\
 1 & 2 \\
 1 & 3
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 First compute
@@ -472,17 +476,17 @@ First compute
 $$
 \mathbf{X}^\top \mathbf{X}
 =
-\begin{bmatrix}
+\begin{pmatrix}
 4 & 6 \\
 6 & 14
-\end{bmatrix},
+\end{pmatrix},
 \qquad
 \mathbf{X}^\top \mathbf{Y}
 =
-\begin{bmatrix}
+\begin{pmatrix}
 12 \\
 24
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 Hence,
@@ -499,10 +503,10 @@ $$
 (\mathbf{X}^\top \mathbf{X})^{-1}
 =
 \frac{1}{20}
-\begin{bmatrix}
+\begin{pmatrix}
 14 & -6 \\
 -6 & 4
-\end{bmatrix},
+\end{pmatrix},
 $$
 
 we obtain
@@ -511,19 +515,19 @@ $$
 \hat{\boldsymbol{\beta}}
 =
 \frac{1}{20}
-\begin{bmatrix}
+\begin{pmatrix}
 14 & -6 \\
 -6 & 4
-\end{bmatrix}
-\begin{bmatrix}
+\end{pmatrix}
+\begin{pmatrix}
 12 \\
 24
-\end{bmatrix}
+\end{pmatrix}
 =
-\begin{bmatrix}
+\begin{pmatrix}
 1.2 \\
 1.2
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 Thus, the fitted line is
@@ -572,7 +576,7 @@ abline(fit, lwd = 2)
 :::
 
 
-11. Interpretation of the Geometry
+## Interpretation of the Geometry
 
 The vector $\mathbf{Y}$ lives in $\mathbb{R}^n$. The model space $\mathcal{C}(\mathbf{X})$ is a $p$-dimensional subspace of $\mathbb{R}^n$ when $\mathbf{X}$ has full rank.
 
@@ -583,39 +587,41 @@ This is why
 	•	residuals are orthogonal to the model space,
 	•	sum of squares decompositions are geometric identities.
 
-12. In-Class Discussion Questions
-	1.	Why does minimizing $|\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}|^2$ lead to orthogonality?
-	2.	Why is the hat matrix called a projection matrix?
-	3.	Why does the inclusion of an intercept imply that the residuals sum to zero?
-	4.	What fails when $\mathbf{X}$ does not have full column rank?
+## In-Class Discussion Questions
+	
+1.	Why does minimizing $|\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}|^2$ lead to orthogonality?
+2.	Why is the hat matrix called a projection matrix?
+3.	Why does the inclusion of an intercept imply that the residuals sum to zero?
+4.	What fails when $\mathbf{X}$ does not have full column rank?
 
-13. Practice Problems
+## Practice Problems
 
-Conceptual
-	1.	Explain why $\mathbf{X}^\top \mathbf{e} = \mathbf{0}$ is a geometric statement.
-	2.	Give an interpretation of $\mathcal{C}(\mathbf{X})$ in the context of regression.
-	3.	Explain the difference between $\mathbf{H}$ and $\mathbf{M} = \mathbf{I}_n - \mathbf{H}$.
+**Conceptual**
 
-Computational
+1.	Explain why $\mathbf{X}^\top \mathbf{e} = \mathbf{0}$ is a geometric statement.
+2.	Give an interpretation of $\mathcal{C}(\mathbf{X})$ in the context of regression.
+3.	Explain the difference between $\mathbf{H}$ and $\mathbf{M} = \mathbf{I}_n - \mathbf{H}$.
+
+**Computational**
 
 Let
 
 $$
 \mathbf{X}
 =
-\begin{bmatrix}
-1 & 0 \
-1 & 1 \
+\begin{pmatrix}
+1 & 0 \\
+1 & 1 \\
 1 & 2
-\end{bmatrix},
+\end{pmatrix},
 \qquad
 \mathbf{Y}
 =
-\begin{bmatrix}
-1 \
-2 \
+\begin{pmatrix}
+1 \\
+2 \\
 2
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 1.	Compute $\mathbf{X}^\top \mathbf{X}$.
@@ -624,7 +630,7 @@ $$
 4.	Compute $\hat{\mathbf{Y}}$ and $\mathbf{e}$.
 5.	Verify that $\mathbf{X}^\top \mathbf{e} = \mathbf{0}$.
 
-Proof-based
+**Proof-based**
 
 Show that the hat matrix
 
@@ -634,7 +640,7 @@ $$
 
 is symmetric and idempotent.
 
-14. Suggested Homework
+## Suggested Homework
 
 Complete the following tasks:
 
@@ -648,7 +654,7 @@ Complete the following tasks:
 	  + $\mathbf{e}$,
 	•	$\mathbf{H}$.
 
-15. Summary
+## Summary
 
 In this week, we introduced the least squares estimator and showed that it solves the normal equations
 

@@ -1,0 +1,50 @@
+\contentsline {chapter}{Preface}{4}{chapter*.2}%
+\contentsline {subsection}{Prerequisites}{4}{chapter*.2}%
+\contentsline {subsection}{Instructor}{4}{chapter*.2}%
+\contentsline {section}{Office Hour}{4}{chapter*.2}%
+\contentsline {section}{Grade Distribution}{4}{chapter*.2}%
+\contentsline {section}{Assignment}{5}{chapter*.2}%
+\contentsline {section}{Exam}{5}{chapter*.2}%
+\contentsline {section}{Topics and Corresponding Lectures}{5}{chapter*.2}%
+\contentsline {section}{Recommended Textbooks}{5}{none.1}%
+\contentsline {section}{Side Readings}{5}{none.1}%
+\contentsline {chapter}{Introduction}{6}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Matrix Representation and Notation}{9}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Why Linear Statistical Analysis?}{9}{section.1.1}%
+\contentsline {section}{\numberline {1.2}A unifying point of view}{10}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Basic Notation}{10}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Inner product and norm}{13}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Expectation and Covariance Operators}{14}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Statistical Models}{14}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}General idea}{15}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Deterministic part and random part}{15}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}The Linear Regression Model}{15}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Geometry Preview}{16}{subsection.1.5.1}%
+\contentsline {section}{\numberline {1.6}Why projection matters}{17}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Discussion}{19}{section.1.7}%
+\contentsline {section}{\numberline {1.8}Practice Problems}{19}{section.1.8}%
+\contentsline {section}{\numberline {1.9}Take home Practice}{20}{section.1.9}%
+\contentsline {section}{\numberline {1.10}Summary}{21}{section.1.10}%
+\contentsline {chapter}{\numberline {2}Least Square Estimation}{22}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Least Squares Criterion}{23}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Residual sum of squares}{23}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Geometric Interpretation}{25}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Least squares as projection}{25}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Orthogonality Properties}{25}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Algebraic proof}{26}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Consequences}{26}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Residual maker matrix}{27}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Sum of Squares Decomposition}{28}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Statistical Properties of the OLS Estimator}{28}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Interpretation of the Geometry}{32}{section.2.8}%
+\contentsline {section}{\numberline {2.9}In-Class Discussion Questions}{33}{section.2.9}%
+\contentsline {section}{\numberline {2.10}Practice Problems}{33}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Suggested Homework}{34}{section.2.11}%
+\contentsline {section}{\numberline {2.12}Summary}{34}{section.2.12}%
+\contentsline {chapter}{References}{35}{chapter*.4}%
+\contentsline {part}{\numberline {I}Appendix}{36}{part.1}%
+\contentsline {chapter}{Matrix Algebra Review}{37}{chapter*.6}%
+\contentsline {section}{Matrix dimensions}{37}{chapter*.6}%
+\contentsline {section}{Transpose rules}{37}{chapter*.6}%
+\contentsline {section}{Inverse rule}{37}{chapter*.6}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
