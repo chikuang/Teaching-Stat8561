@@ -1,11 +1,11 @@
-# Week 2 Overview
+# Least Square Estimation
 
-In this week, we study the core idea behind linear regression: **least squares estimation**. We derive the ordinary least squares estimator, interpret it geometrically as a projection, and introduce the fitted values, residuals, and the hat matrix.
+In this week, we study the core idea behind linear regression: **least squares estimation** (LSE). We derive the ordinary LSE, interpret it geometrically as a projection, and introduce the fitted values, residuals, and the hat matrix.
 
-## Learning Objectives
-
-By the end of this week, students should be able to:
-
+> Learning Objectives
+>
+> By the end of this week, students should be able to:
+>
 > - define the least squares criterion for a linear model;
 > - derive the normal equations;
 > - obtain the ordinary least squares estimator when the design matrix has full column rank;
@@ -13,7 +13,7 @@ By the end of this week, students should be able to:
 > - define the fitted values, residuals, and hat matrix;
 > - explain the orthogonality properties of residuals.
 
-## Reading
+**Reading**
 
 Recommended reading for this week:
 
@@ -22,9 +22,9 @@ Recommended reading for this week:
 - Montgomery, Peck, and Vining:
   - introductory sections on estimation in linear regression
 
-# 1. Review of the Linear Model
+::: {.callout-note title="Recap of Linear model"}
 
-Recall the linear model from Week 1:
+Recall from [Week 1](01_matrix_representation.qmd), we discussed
 
 $$
 \mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
@@ -53,17 +53,15 @@ $$
 \mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{I}_n.
 $$
 
+:::
+
 Our goal is to estimate $\boldsymbol{\beta}$ from the observed data.
 
-# 2. The Least Squares Criterion
+## The Least Squares Criterion
 
-## 2.1 Motivation
+**Motivation**
 
-For any candidate value $\boldsymbol{\beta}$, the model predicts
-
-$$
-\mathbf{X}\boldsymbol{\beta}.
-$$
+For any candidate value $\boldsymbol{\beta}$, the model predicts $\mathbf{X}\boldsymbol{\beta}.$
 
 The discrepancy between the observed response $\mathbf{Y}$ and the model mean $\mathbf{X}\boldsymbol{\beta}$ is
 
@@ -75,7 +73,7 @@ This vector is called the **residual vector** for the candidate $\boldsymbol{\be
 
 A natural idea is to choose $\boldsymbol{\beta}$ so that this discrepancy is as small as possible.
 
-## 2.2 Residual sum of squares
+## Residual sum of squares
 
 The least squares criterion is
 
@@ -94,7 +92,24 @@ $$
 
 We choose $\hat{\boldsymbol{\beta}}$ to minimize $S(\boldsymbol{\beta})$.
 
-## 2.3 Expansion of the criterion
+We can choose different $\hat{\boldsymbol{\beta}}$, but there is the best one we can find.
+
+
+::: {.callout-theorem title="Best Beta"}
+
+The least squares estimator $\hat{\boldsymbol{\beta}}$ is the value of $\boldsymbol{\beta}$ that minimizes the residual sum of squares $S(\boldsymbol{\beta})$, and it has the analytical solution
+$$(\mathbf{X}^\top \mathbf{X})\hat{\boldsymbol{\beta}} = \mathbf{X}^\top \mathbf{Y}.$$
+And if $\mathbf{X}$ has full column rank, then the unique least squares estimator is
+
+$$ \hat{\boldsymbol{\beta}} = (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}. $$
+
+
+::: 
+
+::: {.callout-note title="Calculation"}
+We can proof the above theorem by taking the derivative of $S(\boldsymbol{\beta})$ with respect to $\boldsymbol{\beta}$ and setting it equal to zero. This leads to the normal equations, which can be solved for $\hat{\boldsymbol{\beta}}$.
+
+**i)  Expansion of the criterion**
 
 Expanding the quadratic form gives
 
@@ -108,7 +123,8 @@ $$
 
 This is a quadratic function of $\boldsymbol{\beta}$.
 
-# 3. Derivation of the Normal Equations
+**ii) Derivation of the Normal Equations**
+
 
 To minimize $S(\boldsymbol{\beta})$, differentiate with respect to $\boldsymbol{\beta}$:
 
@@ -128,7 +144,7 @@ $$
 
 These are the equations that define the ordinary least squares estimator.
 
-## 3.1 Full column rank case
+**Full column rank case**
 
 If $\mathbf{X}$ has full column rank $p$, then $\mathbf{X}^\top \mathbf{X}$ is invertible, and the unique least squares estimator is
 
@@ -140,7 +156,10 @@ $$
 
 This is the ordinary least squares estimator, or OLS estimator.
 
-## 3.2 When is this formula valid?
+:::
+
+
+::: {.callout-note title="Remark -- When is this formula valid?"}
 
 The closed-form expression above requires
 
@@ -148,11 +167,19 @@ $$
 \mathrm{rank}(\mathbf{X}) = p.
 $$
 
-This means the columns of $\mathbf{X}$ are linearly independent. If they are not, then $\mathbf{X}^\top \mathbf{X}$ is singular, and special care is needed. We will discuss rank deficiency later in the course.
+This means the columns of $\mathbf{X}$ are linearly independent. If they are not, then $\mathbf{X}^\top \mathbf{X}$ is singular, and special care is needed. We will discuss rank deficiency later.
+
+:::
+
+
+
+
+
 
 # 4. Geometric Interpretation
 
-## 4.1 Column space of the design matrix
+
+::: {.callout-note title="Recap of Column space of the design matrix"}
 
 Recall the column space of $\mathbf{X}$:
 
@@ -164,7 +191,13 @@ $$
 
 This is the set of all vectors that can be represented by the linear model.
 
-## 4.2 Least squares as projection
+:::
+
+
+
+
+
+## Least squares as projection
 
 The fitted value vector is
 
@@ -176,7 +209,8 @@ Since $\hat{\mathbf{Y}} \in \mathcal{C}(\mathbf{X})$, least squares chooses the 
 
 Thus, $\hat{\mathbf{Y}}$ is the **orthogonal projection** of $\mathbf{Y}$ onto $\mathcal{C}(\mathbf{X})$.
 
-## 4.3 Residual vector
+
+::: {.callout-definition title="Residual vector"}
 
 The residual vector is
 
@@ -190,7 +224,11 @@ $$
 
 Geometrically, $\mathbf{e}$ is the part of $\mathbf{Y}$ orthogonal to the model space $\mathcal{C}(\mathbf{X})$.
 
-# 5. Orthogonality Properties
+:::
+
+
+
+# Orthogonality Properties
 
 A central property of least squares is that the residual vector is orthogonal to every column of $\mathbf{X}$.
 
@@ -396,7 +434,7 @@ $$
 
 This formula will be fundamental for confidence intervals and hypothesis tests later.
 
-# 9. Worked Example by Hand
+::: {.callout-example}
 
 Consider the simple regression dataset
 
@@ -407,6 +445,8 @@ x_i & 0 & 1 & 2 & 3 \\
 y_i & 1 & 3 & 3 & 5
 \end{array}
 $$
+
+**Hand calculation**
 
 Then
 
@@ -491,17 +531,17 @@ Thus, the fitted line is
 $$
 \hat{Y} = 1.2 + 1.2x.
 $$
+**R demonstration**
 
-# 10. R Demonstration
-
-## 10.1 Fit the model
+Fit we fit the model
 
 ```{r}
 x <- c(0, 1, 2, 3)
 y <- c(1, 3, 3, 5)
+df <- data.frame(x = x, y = y)
 
-fit <- lm(y ~ x)
-coef(fit)
+fit <- lm(y ~ x, data = df)
+coef(fit) # check the coefficient
 
 X <- model.matrix(fit)
 X
@@ -528,6 +568,8 @@ plot(x, y, pch = 19, xlab = "x", ylab = "y")
 abline(fit, lwd = 2)
 
 ```
+
+:::
 
 
 11. Interpretation of the Geometry
@@ -626,24 +668,26 @@ Geometrically, least squares is projection onto the column space of $\mathbf{X}$
 
 Next week, we will study the distribution theory of OLS under the normal error model, including estimation of $\sigma^2$, standard errors, and inference.
 
-Appendix: Matrix Calculus Facts Used This Week
 
-For a vector $\boldsymbol{\beta}$ and constant matrix $\mathbf{A}$,
+---
 
-$$
-\frac{\partial}{\partial \boldsymbol{\beta}}
+**Side fact**: the Matrix Calculus Facts Used This Week
+
+::: {.callout-theorem title="Matrix Calculus Facts"}
+
+
+For a constant vector $\mathbf{a}$, vector $\boldsymbol{\beta}$ and constant matrix $\mathbf{A}$, we have
+
+i) $\frac{\partial}{\partial \boldsymbol{\beta}}
 (\mathbf{a}^\top \boldsymbol{\beta})
-=
-\mathbf{a},
-$$
+=\mathbf{a},$ and
 
-and if $\mathbf{A}$ is symmetric,
-
-$$
-\frac{\partial}{\partial \boldsymbol{\beta}}
+ii) if $\mathbf{A}$ is symmetric,
+$\frac{\partial}{\partial \boldsymbol{\beta}}
 (\boldsymbol{\beta}^\top \mathbf{A}\boldsymbol{\beta})
 =
-2\mathbf{A}\boldsymbol{\beta}.
-$$
+2\mathbf{A}\boldsymbol{\beta}.$
+
+:::
 
 These identities justify the derivative of the least squares criterion.

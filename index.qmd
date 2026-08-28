@@ -41,7 +41,7 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 |:------:|:-------:|:--------------------:|:-------:|
 |  ✅      | | [Welcome and Overview](intro.qmd)|    1    |
 |    ️⏳ ️   |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--   |
-
+|    ️⏳ ️   |  Ch. 2  | [Least Squares Estimation](02_LSE.qmd) |    TBA   |
 <!-- 🚧🛠️⏳   -->
 
 ## Recommended Textbooks

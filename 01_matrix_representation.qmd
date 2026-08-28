@@ -246,11 +246,7 @@ $$
 \end{pmatrix}.
 $$
 
-We often write
-
-$$
-\mathbb{E}[\mathbf{Y}] = \boldsymbol{\mu}.
-$$
+We often write $\mathbb{E}[\mathbf{Y}] = \boldsymbol{\mu}.$
 
 :::
 
@@ -274,19 +270,13 @@ $$
 \mathbb{E}[\mathbf{Y}\mathbf{Y}^\top] - \boldsymbol{\mu}\boldsymbol{\mu}^\top.
 $$
 
-If
+:::
 
-$$
-\mathbf{Y}
-=
-\begin{pmatrix}
-Y_1 \\
-Y_2 \\
-Y_3
-\end{pmatrix},
-$$
+::: {.callout-example}
 
-then
+Suppose $\mathbf{Y}=(Y_1, Y_2, Y_3)$.
+
+Then the corresponding covariance matrix is
 
 $$
 \mathrm{Var}(\mathbf{Y})
@@ -392,7 +382,7 @@ Here,
 
 ## The Linear Regression Model
 
-Perhaps the most simple model is the simple linear regression where there are only **one** independent variable and **one** response variable.
+Perhaps the most simple model is the *simple linear regression* where there are only **one** independent variable and **one** response variable.
 
 ::: {.callout-definition title = "Simple linear regression"}
 
