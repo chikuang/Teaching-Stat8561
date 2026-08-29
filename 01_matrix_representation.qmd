@@ -1,10 +1,10 @@
 # Matrix Representation and Notation
 
-In this first week, we introduce the mathematical language and statistical framework that will be used throughout the course. Our focus is on the notation of vectors and matrices, vectors of random variables, expectation and covariance operators, and the basic form of the linear regression model.
+In this chapter, we introduce the mathematical language and statistical framework that will be used throughout the course. Our focus is on the notation of vectors and matrices, vectors of random variables, expectation and covariance operators, and the basic form of the linear regression model.
 
 > **Learning Objectives**
 >
-> By the end of this week, students should be able to:
+> By the end of this chapter, students should be able to:
 >
 > -   use standard matrix notation for linear statistical models;
 > -   distinguish between scalars, vectors, matrices, random variables, and random vectors;
@@ -14,7 +14,7 @@ In this first week, we introduce the mathematical language and statistical frame
 
 **Reading**
 
-Recommended reading for this week:
+Recommended reading for this chapter:
 
 - @seber:2003:book, Chapter 1:
     -   1.1 Notation
@@ -531,7 +531,7 @@ $$
 \end{pmatrix}.
 $$
 
-We will learn next week that the least squares estimator is
+We will learn next chapter that the least squares estimator is
 
 $$
 \hat{\boldsymbol{\beta}}
@@ -664,8 +664,8 @@ Complete the following:
 
 ## Summary
 
-This week introduced the notation and basic probabilistic tools needed for the rest of the course. We defined random vectors, mean vectors, covariance matrices, and the matrix form of the linear regression model. These ideas will support everything that follows.
+This chapter introduced the notation and basic probabilistic tools needed for the rest of the course. We defined random vectors, mean vectors, covariance matrices, and the matrix form of the linear regression model. These ideas will support everything that follows.
 
-Next week, we will study least squares estimation and the geometry of projection in more detail.
+Next chapter, we will study least squares estimation and the geometry of projection in more detail.
 
 For some optional review of the matrix algebra, see [Matrix Algebra Review](#sec-matrix).
