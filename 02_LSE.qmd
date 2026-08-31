@@ -1984,7 +1984,7 @@ $$
 
 is also a random vector.
 
-Next week, we will study quantities such as
+In next chapter, we will study quantities such as
 
 $$
 \mathbb{E}
@@ -2403,7 +2403,7 @@ $$
 
 is an orthogonal decomposition.
 
-Next week, we will treat
+In next chapter, we will treat
 $\hat{\boldsymbol{\beta}}$ as a random vector and study its expectation,
 variance, sampling distribution, and the foundations of statistical
 inference for linear models.
@@ -2411,7 +2411,7 @@ inference for linear models.
 
 ---
 
-Side Fact: Matrix Calculus Facts Used This Week
+Side Fact: Matrix Calculus Facts Used in this chapter
 
 ::: {.callout-theorem title="Matrix Calculus Facts"}
 
