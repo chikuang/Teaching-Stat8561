@@ -170,9 +170,9 @@ inference.
 :::
 
 
-# The Least Squares Criterion
+## The Least Squares Criterion
 
-## Motivation
+**Motivation**ß
 
 For any candidate value $\boldsymbol{\beta}$, the corresponding fitted
 vector is
@@ -194,7 +194,7 @@ discrepancy is as small as possible.
 To measure its size, we use the squared Euclidean norm.
 
 
-## Residual Sum of Squares
+**Residual Sum of Squares**
 
 The **residual sum of squares** associated with a candidate
 $\boldsymbol{\beta}$ is
@@ -257,9 +257,9 @@ for every $\boldsymbol{\beta}\in\mathbb{R}^p$.
 :::
 
 
-# Derivation of the Least Squares Estimator
+## Derivation of the Least Squares Estimator
 
-## Expansion of the Criterion
+**Expansion of the Criterion**
 
 Starting from
 
@@ -318,7 +318,7 @@ S(\boldsymbol{\beta})
 $$
 
 
-## Derivation of the Normal Equations
+**Derivation of the Normal Equations**
 
 Differentiate $S(\boldsymbol{\beta})$ with respect to
 $\boldsymbol{\beta}$:
@@ -398,7 +398,7 @@ Thus, the word *normal* is being used in its geometric sense.
 :::
 
 
-## Why Is the Stationary Point a Minimum?
+**Why is the Stationary Point a Minimum?**
 
 The Hessian of the least squares criterion is
 
@@ -517,7 +517,7 @@ We will return to this issue later.
 :::
 
 
-# Geometric Interpretation of Least Squares
+## Geometric Interpretation of Least Squares
 
 The algebraic derivation gives us the estimator. However, the geometry
 explains **why** least squares has its important properties.
@@ -557,7 +557,7 @@ $$
 :::
 
 
-## Least Squares as Projection
+### Least Squares as Projection
 
 The fitted value vector is
 
@@ -627,7 +627,7 @@ orthogonal to the model space $\mathcal{C}(\mathbf{X})$.
 :::
 
 
-# Orthogonality of the Residuals
+## Orthogonality of the Residuals
 
 Starting from the normal equations,
 
@@ -774,7 +774,7 @@ squares regression.
 :::
 
 
-## Consequence When an Intercept Is Included
+### Consequence when an Intercept Is Included
 
 If the model includes an intercept, then one column of $\mathbf{X}$ is
 
@@ -835,7 +835,7 @@ $$
 $$
 
 
-# The Hat Matrix
+## The Hat Matrix
 
 In the full-column-rank case,
 
@@ -904,7 +904,7 @@ $$
 :::
 
 
-## Properties of the Hat Matrix
+### Properties of the Hat Matrix
 
 ::: {.callout-property title="Properties of the Hat Matrix"}
 
@@ -971,7 +971,7 @@ $$
 :::
 
 
-### Symmetry
+::: {.callout-note title = "Why it is symmetric"}
 
 We have
 
@@ -999,9 +999,9 @@ $$
 =
 \mathbf{H}.
 $$
+:::
 
-
-### Idempotence
+::: {.callout-note title = "Why it is idempotent"}
 
 We have
 
@@ -1028,6 +1028,7 @@ $$
 \mathbf{H}^2=\mathbf{H}.
 $$
 
+:::
 
 ::: {.callout-note title="What Does Idempotence Mean Geometrically?"}
 
