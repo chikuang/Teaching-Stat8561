@@ -6,36 +6,34 @@ book:
   subtitle: "2026 Fall Lecture Notes"
   author: "Chi-Kuang Yeh"
   date: today
+
   chapters:
     - index.qmd
     - intro.qmd
     - 01_matrix_representation.qmd
     - 02_LSE.qmd
-    # - 03.qmd
-    # - 04.qmd
-    # - 05.qmd
-    # - 06.qmd
-    # - 07.qmd
-    # - 08.qmd
-    # - 09.qmd
-    # - 10.qmd
-    # - 11.qmd
-    # - summary.qmd
     - references.qmd
+
     - part: "Appendix"
       chapters:
         - App_A-matrix.qmd
-    # - references.qmd
+
+    # - part: "Assignment"
+    #   chapters:
+    #     - Assignment1.qmd
+
   navbar:
     right:
       - icon: github
         href: https://github.com/chikuang/Teaching-Stat8561
         aria-label: GitHub
+
       - icon: file-pdf
         href: ./STAT8561---Linear-Statistical-Analysis-I.pdf
         aria-label: Download PDF
 
 bibliography: references.bib
+
 
 execute:
   cache: true
@@ -47,11 +45,10 @@ format:
       - pulse
       - brand
     css: custom-callouts.css
-    filters: []
     cache: true
+
   pdf:
     documentclass: scrreprt
-    filters: []
     cache: true
 
 editor: source
