@@ -1506,6 +1506,15 @@ $$
 }
 $$
 
+::: {.callout-note title="Intuition for the Mean of the Fitted Values"}
+
+The intercept allows the fitted model to shift up or
+down. At the least squares solution, there can be no overall tendency
+for the fitted values to be systematically too high or too low.
+Therefore, the residuals sum to zero and the fitted values have the
+same mean as the observed responses.
+
+:::
 
 ## The Hat Matrix
 
@@ -1730,27 +1739,7 @@ same space leaves it unchanged.
 :::
 
 
-# The Residual-Maker Matrix
-
-Since
-
-$$
-\mathbf{e}
-=
-\mathbf{Y}
--
-\hat{\mathbf{Y}}
-$$
-
-and
-
-$$
-\hat{\mathbf{Y}}
-=
-\mathbf{H}\mathbf{Y},
-$$
-
-we have
+Notice that, $\mathbf{e} =\mathbf{Y}-\hat{\mathbf{Y}}$ and $\hat{\mathbf{Y}}=\mathbf{H}\mathbf{Y},$ we have
 
 $$
 \mathbf{e}
@@ -1759,7 +1748,11 @@ $$
 $$
 
 
-::: {.callout-definition title="Residual-Maker Matrix"}
+
+
+::: {#def-residual-maker-matrix}
+
+## Residual-Maker Matrix
 
 Define
 
@@ -1788,6 +1781,8 @@ $\mathcal{C}(\mathbf{X})$.
 
 :::
 
+
+::: {#prp-properties-of-residual-maker-matrix}
 
 ## Properties of the Residual-Maker Matrix
 
@@ -1857,6 +1852,7 @@ $$
 n-p.
 $$
 
+:::
 
 ::: {.callout-note title="Two Complementary Projection Matrices"}
 
@@ -1894,9 +1890,9 @@ $$
 :::
 
 
-# Sum of Squares Decomposition
+## Sum of Squares Decomposition
 
-## Uncentered Geometric Decomposition
+### Uncentered Geometric Decomposition
 
 Since
 
@@ -1950,7 +1946,7 @@ $$
 This is a direct application of the Pythagorean theorem.
 
 
-## Centered Sum of Squares Decomposition
+### Centered Sum of Squares Decomposition
 
 When the regression model contains an intercept,
 
@@ -2053,7 +2049,7 @@ These two decompositions should not be confused.
 :::
 
 
-## Example: Simple Linear Regression
+### Example: Simple Linear Regression
 
 ::: {.callout-example title="Hand Calculation"}
 
@@ -3132,5 +3128,3 @@ These identities justify the derivative used in the least squares
 criterion.
 
 :::
-
-
