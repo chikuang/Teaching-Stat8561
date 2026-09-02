@@ -18,9 +18,9 @@ book:
       chapters:
         - App_A-matrix.qmd
 
-    # - part: "Assignment"
-    #   chapters:
-    #     - Assignment1.qmd
+    - part: "Assignment"
+      chapters:
+        - Assignment1.qmd
 
   navbar:
     right:
@@ -46,6 +46,8 @@ format:
       - brand
     css: custom-callouts.css
     cache: true
+    include-after-body:
+      - solution-collapse.html
 
   pdf:
     documentclass: scrreprt

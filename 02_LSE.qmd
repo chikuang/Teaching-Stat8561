@@ -172,7 +172,7 @@ inference.
 
 ## The Least Squares Criterion
 
-**Motivation**ß
+**Motivation**
 
 For any candidate value $\boldsymbol{\beta}$, the corresponding fitted
 vector is
@@ -240,8 +240,9 @@ $$
 S(\boldsymbol{\beta}).
 $$
 
+::: {#def-LSE}
 
-::: {.callout-definition title="Least Squares Estimator"}
+## Least Squares Estimator
 
 A **least squares estimator** is any value
 $\hat{\boldsymbol{\beta}}$ satisfying
@@ -256,11 +257,299 @@ for every $\boldsymbol{\beta}\in\mathbb{R}^p$.
 
 :::
 
+::: {#exm-lse-simple}
 
-## Derivation of the Least Squares Estimator
+## LSE for Simple Linear Regression
+
+Consider the simple linear regression model
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+\qquad i=1,\ldots,n,
+$$
+
+where
+
+$$
+\mathbb{E}[\varepsilon_i]=0,
+\qquad
+\operatorname{Var}(\varepsilon_i)=\sigma^2.
+$$
+
+The fitted value at $x_i$ is
+
+$$
+\hat{Y}_i
+=
+\beta_0+\beta_1 x_i.
+$$
+
+The corresponding residual is
+
+$$
+e_i
+=
+Y_i-\beta_0-\beta_1x_i.
+$$
+
+The least squares method chooses $\beta_0$ and $\beta_1$ to minimize the **sum of squared residuals**
+
+$$
+S(\beta_0,\beta_1)
+=
+\sum_{i=1}^n
+\left(
+Y_i-\beta_0-\beta_1x_i
+\right)^2.
+$$
+
+**Derivation of the Normal Equations**
+
+To minimize $S(\beta_0,\beta_1)$, differentiate with respect to $\beta_0$ and $\beta_1$.
+
+For $\beta_0$,
+
+$$
+\frac{\partial S}{\partial\beta_0}
+=
+-2
+\sum_{i=1}^n
+\left(
+Y_i-\beta_0-\beta_1x_i
+\right).
+$$
+
+Setting this equal to zero gives
+
+$$
+\sum_{i=1}^n
+\left(
+Y_i-\hat{\beta}_0-\hat{\beta}_1x_i
+\right)
+=
+0.
+$$
+
+Therefore,
+
+$$
+\sum_{i=1}^nY_i
+=
+n\hat{\beta}_0
++
+\hat{\beta}_1\sum_{i=1}^nx_i.
+$$
+
+Dividing by $n$,
+
+$$
+\bar{Y}
+=
+\hat{\beta}_0
++
+\hat{\beta}_1\bar{x},
+$$
+
+so
+
+$$
+\boxed{
+\hat{\beta}_0
+=
+\bar{Y}
+-
+\hat{\beta}_1\bar{x}
+}.
+$$
+
+For $\beta_1$,
+
+$$
+\frac{\partial S}{\partial\beta_1}
+=
+-2
+\sum_{i=1}^n
+x_i
+\left(
+Y_i-\beta_0-\beta_1x_i
+\right).
+$$
+
+Setting this equal to zero gives
+
+$$
+\sum_{i=1}^n
+x_i
+\left(
+Y_i-\hat{\beta}_0-\hat{\beta}_1x_i
+\right)
+=
+0.
+$$
+
+Hence,
+
+$$
+\sum_{i=1}^n x_iY_i
+=
+\hat{\beta}_0\sum_{i=1}^nx_i
++
+\hat{\beta}_1\sum_{i=1}^nx_i^2.
+$$
+
+Substituting
+
+$$
+\hat{\beta}_0
+=
+\bar{Y}-\hat{\beta}_1\bar{x},
+$$
+
+we obtain
+
+$$
+\sum_{i=1}^n x_iY_i
+=
+\left(
+\bar{Y}-\hat{\beta}_1\bar{x}
+\right)
+\sum_{i=1}^nx_i
++
+\hat{\beta}_1\sum_{i=1}^nx_i^2.
+$$
+
+Since
+
+$$
+\sum_{i=1}^n x_i
+=
+n\bar{x},
+$$
+
+we have
+
+$$
+\sum_{i=1}^n x_iY_i
+-
+n\bar{x}\bar{Y}
+=
+\hat{\beta}_1
+\left(
+\sum_{i=1}^nx_i^2
+-
+n\bar{x}^2
+\right).
+$$
+
+Using
+
+$$
+\sum_{i=1}^n
+(x_i-\bar{x})(Y_i-\bar{Y})
+=
+\sum_{i=1}^nx_iY_i
+-
+n\bar{x}\bar{Y},
+$$
+
+and
+
+$$
+\sum_{i=1}^n
+(x_i-\bar{x})^2
+=
+\sum_{i=1}^nx_i^2
+-
+n\bar{x}^2,
+$$
+
+we obtain
+
+$$
+\boxed{
+\hat{\beta}_1
+=
+\frac{
+\sum_{i=1}^n
+(x_i-\bar{x})(Y_i-\bar{Y})
+}{
+\sum_{i=1}^n
+(x_i-\bar{x})^2
+}
+}.
+$$
+
+Therefore,
+
+$$
+\boxed{
+\hat{\beta}_0
+=
+\bar{Y}
+-
+\hat{\beta}_1\bar{x}
+}.
+$$
+
+**Alternative Notation**
+
+It is common to define
+
+$$
+S_{xx}
+=
+\sum_{i=1}^n
+(x_i-\bar{x})^2
+$$
+
+and
+
+$$
+S_{xy}
+=
+\sum_{i=1}^n
+(x_i-\bar{x})(Y_i-\bar{Y}).
+$$
+
+Then
+
+$$
+\boxed{
+\hat{\beta}_1
+=
+\frac{S_{xy}}{S_{xx}}
+}
+$$
+
+and
+
+$$
+\boxed{
+\hat{\beta}_0
+=
+\bar{Y}
+-
+\frac{S_{xy}}{S_{xx}}\bar{x}
+}.
+$$
+
+Thus, the fitted regression line is
+
+$$
+\boxed{
+\hat{Y}_i
+=
+\hat{\beta}_0
++
+\hat{\beta}_1x_i
+}.
+$$
+
+:::
+
+## Derivation of the Least Squares Estimator in a matrix form
 
 **Expansion of the Criterion**
-
 Starting from
 
 $$
@@ -517,6 +806,127 @@ We will return to this issue later.
 :::
 
 
+
+::: {#exm-simple-linear-regression}
+
+## LSE for Simple Linear Regression continue
+
+As shown in @exm-lse-simple, we know the expression of the LSE $\hat{\mathbf{\beta}}$. Here, we want to see its connection to the matrix Form.
+
+For simple linear regression,
+
+$$
+\mathbf{Y}
+=
+\begin{pmatrix}
+Y_1\\
+Y_2\\
+\vdots\\
+Y_n
+\end{pmatrix},
+\qquad
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & x_1\\
+1 & x_2\\
+\vdots & \vdots\\
+1 & x_n
+\end{pmatrix},
+\qquad
+\boldsymbol{\beta}
+=
+\begin{pmatrix}
+\beta_0\\
+\beta_1
+\end{pmatrix}.
+$$
+
+The general least squares estimator is
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y}.
+$$
+
+For simple linear regression,
+
+$$
+\mathbf{X}^\top\mathbf{X}
+=
+\begin{pmatrix}
+n & \sum_{i=1}^n x_i\\
+\sum_{i=1}^n x_i & \sum_{i=1}^n x_i^2
+\end{pmatrix},
+$$
+
+and
+
+$$
+\mathbf{X}^\top\mathbf{Y}
+=
+\begin{pmatrix}
+\sum_{i=1}^nY_i\\
+\sum_{i=1}^nx_iY_i
+\end{pmatrix}.
+$$
+
+Therefore,
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\begin{pmatrix}
+\hat{\beta}_0\\
+\hat{\beta}_1
+\end{pmatrix}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y},
+$$
+
+which gives exactly
+
+$$
+\boxed{
+\hat{\beta}_1
+=
+\frac{
+\sum_{i=1}^n(x_i-\bar{x})(Y_i-\bar{Y})
+}{
+\sum_{i=1}^n(x_i-\bar{x})^2
+}
+}
+$$
+
+and
+
+$$
+\boxed{
+\hat{\beta}_0
+=
+\bar{Y}-\hat{\beta}_1\bar{x}
+}.
+$$
+
+:::
+
+Hence, 
+
+>
+> The familiar simple linear regression formulas for
+> $\hat{\beta}_0$ and $\hat{\beta}_1$ are special cases of the general matrix LSE
+>
+> $$
+> \hat{\boldsymbol{\beta}}
+> =
+> (\mathbf{X}^\top\mathbf{X})^{-1}
+> \mathbf{X}^\top\mathbf{Y}.
+> $$
+
+
 ## Geometric Interpretation of Least Squares
 
 The algebraic derivation gives us the estimator. However, the geometry
@@ -592,7 +1002,31 @@ Therefore, $\hat{\mathbf{Y}}$ is the **orthogonal projection** of
 $\mathbf{Y}$ onto $\mathcal{C}(\mathbf{X})$.
 
 
-::: {.callout-definition title="Residual Vector"}
+> So we can say that the fitted vector $\hat{\mathbf{Y}}$ is constrained to live in the model space generated by the predictors. Least squares finds the point in that space closest to the observed data vector $\mathbf{Y}$.
+
+::: {#def-orthogonality}
+
+## Orthogonality
+
+Two vectors $\mathbf{u},\mathbf{v}\in\mathbb{R}^n$ are said to be **orthogonal** if their inner product is zero:
+
+$$
+\mathbf{u}^\top\mathbf{v}=0.
+$$
+
+We write
+
+$$
+\mathbf{u}\perp\mathbf{v}.
+$$
+
+Geometrically, two nonzero vectors are orthogonal if the angle between them is $90^\circ$.
+
+:::
+
+::: {#def-residual-vector}
+
+## Residual Vector
 
 After obtaining the least squares estimator, define the **residual
 vector**
@@ -626,19 +1060,19 @@ orthogonal to the model space $\mathcal{C}(\mathbf{X})$.
 
 :::
 
+::: {#prp-orthogonality-of-residuals}
 
 ## Orthogonality of the Residuals
 
-Starting from the normal equations,
+Recall that the least squares estimator satisfies the normal equations
 
 $$
-\mathbf{X}^\top
-\mathbf{X}\hat{\boldsymbol{\beta}}
+\mathbf{X}^\top\mathbf{X}\hat{\boldsymbol{\beta}}
 =
-\mathbf{X}^\top\mathbf{Y},
+\mathbf{X}^\top\mathbf{Y}.
 $$
 
-we obtain
+Rearranging,
 
 $$
 \mathbf{X}^\top
@@ -651,17 +1085,21 @@ $$
 \mathbf{0}.
 $$
 
-Since
+Since the residual vector is
 
 $$
 \mathbf{e}
 =
 \mathbf{Y}
 -
+\hat{\mathbf{Y}}
+=
+\mathbf{Y}
+-
 \mathbf{X}\hat{\boldsymbol{\beta}},
 $$
 
-we have
+we obtain the fundamental least squares property
 
 $$
 \boxed{
@@ -671,8 +1109,7 @@ $$
 }
 $$
 
-
-Suppose
+To understand what this means, write the design matrix as
 
 $$
 \mathbf{X}
@@ -688,7 +1125,7 @@ $$
 \end{pmatrix},
 $$
 
-where $\mathbf{x}^{(j)}$ denotes column $j$ of $\mathbf{X}$.
+where $\mathbf{x}^{(j)}$ is the $j$th column of $\mathbf{X}$.
 
 Then
 
@@ -715,9 +1152,9 @@ $$
 j=1,\ldots,p.
 $$
 
-Hence, the residual vector is orthogonal to every column of
-$\mathbf{X}$ and therefore to every vector in
-$\mathcal{C}(\mathbf{X})$:
+Thus, the residual vector is orthogonal to every column of $\mathbf{X}$.
+
+Because the column space $\mathcal{C}(\mathbf{X})$ consists of all linear combinations of the columns of $\mathbf{X}$, it follows that
 
 $$
 \boxed{
@@ -727,10 +1164,46 @@ $$
 }
 $$
 
+**Intuition.** The columns of $\mathbf{X}$ represent all directions that the linear model is allowed to use. After least squares has chosen the best fitted value, the remaining error $\mathbf{e}$ has no component left in any of these directions. Otherwise, we could move the fitted value within $\mathcal{C}(\mathbf{X})$ and reduce the residual sum of squares further.
 
-::: {.callout-property title="Fundamental Orthogonal Decomposition"}
+:::
 
-Least squares decomposes the response vector into
+
+::: {#prp-fundamental-orthogonal-decomposition}
+
+## Fundamental Orthogonal Decomposition
+
+The fitted response vector is
+
+$$
+\hat{\mathbf{Y}}
+=
+\mathbf{X}\hat{\boldsymbol{\beta}}.
+$$
+
+Therefore,
+
+$$
+\boxed{
+\hat{\mathbf{Y}}
+\in
+\mathcal{C}(\mathbf{X}).
+}
+$$
+
+In other words, $\hat{\mathbf{Y}}$ must lie in the space generated by the columns of $\mathbf{X}$.
+
+Since
+
+$$
+\mathbf{e}
+=
+\mathbf{Y}
+-
+\hat{\mathbf{Y}},
+$$
+
+we can write
 
 $$
 \boxed{
@@ -742,7 +1215,7 @@ $$
 }
 $$
 
-Here,
+The two components satisfy
 
 $$
 \hat{\mathbf{Y}}
@@ -758,7 +1231,7 @@ $$
 \mathcal{C}(\mathbf{X})^\perp.
 $$
 
-Therefore,
+Hence,
 
 $$
 \boxed{
@@ -768,11 +1241,210 @@ $$
 }
 $$
 
-This orthogonal decomposition is the geometric foundation of least
-squares regression.
+Geometrically, least squares projects $\mathbf{Y}$ onto the column space of $\mathbf{X}$:
+
+$$
+\mathbf{Y}
+=
+\underbrace{\hat{\mathbf{Y}}}_{\text{part explained by the model}}
++
+\underbrace{\mathbf{e}}_{\text{part orthogonal to the model space}}.
+$$
+
+Because the two components are orthogonal, the Pythagorean theorem gives
+
+$$
+\boxed{
+\|\mathbf{Y}\|^2
+=
+\|\hat{\mathbf{Y}}\|^2
++
+\|\mathbf{e}\|^2.
+}
+$$
+
+This geometric decomposition is the foundation of least squares regression and will later lead naturally to the decomposition of sums of squares in ANOVA.
 
 :::
 
+::: {#exr-calculation}
+
+## Computational Problems
+
+Let
+
+$$
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & 0\\
+1 & 1\\
+1 & 2
+\end{pmatrix},
+\qquad
+\mathbf{Y}
+=
+\begin{pmatrix}
+1\\
+2\\
+2
+\end{pmatrix}.
+$$
+
+1. Compute $\mathbf{X}^\top\mathbf{X}.$
+
+2. Compute $\mathbf{X}^\top\mathbf{Y}.$
+
+3. Find $\hat{\boldsymbol{\beta}}.$
+
+4. Compute $\hat{\mathbf{Y}}.$
+
+5. Compute the residual vector $\mathbf{e}.$
+
+6. Verify that $\mathbf{X}^\top\mathbf{e} = \mathbf{0}.$
+
+:::
+
+
+::: {#sol-calculation}
+
+## Solution for @exr-calculation
+
+**Hand calculation**
+
+We have
+
+$$
+\mathbf{X}^\top\mathbf{X}
+=
+\begin{pmatrix}
+3 & 3\\
+3 & 5
+\end{pmatrix}.
+$$
+
+Also,
+
+$$
+\mathbf{X}^\top\mathbf{Y}
+=
+\begin{pmatrix}
+5\\
+6
+\end{pmatrix}.
+$$
+
+Therefore,
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y}
+=
+\begin{pmatrix}
+7/6\\
+1/2
+\end{pmatrix}.
+$$
+
+The fitted values are
+
+$$
+\hat{\mathbf{Y}}
+=
+\mathbf{X}\hat{\boldsymbol{\beta}}
+=
+\begin{pmatrix}
+7/6\\
+5/3\\
+13/6
+\end{pmatrix}.
+$$
+
+Thus, the residual vector is
+
+$$
+\mathbf{e}
+=
+\mathbf{Y}
+-
+\hat{\mathbf{Y}}
+=
+\begin{pmatrix}
+-1/6\\
+1/3\\
+-1/6
+\end{pmatrix}.
+$$
+
+**R calculation**
+
+```{r}
+# Define X and Y
+X <- matrix(
+  c(
+    1, 0,
+    1, 1,
+    1, 2
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+
+Y <- matrix(
+  c(1, 2, 2),
+  ncol = 1
+)
+
+# 1. Compute X'X
+XtX <- t(X) %*% X
+XtX
+
+# 2. Compute X'Y
+XtY <- t(X) %*% Y
+XtY
+
+# 3. Compute beta_hat
+beta_hat <- solve(XtX) %*% XtY
+beta_hat
+
+# 4. Compute fitted values
+Y_hat <- X %*% beta_hat
+Y_hat
+
+# 5. Compute residuals
+e <- Y - Y_hat
+e
+
+# Optional checks
+t(X) %*% e
+t(Y_hat) %*% e
+```
+
+:::
+
+::: {#exr-column-space}
+
+Explain in words what the column space
+
+   $$
+   \mathcal{C}(\mathbf{X})
+   $$
+
+   represents in a linear regression model.
+
+:::
+
+::: {#sol-column-space}
+
+The column space of $\mathbf{X}$ is the set of all response patterns that can be represented by the linear model.
+
+More intuitively, 
+  
+$\mathcal{C}(\mathbf{X})$ describes everything the model is capable of fitting. Anything outside this space cannot be explained by the predictors in $\mathbf{X}$.
+
+:::
 
 ### Consequence when an Intercept Is Included
 
@@ -2067,14 +2739,6 @@ confidence intervals, and hypothesis testing.
 
 ## Conceptual Problems
 
-1. Explain in words what the column space
-
-   $$
-   \mathcal{C}(\mathbf{X})
-   $$
-
-   represents in a linear regression model.
-
 2. Explain why
 
    $$
@@ -2166,11 +2830,7 @@ $$
 
 5. Compute the residual vector $\mathbf{e}.$
 
-6. Verify that
-
-   $\mathbf{X}^\top\mathbf{e}
-   =
-   \mathbf{0}.$
+6. Verify that $\mathbf{X}^\top\mathbf{e}=\mathbf{0}.$
 
 7. Compute the hat matrix $\mathbf{H}.$
 
@@ -2472,3 +3132,5 @@ These identities justify the derivative used in the least squares
 criterion.
 
 :::
+
+
