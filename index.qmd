@@ -27,7 +27,8 @@ Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Stat
 
 ## Assignment
 
--   [ ] A1, TBA
+- [ ] [A1](Assignment1.qmd), Due September 11, 2026
+- [ ] A2, TBA
 
 ## Exam
 
