@@ -165,7 +165,7 @@ $$
 =
 \begin{pmatrix}
 28\\
-70
+74
 \end{pmatrix}
 $$
 
