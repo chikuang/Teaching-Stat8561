@@ -21,6 +21,7 @@ book:
     - part: "Assignment"
       chapters:
         - Assignment1.qmd
+        - Assignment2.qmd
 
   navbar:
     right:

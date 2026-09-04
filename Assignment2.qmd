@@ -1,0 +1,181 @@
+---
+show-solutions: false
+---
+
+# Assignment 2 {.unnumbered}
+
+
+## Question 3: Distribution and Inference [12]
+
+Suppose a multiple linear regression model has $n=20$ observations and $p=3$ regression parameters. Assume
+
+$$
+  \mathbf{Y}
+\sim
+N_{20}
+\left(
+  \mathbf{X}\boldsymbol{\beta},
+  \sigma^2\mathbf{I}_{20}
+  \right).
+$$
+  
+  Suppose
+
+$$
+  \hat{\boldsymbol{\beta}}
+=
+  \begin{pmatrix}
+2.0\\
+1.5\\
+-0.5
+\end{pmatrix},
+$$
+  
+  $$
+  (\mathbf{X}^\top\mathbf{X})^{-1}
+=
+  \begin{pmatrix}
+0.20 & 0 & 0\\
+0 & 0.05 & 0\\
+0 & 0 & 0.08
+\end{pmatrix},
+$$
+  
+  and
+
+$$
+  \mathrm{SSE}=34.
+$$
+  
+  Use
+
+$$
+  t_{0.975,17}=2.110.
+$$
+  
+  ### (a) [3]
+  
+  Choose the correct distributions.
+
+For $\hat{\boldsymbol{\beta}}$:
+  
+  - [ ] **A.** $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$
+  
+  - [ ] **B.** $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$
+  
+  - [ ] **C.** $t_{17}$
+  
+  - [ ] **D.** $\chi^2_{17}$
+  
+  For $\mathrm{SSE}/\sigma^2$:
+  
+  - [ ] **A.** $N(0,1)$
+  
+  - [ ] **B.** $t_{17}$
+  
+  - [ ] **C.** $\chi^2_{17}$
+  
+  - [ ] **D.** $F_{3,17}$
+  
+  ::: {.solution .content-visible when-meta="show-solutions"}
+
+**Solution:** B and C
+
+:::
+  
+  ### (b) [2]
+  
+  Compute
+
+$$
+  \hat{\sigma}^2
+=
+  \frac{\mathrm{SSE}}{n-p}.
+$$
+  
+  $$
+  \hat{\sigma}^2 = \underline{\hspace{2cm}}.
+$$
+  
+  ::: {.solution .content-visible when-meta="show-solutions"}
+
+**Solution:**
+  
+  $$
+  \boxed{\hat{\sigma}^2=2}.
+$$
+  
+  :::
+  
+  ### (c) [4]
+  
+  For testing
+
+$$
+  H_0:\beta_1=0
+\qquad\text{versus}\qquad
+H_1:\beta_1\neq0,
+$$
+  
+  where $\beta_1$ is the second entry of $\boldsymbol{\beta}$, fill in the following:
+  
+  $$
+  \mathrm{SE}(\hat{\beta}_1)
+=
+  \underline{\hspace{2cm}},
+$$
+  
+  $$
+  t
+=
+  \underline{\hspace{2cm}},
+$$
+  
+  and choose the decision:
+  
+  - [ ] **A.** Reject $H_0$
+  
+  - [ ] **B.** Fail to reject $H_0$
+  
+  ::: {.solution .content-visible when-meta="show-solutions"}
+
+**Solution:**
+  
+  $$
+  \mathrm{SE}(\hat{\beta}_1)
+=
+  \sqrt{2(0.05)}
+=
+  0.3162,
+$$
+  
+  $$
+  t
+=
+  \frac{1.5}{0.3162}
+=
+  4.7434.
+$$
+  
+  Since $|4.7434|>2.110$, the answer is **A: Reject $H_0$**.
+
+:::
+  
+  ### (d) [3]
+  
+  Which of the following is the 95% confidence interval for $\beta_1$?
+  
+  - [ ] **A.** $(0.8329,\;2.1671)$
+  
+  - [ ] **B.** $(1.1838,\;1.8162)$
+  
+  - [ ] **C.** $(-0.6671,\;0.6671)$
+  
+  - [ ] **D.** $(0,\;3.0000)$
+  
+  ::: {.solution .content-visible when-meta="show-solutions"}
+
+**Solution:** A
+
+:::
+  

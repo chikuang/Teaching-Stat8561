@@ -147,7 +147,7 @@ $$
 =
 \begin{pmatrix}
 28\\
-77
+74
 \end{pmatrix}
 $$
 
@@ -433,179 +433,201 @@ enter `T` or `F`.
 
 :::
 
-## Question 3: Distribution and Inference [12]
+## Question 3: Consequences and Geometry of Least Squares [12]
 
-Suppose a multiple linear regression model has $n=20$ observations and $p=3$ regression parameters. Assume
+Continue using the data and fitted regression model from Questions 1 and 2.
 
-$$
-\mathbf{Y}
-\sim
-N_{20}
-\left(
-\mathbf{X}\boldsymbol{\beta},
-\sigma^2\mathbf{I}_{20}
-\right).
-$$
-
-Suppose
+Recall that
 
 $$
-\hat{\boldsymbol{\beta}}
+\hat{\beta}_0=2.0,
+\qquad
+\hat{\beta}_1=1.8.
+$$
+
+### (a) Fitted Values and Residuals [3]
+
+Compute the fitted values
+
+$$
+\hat{\mathbf{Y}}
+=
+\mathbf{X}\hat{\boldsymbol{\beta}}
+$$
+
+and the residual vector
+
+$$
+\mathbf{e}
+=
+\mathbf{Y}-\hat{\mathbf{Y}}.
+$$
+
+Fill in the blanks:
+
+$$
+\hat{\mathbf{Y}}
+=
+\begin{pmatrix}
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}
+\end{pmatrix},
+\qquad
+\mathbf{e}
+=
+\begin{pmatrix}
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}\\
+\underline{\hspace{1cm}}
+\end{pmatrix}.
+$$
+
+::: {.solution .content-visible when-meta="show-solutions"}
+
+**Solution:**
+
+$$
+\hat{\mathbf{Y}}
 =
 \begin{pmatrix}
 2.0\\
-1.5\\
--0.5
+3.8\\
+5.6\\
+7.4\\
+9.2
 \end{pmatrix},
-$$
-
-$$
-(\mathbf{X}^\top\mathbf{X})^{-1}
+\qquad
+\mathbf{e}
 =
 \begin{pmatrix}
-0.20 & 0 & 0\\
-0 & 0.05 & 0\\
-0 & 0 & 0.08
-\end{pmatrix},
+0\\
+0.2\\
+-0.6\\
+0.6\\
+-0.2
+\end{pmatrix}.
 $$
-
-and
-
-$$
-\mathrm{SSE}=34.
-$$
-
-Use
-
-$$
-t_{0.975,17}=2.110.
-$$
-
-### (a) [3]
-
-Choose the correct distributions.
-
-For $\hat{\boldsymbol{\beta}}$:
-
-- [ ] **A.** $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$
-
-- [ ] **B.** $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$
-
-- [ ] **C.** $t_{17}$
-
-- [ ] **D.** $\chi^2_{17}$
-
-For $\mathrm{SSE}/\sigma^2$:
-
-- [ ] **A.** $N(0,1)$
-
-- [ ] **B.** $t_{17}$
-
-- [ ] **C.** $\chi^2_{17}$
-
-- [ ] **D.** $F_{3,17}$
-
-::: {.solution .content-visible when-meta="show-solutions"}
-
-**Solution:** B and C
 
 :::
 
-### (b) [2]
 
-Compute
+### (b) Consequences of Including an Intercept [3]
 
-$$
-\hat{\sigma}^2
-=
-\frac{\mathrm{SSE}}{n-p}.
-$$
+For each statement, enter `T` or `F`.
 
-$$
-\hat{\sigma}^2 = \underline{\hspace{2cm}}.
-$$
+| Statement | T/F |
+| :--- | :---: |
+| The residuals satisfy $\sum_{i=1}^n e_i=0$. | `___` |
+| The fitted values satisfy $\bar{\hat{Y}}=\bar{Y}$. | `___` |
+| The vector $\mathbf{1}_n$ belongs to $\mathcal{C}(\mathbf{X})$. | `___` |
+| These properties necessarily hold for every regression model without an intercept. | `___` |
 
 ::: {.solution .content-visible when-meta="show-solutions"}
 
 **Solution:**
 
+| Statement | T/F |
+| :--- | :---: |
+| The residuals satisfy $\sum_{i=1}^n e_i=0$. | T |
+| The fitted values satisfy $\bar{\hat{Y}}=\bar{Y}$. | T |
+| The vector $\mathbf{1}_n$ belongs to $\mathcal{C}(\mathbf{X})$. | T |
+| These properties necessarily hold for every regression model without an intercept. | F |
+
+Because the model contains an intercept, $\mathbf{1}_n$ is a column of
+$\mathbf{X}$. Since $\mathbf{X}^\top\mathbf{e}=\mathbf{0}$,
+
 $$
-\boxed{\hat{\sigma}^2=2}.
+\mathbf{1}_n^\top\mathbf{e}=0,
+$$
+
+which implies
+
+$$
+\sum_{i=1}^n e_i=0
+$$
+
+and therefore
+
+$$
+\bar{\hat{Y}}=\bar{Y}.
 $$
 
 :::
 
-### (c) [4]
 
-For testing
+### (c) Residual-Maker Matrix [3]
 
-$$
-H_0:\beta_1=0
-\qquad\text{versus}\qquad
-H_1:\beta_1\neq0,
-$$
-
-where $\beta_1$ is the second entry of $\boldsymbol{\beta}$, fill in the following:
+Define
 
 $$
-\mathrm{SE}(\hat{\beta}_1)
+\mathbf{M}
 =
-\underline{\hspace{2cm}},
+\mathbf{I}_n-\mathbf{H}.
 $$
 
-$$
-t
-=
-\underline{\hspace{2cm}},
-$$
+For each statement, enter `T` or `F`.
 
-and choose the decision:
-
-- [ ] **A.** Reject $H_0$
-
-- [ ] **B.** Fail to reject $H_0$
+| Statement | T/F |
+| :--- | :---: |
+| $\mathbf{e}=\mathbf{M}\mathbf{Y}$ | `___` |
+| $\mathbf{M}^\top=\mathbf{M}$ | `___` |
+| $\mathbf{M}^2=\mathbf{M}$ | `___` |
+| $\mathbf{H}\mathbf{M}=\mathbf{0}$ | `___` |
 
 ::: {.solution .content-visible when-meta="show-solutions"}
 
 **Solution:**
 
-$$
-\mathrm{SE}(\hat{\beta}_1)
-=
-\sqrt{2(0.05)}
-=
-0.3162,
-$$
+| Statement | T/F |
+| :--- | :---: |
+| $\mathbf{e}=\mathbf{M}\mathbf{Y}$ | T |
+| $\mathbf{M}^\top=\mathbf{M}$ | T |
+| $\mathbf{M}^2=\mathbf{M}$ | T |
+| $\mathbf{H}\mathbf{M}=\mathbf{0}$ | T |
 
-$$
-t
-=
-\frac{1.5}{0.3162}
-=
-4.7434.
-$$
-
-Since $|4.7434|>2.110$, the answer is **A: Reject $H_0$**.
+The matrix $\mathbf{H}$ projects onto $\mathcal{C}(\mathbf{X})$,
+whereas $\mathbf{M}$ projects onto
+$\mathcal{C}(\mathbf{X})^\perp$.
 
 :::
 
-### (d) [3]
 
-Which of the following is the 95% confidence interval for $\beta_1$?
+### (d) Rank and Uniqueness [3]
 
-- [ ] **A.** $(0.8329,\;2.1671)$
+Suppose now that a design matrix $\mathbf{X}$ does **not** have full
+column rank.
 
-- [ ] **B.** $(1.1838,\;1.8162)$
+For each statement, enter `T` or `F`.
 
-- [ ] **C.** $(-0.6671,\;0.6671)$
-
-- [ ] **D.** $(0,\;3.0000)$
+| Statement | T/F |
+| :--- | :---: |
+| $(\mathbf{X}^\top\mathbf{X})^{-1}$ necessarily exists. | `___` |
+| The least squares coefficient vector $\hat{\boldsymbol{\beta}}$ may not be unique. | `___` |
+| The fitted vector $\hat{\mathbf{Y}}$ is still unique. | `___` |
+| The residual vector $\mathbf{e}$ is still unique. | `___` |
 
 ::: {.solution .content-visible when-meta="show-solutions"}
 
-**Solution:** A
+**Solution:**
+
+| Statement | T/F |
+| :--- | :---: |
+| $(\mathbf{X}^\top\mathbf{X})^{-1}$ necessarily exists. | F |
+| The least squares coefficient vector $\hat{\boldsymbol{\beta}}$ may not be unique. | T |
+| The fitted vector $\hat{\mathbf{Y}}$ is still unique. | T |
+| The residual vector $\mathbf{e}$ is still unique. | T |
+
+Even when several coefficient vectors produce the same least squares
+solution, the orthogonal projection of $\mathbf{Y}$ onto
+$\mathcal{C}(\mathbf{X})$ is unique.
 
 :::
+
 
 ## Question 4: Linear Regression in R [8]
 
