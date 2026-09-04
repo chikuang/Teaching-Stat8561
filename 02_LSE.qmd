@@ -1028,7 +1028,7 @@ Geometrically, two nonzero vectors are orthogonal if the angle between them is $
 
 ## Residual Vector
 
-After obtaining the least squares estimator, define the **residual
+After obtaining the LSE, define the **residual
 vector**
 
 $$
@@ -1064,26 +1064,10 @@ orthogonal to the model space $\mathcal{C}(\mathbf{X})$.
 
 ## Orthogonality of the Residuals
 
-Recall that the least squares estimator satisfies the normal equations
-
-$$
-\mathbf{X}^\top\mathbf{X}\hat{\boldsymbol{\beta}}
+Recall that the LSE satisfies the normal equations $\mathbf{X}^\top\mathbf{X}\hat{\boldsymbol{\beta}}
 =
-\mathbf{X}^\top\mathbf{Y}.
-$$
-
-Rearranging,
-
-$$
-\mathbf{X}^\top
-\left(
-\mathbf{Y}
--
-\mathbf{X}\hat{\boldsymbol{\beta}}
-\right)
-=
-\mathbf{0}.
-$$
+\mathbf{X}^\top\mathbf{Y}.$ If we rearrange, we have
+$\mathbf{X}^\top\left(\mathbf{Y}-\mathbf{X}\hat{\boldsymbol{\beta}}\right)=\mathbf{0}.$
 
 Since the residual vector is
 
@@ -1164,9 +1148,11 @@ $$
 }
 $$
 
-**Intuition.** The columns of $\mathbf{X}$ represent all directions that the linear model is allowed to use. After least squares has chosen the best fitted value, the remaining error $\mathbf{e}$ has no component left in any of these directions. Otherwise, we could move the fitted value within $\mathcal{C}(\mathbf{X})$ and reduce the residual sum of squares further.
 
 :::
+
+**Intuition.** The columns of $\mathbf{X}$ represent all directions that the linear model is allowed to use. After least squares has chosen the best fitted value, the remaining error $\mathbf{e}$ has no component left in any of these directions. Otherwise, we could move the fitted value within $\mathcal{C}(\mathbf{X})$ and reduce the residual sum of squares further.
+
 
 
 ::: {#prp-fundamental-orthogonal-decomposition}
@@ -1585,9 +1571,10 @@ $$
 :::
 
 
-### Properties of the Hat Matrix
+::: {#prp-hat-matrix}
 
-::: {.callout-property title="Properties of the Hat Matrix"}
+## Properties of the Hat Matrix
+
 
 When $\mathbf{X}$ has full column rank, the hat matrix satisfies:
 
@@ -2465,7 +2452,8 @@ abline(
 :::
 
 
-# What Happens Without Full Column Rank?
+
+## What Happens Without Full Column Rank?
 
 Suppose
 
@@ -2522,7 +2510,7 @@ in more detail later.
 :::
 
 
-# Interpretation of the Geometry
+## Interpretation of the Geometry
 
 The observed vector
 
@@ -2615,353 +2603,32 @@ Thus,
   theorem.
 
 
-# Looking Ahead: Statistical Properties of OLS
+## Looking Ahead: Statistical Properties of OLS
 
 ::: {.callout-note title="Looking Ahead"}
 
 Everything we have done so far is primarily **algebraic and geometric**.
 
-We defined
+We defined $\hat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{Y}$ by solving an optimization problem.
 
-$$
-\hat{\boldsymbol{\beta}}
-=
-(\mathbf{X}^\top\mathbf{X})^{-1}
-\mathbf{X}^\top\mathbf{Y}
-$$
-
-by solving an optimization problem.
-
-However, under the statistical model,
-
-$$
-\mathbf{Y}
-=
-\mathbf{X}\boldsymbol{\beta}
-+
-\boldsymbol{\varepsilon},
-$$
-
-the response $\mathbf{Y}$ is random.
-
-Therefore,
-
-$$
-\hat{\boldsymbol{\beta}}
-$$
-
-is also a random vector.
+However, under the statistical model, $\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\varepsilon},$ the response $\mathbf{Y}$ is random. Therefore, $\hat{\boldsymbol{\beta}}$ is also a random vector.
 
 In next chapter, we will study quantities such as
 
 $$
 \mathbb{E}
-(\hat{\boldsymbol{\beta}})
-$$
-
-and
-
-$$
-\operatorname{Var}
+(\hat{\boldsymbol{\beta}}),\quad \text{and}\quad \operatorname{Var}
 (\hat{\boldsymbol{\beta}}),
 $$
-
 followed by estimation of $\sigma^2$, sampling distributions,
 confidence intervals, and hypothesis testing.
 
 :::
 
 
-# In-Class Discussion Questions
+::: {.callout-note title = "Summary"}
 
-1. Why does minimizing
-
-   $$
-   \|\mathbf{Y}-\mathbf{X}\boldsymbol{\beta}\|_2^2
-   $$
-
-   lead to an orthogonality condition?
-
-2. What is the geometric meaning of
-
-   $$
-   \mathbf{X}^\top\mathbf{e}
-   =
-   \mathbf{0}?
-   $$
-
-3. Why are the normal equations called **normal** equations?
-
-4. Why is the hat matrix called a projection matrix?
-
-5. Why does
-
-   $$
-   \mathbf{H}^2
-   =
-   \mathbf{H}
-   $$
-
-   make sense geometrically?
-
-6. Why does including an intercept imply
-
-   $$
-   \sum_{i=1}^n e_i
-   =
-   0?
-   $$
-
-7. What is the difference between the roles of
-
-   $$
-   \mathbf{H}
-   $$
-
-   and
-
-   $$
-   \mathbf{M}
-   =
-   \mathbf{I}_n-\mathbf{H}?
-   $$
-
-8. If $\mathbf{X}$ does not have full column rank, why can the fitted
-   values still be unique even when
-   $\hat{\boldsymbol{\beta}}$ is not?
-
-
-# Practice Problems
-
-## Conceptual Problems
-
-2. Explain why
-
-   $$
-   \mathbf{X}^\top\mathbf{e}
-   =
-   \mathbf{0}
-   $$
-
-   is both an algebraic and a geometric statement.
-
-3. Explain why
-
-   $$
-   \hat{\mathbf{Y}}
-   =
-   \mathbf{H}\mathbf{Y}
-   $$
-
-   is an orthogonal projection.
-
-4. Explain the difference between
-
-   $$
-   \mathbf{H}
-   $$
-
-   and
-
-   $$
-   \mathbf{M}
-   =
-   \mathbf{I}_n-\mathbf{H}.
-   $$
-
-5. Why does the least squares estimator not require normal errors?
-
-6. Why is full column rank needed for
-
-   $$
-   (\mathbf{X}^\top\mathbf{X})^{-1}
-   $$
-
-   to exist?
-
-7. Explain why
-
-   $$
-   \hat{\boldsymbol{\beta}}
-   $$
-
-   may fail to be unique while
-
-   $$
-   \hat{\mathbf{Y}}
-   $$
-
-   remains unique.
-
-
-## Computational Problems
-
-Let
-
-$$
-\mathbf{X}
-=
-\begin{pmatrix}
-1 & 0\\
-1 & 1\\
-1 & 2
-\end{pmatrix},
-\qquad
-\mathbf{Y}
-=
-\begin{pmatrix}
-1\\
-2\\
-2
-\end{pmatrix}.
-$$
-
-1. Compute $\mathbf{X}^\top\mathbf{X}.$
-
-2. Compute $\mathbf{X}^\top\mathbf{Y}.$
-
-3. Find $\hat{\boldsymbol{\beta}}.$
-
-4. Compute $\hat{\mathbf{Y}}.$
-
-5. Compute the residual vector $\mathbf{e}.$
-
-6. Verify that $\mathbf{X}^\top\mathbf{e}=\mathbf{0}.$
-
-7. Compute the hat matrix $\mathbf{H}.$
-
-8. Verify that $\mathbf{H}^\top= \mathbf{H}$ and $\mathbf{H}^2=\mathbf{H}.$
-
-9. Compute $\mathbf{M}=\mathbf{I}_n-\mathbf{H}.$
-
-10. Verify that $\mathbf{e}=\mathbf{M}\mathbf{Y}.$
-
-
-## Proof-Based Problems
-
-1. Prove that
-
-   $$
-   \mathbf{X}^\top\mathbf{X}
-   $$
-
-   is positive semidefinite.
-
-2. Show that if $\mathbf{X}$ has full column rank, then
-
-   $$
-   \mathbf{X}^\top\mathbf{X}
-   $$
-
-   is positive definite.
-
-3. Prove that the hat matrix
-
-   $$
-   \mathbf{H}
-   =
-   \mathbf{X}
-   (\mathbf{X}^\top\mathbf{X})^{-1}
-   \mathbf{X}^\top
-   $$
-
-   is symmetric.
-
-4. Prove that $\mathbf{H}$ is idempotent.
-
-5. Prove that
-
-   $$
-   \mathbf{H}\mathbf{X}
-   =
-   \mathbf{X}.
-   $$
-
-6. Prove that
-
-   $$
-   \mathbf{M}
-   =
-   \mathbf{I}_n-\mathbf{H}
-   $$
-
-   is symmetric and idempotent.
-
-7. Show that
-
-   $$
-   \mathbf{H}\mathbf{M}
-   =
-   \mathbf{0}.
-   $$
-
-
-# Suggested Homework
-
-Complete the following tasks:
-
-1. Derive the normal equations from
-
-   $$
-   S(\boldsymbol{\beta})
-   =
-   \|
-   \mathbf{Y}
-   -
-   \mathbf{X}\boldsymbol{\beta}
-   \|_2^2.
-   $$
-
-2. Show that the least squares solution satisfies
-
-   $$
-   \mathbf{X}^\top\mathbf{e}
-   =
-   \mathbf{0}.
-   $$
-
-3. Explain why this implies that
-   $\hat{\mathbf{Y}}$ is the orthogonal projection of
-   $\mathbf{Y}$ onto $\mathcal{C}(\mathbf{X})$.
-
-4. Prove that the hat matrix is symmetric and idempotent.
-
-5. Prove that the residual-maker matrix is symmetric and idempotent.
-
-6. Fit a simple regression model in R and compute:
-
-   - $\hat{\boldsymbol{\beta}}$;
-   - $\hat{\mathbf{Y}}$;
-   - $\mathbf{e}$;
-   - $\mathbf{H}$;
-   - $\mathbf{M}$.
-
-7. Numerically verify in R that
-
-   $$
-   \mathbf{X}^\top\mathbf{e}
-   =
-   \mathbf{0},
-   $$
-
-   $$
-   \mathbf{H}^2
-   =
-   \mathbf{H},
-   $$
-
-   and
-
-   $$
-   \mathbf{M}^2
-   =
-   \mathbf{M}.
-   $$
-
-
-# Summary
-
-In this week, we introduced the least squares estimator through the
+In this chapter, we introduced the least squares estimator through the
 optimization problem
 
 $$
@@ -3064,6 +2731,102 @@ $\hat{\boldsymbol{\beta}}$ as a random vector and study its expectation,
 variance, sampling distribution, and the foundations of statistical
 inference for linear models.
 
+:::
+
+## Practice at Home
+
+1. Explain why
+
+   $$
+   \mathbf{X}^\top\mathbf{e}
+   =
+   \mathbf{0}
+   $$
+
+   means that the residual vector is orthogonal to the column space
+   $\mathcal{C}(\mathbf{X})$.
+
+2. Explain why
+
+   $$
+   \hat{\mathbf{Y}}
+   =
+   \mathbf{H}\mathbf{Y}
+   $$
+
+   is an orthogonal projection, and why
+
+   $$
+   \mathbf{H}^2
+   =
+   \mathbf{H}.
+   $$
+
+3. If the model contains an intercept, explain why
+
+   $$
+   \sum_{i=1}^n e_i
+   =
+   0
+   $$
+
+   and hence
+
+   $$
+   \bar{\hat{Y}}
+   =
+   \bar{Y}.
+   $$
+
+4. Let
+
+   $$
+   \mathbf{X}
+   =
+   \begin{pmatrix}
+   1 & 0\\
+   1 & 1\\
+   1 & 2
+   \end{pmatrix},
+   \qquad
+   \mathbf{Y}
+   =
+   \begin{pmatrix}
+   1\\
+   2\\
+   2
+   \end{pmatrix}.
+   $$
+
+   Compute
+
+   $$
+   \hat{\boldsymbol{\beta}},
+   \qquad
+   \hat{\mathbf{Y}},
+   \qquad
+   \mathbf{e},
+   $$
+
+   and verify that
+
+   $$
+   \mathbf{X}^\top\mathbf{e}
+   =
+   \mathbf{0}.
+   $$
+
+5. Show that the hat matrix
+
+   $$
+   \mathbf{H}
+   =
+   \mathbf{X}
+   (\mathbf{X}^\top\mathbf{X})^{-1}
+   \mathbf{X}^\top
+   $$
+
+   is symmetric and idempotent.
 
 ---
 
