@@ -32,7 +32,7 @@ Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Stat
 
 ## Exam
 
--   TBA
+- [ ] Exam 1, October 14, 2026
 
 ## Topics and Corresponding Lectures
 
@@ -43,6 +43,7 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 |  ✅      | | [Welcome and Overview](intro.qmd)|    1    |
 |   ✅      |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--3   |
 |    ️⏳ ️   |  Ch. 2  | [Least Squares Estimation](02_LSE.qmd) |    3--   |
+|    ️⏳ ️   |  Ch. 3  | [Inference on Least Square Estimation](03_OLS_inference.qmd) |    3--   |
 <!-- 🚧🛠️⏳   -->
 
 ## Recommended Textbooks

@@ -1,20 +1,23 @@
-# Week 3: Distribution Theory of OLS and Inference
+# Distribution Theory of OLS and Inference
+
+**NOTE: This Chapter is under construction now!**
 
 In this week, we study the sampling distribution of the ordinary least squares estimator under the normal linear model. This allows us to quantify uncertainty, estimate the error variance, construct confidence intervals, perform hypothesis tests, and distinguish between inference for the mean response and prediction for a future observation.
 
-## Learning Objectives
 
-By the end of this week, students should be able to:
+> Learning Objectives
+>
+> By the end of this chapter, students should be able to:
+> 
+> state the normal linear model;
+> derive the distribution of the OLS estimator;
+> obtain an unbiased estimator of $\sigma^2$;
+> understand the role of chi-square, $t$, and $F$ distributions in linear regression;
+> construct confidence intervals for regression coefficients and mean responses;
+> perform hypothesis tests for individual coefficients and general linear hypotheses;
+> distinguish between confidence intervals for the mean response and prediction intervals for a new observation.
 
-- state the normal linear model;
-- derive the distribution of the OLS estimator;
-- obtain an unbiased estimator of $\sigma^2$;
-- understand the role of chi-square, $t$, and $F$ distributions in linear regression;
-- construct confidence intervals for regression coefficients and mean responses;
-- perform hypothesis tests for individual coefficients and general linear hypotheses;
-- distinguish between confidence intervals for the mean response and prediction intervals for a new observation.
-
-## Reading
+**Reading**
 
 Recommended reading for this week:
 
@@ -25,7 +28,8 @@ Recommended reading for this week:
 - Montgomery, Peck, and Vining:
   - sections on confidence intervals, hypothesis testing, and prediction in linear regression
 
-# 1. Review of the Linear Model
+
+::: {.callout-note title="Recap of the Linear Model"}
 
 Recall the linear model
 
@@ -40,7 +44,7 @@ where
 - $\boldsymbol{\beta}$ is a $p \times 1$ unknown parameter vector,
 - $\boldsymbol{\varepsilon}$ is an $n \times 1$ error vector.
 
-From Week 2, when $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
+From @sec-lse, when $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
 
 $$
 \hat{\boldsymbol{\beta}}
@@ -67,6 +71,8 @@ $$
 $$
 
 To obtain exact finite-sample inference, we now strengthen the model assumptions.
+
+:::
 
 # 2. The Normal Linear Model
 

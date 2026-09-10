@@ -1,4 +1,4 @@
-# Least Squares Estimation
+# Least Squares Estimation {#sec-lse}
 
 In this chapter, we study one of the fundamental ideas in linear models:
 **least squares estimation**.
@@ -29,7 +29,7 @@ terms of **orthogonal projection**.
 
 > Learning Objectives
 >
-> By the end of this week, students should be able to:
+> By the end of this chapter, students should be able to:
 >
 > - formulate least squares estimation as an optimization problem;
 > - define the residual sum of squares;

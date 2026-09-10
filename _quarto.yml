@@ -12,13 +12,14 @@ book:
     - intro.qmd
     - 01_matrix_representation.qmd
     - 02_LSE.qmd
+    - 03_OLS_inference.qmd
     - references.qmd
 
     - part: "Appendix"
       chapters:
         - App_A-matrix.qmd
 
-    - part: "Assignment"
+    - part: "Assessments"
       chapters:
         - Assignment1.qmd
         - Assignment2.qmd
