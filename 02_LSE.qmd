@@ -1735,8 +1735,6 @@ $$
 $$
 
 
-
-
 ::: {#def-residual-maker-matrix}
 
 ## Residual-Maker Matrix
@@ -1873,6 +1871,51 @@ $$
 \mathbf{I}_n.
 }
 $$
+
+:::
+
+
+## The common name to refer to what we have done -- Ordinary Least Squares (OLS)
+
+Now that we have seen both the algebraic and geometric views of least
+squares, we can explain the name **ordinary least squares**, or **OLS**.
+
+- **Squares:** we measure the discrepancy using squared residuals,
+
+  $$
+  \sum_{i=1}^n e_i^2
+  =
+  \|\mathbf{Y}-\mathbf{X}\boldsymbol{\beta}\|_2^2.
+  $$
+
+- **Least:** we choose $\boldsymbol{\beta}$ to make this quantity as
+  small as possible.
+
+- **Ordinary:** we use the usual unweighted sum of squared residuals,
+  so each observation enters the criterion in the same way.
+
+Thus,
+
+$$
+\boxed{
+\text{OLS}
+=
+\text{minimize the ordinary sum of squared residuals}.
+}
+$$
+
+Geometrically, OLS finds the point in $\mathcal{C}(\mathbf{X})$ that is
+closest to $\mathbf{Y}$ using ordinary Euclidean distance.
+
+Later, we will consider extensions such as weighted least squares and
+generalized least squares.
+
+
+::: {#exr-why-ols}
+
+## Quick Check
+
+What do **ordinary**, **least**, and **squares** each mean in OLS?
 
 :::
 
@@ -2601,6 +2644,9 @@ Thus,
 - the residual-maker matrix projects onto the orthogonal complement;
 - sum-of-squares decompositions are consequences of the Pythagorean
   theorem.
+
+
+
 
 
 ## Looking Ahead: Statistical Properties of OLS

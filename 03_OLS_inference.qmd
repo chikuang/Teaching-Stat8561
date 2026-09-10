@@ -1,166 +1,27 @@
-# Distribution Theory of OLS and Inference
+# Distribution Theory of OLS and Inference {#sec-ols-inference}
 
-**NOTE: This Chapter is under construction now!**
+In the previous chapter, we studied least squares primarily from an
+**algebraic and geometric** point of view.
 
-In this week, we study the sampling distribution of the ordinary least squares estimator under the normal linear model. This allows us to quantify uncertainty, estimate the error variance, construct confidence intervals, perform hypothesis tests, and distinguish between inference for the mean response and prediction for a future observation.
-
-
-> Learning Objectives
->
-> By the end of this chapter, students should be able to:
-> 
-> state the normal linear model;
-> derive the distribution of the OLS estimator;
-> obtain an unbiased estimator of $\sigma^2$;
-> understand the role of chi-square, $t$, and $F$ distributions in linear regression;
-> construct confidence intervals for regression coefficients and mean responses;
-> perform hypothesis tests for individual coefficients and general linear hypotheses;
-> distinguish between confidence intervals for the mean response and prediction intervals for a new observation.
-
-**Reading**
-
-Recommended reading for this week:
-
-- Seber and Lee:
-  - sections on the distribution theory of least squares estimators
-  - estimation of the error variance
-  - inference for regression coefficients
-- Montgomery, Peck, and Vining:
-  - sections on confidence intervals, hypothesis testing, and prediction in linear regression
-
-
-::: {.callout-note title="Recap of the Linear Model"}
-
-Recall the linear model
-
-$$
-\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
-$$
-
-where
-
-- $\mathbf{Y}$ is an $n \times 1$ response vector,
-- $\mathbf{X}$ is an $n \times p$ design matrix,
-- $\boldsymbol{\beta}$ is a $p \times 1$ unknown parameter vector,
-- $\boldsymbol{\varepsilon}$ is an $n \times 1$ error vector.
-
-From @sec-lse, when $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
+We obtained
 
 $$
 \hat{\boldsymbol{\beta}}
 =
-(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y},
 $$
 
-We also know that
+and showed that
 
 $$
-\mathbb{E}[\hat{\boldsymbol{\beta}}] = \boldsymbol{\beta},
+\hat{\mathbf{Y}}
+=
+\mathbf{H}\mathbf{Y},
 \qquad
-\mathrm{Var}(\hat{\boldsymbol{\beta}})
-=
-\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1},
-$$
-
-provided that
-
-$$
-\mathbb{E}[\boldsymbol{\varepsilon}] = \mathbf{0},
-\qquad
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n.
-$$
-
-To obtain exact finite-sample inference, we now strengthen the model assumptions.
-
-:::
-
-# 2. The Normal Linear Model
-
-We assume
-
-$$
-\mathbf{Y} \sim N_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n).
-$$
-
-Equivalently,
-
-$$
-\boldsymbol{\varepsilon} \sim N_n(\mathbf{0}, \sigma^2 \mathbf{I}_n).
-$$
-
-This is called the **normal linear model**.
-
-Under this assumption, exact sampling distributions can be derived for the OLS estimator, residual sum of squares, and many test statistics.
-
-## Why normality matters
-
-Without normality, OLS is still unbiased under the standard moment assumptions, but exact $t$ and $F$ inference generally no longer holds in finite samples.
-
-Normality gives us:
-
-- exact distribution of $\hat{\boldsymbol{\beta}}$;
-- exact chi-square distribution for the residual sum of squares;
-- exact $t$ and $F$ tests.
-
-# 3. Distribution of the OLS Estimator
-
-Since
-
-$$
-\hat{\boldsymbol{\beta}}
-=
-(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y},
-$$
-
-the estimator is a linear transformation of $\mathbf{Y}$.
-
-Because a linear transformation of a multivariate normal vector is again multivariate normal, we immediately obtain:
-
-$$
-\hat{\boldsymbol{\beta}}
-\sim
-N_p\!\left(
-\boldsymbol{\beta},
-\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}
-\right).
-$$
-
-Thus,
-
-- the mean of $\hat{\boldsymbol{\beta}}$ is $\boldsymbol{\beta}$;
-- the covariance matrix of $\hat{\boldsymbol{\beta}}$ is $\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}$.
-
-## Individual coefficients
-
-For the $j$th coefficient,
-
-$$
-\hat{\beta}_j \sim N\!\left(\beta_j, \sigma^2 c_{jj}\right),
-$$
-
-where $c_{jj}$ is the $j$th diagonal element of $(\mathbf{X}^\top \mathbf{X})^{-1}$.
-
-Hence,
-
-$$
-\frac{\hat{\beta}_j - \beta_j}{\sigma \sqrt{c_{jj}}}
-\sim N(0,1).
-$$
-
-This is useful, but it still depends on the unknown $\sigma$.
-
-# 4. Residual Sum of Squares and Estimation of $\sigma^2$
-
-## Residual vector
-
-The residual vector is
-
-$$
 \mathbf{e}
 =
-\mathbf{Y} - \hat{\mathbf{Y}}
-=
-(\mathbf{I}_n - \mathbf{H})\mathbf{Y},
+\mathbf{M}\mathbf{Y},
 $$
 
 where
@@ -168,666 +29,3053 @@ where
 $$
 \mathbf{H}
 =
-\mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top
+\mathbf{X}
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
 $$
 
-is the hat matrix.
+and
 
-## Residual sum of squares
+$$
+\mathbf{M}
+=
+\mathbf{I}_n-\mathbf{H}.
+$$
+
+We now move from **estimation** to **statistical inference**.
+
+Since $\mathbf{Y}$ is random, quantities such as
+
+$$
+\hat{\boldsymbol{\beta}},
+\qquad
+\hat{\mathbf{Y}},
+\qquad
+\mathbf{e},
+\qquad
+\mathrm{SSE}
+$$
+
+are also random.
+
+Our goal is to understand their sampling distributions and use them to
+quantify uncertainty.
+
+> Learning Objectives
+>
+> By the end of this chapter, students should be able to:
+>
+> - derive the expectation and variance of the OLS estimator;
+> - state the normal linear model;
+> - derive the distribution of the OLS estimator under normality;
+> - explain the distribution of the residual sum of squares;
+> - explain why the residual degrees of freedom are $n-p$;
+> - estimate $\sigma^2$ using the mean squared error;
+> - explain why $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ are independent;
+> - construct confidence intervals for regression coefficients;
+> - perform hypothesis tests for regression coefficients;
+> - perform inference for linear combinations of regression coefficients;
+> - distinguish inference for a mean response from prediction of a future observation;
+> - interpret standard regression output from R.
+
+**Reading**
+
+Recommended reading for this chapter:
+
+- Seber and Lee:
+  - sections on distribution theory of least squares estimators;
+  - estimation of the error variance;
+  - inference for regression coefficients.
+- Montgomery, Peck, and Vining:
+  - sections on confidence intervals;
+  - hypothesis testing;
+  - estimation and prediction in linear regression.
+
+
+::: {.callout-note title="Recap from Least Squares"}
+
+From @sec-lse, when $\mathbf{X}$ has full column rank,
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y}.
+$$
+
+We also have
+
+$$
+\hat{\mathbf{Y}}
+=
+\mathbf{H}\mathbf{Y},
+\qquad
+\mathbf{e}
+=
+\mathbf{M}\mathbf{Y},
+$$
+
+with
+
+$$
+\mathbf{H}+\mathbf{M}
+=
+\mathbf{I}_n
+$$
+
+and
+
+$$
+\mathbf{H}\mathbf{M}
+=
+\mathbf{M}\mathbf{H}
+=
+\mathbf{0}.
+$$
+
+Geometrically,
+
+$$
+\mathbf{Y}
+=
+\hat{\mathbf{Y}}
++
+\mathbf{e}
+$$
+
+is an orthogonal decomposition.
+
+In this chapter, we will see that this geometric decomposition also
+provides the foundation for regression inference.
+
+:::
+
+
+::: {.callout-important title="Throughout This Chapter"}
+
+We treat the design matrix $\mathbf{X}$ as fixed.
+
+If the predictors are random, the results can instead be interpreted
+conditionally on the observed design matrix $\mathbf{X}$.
+
+:::
+
+
+## Mean and Variance of the OLS Estimator
+
+Before introducing normality, we can already study the expectation and
+variance of the OLS estimator.
+
+Assume
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0}
+$$
+
+and
+
+$$
+\operatorname{Var}(\boldsymbol{\varepsilon})
+=
+\sigma^2\mathbf{I}_n.
+$$
+
+Recall that
+
+$$
+\mathbf{Y}
+=
+\mathbf{X}\boldsymbol{\beta}
++
+\boldsymbol{\varepsilon}.
+$$
+
+Substituting this into the OLS estimator gives
+
+\begin{align*}
+\hat{\boldsymbol{\beta}}
+&=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y}\\
+&=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\left(
+\mathbf{X}\boldsymbol{\beta}
++
+\boldsymbol{\varepsilon}
+\right)\\
+&=
+\boldsymbol{\beta}
++
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon}.
+\end{align*}
+
+Thus,
+
+$$
+\boxed{
+\hat{\boldsymbol{\beta}}
+=
+\boldsymbol{\beta}
++
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon}.
+}
+$$
+
+This representation will be useful throughout the chapter.
+
+
+::: {#prp-mean-variance-ols}
+
+## Mean and Variance of OLS
+
+Under
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0}
+$$
+
+and
+
+$$
+\operatorname{Var}(\boldsymbol{\varepsilon})
+=
+\sigma^2\mathbf{I}_n,
+$$
+
+the OLS estimator satisfies
+
+$$
+\boxed{
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\boldsymbol{\beta}
+}
+$$
+
+and
+
+$$
+\boxed{
+\operatorname{Var}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}.
+}
+$$
+
+:::
+
+
+### Why Is OLS Unbiased?
+
+Using
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\boldsymbol{\beta}
++
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon},
+$$
+
+we obtain
+
+\begin{align*}
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+&=
+\boldsymbol{\beta}
++
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\mathbb{E}
+\left(
+\boldsymbol{\varepsilon}
+\right)\\
+&=
+\boldsymbol{\beta}.
+\end{align*}
+
+Thus,
+
+$$
+\boxed{
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\boldsymbol{\beta}.
+}
+$$
+
+OLS is therefore an **unbiased estimator** of
+$\boldsymbol{\beta}$.
+
+Intuitively, if we repeated the experiment many times using the same
+design matrix, the OLS estimates would fluctuate around the true
+parameter vector.
+
+
+### Variance of OLS
+
+Similarly,
+
+\begin{align*}
+\operatorname{Var}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+&=
+\operatorname{Var}
+\left[
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon}
+\right]\\
+&=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\operatorname{Var}
+(\boldsymbol{\varepsilon})
+\mathbf{X}
+(\mathbf{X}^\top\mathbf{X})^{-1}\\
+&=
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}.
+\end{align*}
+
+
+::: {.callout-important title="Normality Is Not Needed Yet"}
+
+The results
+
+$$
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\boldsymbol{\beta}
+$$
+
+and
+
+$$
+\operatorname{Var}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}
+$$
+
+do **not** require normally distributed errors.
+
+They follow from the first two moment assumptions
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0}
+$$
+
+and
+
+$$
+\operatorname{Var}(\boldsymbol{\varepsilon})
+=
+\sigma^2\mathbf{I}_n.
+$$
+
+Normality becomes important when we want exact finite sample
+distributions and inference.
+
+:::
+
+
+::: {#exr-assumptions-ols}
+
+## Which Assumptions Are Needed?
+
+Suppose
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0}
+$$
+
+and
+
+$$
+\operatorname{Var}(\boldsymbol{\varepsilon})
+=
+\sigma^2\mathbf{I}_n.
+$$
+
+Do we need to assume that the errors are normally distributed to
+conclude that
+
+$$
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\boldsymbol{\beta}?
+$$
+
+:::
+
+
+::: {#sol-assumptions-ols}
+
+No.
+
+Normality is **not** required for unbiasedness.
+
+The result follows from
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\boldsymbol{\beta}
++
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon}
+$$
+
+and
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0}.
+$$
+
+Normality will be needed later for exact finite sample inference.
+
+:::
+
+
+## The Normal Linear Model
+
+To obtain exact sampling distributions, we now strengthen the
+assumptions.
+
+
+::: {#def-normal-linear-model}
+
+## Normal Linear Model
+
+The **normal linear model** assumes
+
+$$
+\boxed{
+\mathbf{Y}
+\sim
+N_n
+\left(
+\mathbf{X}\boldsymbol{\beta},
+\sigma^2\mathbf{I}_n
+\right).
+}
+$$
+
+Equivalently,
+
+$$
+\boxed{
+\boldsymbol{\varepsilon}
+\sim
+N_n
+\left(
+\mathbf{0},
+\sigma^2\mathbf{I}_n
+\right).
+}
+$$
+
+:::
+
+
+Under this assumption:
+
+- each response has a normal distribution;
+- the errors have common variance $\sigma^2$;
+- the errors are independent;
+- exact finite sample distributions can be obtained for many regression
+  statistics.
+
+
+::: {.callout-note title="Why Does Normality Matter?"}
+
+Least squares itself does not require normality.
+
+Normality is introduced because it gives us exact distributions for
+
+$$
+\hat{\boldsymbol{\beta}},
+\qquad
+\mathrm{SSE},
+\qquad
+T,
+\qquad
+F.
+$$
+
+These distributions allow us to construct exact finite sample
+confidence intervals and hypothesis tests.
+
+:::
+
+
+::: {#exr-why-normality}
+
+## What Changes When We Add Normality?
+
+Suppose the errors satisfy
+
+$$
+\mathbb{E}(\boldsymbol{\varepsilon})
+=
+\mathbf{0},
+\qquad
+\operatorname{Var}(\boldsymbol{\varepsilon})
+=
+\sigma^2\mathbf{I}_n,
+$$
+
+but are not normally distributed.
+
+Which of the following can still hold?
+
+1. OLS can still be computed.
+
+2. OLS can still be unbiased.
+
+3. We can still have
+
+   $$
+   \operatorname{Var}
+   \left(
+   \hat{\boldsymbol{\beta}}
+   \right)
+   =
+   \sigma^2
+   (\mathbf{X}^\top\mathbf{X})^{-1}.
+   $$
+
+4. Exact finite sample $t$ and $F$ distributions automatically hold.
+
+:::
+
+
+::: {#sol-why-normality}
+
+Statements 1, 2, and 3 can still hold.
+
+Statement 4 does not generally hold.
+
+Normality is not required to define OLS or derive its mean and
+variance. Its main role here is to provide exact finite sample
+distributions for inference.
+
+:::
+
+
+## Distribution of the OLS Estimator
+
+Recall that
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top\mathbf{Y}.
+$$
+
+Thus, $\hat{\boldsymbol{\beta}}$ is a **linear transformation** of
+$\mathbf{Y}$.
+
+A fundamental property of the multivariate normal distribution is that
+a linear transformation of a multivariate normal vector is again
+multivariate normal.
+
+
+::: {#thm-distribution-ols}
+
+## Distribution of the OLS Estimator
+
+Under the normal linear model,
+
+$$
+\boxed{
+\hat{\boldsymbol{\beta}}
+\sim
+N_p
+\left(
+\boldsymbol{\beta},
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\right).
+}
+$$
+
+:::
+
+
+Let
+
+$$
+\mathbf{C}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}.
+$$
+
+Then
+
+$$
+\operatorname{Var}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\sigma^2\mathbf{C}.
+$$
+
+If $c_{jj}$ denotes the $j$th diagonal element of $\mathbf{C}$, then
+
+$$
+\hat{\beta}_j
+\sim
+N
+\left(
+\beta_j,
+\sigma^2c_{jj}
+\right).
+$$
+
+Therefore,
+
+$$
+\boxed{
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\sigma\sqrt{c_{jj}}
+}
+\sim
+N(0,1).
+}
+$$
+
+
+::: {#exr-variance-coefficient}
+
+## Reading the Covariance Matrix
+
+Let
+
+$$
+\mathbf{C}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}.
+$$
+
+If $c_{jj}$ is the $j$th diagonal element of $\mathbf{C}$:
+
+1. What is $\operatorname{Var}(\hat{\beta}_j)$?
+
+2. What happens to the uncertainty of $\hat{\beta}_j$ if $c_{jj}$
+   becomes larger?
+
+:::
+
+
+::: {#sol-variance-coefficient}
+
+The variance is
+
+$$
+\boxed{
+\operatorname{Var}(\hat{\beta}_j)
+=
+\sigma^2c_{jj}.
+}
+$$
+
+Therefore, a larger $c_{jj}$ means greater sampling variability and
+less precise estimation of $\beta_j$.
+
+Thus, the precision of OLS depends not only on $\sigma^2$, but also on
+the design matrix $\mathbf{X}$.
+
+:::
+
+
+There is still one difficulty.
+
+The quantity
+
+$$
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\sigma\sqrt{c_{jj}}
+}
+$$
+
+depends on the unknown parameter $\sigma$.
+
+Before performing inference, we need to estimate $\sigma^2$.
+
+
+::: {#exr-unknown-sigma}
+
+## Why Can We Not Use the Normal Statistic Directly?
+
+We have
+
+$$
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\sigma\sqrt{c_{jj}}
+}
+\sim
+N(0,1).
+$$
+
+Why can we usually not use this statistic directly for inference?
+
+:::
+
+
+::: {#sol-unknown-sigma}
+
+Because the error standard deviation $\sigma$ is unknown.
+
+We therefore need to estimate $\sigma$ from the data.
+
+Replacing $\sigma$ with an estimator will lead naturally to the
+$t$ distribution.
+
+:::
+
+
+## Residual Sum of Squares and Estimation of $\sigma^2$
+
+Recall from @sec-lse that
+
+$$
+\mathbf{e}
+=
+\mathbf{M}\mathbf{Y},
+$$
+
+where
+
+$$
+\mathbf{M}
+=
+\mathbf{I}_n-\mathbf{H}.
+$$
+
+Since
+
+$$
+\mathbf{M}\mathbf{X}
+=
+\mathbf{0},
+$$
+
+we have
+
+\begin{align*}
+\mathbf{e}
+&=
+\mathbf{M}\mathbf{Y}\\
+&=
+\mathbf{M}
+\left(
+\mathbf{X}\boldsymbol{\beta}
++
+\boldsymbol{\varepsilon}
+\right)\\
+&=
+\mathbf{M}\boldsymbol{\varepsilon}.
+\end{align*}
+
+Thus,
+
+$$
+\boxed{
+\mathbf{e}
+=
+\mathbf{M}\boldsymbol{\varepsilon}.
+}
+$$
+
+The residual vector therefore contains the part of the random error that
+lies outside the model space.
+
+
+### Residual Sum of Squares
 
 The residual sum of squares is
 
 $$
 \mathrm{SSE}
 =
-\mathbf{e}^\top \mathbf{e}
+\mathbf{e}^\top\mathbf{e}.
+$$
+
+Since
+
+$$
+\mathbf{e}
 =
-(\mathbf{Y} - \mathbf{X}\hat{\boldsymbol{\beta}})^\top
-(\mathbf{Y} - \mathbf{X}\hat{\boldsymbol{\beta}}).
+\mathbf{M}\boldsymbol{\varepsilon},
 $$
 
-Equivalently,
+and $\mathbf{M}$ is symmetric and idempotent,
+
+\begin{align*}
+\mathrm{SSE}
+&=
+\boldsymbol{\varepsilon}^\top
+\mathbf{M}^\top
+\mathbf{M}
+\boldsymbol{\varepsilon}\\
+&=
+\boldsymbol{\varepsilon}^\top
+\mathbf{M}
+\boldsymbol{\varepsilon}.
+\end{align*}
+
+Therefore,
 
 $$
+\boxed{
 \mathrm{SSE}
 =
-\mathbf{Y}^\top(\mathbf{I}_n - \mathbf{H})\mathbf{Y}.
+\boldsymbol{\varepsilon}^\top
+\mathbf{M}
+\boldsymbol{\varepsilon}.
+}
 $$
 
-## Distribution of SSE
+
+### Distribution of SSE
 
 Under the normal linear model,
 
 $$
+\frac{\boldsymbol{\varepsilon}}{\sigma}
+\sim
+N_n
+\left(
+\mathbf{0},
+\mathbf{I}_n
+\right).
+$$
+
+Let
+
+$$
+\mathbf{Z}
+=
+\frac{\boldsymbol{\varepsilon}}{\sigma}.
+$$
+
+Then
+
+$$
+\frac{\mathrm{SSE}}{\sigma^2}
+=
+\mathbf{Z}^\top
+\mathbf{M}
+\mathbf{Z}.
+$$
+
+Recall that $\mathbf{M}$ is symmetric and idempotent and
+
+$$
+\operatorname{rank}(\mathbf{M})
+=
+n-p.
+$$
+
+Therefore,
+
+
+::: {#thm-distribution-sse}
+
+## Distribution of the Residual Sum of Squares
+
+Under the normal linear model,
+
+$$
+\boxed{
+\frac{\mathrm{SSE}}{\sigma^2}
+\sim
+\chi^2_{n-p}.
+}
+$$
+
+:::
+
+
+### Why Are the Degrees of Freedom $n-p$?
+
+Recall that
+
+$$
+\operatorname{rank}(\mathbf{H})
+=
+p
+$$
+
+and
+
+$$
+\operatorname{rank}(\mathbf{M})
+=
+n-p.
+$$
+
+The fitted vector lies in
+
+$$
+\mathcal{C}(\mathbf{X}),
+$$
+
+which has dimension $p$.
+
+The residual vector lies in
+
+$$
+\mathcal{C}(\mathbf{X})^\perp,
+$$
+
+which has dimension
+
+$$
+n-p.
+$$
+
+Therefore, the residual variation has
+
+$$
+\boxed{
+n-p
+}
+$$
+
+degrees of freedom.
+
+
+::: {.callout-note title="Geometric Interpretation of Degrees of Freedom"}
+
+The response space can be decomposed as
+
+$$
+\mathbb{R}^n
+=
+\mathcal{C}(\mathbf{X})
+\oplus
+\mathcal{C}(\mathbf{X})^\perp.
+$$
+
+The fitted component occupies $p$ dimensions.
+
+The remaining
+
+$$
+n-p
+$$
+
+dimensions are available for residual variation.
+
+This provides a geometric explanation for why estimating $p$
+regression parameters costs $p$ degrees of freedom.
+
+:::
+
+
+::: {#exr-residual-df}
+
+## Degrees of Freedom
+
+Suppose a regression model has
+
+$$
+n=20
+$$
+
+observations and
+
+$$
+p=3
+$$
+
+regression parameters.
+
+1. What is the residual degrees of freedom?
+
+2. Why is it not $20$?
+
+:::
+
+
+::: {#sol-residual-df}
+
+The residual degrees of freedom are
+
+$$
+n-p
+=
+20-3
+=
+17.
+$$
+
+It is not $20$ because fitting the regression model uses $p=3$
+dimensions of the response space.
+
+The residual vector therefore lies in a space of dimension
+
+$$
+20-3=17.
+$$
+
+:::
+
+
+### Estimating $\sigma^2$
+
+Since a chi-square random variable with $\nu$ degrees of freedom has
+expectation $\nu$,
+
+$$
+\mathbb{E}
+\left(
+\frac{\mathrm{SSE}}{\sigma^2}
+\right)
+=
+n-p.
+$$
+
+Therefore,
+
+$$
+\mathbb{E}(\mathrm{SSE})
+=
+(n-p)\sigma^2.
+$$
+
+This gives us an unbiased estimator of the error variance.
+
+
+::: {#def-mse}
+
+## Mean Squared Error
+
+The **mean squared error** is defined as
+
+$$
+\boxed{
+\mathrm{MSE}
+=
+\hat{\sigma}^2
+=
+\frac{\mathrm{SSE}}{n-p}.
+}
+$$
+
+It satisfies
+
+$$
+\mathbb{E}
+\left(
+\hat{\sigma}^2
+\right)
+=
+\sigma^2.
+$$
+
+The estimated error standard deviation is
+
+$$
+\boxed{
+\hat{\sigma}
+=
+\sqrt{\mathrm{MSE}}.
+}
+$$
+
+:::
+
+
+::: {#exr-estimate-sigma}
+
+## Estimate the Error Variance
+
+Suppose
+
+$$
+n=20,
+\qquad
+p=3,
+\qquad
+\mathrm{SSE}=34.
+$$
+
+Compute
+
+$$
+\hat{\sigma}^2
+$$
+
+and
+
+$$
+\hat{\sigma}.
+$$
+
+:::
+
+
+::: {#sol-estimate-sigma}
+
+The residual degrees of freedom are
+
+$$
+n-p
+=
+17.
+$$
+
+Therefore,
+
+$$
+\hat{\sigma}^2
+=
+\frac{34}{17}
+=
+2.
+$$
+
+Hence,
+
+$$
+\boxed{
+\hat{\sigma}
+=
+\sqrt{2}
+\approx
+1.414.
+}
+$$
+
+:::
+
+
+## Independence of OLS and Residual Variation
+
+A crucial result under the normal linear model is
+
+$$
+\boxed{
+\hat{\boldsymbol{\beta}}
+\quad\text{and}\quad
+\mathrm{SSE}
+\quad\text{are independent}.
+}
+$$
+
+This result is closely connected to the projection geometry from the
+previous chapter.
+
+
+### Why Does Independence Occur?
+
+Recall that
+
+$$
+\hat{\mathbf{Y}}
+=
+\mathbf{H}\mathbf{Y}
+$$
+
+and
+
+$$
+\mathbf{e}
+=
+\mathbf{M}\mathbf{Y}.
+$$
+
+We also know that
+
+$$
+\mathbf{H}\mathbf{M}
+=
+\mathbf{0}.
+$$
+
+Thus, the fitted component and the residual component come from
+orthogonal parts of the response vector.
+
+
+::: {.callout-note title="Geometry Becomes Probability"}
+
+In the previous chapter, we learned that
+
+$$
+\hat{\mathbf{Y}}
+\perp
+\mathbf{e}.
+$$
+
+This is a geometric statement.
+
+Under the normal linear model, these components are jointly normal.
+
+For jointly normal random vectors, zero covariance implies
+independence.
+
+Thus, under normality, geometric orthogonality leads to probabilistic
+independence.
+
+:::
+
+
+More formally,
+
+$$
+\hat{\boldsymbol{\beta}}
+-
+\boldsymbol{\beta}
+=
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\boldsymbol{\varepsilon}
+$$
+
+and
+
+$$
+\mathbf{e}
+=
+\mathbf{M}\boldsymbol{\varepsilon}.
+$$
+
+Therefore,
+
+\begin{align*}
+\operatorname{Cov}
+\left(
+\hat{\boldsymbol{\beta}},
+\mathbf{e}
+\right)
+&=
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{X}^\top
+\mathbf{M}\\
+&=
+\mathbf{0},
+\end{align*}
+
+because
+
+$$
+\mathbf{X}^\top\mathbf{M}
+=
+\mathbf{0}.
+$$
+
+Since the two random vectors are jointly normal,
+
+$$
+\hat{\boldsymbol{\beta}}
+\perp\!\!\!\perp
+\mathbf{e}.
+$$
+
+Since
+
+$$
+\mathrm{SSE}
+=
+\mathbf{e}^\top\mathbf{e}
+$$
+
+is a function of $\mathbf{e}$,
+
+$$
+\boxed{
+\hat{\boldsymbol{\beta}}
+\perp\!\!\!\perp
+\mathrm{SSE}.
+}
+$$
+
+
+::: {#exr-orthogonal-independent}
+
+## Does Orthogonal Always Mean Independent?
+
+We know that
+
+$$
+\mathbf{H}\mathbf{M}
+=
+\mathbf{0}.
+$$
+
+Does the orthogonality between the fitted and residual components
+automatically imply that they are independent?
+
+Why is normality important?
+
+:::
+
+
+::: {#sol-orthogonal-independent}
+
+No.
+
+In general, zero covariance or orthogonality does **not** imply
+independence.
+
+Under the normal linear model, the fitted and residual components are
+jointly normal.
+
+For jointly normal random vectors, zero covariance implies
+independence.
+
+Thus, normality is what allows us to move from orthogonality to
+independence.
+
+:::
+
+
+## Inference for a Single Regression Coefficient
+
+For the $j$th regression coefficient,
+
+$$
+\hat{\beta}_j
+\sim
+N
+\left(
+\beta_j,
+\sigma^2c_{jj}
+\right).
+$$
+
+If $\sigma$ were known, we could use
+
+$$
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\sigma\sqrt{c_{jj}}
+}
+\sim
+N(0,1).
+$$
+
+In practice, $\sigma$ is unknown.
+
+We replace it with
+
+$$
+\hat{\sigma}
+=
+\sqrt{\frac{\mathrm{SSE}}{n-p}}.
+$$
+
+
+### Standard Error
+
+The estimated standard deviation of $\hat{\beta}_j$ is
+
+
+::: {#def-standard-error}
+
+## Standard Error of an OLS Coefficient
+
+The standard error of $\hat{\beta}_j$ is
+
+$$
+\boxed{
+\operatorname{SE}
+\left(
+\hat{\beta}_j
+\right)
+=
+\hat{\sigma}\sqrt{c_{jj}}.
+}
+$$
+
+:::
+
+
+### Why Does the $t$ Distribution Appear?
+
+We know that
+
+$$
+Z
+=
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\sigma\sqrt{c_{jj}}
+}
+\sim
+N(0,1).
+$$
+
+We also know that
+
+$$
+U
+=
 \frac{\mathrm{SSE}}{\sigma^2}
 \sim
 \chi^2_{n-p}.
 $$
 
-The degrees of freedom are $n-p$ because we estimate $p$ parameters.
-
-## Unbiased estimator of $\sigma^2$
-
-Since the mean of a chi-square random variable with $k$ degrees of freedom is $k$, we have
+In addition,
 
 $$
-\mathbb{E}[\mathrm{SSE}] = (n-p)\sigma^2.
-$$
-
-Therefore,
-
-$$
-\hat{\sigma}^2
-=
-\frac{\mathrm{SSE}}{n-p}
-$$
-
-is an unbiased estimator of $\sigma^2$.
-
-This quantity is also called the **mean squared error**:
-
-$$
-\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}.
-$$
-
-# 5. Independence Between $\hat{\boldsymbol{\beta}}$ and SSE
-
-A crucial result under the normal linear model is that
-
-$$
-\hat{\boldsymbol{\beta}}
-\quad \text{and} \quad
-\mathrm{SSE}
+Z
+\quad\text{and}\quad
+U
 $$
 
 are independent.
 
-This is special and extremely useful. It is what allows us to replace the unknown $\sigma$ with $\hat{\sigma}$ and obtain exact $t$ and $F$ distributions.
-
-Intuitively:
-
-- $\hat{\boldsymbol{\beta}}$ depends on the projected part of $\mathbf{Y}$ onto $\mathcal{C}(\mathbf{X})$;
-- $\mathrm{SSE}$ depends on the orthogonal residual part.
-
-Because these parts are orthogonal and jointly normal, they are independent.
-
-# 6. Inference for a Single Coefficient
-
-## 6.1 t statistic
-
-Since
+Therefore,
 
 $$
-\hat{\beta}_j \sim N(\beta_j, \sigma^2 c_{jj}),
+\frac{
+Z
+}{
+\sqrt{U/(n-p)}
+}
+\sim
+t_{n-p}.
 $$
 
-and since
+Substituting the regression quantities gives
+
+
+::: {#thm-t-statistic}
+
+## $t$ Distribution for an OLS Coefficient
+
+Under the normal linear model,
 
 $$
-\frac{(n-p)\hat{\sigma}^2}{\sigma^2}
-=
-\frac{\mathrm{SSE}}{\sigma^2}
-\sim \chi^2_{n-p},
-$$
-
-with independence between $\hat{\beta}_j$ and $\hat{\sigma}^2$, it follows that
-
-$$
+\boxed{
 T
 =
-\frac{\hat{\beta}_j - \beta_j}{\hat{\sigma}\sqrt{c_{jj}}}
-\sim t_{n-p}.
+\frac{
+\hat{\beta}_j-\beta_j
+}{
+\hat{\sigma}\sqrt{c_{jj}}
+}
+\sim
+t_{n-p}.
+}
 $$
 
-## 6.2 Confidence interval
+:::
+
+
+::: {.callout-note title="Normal vs. t Distribution"}
+
+If $\sigma$ were known, we would use a normal distribution.
+
+Because $\sigma$ is unknown and must be estimated from the data, we
+introduce additional uncertainty.
+
+The $t$ distribution accounts for this additional uncertainty.
+
+As the degrees of freedom increase,
+
+$$
+t_\nu
+$$
+
+approaches
+
+$$
+N(0,1).
+$$
+
+:::
+
+
+::: {#exr-why-t}
+
+## Why Do We Use a $t$ Distribution?
+
+Suppose
+
+$$
+\hat{\beta}_j
+\sim
+N
+\left(
+\beta_j,
+\sigma^2c_{jj}
+\right).
+$$
+
+Why do we use a $t$ distribution rather than a standard normal
+distribution when performing inference for $\beta_j$?
+
+:::
+
+
+::: {#sol-why-t}
+
+Because $\sigma$ is unknown.
+
+We replace $\sigma$ with the estimate $\hat{\sigma}$ obtained from the
+residual sum of squares.
+
+This additional estimation uncertainty changes the standardized
+statistic from a normal distribution to a $t$ distribution.
+
+:::
+
+
+### Confidence Interval for $\beta_j$
 
 A $100(1-\alpha)\%$ confidence interval for $\beta_j$ is
 
 $$
+\boxed{
 \hat{\beta}_j
 \pm
-t_{1-\alpha/2,\;n-p}\,
+t_{1-\alpha/2,\;n-p}
+\operatorname{SE}
+\left(
+\hat{\beta}_j
+\right).
+}
+$$
+
+Equivalently,
+
+$$
+\boxed{
+\hat{\beta}_j
+\pm
+t_{1-\alpha/2,\;n-p}
 \hat{\sigma}\sqrt{c_{jj}}.
+}
 $$
 
-## 6.3 Hypothesis test
 
-To test
+### Hypothesis Test for $\beta_j$
 
-$$
-H_0: \beta_j = \beta_{j,0}
-\qquad \text{versus} \qquad
-H_1: \beta_j \ne \beta_{j,0},
-$$
-
-we use
+Suppose we want to test
 
 $$
+H_0:
+\beta_j
+=
+\beta_{j,0}
+$$
+
+against
+
+$$
+H_1:
+\beta_j
+\neq
+\beta_{j,0}.
+$$
+
+The test statistic is
+
+$$
+\boxed{
 T
 =
-\frac{\hat{\beta}_j - \beta_{j,0}}{\hat{\sigma}\sqrt{c_{jj}}}.
+\frac{
+\hat{\beta}_j-\beta_{j,0}
+}{
+\operatorname{SE}
+(\hat{\beta}_j)
+}.
+}
 $$
 
 Under $H_0$,
 
 $$
-T \sim t_{n-p}.
+T
+\sim
+t_{n-p}.
 $$
 
-For a two-sided test, reject $H_0$ if
+For a two sided test at significance level $\alpha$, reject $H_0$ if
 
 $$
-|T| > t_{1-\alpha/2,\;n-p}.
+|T|
+>
+t_{1-\alpha/2,\;n-p}.
 $$
 
-# 7. Inference for Linear Combinations
 
-Often we are interested not in a single coefficient, but in a linear combination
+::: {#exr-ci-test-connection}
+
+## Confidence Interval and Hypothesis Test
+
+Suppose we test
 
 $$
-a^\top \boldsymbol{\beta},
+H_0:
+\beta_j=0
 $$
 
-where $a$ is a fixed $p \times 1$ vector.
+against
 
-For example:
+$$
+H_1:
+\beta_j\neq0
+$$
 
-- a single coefficient;
-- the difference between two coefficients;
-- the mean response at a given covariate value.
+at significance level
+
+$$
+\alpha=0.05.
+$$
+
+What should happen if the corresponding 95% confidence interval for
+$\beta_j$ does not contain zero?
+
+:::
+
+
+::: {#sol-ci-test-connection}
+
+We reject
+
+$$
+H_0:
+\beta_j=0
+$$
+
+at the 5% significance level.
+
+A two sided hypothesis test at level $\alpha$ and a
+$100(1-\alpha)\%$ confidence interval give equivalent conclusions.
+
+:::
+
+
+## Inference for Linear Combinations
+
+Sometimes the quantity of interest is not a single coefficient.
+
+Suppose we are interested in
+
+$$
+\mathbf{a}^\top
+\boldsymbol{\beta},
+$$
+
+where $\mathbf{a}$ is a fixed $p\times1$ vector.
 
 Since
 
 $$
-a^\top \hat{\boldsymbol{\beta}}
+\hat{\boldsymbol{\beta}}
 \sim
-N\!\left(
-a^\top \boldsymbol{\beta},
-\sigma^2 a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a
+N_p
+\left(
+\boldsymbol{\beta},
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}
 \right),
 $$
 
-we obtain
+we have
 
 $$
+\mathbf{a}^\top
+\hat{\boldsymbol{\beta}}
+\sim
+N
+\left(
+\mathbf{a}^\top
+\boldsymbol{\beta},
+\sigma^2
+\mathbf{a}^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{a}
+\right).
+$$
+
+Therefore,
+
+$$
+\boxed{
 \frac{
-a^\top \hat{\boldsymbol{\beta}} - a^\top \boldsymbol{\beta}
+\mathbf{a}^\top\hat{\boldsymbol{\beta}}
+-
+\mathbf{a}^\top\boldsymbol{\beta}
 }{
-\hat{\sigma}\sqrt{a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a}
+\hat{\sigma}
+\sqrt{
+\mathbf{a}^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{a}
 }
-\sim t_{n-p}.
+}
+\sim
+t_{n-p}.
+}
 $$
 
-Thus, a confidence interval for $a^\top \boldsymbol{\beta}$ is
+A $100(1-\alpha)\%$ confidence interval for
+$\mathbf{a}^\top\boldsymbol{\beta}$ is
 
 $$
-a^\top \hat{\boldsymbol{\beta}}
+\boxed{
+\mathbf{a}^\top\hat{\boldsymbol{\beta}}
 \pm
 t_{1-\alpha/2,\;n-p}
 \hat{\sigma}
-\sqrt{a^\top (\mathbf{X}^\top \mathbf{X})^{-1} a}.
+\sqrt{
+\mathbf{a}^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{a}
+}.
+}
 $$
 
-# 8. General Linear Hypotheses and F Tests
 
-## 8.1 Linear hypothesis
+::: {.callout-note title="Why Is This Useful?"}
 
-Suppose we want to test
-
-$$
-H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d},
-$$
-
-where $\mathbf{C}$ is an $r \times p$ matrix of rank $r$, and $\mathbf{d}$ is an $r \times 1$ vector.
-
-This is called a **general linear hypothesis**.
+Many regression questions can be expressed as linear combinations of
+the regression coefficients.
 
 Examples include:
 
-- testing one coefficient;
-- testing several coefficients simultaneously;
-- testing equality of coefficients.
+- a single coefficient;
+- the difference between two coefficients;
+- the mean response at a particular predictor value.
 
-## 8.2 F statistic
+Thus, inference for a single regression coefficient is a special case
+of inference for a linear combination.
 
-Under $H_0$, the appropriate test statistic is
+:::
+
+
+::: {#exr-linear-combination}
+
+## A Single Coefficient as a Linear Combination
+
+Suppose
+
+$$
+\boldsymbol{\beta}
+=
+\begin{pmatrix}
+\beta_0\\
+\beta_1\\
+\beta_2
+\end{pmatrix}.
+$$
+
+What vector $\mathbf{a}$ would you choose so that
+
+$$
+\mathbf{a}^\top\boldsymbol{\beta}
+=
+\beta_1?
+$$
+
+:::
+
+
+::: {#sol-linear-combination}
+
+Choose
+
+$$
+\boxed{
+\mathbf{a}
+=
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix}.
+}
+$$
+
+Then
+
+$$
+\mathbf{a}^\top\boldsymbol{\beta}
+=
+\beta_1.
+$$
+
+Thus, inference for an individual coefficient is a special case of
+inference for a linear combination.
+
+:::
+
+
+## General Linear Hypotheses
+
+Sometimes we want to test several linear restrictions simultaneously.
+
+Suppose
+
+$$
+H_0:
+\mathbf{C}\boldsymbol{\beta}
+=
+\mathbf{d},
+$$
+
+where $\mathbf{C}$ is an $r\times p$ matrix of rank $r$ and
+$\mathbf{d}$ is an $r\times1$ vector.
+
+
+::: {#def-general-linear-hypothesis}
+
+## General Linear Hypothesis
+
+A hypothesis of the form
+
+$$
+H_0:
+\mathbf{C}\boldsymbol{\beta}
+=
+\mathbf{d}
+$$
+
+is called a **general linear hypothesis**.
+
+It allows several linear restrictions on the regression coefficients
+to be tested simultaneously.
+
+:::
+
+
+The corresponding test statistic is
 
 $$
 F
 =
 \frac{
-(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})^\top
+(\mathbf{C}\hat{\boldsymbol{\beta}}-\mathbf{d})^\top
 \left[
-\mathbf{C}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{C}^\top
+\mathbf{C}
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{C}^\top
 \right]^{-1}
-(\mathbf{C}\hat{\boldsymbol{\beta}} - \mathbf{d})/r
+(\mathbf{C}\hat{\boldsymbol{\beta}}-\mathbf{d})
 }{
-\hat{\sigma}^2
+r\hat{\sigma}^2
 }.
 $$
 
 Under $H_0$,
 
 $$
-F \sim F_{r,\;n-p}.
-$$
-
-This gives the general framework for multi-parameter tests.
-
-## 8.3 Relationship between t and F
-
-When $r=1$, the $F$ test reduces to the square of the corresponding $t$ test:
-
-$$
-F = T^2.
-$$
-
-# 9. Confidence Intervals for the Mean Response
-
-Suppose we want to estimate the mean response at a covariate vector $x_0$.
-
-Let
-
-$$
-\mu(x_0) = x_0^\top \boldsymbol{\beta}.
-$$
-
-The estimator is
-
-$$
-\hat{\mu}(x_0) = x_0^\top \hat{\boldsymbol{\beta}}.
-$$
-
-Its variance is
-
-$$
-\mathrm{Var}(\hat{\mu}(x_0))
-=
-\sigma^2 x_0^\top (\mathbf{X}^\top \mathbf{X})^{-1} x_0.
-$$
-
-Therefore,
-
-$$
-\frac{
-x_0^\top \hat{\boldsymbol{\beta}} - x_0^\top \boldsymbol{\beta}
-}{
-\hat{\sigma}\sqrt{x_0^\top (\mathbf{X}^\top \mathbf{X})^{-1} x_0}
+\boxed{
+F
+\sim
+F_{r,\;n-p}.
 }
-\sim t_{n-p}.
 $$
 
-A $100(1-\alpha)\%$ confidence interval for the **mean response** at $x_0$ is
+
+### Relationship Between $t$ and $F$
+
+When only one restriction is being tested,
 
 $$
-x_0^\top \hat{\boldsymbol{\beta}}
-\pm
-t_{1-\alpha/2,\;n-p}
-\hat{\sigma}
-\sqrt{x_0^\top (\mathbf{X}^\top \mathbf{X})^{-1} x_0}.
+r=1.
 $$
 
-# 10. Prediction Interval for a New Observation
-
-Now suppose we want to predict a **new future response** at $x_0$:
+In this case,
 
 $$
-Y_{\mathrm{new}} = x_0^\top \boldsymbol{\beta} + \varepsilon_{\mathrm{new}},
+\boxed{
+F=T^2.
+}
 $$
 
-where
+Thus, the familiar $t$ test for one coefficient is a special case of
+the general $F$ test.
+
+We will study $F$ tests more thoroughly in the next chapter when we
+develop the ANOVA decomposition and compare nested regression models.
+
+
+::: {#exr-t-vs-f}
+
+## $t$ Test or $F$ Test?
+
+Suppose we want to test only
 
 $$
-\varepsilon_{\mathrm{new}} \sim N(0,\sigma^2)
+H_0:
+\beta_2=0.
 $$
 
-and is independent of the original data.
+Could we use either a $t$ test or an $F$ test?
 
-The prediction error is
+How are the two test statistics related?
+
+:::
+
+
+::: {#sol-t-vs-f}
+
+Yes.
+
+Because there is only one linear restriction, either test can be used.
+
+The corresponding statistics satisfy
 
 $$
-Y_{\mathrm{new}} - x_0^\top \hat{\boldsymbol{\beta}}.
+\boxed{
+F=T^2.
+}
 $$
 
-Its variance is
+Therefore, the two tests produce the same conclusion.
+
+:::
+
+
+## Inference for the Mean Response
+
+Suppose we want to estimate the mean response at a predictor vector
 
 $$
-\mathrm{Var}(Y_{\mathrm{new}} - x_0^\top \hat{\boldsymbol{\beta}})
+\mathbf{x}_0.
+$$
+
+The true mean response is
+
+$$
+\mu(\mathbf{x}_0)
+=
+\mathbf{x}_0^\top
+\boldsymbol{\beta}.
+$$
+
+Its estimator is
+
+$$
+\hat{\mu}(\mathbf{x}_0)
+=
+\mathbf{x}_0^\top
+\hat{\boldsymbol{\beta}}.
+$$
+
+Since this is a linear combination of
+$\hat{\boldsymbol{\beta}}$,
+
+$$
+\operatorname{Var}
+\left(
+\hat{\mu}(\mathbf{x}_0)
+\right)
 =
 \sigma^2
-\left(
-1 + x_0^\top (\mathbf{X}^\top \mathbf{X})^{-1} x_0
-\right).
-$$
-
-Hence, a $100(1-\alpha)\%$ prediction interval for a new observation is
-
-$$
-x_0^\top \hat{\boldsymbol{\beta}}
-\pm
-t_{1-\alpha/2,\;n-p}
-\hat{\sigma}
-\sqrt{
-1 + x_0^\top (\mathbf{X}^\top \mathbf{X})^{-1} x_0
-}.
-$$
-
-## Key difference
-
-- Confidence interval for the mean response: uncertainty about the regression mean;
-- Prediction interval: uncertainty about the regression mean **plus** random individual variation.
-
-Therefore, prediction intervals are always wider.
-
-# 11. Worked Example by Hand
-
-Consider again the dataset
-
-$$
-\begin{array}{c|cccc}
-x_i & 0 & 1 & 2 & 3 \\
-\hline
-y_i & 1 & 3 & 3 & 5
-\end{array}
-$$
-
-with design matrix
-
-$$
-\mathbf{X}
-=
-\begin{bmatrix}
-1 & 0 \\
-1 & 1 \\
-1 & 2 \\
-1 & 3
-\end{bmatrix},
-\qquad
-\mathbf{Y}
-=
-\begin{bmatrix}
-1 \\ 3 \\ 3 \\ 5
-\end{bmatrix}.
-$$
-
-From Week 2, we found
-
-$$
-\hat{\boldsymbol{\beta}}
-=
-\begin{bmatrix}
-1.2 \\
-1.2
-\end{bmatrix}.
-$$
-
-The fitted values are
-
-$$
-\hat{\mathbf{Y}}
-=
-\begin{bmatrix}
-1.2 \\
-2.4 \\
-3.6 \\
-4.8
-\end{bmatrix},
-$$
-
-so the residuals are
-
-$$
-\mathbf{e}
-=
-\begin{bmatrix}
--0.2 \\
-0.6 \\
--0.6 \\
-0.2
-\end{bmatrix}.
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0.
 $$
 
 Thus,
 
 $$
+\frac{
+\mathbf{x}_0^\top\hat{\boldsymbol{\beta}}
+-
+\mathbf{x}_0^\top\boldsymbol{\beta}
+}{
+\hat{\sigma}
+\sqrt{
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
+}
+}
+\sim
+t_{n-p}.
+$$
+
+Therefore, a $100(1-\alpha)\%$ confidence interval for the mean response
+is
+
+$$
+\boxed{
+\mathbf{x}_0^\top\hat{\boldsymbol{\beta}}
+\pm
+t_{1-\alpha/2,\;n-p}
+\hat{\sigma}
+\sqrt{
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
+}.
+}
+$$
+
+
+## Prediction for a New Observation
+
+Now suppose we want to predict one new observation at the same predictor
+value $\mathbf{x}_0$:
+
+$$
+Y_{\mathrm{new}}
+=
+\mathbf{x}_0^\top
+\boldsymbol{\beta}
++
+\varepsilon_{\mathrm{new}},
+$$
+
+where
+
+$$
+\varepsilon_{\mathrm{new}}
+\sim
+N(0,\sigma^2)
+$$
+
+and is independent of the original data.
+
+The predictor is
+
+$$
+\hat{Y}_{\mathrm{new}}
+=
+\mathbf{x}_0^\top
+\hat{\boldsymbol{\beta}}.
+$$
+
+The prediction error is
+
+$$
+Y_{\mathrm{new}}
+-
+\mathbf{x}_0^\top
+\hat{\boldsymbol{\beta}}.
+$$
+
+Its variance is
+
+$$
+\operatorname{Var}
+\left(
+Y_{\mathrm{new}}
+-
+\mathbf{x}_0^\top
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\sigma^2
+\left[
+1+
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
+\right].
+$$
+
+Therefore, a $100(1-\alpha)\%$ prediction interval is
+
+$$
+\boxed{
+\mathbf{x}_0^\top\hat{\boldsymbol{\beta}}
+\pm
+t_{1-\alpha/2,\;n-p}
+\hat{\sigma}
+\sqrt{
+1+
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
+}.
+}
+$$
+
+
+::: {.callout-important title="Mean Response vs. New Observation"}
+
+The two intervals answer different questions.
+
+| Goal | Source of uncertainty |
+| :--- | :--- |
+| Estimate a mean response | Uncertainty in estimating the regression mean |
+| Predict a new observation | Uncertainty in the regression mean plus new random variation |
+
+The additional $1$ in
+
+$$
+1+
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
+$$
+
+represents the variability of the new observation itself.
+
+Therefore, at the same $\mathbf{x}_0$ and confidence level, the
+prediction interval is wider than the confidence interval for the mean
+response.
+
+:::
+
+
+::: {#exr-mean-vs-prediction}
+
+## Mean Response or Prediction?
+
+Consider the following questions.
+
+1. What is the **average stopping distance** of all cars travelling at
+   50 mph?
+
+2. What stopping distance should we expect for **one particular future
+   car** travelling at 50 mph?
+
+Which question requires a confidence interval for the mean response,
+and which requires a prediction interval?
+
+:::
+
+
+::: {#sol-mean-vs-prediction}
+
+The first question concerns the **mean response**, so we use a
+confidence interval for the regression mean.
+
+The second question concerns **one future observation**, so we use a
+prediction interval.
+
+The prediction interval is wider because it also includes the random
+variation associated with the future observation.
+
+:::
+
+
+## Worked Example
+
+Consider again the simple regression dataset from @sec-lse:
+
+$$
+\begin{array}{c|cccc}
+x_i & 0 & 1 & 2 & 3\\
+\hline
+Y_i & 1 & 3 & 3 & 5
+\end{array}.
+$$
+
+The design matrix and response vector are
+
+$$
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & 0\\
+1 & 1\\
+1 & 2\\
+1 & 3
+\end{pmatrix},
+\qquad
+\mathbf{Y}
+=
+\begin{pmatrix}
+1\\
+3\\
+3\\
+5
+\end{pmatrix}.
+$$
+
+From the previous chapter,
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\begin{pmatrix}
+1.2\\
+1.2
+\end{pmatrix},
+$$
+
+and
+
+$$
+\hat{\mathbf{Y}}
+=
+\begin{pmatrix}
+1.2\\
+2.4\\
+3.6\\
+4.8
+\end{pmatrix}.
+$$
+
+Therefore,
+
+$$
+\mathbf{e}
+=
+\begin{pmatrix}
+-0.2\\
+0.6\\
+-0.6\\
+0.2
+\end{pmatrix}.
+$$
+
+
+### Estimate the Error Variance
+
+The residual sum of squares is
+
+\begin{align*}
 \mathrm{SSE}
-=
-(-0.2)^2 + 0.6^2 + (-0.6)^2 + 0.2^2
-=
+&=
+\mathbf{e}^\top\mathbf{e}\\
+&=
+(-0.2)^2
++
+0.6^2
++
+(-0.6)^2
++
+0.2^2\\
+&=
 0.8.
+\end{align*}
+
+Since
+
+$$
+n=4
 $$
 
-Since $n=4$ and $p=2$,
+and
 
 $$
+p=2,
+$$
+
+the residual degrees of freedom are
+
+$$
+n-p=2.
+$$
+
+Thus,
+
+$$
+\boxed{
 \hat{\sigma}^2
 =
-\frac{0.8}{4-2}
+\frac{0.8}{2}
 =
-0.4,
-\qquad
-\hat{\sigma} = \sqrt{0.4}.
+0.4.
+}
+$$
+
+Therefore,
+
+$$
+\boxed{
+\hat{\sigma}
+=
+\sqrt{0.4}
+\approx
+0.632.
+}
+$$
+
+
+### Standard Error of the Slope
+
+We have
+
+$$
+(\mathbf{X}^\top\mathbf{X})^{-1}
+=
+\frac{1}{20}
+\begin{pmatrix}
+14 & -6\\
+-6 & 4
+\end{pmatrix}.
+$$
+
+For the slope,
+
+$$
+c_{22}
+=
+\frac{4}{20}
+=
+0.2.
+$$
+
+Therefore,
+
+$$
+\operatorname{SE}
+(\hat{\beta}_1)
+=
+\sqrt{
+0.4(0.2)
+}
+=
+\sqrt{0.08}
+\approx
+0.283.
+$$
+
+
+### Test the Slope
+
+Consider
+
+$$
+H_0:
+\beta_1=0
+$$
+
+versus
+
+$$
+H_1:
+\beta_1\neq0.
+$$
+
+The test statistic is
+
+$$
+T
+=
+\frac{
+1.2
+}{
+0.283
+}
+\approx
+4.243.
+$$
+
+The residual degrees of freedom are
+
+$$
+2.
+$$
+
+For a 5% two sided test,
+
+$$
+t_{0.975,2}
+\approx
+4.303.
+$$
+
+Since
+
+$$
+|4.243|
+<
+4.303,
+$$
+
+we fail to reject $H_0$ at the 5% significance level.
+
+
+::: {.callout-note title="What Does This Example Show?"}
+
+The estimated slope
+
+$$
+\hat{\beta}_1=1.2
+$$
+
+is relatively large.
+
+However, there are only four observations, leaving only two residual
+degrees of freedom.
+
+Therefore, there is substantial uncertainty in the estimate.
+
+A large estimated effect does not automatically imply strong evidence
+against the null hypothesis.
+
+:::
+
+
+### Confidence Interval for the Slope
+
+A 95% confidence interval is
+
+$$
+1.2
+\pm
+4.303(0.283),
+$$
+
+which gives approximately
+
+$$
+\boxed{
+(-0.017,\;2.417).
+}
+$$
+
+The interval contains zero, which agrees with the hypothesis test.
+
+
+::: {#exr-example-ci-test}
+
+## Check the Connection
+
+Without performing another hypothesis test, what conclusion can you
+draw from the fact that the 95% confidence interval
+
+$$
+(-0.017,\;2.417)
+$$
+
+contains zero?
+
+:::
+
+
+::: {#sol-example-ci-test}
+
+We fail to reject
+
+$$
+H_0:
+\beta_1=0
+$$
+
+at the 5% significance level.
+
+This agrees with the previous $t$ test.
+
+:::
+
+
+### Mean Response at $x_0=2$
+
+For simple linear regression with an intercept,
+
+$$
+\mathbf{x}_0
+=
+\begin{pmatrix}
+1\\
+2
+\end{pmatrix}.
+$$
+
+The estimated mean response is
+
+$$
+\hat{\mu}(\mathbf{x}_0)
+=
+\mathbf{x}_0^\top
+\hat{\boldsymbol{\beta}}
+=
+3.6.
 $$
 
 Also,
 
 $$
-(\mathbf{X}^\top \mathbf{X})^{-1}
+\mathbf{x}_0^\top
+(\mathbf{X}^\top\mathbf{X})^{-1}
+\mathbf{x}_0
 =
-\frac{1}{20}
-\begin{bmatrix}
-14 & -6 \\
--6 & 4
-\end{bmatrix}.
+0.3.
 $$
 
-Hence the estimated variance of $\hat{\beta}_1$ is
+Therefore,
 
 $$
-\widehat{\mathrm{Var}}(\hat{\beta}_1)
+\operatorname{SE}
+\left(
+\hat{\mu}(\mathbf{x}_0)
+\right)
 =
-0.4 \cdot \frac{4}{20}
+\sqrt{
+0.4(0.3)
+}
+\approx
+0.346.
+$$
+
+The 95% confidence interval for the mean response is approximately
+
+$$
+\boxed{
+(2.110,\;5.090).
+}
+$$
+
+
+### Prediction at $x_0=2$
+
+For one new observation,
+
+$$
+\operatorname{SE}_{\mathrm{pred}}
 =
-0.08,
+\sqrt{
+0.4(1+0.3)
+}
+\approx
+0.721.
 $$
 
-so the standard error is
+Therefore, the 95% prediction interval is approximately
 
 $$
-\mathrm{SE}(\hat{\beta}_1) = \sqrt{0.08}.
+\boxed{
+(0.497,\;6.703).
+}
 $$
 
-To test
+Notice that the prediction interval is substantially wider than the
+confidence interval for the mean response.
 
-$$
-H_0: \beta_1 = 0,
-$$
 
-the $t$ statistic is
+## R Demonstration
 
-$$
-T = \frac{1.2}{\sqrt{0.08}}.
-$$
-
-# 12. R Demonstration
-
-## 12.1 Fit the model
+We can reproduce the previous calculations using R.
 
 ```{r}
 x <- c(0, 1, 2, 3)
 y <- c(1, 3, 3, 5)
 
 fit <- lm(y ~ x)
+
 summary(fit)
-
-coef(fit)
-vcov(fit)
-sqrt(diag(vcov(fit)))
-
-deviance(fit)
-sigma(fit)^2
-sigma(fit)
-
-confint(fit)
-
-summary(fit)$coefficients
-
-newdat <- data.frame(x = 2)
-predict(fit, newdata = newdat, interval = "confidence")
-
-predict(fit, newdata = newdat, interval = "prediction")
-
-xg <- seq(min(x), max(x), length.out = 100)
-out_conf <- predict(fit, newdata = data.frame(x = xg), interval = "confidence")
-out_pred <- predict(fit, newdata = data.frame(x = xg), interval = "prediction")
-
-plot(x, y, pch = 19, xlab = "x", ylab = "y")
-lines(xg, out_conf[, "fit"], lwd = 2)
-lines(xg, out_conf[, "lwr"], lty = 2)
-lines(xg, out_conf[, "upr"], lty = 2)
-lines(xg, out_pred[, "lwr"], lty = 3)
-lines(xg, out_pred[, "upr"], lty = 3)
-
 ```
 
 
-# 13. Interpretation of Standard Output
+### Estimated Coefficients
 
-In regression output from summary(lm(...)), the key columns are:
+```{r}
+coef(fit)
+```
 
-+ `Estimate`: the estimated coefficient;
-+ `Std. Error`: the estimated standard deviation of the estimator;
-+ `t value`: the test statistic for testing whether the coefficient equals zero;
-+ `Pr(>|t|)`: the corresponding $p$-value.
 
-The output also reports:
-	
-+ residual standard error;
-+ degrees of freedom;
-+ $R^2$ and adjusted $R^2$;
-+ an overall $F$ test.
+### Residual Degrees of Freedom and Error Variance
 
-We will discuss the overall ANOVA-style decomposition more formally soon.
+```{r}
+df.residual(fit)
 
-## 14. In-Class Discussion Questions
+sigma(fit)
+sigma(fit)^2
+```
 
-1.	Why does normality lead to exact finite-sample inference?
-2.	Why do we divide SSE by $n-p$ rather than $n$?
-3.	Why are prediction intervals wider than confidence intervals for the mean response?
-4.	Why is independence between $\hat{\boldsymbol{\beta}}$ and SSE so important?
 
-## 15. Practice Problems
+### Covariance Matrix and Standard Errors
 
-Conceptual
-	1.	Explain the difference between the sampling distribution of $\hat{\beta}_j$ and the distribution of $Y_i$.
-	2.	Explain why $\hat{\sigma}^2 = \mathrm{SSE}/(n-p)$ is unbiased.
-	3.	Explain why the $t$ distribution appears instead of the normal distribution.
+```{r}
+vcov(fit)
 
-Computational
+sqrt(diag(vcov(fit)))
+```
 
-Suppose
+
+### Verify the Formulas Using Matrix Operations
+
+```{r}
+X <- model.matrix(fit)
+Y <- matrix(y, ncol = 1)
+
+n <- nrow(X)
+p <- ncol(X)
+
+beta_hat <-
+  solve(t(X) %*% X) %*%
+  t(X) %*%
+  Y
+
+e <- Y - X %*% beta_hat
+
+SSE <- as.numeric(t(e) %*% e)
+
+sigma2_hat <- SSE / (n - p)
+
+V_beta_hat <-
+  sigma2_hat *
+  solve(t(X) %*% X)
+
+SE_beta_hat <-
+  sqrt(diag(V_beta_hat))
+
+beta_hat
+SSE
+sigma2_hat
+V_beta_hat
+SE_beta_hat
+```
+
+
+### Hypothesis Tests and Confidence Intervals
+
+R automatically reports coefficient level $t$ tests:
+
+```{r}
+summary(fit)$coefficients
+```
+
+Confidence intervals for the regression coefficients can be obtained
+using
+
+```{r}
+confint(fit)
+```
+
+
+### Mean Response and Prediction
+
+At
 
 $$
-(\mathbf{X}^\top \mathbf{X})^{-1}
+x_0=2,
+$$
+
+use
+
+```{r}
+newdat <- data.frame(x = 2)
+
+predict(
+  fit,
+  newdata = newdat,
+  interval = "confidence"
+)
+
+predict(
+  fit,
+  newdata = newdat,
+  interval = "prediction"
+)
+```
+
+The first interval estimates the **mean response**.
+
+The second interval predicts **one future observation**.
+
+
+## Reading Standard Regression Output
+
+For
+
+```r
+summary(fit)
+```
+
+the coefficient table contains four important columns:
+
+| Column | Interpretation |
+| :--- | :--- |
+| `Estimate` | Estimated regression coefficient |
+| `Std. Error` | Estimated standard deviation of the coefficient estimator |
+| `t value` | $t$ statistic for testing whether the coefficient equals zero |
+| `Pr(>|t|)` | Two sided $p$ value for the test |
+
+The output also includes:
+
+- the residual standard error;
+- the residual degrees of freedom;
+- $R^2$;
+- adjusted $R^2$;
+- an overall $F$ test.
+
+We will study $R^2$, the ANOVA decomposition, and the overall $F$ test
+more carefully in the next chapter.
+
+
+::: {#exr-read-r-output}
+
+## Reading an R Regression Table
+
+Suppose R reports
+
+|  | Estimate | Std. Error | t value | Pr(>|t|) |
+| :--- | ---: | ---: | ---: | ---: |
+| $x_1$ | 2.40 | 0.60 | 4.00 | 0.001 |
+
+Answer the following.
+
+1. What is $\hat{\beta}_1$?
+
+2. What is $\operatorname{SE}(\hat{\beta}_1)$?
+
+3. What null hypothesis is being tested by default?
+
+:::
+
+
+::: {#sol-read-r-output}
+
+The estimate is
+
+$$
+\hat{\beta}_1
 =
-\begin{bmatrix}
-0.5 & 0.1 \
-0.1 & 0.2
-\end{bmatrix},
+2.40.
 $$
 
-$\hat{\boldsymbol{\beta}} = (2, -1)^\top$, and $\hat{\sigma}^2 = 4$.
-	1.	Find the standard error of $\hat{\beta}_2$.
-	2.	Construct a confidence interval for $\beta_2$ using a generic critical value $t^\star$.
-	3.	For $x_0 = (1,3)^\top$, compute the estimated variance of the fitted mean.
-	4.	Write down the form of the prediction interval at $x_0$.
-
-Proof-based
-
-Show that if
+The standard error is
 
 $$
-\hat{\boldsymbol{\beta}} \sim N_p!\left(\boldsymbol{\beta}, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right),
+\operatorname{SE}
+(\hat{\beta}_1)
+=
+0.60.
 $$
 
-then for any fixed vector $a$,
+The default coefficient level test is
 
 $$
-a^\top \hat{\boldsymbol{\beta}}
+H_0:
+\beta_1=0.
+$$
+
+The reported $t$ statistic is
+
+$$
+\frac{2.40}{0.60}
+=
+4.
+$$
+
+:::
+
+
+## Practice at Home
+
+1. Starting from
+
+   $$
+   \hat{\boldsymbol{\beta}}
+   =
+   \boldsymbol{\beta}
+   +
+   (\mathbf{X}^\top\mathbf{X})^{-1}
+   \mathbf{X}^\top
+   \boldsymbol{\varepsilon},
+   $$
+
+   derive
+
+   $$
+   \mathbb{E}
+   \left(
+   \hat{\boldsymbol{\beta}}
+   \right)
+   =
+   \boldsymbol{\beta}
+   $$
+
+   and
+
+   $$
+   \operatorname{Var}
+   \left(
+   \hat{\boldsymbol{\beta}}
+   \right)
+   =
+   \sigma^2
+   (\mathbf{X}^\top\mathbf{X})^{-1}.
+   $$
+
+2. Explain why normality is not required for OLS to be unbiased but is
+   useful for exact finite sample inference.
+
+3. Explain geometrically why the residual degrees of freedom are
+
+   $$
+   n-p.
+   $$
+
+4. Explain why
+
+   $$
+   \hat{\boldsymbol{\beta}}
+   \quad\text{and}\quad
+   \mathrm{SSE}
+   $$
+
+   are independent under the normal linear model.
+
+5. Derive the $t$ statistic for testing
+
+   $$
+   H_0:
+   \beta_j
+   =
+   \beta_{j,0}.
+   $$
+
+6. Explain the connection between a two sided hypothesis test and the
+   corresponding confidence interval.
+
+7. Explain the difference between a confidence interval for
+
+   $$
+   \mathbf{x}_0^\top
+   \boldsymbol{\beta}
+   $$
+
+   and a prediction interval for a future observation at
+   $\mathbf{x}_0$.
+
+8. Fit a simple regression model in R and identify:
+
+   - the coefficient estimates;
+   - their standard errors;
+   - the $t$ statistics;
+   - the $p$ values;
+   - the residual standard error;
+   - the residual degrees of freedom.
+
+
+::: {.callout-note title="Summary"}
+
+This chapter moved from the **geometry of least squares** to the
+**probability of least squares**.
+
+Under the first two moment assumptions,
+
+$$
+\mathbb{E}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\boldsymbol{\beta}
+$$
+
+and
+
+$$
+\operatorname{Var}
+\left(
+\hat{\boldsymbol{\beta}}
+\right)
+=
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}.
+$$
+
+Under the additional normality assumption,
+
+$$
+\boxed{
+\hat{\boldsymbol{\beta}}
 \sim
-N!\left(
-a^\top \boldsymbol{\beta},
-\sigma^2 a^\top(\mathbf{X}^\top\mathbf{X})^{-1}a
+N_p
+\left(
+\boldsymbol{\beta},
+\sigma^2
+(\mathbf{X}^\top\mathbf{X})^{-1}
 \right).
+}
 $$
 
-16. Suggested Homework
+The residual sum of squares satisfies
 
-Complete the following tasks:
-	•	derive the distribution of $\hat{\boldsymbol{\beta}}$ under the normal linear model;
-	•	prove that $\hat{\sigma}^2 = \mathrm{SSE}/(n-p)$ is unbiased;
-	•	derive the $t$ statistic for one coefficient;
-	•	construct a confidence interval for the mean response at a chosen covariate value;
-	•	construct a prediction interval for a future observation at the same covariate value;
-	•	fit a regression model in R and interpret all coefficient-level inferential output.
+$$
+\boxed{
+\frac{\mathrm{SSE}}{\sigma^2}
+\sim
+\chi^2_{n-p}.
+}
+$$
 
-17. Summary
+This leads to the unbiased estimator
 
-In this week, we moved from estimation to inference under the normal linear model.
+$$
+\boxed{
+\hat{\sigma}^2
+=
+\frac{\mathrm{SSE}}{n-p}.
+}
+$$
 
-We showed that
+The independence of
 
 $$
 \hat{\boldsymbol{\beta}}
-\sim
-N_p!\left(
-\boldsymbol{\beta},
-\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}
-\right),
 $$
 
-and that
+and
 
 $$
-\frac{\mathrm{SSE}}{\sigma^2} \sim \chi^2_{n-p},
-\qquad
-\hat{\sigma}^2 = \frac{\mathrm{SSE}}{n-p}.
+\mathrm{SSE}
 $$
 
-These results, together with independence between $\hat{\boldsymbol{\beta}}$ and SSE, lead to exact $t$ and $F$ inference.
+allows us to replace the unknown $\sigma$ with $\hat{\sigma}$ and
+obtain exact $t$ inference.
 
-Next week, we will develop the ANOVA decomposition in regression and study the overall significance test, nested models, and extra sum of squares.
+The same framework extends naturally to:
 
-Appendix: Useful Distribution Facts
+- linear combinations of regression coefficients;
+- general linear hypotheses;
+- confidence intervals for the mean response;
+- prediction intervals for future observations.
+
+In the next chapter, we will use these results to develop the ANOVA
+decomposition, the overall $F$ test, and comparisons of nested
+regression models.
+
+:::
+
+
+---
+
+Side Fact: Distribution Results Used in This Chapter
+
+::: {.callout-theorem title="Useful Distribution Facts"}
 
 If
 
 $$
-Z \sim N(0,1),
+\mathbf{Z}
+\sim
+N_n
+\left(
+\mathbf{0},
+\mathbf{I}_n
+\right)
+$$
+
+and $\mathbf{A}$ is symmetric and idempotent with
+
+$$
+\operatorname{rank}(\mathbf{A})
+=
+r,
+$$
+
+then
+
+$$
+\boxed{
+\mathbf{Z}^\top
+\mathbf{A}
+\mathbf{Z}
+\sim
+\chi^2_r.
+}
+$$
+
+If
+
+$$
+Z
+\sim
+N(0,1),
 \qquad
-U \sim \chi^2_\nu,
+U
+\sim
+\chi^2_\nu,
 $$
 
 and $Z$ and $U$ are independent, then
 
 $$
-\frac{Z}{\sqrt{U/\nu}}
-\sim t_\nu.
+\boxed{
+\frac{
+Z
+}{
+\sqrt{U/\nu}
+}
+\sim
+t_\nu.
+}
 $$
 
 If
 
 $$
-U_1 \sim \chi^2_{r},
+U_1
+\sim
+\chi^2_r,
 \qquad
-U_2 \sim \chi^2_{\nu},
+U_2
+\sim
+\chi^2_\nu,
 $$
 
 and $U_1$ and $U_2$ are independent, then
 
 $$
-\frac{(U_1/r)}{(U_2/\nu)}
-\sim F_{r,\nu}.
+\boxed{
+\frac{
+U_1/r
+}{
+U_2/\nu
+}
+\sim
+F_{r,\nu}.
+}
 $$
 
-These are the basic building blocks for regression inference.
+These results provide the distributional foundation for regression
+inference.
+
+:::
