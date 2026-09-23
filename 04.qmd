@@ -26,6 +26,22 @@ Recommended reading for this chapter:
     -   overall model significance
     -   partial and sequential sums of squares
 
+::: {.callout-note title="Optional motivation: does measuring tree height add useful information?"}
+
+Suppose a forestry team wants to estimate timber volume before felling a tree. Diameter is already available; measuring height requires additional effort. Does height contribute information beyond diameter?
+
+The real `trees` dataset in R lets us explore this question with measurements on 31 felled black cherry trees. Consider three candidate mean models:
+
+| Model | Information used | Mean volume |
+|---|---|---|
+| $M_0$ | No tree measurements | $\beta_0$ |
+| $M_1$ | Diameter | $\beta_0+\beta_1\,\mathrm{Diameter}$ |
+| $M_2$ | Diameter and height | $\beta_0+\beta_1\,\mathrm{Diameter}+\beta_2\,\mathrm{Height}$ |
+
+**Discuss before calculating:** Which comparison answers whether height adds information? Why is choosing the smallest training SSE insufficient? Keep these questions in mind; the optional data example below returns to them with fitted models.
+
+:::
+
 **Review of the Linear Model**
 
 Recall the normal linear model
@@ -57,6 +73,8 @@ $$
 $$
 
 From Chapter 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Chapter 3, we know that this leads to useful distributional results for inference. In this chapter, we organize these ideas into the ANOVA framework.
+
+**Vector notation.** Following the convention used in this course, $\mathbf a=(a_1,a_2,a_3)$ denotes a column vector, while $\mathbf a^\top=(a_1\;a_2\;a_3)$ denotes a row vector. Commas distinguish the column-vector tuple; spaces separate entries of the row vector.
 
 ## Total, Explained, and Unexplained Variation
 
@@ -144,6 +162,20 @@ $$
 \mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
 $$
 
+::: {#exr-identify-anova-deviations}
+
+## In Class: One Observation, Three Deviations
+
+For one observation, $y_i=1$, $\hat y_i=1.2$, and $\bar y=3$. In one minute, identify the total, explained, and residual deviations. Does the squared total deviation equal the sum of the other two squared deviations for this observation?
+
+:::
+
+::: {#sol-identify-anova-deviations}
+
+The deviations are $y_i-\bar y=-2$, $\hat y_i-\bar y=-1.8$, and $y_i-\hat y_i=-0.2$. They add as signed deviations: $-2=-1.8-0.2$. Their squares do not add: $4\ne3.24+0.04$. The ANOVA identity holds after summing over all observations because the fitted and residual vectors are orthogonal; it is not a point-by-point identity for squared deviations.
+
+:::
+
 **Degrees of Freedom**
 
 The ANOVA decomposition is accompanied by a decomposition of degrees of freedom. When the model includes an intercept and $\mathbf{X}$ has rank $p$, we have:
@@ -216,6 +248,20 @@ The numerator measures explained variation per regression degree of freedom. The
 
 If the predictors have no effect, then both quantities should be of similar size, and the ratio should not be unusually large. If the predictors explain substantial variation, then the numerator should be much larger than the denominator.
 
+::: {#exr-overall-f-question}
+
+## In Class: What Does an Overall Rejection Mean?
+
+An intercept model with two predictors is fitted to $n=25$ observations using a full-rank design. Write the overall null hypothesis and the F reference degrees of freedom under the normal linear model. If the test rejects, must both individual slope tests also reject?
+
+:::
+
+::: {#sol-overall-f-question}
+
+Here $p=3$, so $H_0:\beta_1=\beta_2=0$ and the reference distribution is $F_{2,22}$. Rejection gives evidence that the two slopes are not jointly zero. It does not show that both are nonzero, and it does not require either individual test to reject at the same level. Joint and individual tests answer different questions, especially when predictors are correlated.
+
+:::
+
 **Relationship to the Intercept-Only Model**
 
 The overall $F$ test compares two models:
@@ -283,6 +329,20 @@ Large values give evidence against the reduced mean model. The numerator measure
 ::: {.callout-important title="Compare the models, not just the printed p-values"}
 
 Different missing-value patterns can cause two R fits to use different observations. Construct a common analysis dataset before comparing them. For one added coefficient, the partial F statistic equals the square of its two-sided t-test statistic from the full model.
+
+:::
+
+::: {#exr-partial-f-short-calculation}
+
+## In Class: A Better Fit, but Enough Improvement?
+
+Two nested models use the same $n=30$ observations. The reduced model has rank $p_R=2$ and $\mathrm{SSE}_R=90$; the full model has rank $p_F=4$ and $\mathrm{SSE}_F=78$. Compute the extra sum of squares, its degrees of freedom, the full-model MSE, and the partial F statistic. Does a reduction in SSE by itself justify rejecting the reduced model?
+
+:::
+
+::: {#sol-partial-f-short-calculation}
+
+The improvement is $90-78=12$ on $4-2=2$ degrees of freedom. The full-model MSE is $78/(30-4)=3$, so $F=(12/2)/3=2$. Under the normal-model null, compare this with $F_{2,26}$; the upper-tail p-value is about $0.156$. The improvement is insufficient for rejection at the 5% level. More flexibility always weakly reduces training SSE, including when the added coefficients are zero.
 
 :::
 
@@ -369,6 +429,20 @@ Here $n=4$ and $p=2$, so the regression, residual, and total degrees of freedom 
 | Total | 8.0 | 3 | | |
 
 The model has $R^2=7.2/8=0.9$, yet the F-test p-value is $P(F_{1,2}\ge18)\approx0.0513$. With only two residual degrees of freedom, a high training $R^2$ does not automatically give evidence at the 5% significance level.
+
+:::
+
+::: {#exr-r-squared-versus-adjustment}
+
+## In Class: Can Two Fit Summaries Disagree?
+
+For the same $n=10$ observations with $\mathrm{SST}=100$, an intercept model has rank 2 and SSE 20. Adding a predictor whose column is linearly independent of the existing columns increases the rank to 3 and reduces SSE to 19. Compute $R^2$ and adjusted $R^2$ for both fits. Did the one-unit reduction in SSE improve both summaries?
+
+:::
+
+::: {#sol-r-squared-versus-adjustment}
+
+Ordinary $R^2$ increases from $1-20/100=0.80$ to $1-19/100=0.81$. Adjusted $R^2$ decreases from $1-(20/8)/(100/9)=0.775$ to $1-(19/7)/(100/9)\approx0.756$. The extra predictor reduces SSE but increases residual mean square, from $2.5$ to about $2.714$. Neither summary alone establishes better prediction on new observations.
 
 :::
 
@@ -488,6 +562,71 @@ For a fitted model in R:
 -   `summary(fit)` reports the overall $F$ statistic, $R^2$, and adjusted $R^2$.
 
 Students should understand that these outputs are not separate topics. They are all built from the same least squares geometry and distribution theory.
+
+::: {#exm-timber-volume}
+
+## Optional Real-Data Example: Is Tree Height Useful Beyond Diameter?
+
+Return to the forestry question. R's `trees` data contain timber volume in cubic feet, height in feet, and a variable named `Girth` that is actually **diameter in inches**, measured 4 feet 6 inches above the ground. We rename it `Diameter` to avoid that labeling trap. Each row represents one of 31 felled black cherry trees. See the [official dataset documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) for the source and measurement definitions.
+
+**State the question first.** Comparing $M_0$ with $M_2$ asks whether diameter and height together improve on a constant mean. Comparing $M_1$ with $M_2$ asks whether height contributes after adjusting for diameter. For the second question, $H_0:\beta_{\mathrm{Height}}=0$. These are distinct questions even though both use an F test.
+
+```{r}
+tree_dat <- datasets::trees
+tree_dat$Diameter <- tree_dat$Girth
+tree_dat <- tree_dat[, c("Volume", "Diameter", "Height")]
+stopifnot(!anyNA(tree_dat))
+fit_tree0 <- lm(Volume ~ 1, data = tree_dat)
+fit_tree_d <- lm(Volume ~ Diameter, data = tree_dat)
+fit_tree_dh <- lm(Volume ~ Diameter + Height, data = tree_dat)
+knitr::kable(data.frame(
+  Model = c("Constant mean", "Diameter", "Diameter + height"),
+  Rank = c(fit_tree0$rank, fit_tree_d$rank, fit_tree_dh$rank),
+  SSE = c(deviance(fit_tree0), deviance(fit_tree_d),
+          deviance(fit_tree_dh))), digits = 2)
+anova(fit_tree_d, fit_tree_dh)
+```
+
+**Read the comparison.** The SSE drops from about $524.30$ to $421.92$. The added term uses one degree of freedom, and the full model has $31-3=28$ residual degrees of freedom. Thus
+
+$$
+F=\frac{(524.30-421.92)/1}{421.92/28}\approx6.79,
+\qquad p\approx0.0145.
+$$
+
+Under the stated normal, common-variance error model, this provides evidence against a zero height coefficient after accounting for diameter. It is not the overall test of both slopes.
+
+```{r}
+#| label: fig-tree-model-comparison
+#| fig-cap: "The same 31 trees under two mean models. Black dots are measured volumes; blue circles are fitted volumes. Orange segments show residuals. Adding height reduces the sum of squared residual lengths, but the F test asks whether that improvement is large relative to the estimated noise."
+#| fig-width: 7
+#| fig-height: 3.5
+op <- par(mfrow = c(1, 2), mar = c(4, 4, 2.2, 0.6),
+          mgp = c(2.4, 0.7, 0))
+tree_models <- list("Diameter only" = fit_tree_d,
+                    "Diameter + height" = fit_tree_dh)
+volume_limits <- range(c(tree_dat$Volume, fitted(fit_tree_d),
+                         fitted(fit_tree_dh)))
+for (label in names(tree_models)) {
+  prediction <- fitted(tree_models[[label]])
+  plot(tree_dat$Diameter, tree_dat$Volume, pch = 16, cex = 0.65,
+       ylim = volume_limits, xlab = "Diameter (inches)",
+       ylab = "Timber volume (cubic feet)", main = label)
+  segments(tree_dat$Diameter, tree_dat$Volume,
+           tree_dat$Diameter, prediction, col = "darkorange3")
+  points(tree_dat$Diameter, prediction, pch = 1,
+         col = "steelblue4", cex = 0.8)
+  legend("topleft", c("Observed", "Fitted"), pch = c(16, 1),
+         col = c("black", "steelblue4"), bty = "n", cex = 0.8)
+}
+par(op)
+```
+
+**Check your understanding.** Why use 28 rather than 29 in the variance estimate? What would change if some trees had missing heights? The denominator comes from the full model. With missing heights, first form one common dataset and refit both models on it; comparing fits on different observations confounds the added predictor with a changed sample.
+
+**What this example does not settle.** These are observational measurements, so the comparison is not a causal effect of making a tree taller. A statistically significant height term also does not decide whether measuring height is worth its cost or how much it helps predict new trees. Those decisions require practical error tolerances and validation. Inspect residuals and the mean function before using the raw-scale linear model operationally; transformations and model assessment appear later in the course.
+
+:::
 
 **In-Class Discussion Questions**
 
