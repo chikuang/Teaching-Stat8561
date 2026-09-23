@@ -34,7 +34,7 @@
     "href": "index.html#assignment",
     "title": "STAT8561 - Linear Statistical Analysis I",
     "section": "Assignment",
-    "text": "Assignment\n\nA1, Due September 11, 2026\n[A2(Assignment2.qmd), Due September 30, 2026",
+    "text": "Assignment\n\nAssignment 1, Due September 11, 2026\nAssignment 2, Due September 30, 2026",
     "crumbs": [
       "Preface"
     ]
@@ -54,7 +54,7 @@
     "href": "index.html#topics-and-corresponding-lectures",
     "title": "STAT8561 - Linear Statistical Analysis I",
     "section": "Topics and Corresponding Lectures",
-    "text": "Topics and Corresponding Lectures\nThose chapters are based on the lecture notes. This part will be updated frequently.\n\n\n\nStatus\nChapter\nTopic\nLecture\n\n\n\n\n✅\n\nWelcome and Overview\n1\n\n\n✅\nCh. 1\nMath Notation\n2–3\n\n\n✅ ️\nCh. 2\nLeast Squares Estimation\n3–6\n\n\n️⏳ ️\nCh. 3\nInference on Least Square Estimation\n6–",
+    "text": "Topics and Corresponding Lectures\nThose chapters are based on the lecture notes. This part will be updated frequently.\n\n\n\nStatus\nChapter\nTopic\nLecture\n\n\n\n\n✅\n\nWelcome and Overview\n1\n\n\n✅\nCh. 1\nMath Notation\n2–3\n\n\n✅ ️\nCh. 2\nLeast Squares Estimation\n3–6\n\n\n️⏳ ️\nCh. 3\nInference on Least Square Estimation\n7–",
     "crumbs": [
       "Preface"
     ]
@@ -588,6 +588,16 @@
     "crumbs": [
       "Assessments",
       "Assignment 2"
+    ]
+  },
+  {
+    "objectID": "index.html#office-hours",
+    "href": "index.html#office-hours",
+    "title": "STAT8561 - Linear Statistical Analysis I",
+    "section": "Office Hours",
+    "text": "Office Hours\nWednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.",
+    "crumbs": [
+      "Preface"
     ]
   }
 ]
