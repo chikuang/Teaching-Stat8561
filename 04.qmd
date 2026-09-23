@@ -53,7 +53,7 @@ The real `trees` dataset in R lets us explore this question with measurements on
 source("illustrations/tree-measurements.R")
 ```
 
-**Review of the Linear Model**
+::: {.callout-note title="Recap of the Linear Model"}
 
 Recall the normal linear model
 
@@ -84,6 +84,8 @@ $$
 $$
 
 From Chapter 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Chapter 3, we know that this leads to useful distributional results for inference. In this chapter, we organize these ideas into the ANOVA framework.
+
+:::
 
 **Vector notation.** Following the convention used in this course, $\mathbf a=(a_1,a_2,a_3)$ denotes a column vector, while $\mathbf a^\top=(a_1\;a_2\;a_3)$ denotes a row vector. Commas distinguish the column-vector tuple; spaces separate entries of the row vector.
 
