@@ -42,6 +42,17 @@ The real `trees` dataset in R lets us explore this question with measurements on
 
 :::
 
+```{r}
+#| label: fig-tree-measurements
+#| cache: false
+#| echo: false
+#| fig-cap: "From measurements to a prediction question. Diameter and height are predictors; measured timber volume is the response. The tree and timber drawings are conceptual, not to scale."
+#| fig-alt: "A leafy tree with arrows marking total height and trunk diameter, measured four feet six inches above the ground. An arrow labelled predict points to stacked timber representing measured volume. The question asks whether height adds information when diameter is known."
+#| fig-width: 7
+#| fig-height: 4.4
+source("illustrations/tree-measurements.R")
+```
+
 **Review of the Linear Model**
 
 Recall the normal linear model
