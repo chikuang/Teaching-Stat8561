@@ -1,3 +1,9 @@
+---
+format:
+  html:
+    code-fold: false
+---
+
 # Matrix Representation and Notation
 
 In this chapter, we introduce the mathematical language and statistical framework that will be used throughout the course. Our focus is on the notation of vectors and matrices, vectors of random variables, expectation and covariance operators, and the basic form of the linear regression model.

@@ -1710,18 +1710,7 @@ $100(1-\alpha)\%$ confidence interval give equivalent conclusions.
 
 ## Inference for Linear Combinations
 
-Sometimes the quantity of interest is not a single coefficient.
-
-Suppose we are interested in
-
-$$
-\mathbf{a}^\top
-\boldsymbol{\beta},
-$$
-
-where $\mathbf{a}$ is a fixed $p\times1$ vector.
-
-Since
+Sometimes the quantity of interest is not a single coefficient. Suppose we are interested in $\mathbf{a}^\top \boldsymbol{\beta}$, where $\mathbf{a}$ is a fixed $p\times1$ vector. Since
 
 $$
 \hat{\boldsymbol{\beta}}
@@ -1789,13 +1778,9 @@ t_{1-\alpha/2,\;n-p}
 }
 $$
 
-
 ::: {.callout-note title="Why Is This Useful?"}
 
-Many regression questions can be expressed as linear combinations of
-the regression coefficients.
-
-Examples include:
+Many regression questions can be expressed as linear combinations of the regression coefficients. Examples include:
 
 - a single coefficient;
 - the difference between two coefficients;
@@ -1805,7 +1790,6 @@ Thus, inference for a single regression coefficient is a special case
 of inference for a linear combination.
 
 :::
-
 
 ::: {#exr-linear-combination}
 
@@ -1823,16 +1807,9 @@ $$
 \end{pmatrix}.
 $$
 
-What vector $\mathbf{a}$ would you choose so that
-
-$$
-\mathbf{a}^\top\boldsymbol{\beta}
-=
-\beta_1?
-$$
+What vector $\mathbf{a}$ would you choose so that $\mathbf{a}^\top\boldsymbol{\beta} = \beta_1$?
 
 :::
-
 
 ::: {#sol-linear-combination}
 
@@ -1850,36 +1827,13 @@ $$
 }
 $$
 
-Then
-
-$$
-\mathbf{a}^\top\boldsymbol{\beta}
-=
-\beta_1.
-$$
-
-Thus, inference for an individual coefficient is a special case of
-inference for a linear combination.
+Then $\mathbf{a}^\top\boldsymbol{\beta} = \beta_1$. Thus, inference for an individual coefficient is a special case of inference for a linear combination.
 
 :::
 
-
 ## General Linear Hypotheses
 
-Sometimes we want to test several linear restrictions simultaneously.
-
-Suppose
-
-$$
-H_0:
-\mathbf{C}\boldsymbol{\beta}
-=
-\mathbf{d},
-$$
-
-where $\mathbf{C}$ is an $r\times p$ matrix of rank $r$ and
-$\mathbf{d}$ is an $r\times1$ vector.
-
+Sometimes we want to test several linear restrictions simultaneously. Suppose $H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}$, where $\mathbf{C}$ is an $r\times p$ matrix of rank $r$ and $\mathbf{d}$ is an $r\times1$ vector.
 
 ::: {#def-general-linear-hypothesis}
 
@@ -1894,13 +1848,9 @@ H_0:
 \mathbf{d}
 $$
 
-is called a **general linear hypothesis**.
-
-It allows several linear restrictions on the regression coefficients
-to be tested simultaneously.
+is called a **general linear hypothesis**. It allows several linear restrictions on the regression coefficients to be tested simultaneously.
 
 :::
-
 
 The corresponding test statistic is
 
@@ -1930,16 +1880,9 @@ F_{r,\;n-p}.
 }
 $$
 
+[**Relationship Between $t$ and $F$**]{#relationship-between-t-and-f}
 
-### Relationship Between $t$ and $F$
-
-When only one restriction is being tested,
-
-$$
-r=1.
-$$
-
-In this case,
+When only one restriction is being tested, $r=1$. In this case,
 
 $$
 \boxed{
@@ -1947,38 +1890,19 @@ F=T^2.
 }
 $$
 
-Thus, the familiar $t$ test for one coefficient is a special case of
-the general $F$ test.
-
-We will study $F$ tests more thoroughly in the next chapter when we
-develop the ANOVA decomposition and compare nested regression models.
-
+Thus, the familiar $t$ test for one coefficient is a special case of the general $F$ test. We will study $F$ tests more thoroughly in the next chapter when we develop the ANOVA decomposition and compare nested regression models.
 
 ::: {#exr-t-vs-f}
 
 ## $t$ Test or $F$ Test?
 
-Suppose we want to test only
-
-$$
-H_0:
-\beta_2=0.
-$$
-
-Could we use either a $t$ test or an $F$ test?
-
-How are the two test statistics related?
+Suppose we want to test only $H_0: \beta_2=0$. Could we use either a $t$ test or an $F$ test? How are the two test statistics related?
 
 :::
 
-
 ::: {#sol-t-vs-f}
 
-Yes.
-
-Because there is only one linear restriction, either test can be used.
-
-The corresponding statistics satisfy
+Yes. Because there is only one linear restriction, either test can be used. The corresponding statistics satisfy
 
 $$
 \boxed{
@@ -1990,16 +1914,9 @@ Therefore, the two tests produce the same conclusion.
 
 :::
 
-
 ## Inference for the Mean Response
 
-Suppose we want to estimate the mean response at a predictor vector
-
-$$
-\mathbf{x}_0.
-$$
-
-The true mean response is
+Suppose we want to estimate the mean response at a predictor vector $\mathbf{x}_0$. The true mean response is
 
 $$
 \mu(\mathbf{x}_0)
@@ -2068,7 +1985,6 @@ t_{1-\alpha/2,\;n-p}
 }
 $$
 
-
 ## Prediction for a New Observation
 
 Now suppose we want to predict one new observation at the same predictor
@@ -2091,9 +2007,7 @@ $$
 N(0,\sigma^2)
 $$
 
-and is independent of the original data.
-
-The predictor is
+and is independent of the original data. The predictor is
 
 $$
 \hat{Y}_{\mathrm{new}}
@@ -2148,7 +2062,6 @@ t_{1-\alpha/2,\;n-p}
 }
 $$
 
-
 ::: {.callout-important title="Mean Response vs. New Observation"}
 
 The two intervals answer different questions.
@@ -2158,23 +2071,9 @@ The two intervals answer different questions.
 | Estimate a mean response | Uncertainty in estimating the regression mean |
 | Predict a new observation | Uncertainty in the regression mean plus new random variation |
 
-The additional $1$ in
-
-$$
-1+
-\mathbf{x}_0^\top
-(\mathbf{X}^\top\mathbf{X})^{-1}
-\mathbf{x}_0
-$$
-
-represents the variability of the new observation itself.
-
-Therefore, at the same $\mathbf{x}_0$ and confidence level, the
-prediction interval is wider than the confidence interval for the mean
-response.
+The additional $1$ in $1+ \mathbf{x}_0^\top (\mathbf{X}^\top\mathbf{X})^{-1} \mathbf{x}_0$ represents the variability of the new observation itself. Therefore, at the same $\mathbf{x}_0$ and confidence level, the prediction interval is wider than the confidence interval for the mean response.
 
 :::
-
 
 ::: {#exr-mean-vs-prediction}
 
@@ -2193,20 +2092,11 @@ and which requires a prediction interval?
 
 :::
 
-
 ::: {#sol-mean-vs-prediction}
 
-The first question concerns the **mean response**, so we use a
-confidence interval for the regression mean.
-
-The second question concerns **one future observation**, so we use a
-prediction interval.
-
-The prediction interval is wider because it also includes the random
-variation associated with the future observation.
+The first question concerns the **mean response**, so we use a confidence interval for the regression mean. The second question concerns **one future observation**, so we use a prediction interval. The prediction interval is wider because it also includes the random variation associated with the future observation.
 
 :::
-
 
 ## Worked Example
 
@@ -2279,8 +2169,7 @@ $$
 \end{pmatrix}.
 $$
 
-
-### Estimate the Error Variance
+[**Estimate the Error Variance**]{#estimate-the-error-variance}
 
 The residual sum of squares is
 
@@ -2300,25 +2189,7 @@ The residual sum of squares is
 0.8.
 \end{align*}
 
-Since
-
-$$
-n=4
-$$
-
-and
-
-$$
-p=2,
-$$
-
-the residual degrees of freedom are
-
-$$
-n-p=2.
-$$
-
-Thus,
+Since $n=4$ and $p=2$, the residual degrees of freedom are $n-p=2$. Thus,
 
 $$
 \boxed{
@@ -2342,8 +2213,7 @@ $$
 }
 $$
 
-
-### Standard Error of the Slope
+[**Standard Error of the Slope**]{#standard-error-of-the-slope}
 
 We have
 
@@ -2382,24 +2252,9 @@ $$
 0.283.
 $$
 
+[**Test the Slope**]{#test-the-slope}
 
-### Test the Slope
-
-Consider
-
-$$
-H_0:
-\beta_1=0
-$$
-
-versus
-
-$$
-H_1:
-\beta_1\neq0.
-$$
-
-The test statistic is
+Consider $H_0: \beta_1=0$ versus $H_1: \beta_1\neq0$. The test statistic is
 
 $$
 T
@@ -2413,63 +2268,17 @@ T
 4.243.
 $$
 
-The residual degrees of freedom are
-
-$$
-2.
-$$
-
-For a 5% two sided test,
-
-$$
-t_{0.975,2}
-\approx
-4.303.
-$$
-
-Since
-
-$$
-|4.243|
-<
-4.303,
-$$
-
-we fail to reject $H_0$ at the 5% significance level.
-
+The residual degrees of freedom are $2$. For a 5% two sided test, $t_{0.975,2} \approx 4.303$. Since $|4.243| < 4.303$, we fail to reject $H_0$ at the 5% significance level.
 
 ::: {.callout-note title="What Does This Example Show?"}
 
-The estimated slope
-
-$$
-\hat{\beta}_1=1.2
-$$
-
-is relatively large.
-
-However, there are only four observations, leaving only two residual
-degrees of freedom.
-
-Therefore, there is substantial uncertainty in the estimate.
-
-A large estimated effect does not automatically imply strong evidence
-against the null hypothesis.
+The estimated slope $\hat{\beta}_1=1.2$ is relatively large. However, there are only four observations, leaving only two residual degrees of freedom. Therefore, there is substantial uncertainty in the estimate. A large estimated effect does not automatically imply strong evidence against the null hypothesis.
 
 :::
 
+[**Confidence Interval for the Slope**]{#confidence-interval-for-the-slope}
 
-### Confidence Interval for the Slope
-
-A 95% confidence interval is
-
-$$
-1.2
-\pm
-4.303(0.283),
-$$
-
-which gives approximately
+A 95% confidence interval is $1.2 \pm 4.303(0.283)$, which gives approximately
 
 $$
 \boxed{
@@ -2479,40 +2288,22 @@ $$
 
 The interval contains zero, which agrees with the hypothesis test.
 
-
 ::: {#exr-example-ci-test}
 
 ## Check the Connection
 
 Without performing another hypothesis test, what conclusion can you
-draw from the fact that the 95% confidence interval
-
-$$
-(-0.017,\;2.417)
-$$
-
-contains zero?
+draw from the fact that the 95% confidence interval $(-0.017,\;2.417)$ contains zero?
 
 :::
-
 
 ::: {#sol-example-ci-test}
 
-We fail to reject
-
-$$
-H_0:
-\beta_1=0
-$$
-
-at the 5% significance level.
-
-This agrees with the previous $t$ test.
+We fail to reject $H_0: \beta_1=0$ at the 5% significance level. This agrees with the previous $t$ test.
 
 :::
 
-
-### Mean Response at $x_0=2$
+[**Mean Response at $x_0=2$**]{#mean-response-at-x_02}
 
 For simple linear regression with an intercept,
 
@@ -2569,8 +2360,7 @@ $$
 }
 $$
 
-
-### Prediction at $x_0=2$
+[**Prediction at $x_0=2$**]{#prediction-at-x_02}
 
 For one new observation,
 
@@ -2595,7 +2385,6 @@ $$
 Notice that the prediction interval is substantially wider than the
 confidence interval for the mean response.
 
-
 ## R Demonstration
 
 We can reproduce the previous calculations using R.
@@ -2609,15 +2398,13 @@ fit <- lm(y ~ x)
 summary(fit)
 ```
 
-
-### Estimated Coefficients
+[**Estimated Coefficients**]{#estimated-coefficients}
 
 ```{r}
 coef(fit)
 ```
 
-
-### Residual Degrees of Freedom and Error Variance
+[**Residual Degrees of Freedom and Error Variance**]{#residual-degrees-of-freedom-and-error-variance}
 
 ```{r}
 df.residual(fit)
@@ -2626,8 +2413,7 @@ sigma(fit)
 sigma(fit)^2
 ```
 
-
-### Covariance Matrix and Standard Errors
+[**Covariance Matrix and Standard Errors**]{#covariance-matrix-and-standard-errors}
 
 ```{r}
 vcov(fit)
@@ -2635,8 +2421,7 @@ vcov(fit)
 sqrt(diag(vcov(fit)))
 ```
 
-
-### Verify the Formulas Using Matrix Operations
+[**Verify the Formulas Using Matrix Operations**]{#verify-the-formulas-using-matrix-operations}
 
 ```{r}
 X <- model.matrix(fit)
@@ -2670,8 +2455,7 @@ V_beta_hat
 SE_beta_hat
 ```
 
-
-### Hypothesis Tests and Confidence Intervals
+[**Hypothesis Tests and Confidence Intervals**]{#hypothesis-tests-and-confidence-intervals}
 
 R automatically reports coefficient level $t$ tests:
 
@@ -2686,16 +2470,9 @@ using
 confint(fit)
 ```
 
+[**Mean Response and Prediction**]{#mean-response-and-prediction}
 
-### Mean Response and Prediction
-
-At
-
-$$
-x_0=2,
-$$
-
-use
+At $x_0=2$, use
 
 ```{r}
 newdat <- data.frame(x = 2)
@@ -2713,10 +2490,7 @@ predict(
 )
 ```
 
-The first interval estimates the **mean response**.
-
-The second interval predicts **one future observation**.
-
+The first interval estimates the **mean response**. The second interval predicts **one future observation**.
 
 ## Reading Standard Regression Output
 
@@ -2746,7 +2520,6 @@ The output also includes:
 We will study $R^2$, the ANOVA decomposition, and the overall $F$ test
 more carefully in the next chapter.
 
-
 ::: {#exr-read-r-output}
 
 ## Reading an R Regression Table
@@ -2767,34 +2540,9 @@ Answer the following.
 
 :::
 
-
 ::: {#sol-read-r-output}
 
-The estimate is
-
-$$
-\hat{\beta}_1
-=
-2.40.
-$$
-
-The standard error is
-
-$$
-\operatorname{SE}
-(\hat{\beta}_1)
-=
-0.60.
-$$
-
-The default coefficient level test is
-
-$$
-H_0:
-\beta_1=0.
-$$
-
-The reported $t$ statistic is
+The estimate is $\hat{\beta}_1 = 2.40$. The standard error is $\operatorname{SE} (\hat{\beta}_1) = 0.60$. The default coefficient level test is $H_0: \beta_1=0$. The reported $t$ statistic is
 
 $$
 \frac{2.40}{0.60}
@@ -2803,7 +2551,6 @@ $$
 $$
 
 :::
-
 
 ## Practice at Home
 
@@ -2845,42 +2592,16 @@ $$
 2. Explain why normality is not required for OLS to be unbiased but is
    useful for exact finite sample inference.
 
-3. Explain geometrically why the residual degrees of freedom are
+3. Explain geometrically why the residual degrees of freedom are $n-p$.
 
-   $$
-   n-p.
-   $$
+4. Explain why $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ are independent under the normal linear model.
 
-4. Explain why
-
-   $$
-   \hat{\boldsymbol{\beta}}
-   \quad\text{and}\quad
-   \mathrm{SSE}
-   $$
-
-   are independent under the normal linear model.
-
-5. Derive the $t$ statistic for testing
-
-   $$
-   H_0:
-   \beta_j
-   =
-   \beta_{j,0}.
-   $$
+5. Derive the $t$ statistic for testing $H_0: \beta_j = \beta_{j,0}$.
 
 6. Explain the connection between a two sided hypothesis test and the
    corresponding confidence interval.
 
-7. Explain the difference between a confidence interval for
-
-   $$
-   \mathbf{x}_0^\top
-   \boldsymbol{\beta}
-   $$
-
-   and a prediction interval for a future observation at
+7. Explain the difference between a confidence interval for $\mathbf{x}_0^\top \boldsymbol{\beta}$ and a prediction interval for a future observation at
    $\mathbf{x}_0$.
 
 8. Fit a simple regression model in R and identify:
@@ -2892,13 +2613,9 @@ $$
    - the residual standard error;
    - the residual degrees of freedom.
 
-
 ::: {.callout-note title="Summary"}
 
-This chapter moved from the **geometry of least squares** to the
-**probability of least squares**.
-
-Under the first two moment assumptions,
+This chapter moved from the **geometry of least squares** to the **probability of least squares**. Under the first two moment assumptions,
 
 $$
 \mathbb{E}
@@ -2956,22 +2673,7 @@ $$
 }
 $$
 
-The independence of
-
-$$
-\hat{\boldsymbol{\beta}}
-$$
-
-and
-
-$$
-\mathrm{SSE}
-$$
-
-allows us to replace the unknown $\sigma$ with $\hat{\sigma}$ and
-obtain exact $t$ inference.
-
-The same framework extends naturally to:
+The independence of $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ allows us to replace the unknown $\sigma$ with $\hat{\sigma}$ and obtain exact $t$ inference. The same framework extends naturally to:
 
 - linear combinations of regression coefficients;
 - general linear hypotheses;
@@ -2983,7 +2685,6 @@ decomposition, the overall $F$ test, and comparisons of nested
 regression models.
 
 :::
-
 
 ---
 
@@ -3003,15 +2704,7 @@ N_n
 \right)
 $$
 
-and $\mathbf{A}$ is symmetric and idempotent with
-
-$$
-\operatorname{rank}(\mathbf{A})
-=
-r,
-$$
-
-then
+and $\mathbf{A}$ is symmetric and idempotent with $\operatorname{rank}(\mathbf{A}) = r$, then
 
 $$
 \boxed{

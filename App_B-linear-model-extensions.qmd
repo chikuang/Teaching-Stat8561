@@ -1,0 +1,103 @@
+# Linear-Model Extensions (Optional) {#sec-linear-extensions}
+
+::: {.callout-note title="Optional appendix"}
+
+The main chapters use identifiable mean comparisons and practical diagnostics. This appendix develops the Gauss–Markov result, rank deficiency, and additional diagnostics; it is not a prerequisite for the GLM chapter.
+
+:::
+
+**Efficiency of least squares.** The following result supplements the moment calculations in Chapter 3.
+
+::: {#thm-gauss-markov}
+
+## Gauss–Markov: What “Best” Means
+
+Let $X$ be fixed with full column rank, $\mathbb{E}(\varepsilon\mid X)=0$, and $\operatorname{Var}(\varepsilon\mid X)=\sigma^2 I_n$. Among estimators linear in $Y$ and unbiased for every $\beta$, OLS has the smallest covariance in the positive-semidefinite ordering. Thus every fixed linear combination of its coefficients has variance no larger than that of any competing linear unbiased estimator. Normality is not required.
+
+:::
+
+**Proof idea.** Write a competing estimator as $AY$, with $AX=I_p$. If $B=(X^\top X)^{-1}X^\top$, then $A=B+D$ with $DX=0$. The cross terms vanish, so
+
+$$
+\operatorname{Var}(AY\mid X)-\operatorname{Var}(\hat\beta\mid X)
+=\sigma^2 DD^\top\succeq0.
+$$
+
+**Scope.** “Best” refers to this linear unbiased class and these covariance assumptions. It does not claim optimality among all biased or nonlinear estimators, nor that OLS keeps this efficiency property under arbitrary unequal variances or correlation.
+
+## Estimability
+
+So far, we have mostly assumed that $\mathbf{X}$ has full column rank. But in some important cases, the design matrix is rank-deficient. Then the parameter vector itself is not uniquely identifiable. In such settings, we ask a more refined question: Which linear functions of $\boldsymbol{\beta}$ can still be estimated uniquely from the model? This leads to the concept of **estimability**. **Why Estimability Is Needed** Suppose two different parameter vectors, say $\boldsymbol{\beta}$ and $\boldsymbol{\beta}^*$, produce the same mean vector:
+
+$$
+\mathbf{X}\boldsymbol{\beta} = \mathbf{X}\boldsymbol{\beta}^*.
+$$
+
+Then the data cannot distinguish between these two parameter vectors. So a particular coefficient may not be uniquely meaningful. However, some combinations of coefficients may still be uniquely determined by the mean structure. Those combinations are estimable. **Definition of Estimability** A linear function $a^\top \boldsymbol{\beta}$ is **estimable** if there exists a vector $t$ such that
+
+$$
+a^\top = t^\top \mathbf{X}.
+$$
+
+Equivalently, $a$ must lie in the row space of $\mathbf{X}$. This condition ensures that the target quantity depends only on the mean vector $\mathbf{X}\boldsymbol{\beta}$, and not on the particular parameterization used. **Interpretation of Estimability** Estimability means that the quantity is determined by the model's observable mean structure. If a linear function is not estimable, then different parameter vectors producing the same fitted mean can give different values of that function.
+
+So no unbiased linear estimator can uniquely recover it. **Example With a Factor Model** Suppose we write a one-way mean model as
+
+$$
+Y_{ij} = \mu + \tau_i + \varepsilon_{ij},
+$$
+
+for groups $i=1,\dots,g$. If we include all group indicators together with an intercept, then the parameters are not uniquely identified, because adding a constant to all $\tau_i$ and subtracting it from $\mu$ gives the same mean structure. In this case:
+
+- $\mu$ alone is not uniquely defined;
+- $\tau_i$ alone is not uniquely defined;
+- but differences such as $\tau_i - \tau_j$ are estimable.
+
+This is a classic example. **Estimable Functions in Rank-Deficient Models** Even when the coefficient vector is not unique, fitted values are still unique, provided we project onto the column space of $\mathbf{X}$. Likewise, every estimable linear function has a unique value determined by the model.
+
+So regression analysis in rank-deficient settings often focuses on estimable functions rather than on individual raw coefficients.
+## Least Squares in Rank-Deficient Models
+
+When $\mathbf{X}$ is rank-deficient, the normal equations do not yield a unique coefficient vector. Different generalized inverse solutions may produce different coefficient vectors. However:
+
+- the fitted values are unique;
+- the residual sum of squares is unique;
+- estimable linear functions have unique least squares estimates.
+
+So the inferential target should be framed carefully. **Generalized Inverse View** A generalized inverse of $\mathbf{X}^\top \mathbf{X}$ can be used to write one least squares solution. This leads to expressions similar to the full-rank case, but students should remember that not every coefficient itself is uniquely meaningful. What matters most is whether the function of interest is estimable. **Software and Estimability** Modern software often handles rank deficiency automatically. It may:
+
+- drop aliased columns;
+- report coefficients as not estimable;
+- use a default parameterization that makes the fit identifiable.
+
+Students should not interpret every reported coefficient mechanically. They should understand the underlying estimable structure.
+**Example of rank deficiency**
+
+```{r}
+X_bad <- cbind(1, diag(3))
+X_bad <- rbind(X_bad, X_bad)
+colnames(X_bad) <- c("Intercept", "G1", "G2", "G3")
+
+qr(X_bad)$rank
+ncol(X_bad)
+X_bad
+```
+
+## DFFITS and DFBETAS
+
+Other influence measures include:
+
+- **DFFITS**, which measures the effect of deleting an observation on its fitted value;
+- **DFBETAS**, which measure the effect of deleting an observation on each estimated coefficient.
+
+These are useful when we want to know not only whether a point is influential, but how it changes the model.
+
+For an introductory treatment, Cook's distance and leverage usually provide a strong starting point.
+## Added-Variable and Partial Residual Plots
+
+When there are several predictors, ordinary residual plots may not fully reveal whether one variable needs a nonlinear term or whether its effect remains after adjustment. Useful advanced plots include:
+
+- **added-variable plots**, which assess the contribution of one predictor after adjusting for others;
+- **partial residual plots**, which help visualize possible nonlinearity for a specific predictor.
+
+These are especially useful in multiple regression, though they are often introduced after students become comfortable with basic residual plots.

@@ -1,0 +1,137 @@
+# Automatic Model Selection (Optional) {#sec-selection-optional}
+
+::: {.callout-note title="Optional appendix"}
+
+The main course compares a small set of scientifically justified models and checks predictive performance. Automatic searches and additional selection criteria are supplementary. A search-selected model does not inherit the usual fixed-model interpretation of its p-values and confidence intervals.
+
+:::
+
+## Forward Selection
+
+In **forward selection**, we begin with a small model, often the intercept-only model, and add predictors one at a time. At each step, we add the variable that gives the best improvement according to some criterion, such as:
+
+- partial $F$ test;
+- smallest $p$-value;
+- largest drop in AIC;
+- largest increase in adjusted $R^2$.
+
+This continues until no candidate addition meets the chosen rule. **Backward Elimination** In **backward elimination**, we begin with a larger model and remove predictors one at a time. At each step, we remove the least useful variable according to a chosen rule. This continues until all remaining variables satisfy the stopping criterion. Backward elimination requires that the initial model be estimable, and it may be sensitive to collinearity and hierarchical structure. **Stepwise Selection**
+
+**Stepwise selection** combines forward and backward ideas. A variable may enter at one stage and later be removed if its contribution becomes weak after other variables enter the model. This procedure is popular in software because it is automated, but it should be used cautiously. Automatic procedures can be unstable and may encourage overly mechanical modelling. **Problems With Automatic Selection**
+
+Automatic variable selection can create several difficulties:
+
+- it ignores model uncertainty;
+- repeated searching inflates the chance of false discoveries;
+- selected coefficients and $p$-values may look more certain than they really are;
+- different but similar datasets may lead to different selected models;
+- scientific structure may be lost if the procedure is used blindly.
+
+So automated methods should be treated as exploratory tools, not as final arbiters of truth.
+
+## Additional comparison criteria
+
+**Criteria for Comparing Models**
+
+Several criteria are commonly used in model comparison.
+
+**Adjusted R Squared**
+
+Adjusted $R^2$ is
+
+$$
+R^2_{\mathrm{adj}}
+=
+1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+$$
+
+Unlike ordinary $R^2$, adjusted $R^2$ can decrease when unnecessary predictors are added. It rewards fit but penalizes unnecessary complexity in a simple way.
+
+**AIC**
+
+The Akaike information criterion is typically written as
+
+$$
+\mathrm{AIC} = -2\log L + 2k,
+$$
+
+where $L$ is the fitted likelihood and $k$ is the number of estimated parameters. Smaller AIC indicates a better tradeoff between fit and complexity. AIC is often more prediction-oriented than strict parsimony-oriented.
+
+**BIC**
+
+The Bayesian information criterion is
+
+$$
+\mathrm{BIC} = -2\log L + k\log n.
+$$
+
+Because the penalty term is stronger than that of AIC when $n$ is moderate or large, BIC tends to favor smaller models.
+
+**Mallows' Cp**
+
+Another classical criterion is Mallows' $C_p$, which compares model bias and variance relative to a fuller model. It is less frequently emphasized in introductory software workflows today, but it remains conceptually important in regression theory.
+
+## An executable selection example
+
+**Generate data with multicollinearity**
+
+```{r}
+set.seed(8561)
+n <- 80
+x1 <- rnorm(n)
+x2 <- 0.92 * x1 + rnorm(n, sd = 0.25)
+x3 <- rnorm(n)
+y <- 3 + 2 * x1 - 1.5 * x2 + 1.2 * x3 + rnorm(n, sd = 1)
+
+dat <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
+
+fit_full <- lm(y ~ x1 + x2 + x3, data = dat)
+summary(fit_full)
+```
+**Compare with simpler models**
+
+```{r}
+fit_small <- lm(y ~ x1 + x3, data = dat)
+fit_alt <- lm(y ~ x2 + x3, data = dat)
+
+summary(fit_small)
+summary(fit_alt)
+anova(fit_small, fit_full)
+```
+**Use AIC-based stepwise selection**
+
+```{r}
+fit_null <- lm(y ~ 1, data = dat)
+fit_scope <- lm(y ~ x1 + x2 + x3, data = dat)
+
+step_forward <- step(fit_null,
+                     scope = list(lower = fit_null, upper = fit_scope),
+                     direction = "forward",
+                     trace = 0)
+
+step_backward <- step(fit_scope, direction = "backward", trace = 0)
+
+summary(step_forward)
+summary(step_backward)
+```
+**Compare AIC, BIC, and adjusted R squared**
+
+```{r}
+model_summary <- function(model) {
+  c(
+    AIC = AIC(model),
+    BIC = BIC(model),
+    adj_R2 = summary(model)$adj.r.squared
+  )
+}
+
+rbind(
+  small = model_summary(fit_small),
+  alt = model_summary(fit_alt),
+  full = model_summary(fit_full),
+  step_forward = model_summary(step_forward),
+  step_backward = model_summary(step_backward)
+)
+```
+
+**Interpretation.** Compare the selected variable sets, but do not treat this demonstration as evidence that an automatic search is scientifically optimal. If evaluating a selection procedure by resampling, run the entire selection procedure inside each training fold. Ordinary prediction validation does not repair post-selection confidence intervals.

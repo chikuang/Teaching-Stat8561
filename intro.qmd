@@ -1,20 +1,12 @@
 # Introduction {.unnumbered}
 
-This is an introduction to the course for linear statistical analysis. It will give you an overview of what we will be covering in the course and how to get the most out of it. We will be covering a wide range of topics in linear statistical analysis,  
+This course develops a common language for statistical modelling: specify the research question, construct a design matrix, estimate a mean structure, quantify uncertainty, and check whether the assumptions are credible.
 
-+ simple linear regression 
-+ multiple linear regression 
-+ generalized linear models
-+ mixed effects models
-+ quantile regression. 
+The core sequence covers matrix notation and least squares; normal distributions and quadratic forms; inference and model comparison; categorical predictors, contrasts, and experimental design; diagnostics, transformations, and weighting; and an introduction to generalized linear models for binary and count responses.
 
-We will also be discussing the assumptions underlying these models and how to check them.
+The final GLM unit keeps the same linear predictor while extending the response distribution and mean link. Logistic and Poisson regression provide practical examples. The appendices contain optional material on rank-deficient models, automatic selection, correlated errors/GLS, GLM likelihood and computation, quantile regression, and mixed-effects models. The last two appendices are self-study readings for students who want to explore distributional features or grouped observations.
 
-The course will be structured around lectures, homework assignments, a midterm and a final.  
-
-To get the most out of this course, it is important to attend all lectures and complete all homework assignments. It is also important to ask questions and participate in class discussions. The more you engage with the material, the more you will learn.
-
-I am looking forward to a great semester and I hope you are too!
+Lectures, homework, two in-class exams, and a final assessment develop both mathematical reasoning and reproducible analysis in R. Core tasks include interpreting estimates and intervals, identifying the experimental unit, and explaining the limits of an analysis.
 
 To illustrate the concepts we will be covering in this course, let's consider a simple example. Suppose we have a data set of heights and weights of individuals. We want to understand the relationship between height and weight, and we can use linear regression to model this relationship.
 

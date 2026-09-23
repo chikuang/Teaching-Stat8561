@@ -1,3 +1,9 @@
+---
+format:
+  html:
+    code-fold: false
+---
+
 # Least Squares Estimation {#sec-lse}
 
 In this chapter, we study one of the fundamental ideas in linear models:

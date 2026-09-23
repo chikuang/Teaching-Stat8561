@@ -1,10 +1,10 @@
-# Week 5: Multiple Regression, Partial Effects, and Categorical Predictors
+# Multiple Regression and Categorical Predictors {#sec-multiple-regression}
 
-In this week, we move from simple regression ideas to multiple regression. We study how regression coefficients are interpreted when several predictors are included in the model, how categorical predictors enter through indicator variables, and how interactions change the meaning of coefficients. The main goal is to help students read, build, and interpret regression models in realistic settings.
+In this chapter, we move from simple regression ideas to multiple regression. We study how regression coefficients are interpreted when several predictors are included in the model, how categorical predictors enter through indicator variables, and how interactions change the meaning of coefficients. The main goal is to help students read, build, and interpret regression models in realistic settings.
 
-## Learning Objectives
+**Learning Objectives**
 
-By the end of this week, students should be able to:
+By the end of this chapter, students should be able to:
 
 - interpret coefficients in a multiple regression model;
 - explain the meaning of a partial regression coefficient;
@@ -13,9 +13,9 @@ By the end of this week, students should be able to:
 - interpret regression models with interactions;
 - use software output to explain fitted multiple regression models.
 
-## Reading
+**Reading**
 
-Recommended reading for this week:
+Recommended reading for this chapter:
 
 - Seber and Lee:
   - sections on multiple linear regression
@@ -26,7 +26,7 @@ Recommended reading for this week:
   - qualitative predictors
   - interaction terms and interpretation
 
-## Review of the Regression Framework
+**Review of the Regression Framework**
 
 Recall the linear model
 
@@ -44,7 +44,7 @@ $$
 (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
 $$
 
-In earlier weeks, we focused on estimation, inference, ANOVA decomposition, and the comparison of nested models. In this week, the emphasis shifts toward interpretation and modelling structure.
+In earlier weeks, we focused on estimation, inference, ANOVA decomposition, and the comparison of nested models. In this chapter, the emphasis shifts toward interpretation and modelling structure.
 
 ## From Simple Regression to Multiple Regression
 
@@ -54,23 +54,17 @@ $$
 Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i.
 $$
 
-Here, the slope $\beta_1$ measures the expected change in the response associated with a one-unit increase in $x$.
-
-In multiple regression, the model becomes
+Here, the slope $\beta_1$ measures the expected change in the response associated with a one-unit increase in $x$. In multiple regression, the model becomes
 
 $$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} + \varepsilon_i.
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i.
 $$
 
-Now each coefficient must be interpreted while holding the other predictors fixed.
+Here there are $k$ predictors and $p=k+1$ regression parameters, including the intercept. Throughout the course, $p$ counts all columns of the full-rank design matrix. Now each coefficient must be interpreted while holding the other predictors fixed. This is the key conceptual shift.
 
-This is the key conceptual shift.
+**Why Multiple Regression Matters**
 
-## Why Multiple Regression Matters
-
-Multiple regression is important because real data usually involve several explanatory variables.
-
-Reasons for including multiple predictors include:
+Multiple regression is important because real data usually involve several explanatory variables. Reasons for including multiple predictors include:
 
 - improving prediction;
 - adjusting for confounding variables;
@@ -79,12 +73,12 @@ Reasons for including multiple predictors include:
 
 A coefficient in multiple regression is therefore usually an adjusted effect, not a purely marginal one.
 
-## Interpreting the Intercept
+**Interpreting the Intercept**
 
 In the model
 
 $$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i,
 $$
 
 the intercept $\beta_0$ is the expected value of the response when all predictors equal zero:
@@ -94,11 +88,9 @@ $$
 \quad \text{when } x_{i1} = \cdots = x_{ip} = 0.
 $$
 
-This interpretation may or may not be scientifically meaningful.
+This interpretation may or may not be scientifically meaningful. Sometimes zero is a natural baseline. Sometimes it is outside the observed range, in which case the intercept is mainly a mathematical anchor for the model.
 
-Sometimes zero is a natural baseline. Sometimes it is outside the observed range, in which case the intercept is mainly a mathematical anchor for the model.
-
-## Interpreting Partial Regression Coefficients
+**Interpreting Partial Regression Coefficients**
 
 Consider the model
 
@@ -111,24 +103,18 @@ Then:
 - $\beta_1$ is the expected change in $Y$ associated with a one-unit increase in $x_1$, holding $x_2$ fixed;
 - $\beta_2$ is the expected change in $Y$ associated with a one-unit increase in $x_2$, holding $x_1$ fixed.
 
-This is called a **partial effect** or **adjusted effect**.
+This is called a **partial effect** or **adjusted effect**. The phrase “holding other variables fixed” is essential and should always be stated clearly.
 
-The phrase “holding other variables fixed” is essential and should always be stated clearly.
+**Marginal Association Versus Adjusted Association**
 
-## Marginal Association Versus Adjusted Association
-
-Suppose $x_1$ and $x_2$ are correlated.
-
-Then the relationship between $Y$ and $x_1$ in a simple regression of $Y$ on $x_1$ alone may differ from the coefficient of $x_1$ in a multiple regression including both $x_1$ and $x_2$.
-
-This happens because:
+Suppose $x_1$ and $x_2$ are correlated. Then the relationship between $Y$ and $x_1$ in a simple regression of $Y$ on $x_1$ alone may differ from the coefficient of $x_1$ in a multiple regression including both $x_1$ and $x_2$. This happens because:
 
 - the simple regression coefficient describes a marginal association;
 - the multiple regression coefficient describes an adjusted association.
 
 These can differ substantially when predictors are related to each other.
 
-## Example of Adjusted Interpretation
+**Example of Adjusted Interpretation**
 
 Suppose we fit
 
@@ -143,7 +129,7 @@ Then:
 
 This interpretation is valid only within the modelling assumptions and over the range of data where the model is reasonable.
 
-## Matrix View of Multiple Regression
+**Matrix View of Multiple Regression**
 
 In multiple regression, the design matrix has the form
 
@@ -151,16 +137,14 @@ $$
 \mathbf{X}
 =
 \begin{bmatrix}
-1 & x_{11} & x_{12} & \cdots & x_{1p} \\
-1 & x_{21} & x_{22} & \cdots & x_{2p} \\
+1 & x_{11} & x_{12} & \cdots & x_{1k} \\
+1 & x_{21} & x_{22} & \cdots & x_{2k} \\
 \vdots & \vdots & \vdots & \ddots & \vdots \\
-1 & x_{n1} & x_{n2} & \cdots & x_{np}
+1 & x_{n1} & x_{n2} & \cdots & x_{nk}
 \end{bmatrix}.
 $$
 
-Each column corresponds to a predictor or model term.
-
-This allows the same least squares and inference framework to handle:
+Each column corresponds to a predictor or model term. This allows the same least squares and inference framework to handle:
 
 - continuous predictors;
 - categorical predictors represented by indicator variables;
@@ -171,9 +155,7 @@ So the general linear model framework is highly flexible.
 
 ## Categorical Predictors and Indicator Variables
 
-Many real predictors are categorical rather than numeric.
-
-Examples include:
+Many real predictors are categorical rather than numeric. Examples include:
 
 - treatment group;
 - sex;
@@ -183,7 +165,7 @@ Examples include:
 
 These enter a regression model through indicator variables, also called dummy variables.
 
-## Binary Predictor
+**Binary Predictor**
 
 Suppose $z_i$ is a binary variable:
 
@@ -208,7 +190,7 @@ has the following interpretation:
 
 Thus, $\beta_1$ measures the difference in group means.
 
-## More Than Two Categories
+**More Than Two Categories**
 
 Suppose a categorical predictor has three levels:
 
@@ -246,19 +228,13 @@ Interpretation:
 
 So coefficients are interpreted relative to the reference category.
 
-## Why We Do Not Include All Indicators with an Intercept
+**Why We Do Not Include All Indicators with an Intercept**
 
-If a categorical variable has $k$ levels, then with an intercept we include only $k-1$ indicator variables.
+If a categorical variable has $k$ levels, then with an intercept we include only $k-1$ indicator variables. If we include all $k$ indicators and also include an intercept, then the columns of the design matrix become linearly dependent. This causes rank deficiency. This is sometimes called the dummy variable trap.
 
-If we include all $k$ indicators and also include an intercept, then the columns of the design matrix become linearly dependent. This causes rank deficiency.
+**Continuous and Categorical Predictors Together**
 
-This is sometimes called the dummy variable trap.
-
-## Continuous and Categorical Predictors Together
-
-Regression models often mix continuous and categorical predictors.
-
-For example,
+Regression models often mix continuous and categorical predictors. For example,
 
 $$
 Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i
@@ -276,11 +252,9 @@ Interpretation:
 
 This is one of the simplest forms of ANCOVA-style modelling.
 
-## Interaction Between Continuous Predictors
+## Interactions
 
-An interaction allows the effect of one predictor to depend on the value of another predictor.
-
-For two continuous predictors, we may write
+An interaction allows the effect of one predictor to depend on the value of another predictor. For two continuous predictors, we may write
 
 $$
 Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i1}x_{i2} + \varepsilon_i.
@@ -294,11 +268,9 @@ $$
 \beta_1 + \beta_3 x_{i2}.
 $$
 
-So the slope for $x_1$ depends on the value of $x_2$.
+So the slope for $x_1$ depends on the value of $x_2$. Likewise, the slope for $x_2$ depends on $x_1$.
 
-Likewise, the slope for $x_2$ depends on $x_1$.
-
-## Interaction Between a Continuous and a Binary Predictor
+**Interaction Between a Continuous and a Binary Predictor**
 
 Suppose we fit
 
@@ -306,9 +278,7 @@ $$
 Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i,
 $$
 
-where $z_i \in \{0,1\}$.
-
-Then:
+where $z_i \in \{0,1\}$. Then:
 
 - when $z_i = 0$,
   $$
@@ -327,41 +297,23 @@ So:
 
 This allows the two groups to have different regression lines.
 
-## Main Effects in the Presence of Interaction
+**Main Effects in the Presence of Interaction**
 
-When an interaction is present, the meaning of the main effects changes.
-
-For example, in
+When an interaction is present, the meaning of the main effects changes. For example, in
 
 $$
 Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i,
 $$
 
-the coefficient $\beta_1$ is the slope for $x$ only when $z=0$, the reference group.
+the coefficient $\beta_1$ is the slope for $x$ only when $z=0$, the reference group. Similarly, $\beta_2$ is the group difference only when $x=0$. So students should be careful not to interpret main effects in isolation when interactions are included.
 
-Similarly, $\beta_2$ is the group difference only when $x=0$.
+**Centering Predictors for Interpretation**
 
-So students should be careful not to interpret main effects in isolation when interactions are included.
+Sometimes the value zero is not meaningful for a continuous predictor. In that case, it can be helpful to centre the predictor: $x_i^* = x_i - \bar{x}$. Then the intercept becomes the expected response at the average value of $x$, which may be much easier to interpret. Centering can also improve interpretability in models with interactions.
 
-## Centering Predictors for Interpretation
+**Comparing Models With and Without Interaction**
 
-Sometimes the value zero is not meaningful for a continuous predictor.
-
-In that case, it can be helpful to centre the predictor:
-
-$$
-x_i^* = x_i - \bar{x}.
-$$
-
-Then the intercept becomes the expected response at the average value of $x$, which may be much easier to interpret.
-
-Centering can also improve interpretability in models with interactions.
-
-## Comparing Models With and Without Interaction
-
-To assess whether an interaction is needed, we can compare nested models.
-
-For example:
+To assess whether an interaction is needed, we can compare nested models. For example:
 
 - reduced model:
   $$
@@ -373,41 +325,27 @@ For example:
   Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i.
   $$
 
-The reduced model is nested within the full model by setting
+The reduced model is nested within the full model by setting $\beta_3 = 0$. So the interaction can be tested by a standard extra sum of squares $F$ test.
 
-$$
-\beta_3 = 0.
-$$
+**Collinearity and Interpretation**
 
-So the interaction can be tested by a standard extra sum of squares $F$ test.
-
-## Collinearity and Interpretation
-
-In multiple regression, predictors may be strongly related to each other.
-
-When this happens:
+In multiple regression, predictors may be strongly related to each other. When this happens:
 
 - coefficient estimates can become unstable;
 - standard errors can become large;
 - interpretation becomes more delicate.
 
-Even when the overall model seems useful, individual coefficients may be hard to estimate precisely.
+Even when the overall model seems useful, individual coefficients may be hard to estimate precisely. This issue is called **multicollinearity**. We will study diagnostics for it more formally later, but students should already know that “holding other variables fixed” may become practically difficult if predictors tend to move together.
 
-This issue is called **multicollinearity**.
+::: {.callout-important title="Adjusted association and causal effects"}
 
-We will study diagnostics for it more formally later, but students should already know that “holding other variables fixed” may become practically difficult if predictors tend to move together.
+An adjusted regression coefficient describes a conditional association under the chosen mean model. A causal interpretation additionally requires a defensible study design and identification assumptions. Check the overlap of predictor values across groups before interpreting an adjusted comparison.
 
-## Multiple Regression as Conditional Mean Modelling
+:::
 
-A good way to summarize multiple regression is:
+**Multiple Regression as Conditional Mean Modelling**
 
-$$
-\mathbb{E}[Y \mid X_1,\dots,X_p]
-$$
-
-is being modelled as a linear function of predictors and model terms.
-
-This viewpoint helps unify:
+A good way to summarize multiple regression is: $\mathbb{E}[Y \mid X_1,\dots,X_k]$ is being modelled as a linear function of predictors and model terms. This viewpoint helps unify:
 
 - continuous predictors;
 - factors;
@@ -416,7 +354,7 @@ This viewpoint helps unify:
 
 It also helps students distinguish between the response itself and its conditional mean.
 
-## Worked Example With a Continuous and a Binary Predictor
+**Worked Example With a Continuous and a Binary Predictor**
 
 Suppose we observe a response $Y$, a study-hours variable $x$, and a tutoring indicator $z$, where
 
@@ -455,7 +393,7 @@ Thus, the effect of study time depends on tutoring status.
 
 ## R Demonstration With Multiple Regression
 
-## Fit a model with two continuous predictors
+**Fit a model with two continuous predictors**
 
 ```{r}
 dat1 <- data.frame(
@@ -468,7 +406,7 @@ fit1 <- lm(y ~ x1 + x2, data = dat1)
 summary(fit1)
 ```
 
-## Compare with a simple regression
+**Compare with a simple regression**
 
 ```{r}
 fit1_simple <- lm(y ~ x1, data = dat1)
@@ -476,7 +414,7 @@ summary(fit1_simple)
 summary(fit1)
 ```
 
-## Fit a model with a categorical predictor
+**Fit a model with a categorical predictor**
 
 ```{r}
 dat2 <- data.frame(
@@ -490,7 +428,7 @@ summary(fit2)
 model.matrix(fit2)
 ```
 
-## Fit a model with interaction
+**Fit a model with interaction**
 
 ```{r}
 fit3 <- lm(y ~ hours * group, data = dat2)
@@ -498,7 +436,7 @@ summary(fit3)
 anova(fit2, fit3)
 ```
 
-## Plot group-specific regression lines
+**Plot group-specific regression lines**
 
 ```{r}
 plot(dat2$hours, dat2$y,
@@ -513,11 +451,9 @@ legend("topleft", legend = c("Group A", "Group B"),
        pch = c(1, 19), bty = "n")
 ```
 
-## Interpreting Software Output
+**Interpreting Software Output**
 
-In `summary(lm(...))`, each coefficient estimate answers a question about the conditional mean given the model terms included.
-
-Students should always ask:
+In `summary(lm(...))`, each coefficient estimate answers a question about the conditional mean given the model terms included. Students should always ask:
 
 - what variables are being held fixed;
 - what is the reference category;
@@ -526,7 +462,7 @@ Students should always ask:
 
 These questions matter more than memorizing formulas.
 
-## In-Class Discussion Questions
+**In-Class Discussion Questions**
 
 1. Why can the coefficient of a predictor change when a second predictor is added to the model?
 2. Why do we need a reference category for categorical predictors?
@@ -535,13 +471,13 @@ These questions matter more than memorizing formulas.
 
 ## Practice Problems
 
-## Conceptual
+**Conceptual**
 
 1. Explain the meaning of a partial regression coefficient in your own words.
 2. Explain the difference between a marginal association and an adjusted association.
 3. Explain why a model with an interaction requires more careful interpretation than an additive model.
 
-## Computational
+**Computational**
 
 Suppose the fitted model is
 
@@ -565,7 +501,7 @@ where $z$ is binary.
 2. Write the fitted mean function when $z=1$.
 3. Interpret the interaction coefficient.
 
-## Indicator Variable Problem
+**Indicator Variable Problem**
 
 A factor has four levels: A, B, C, and D.
 
@@ -573,7 +509,7 @@ A factor has four levels: A, B, C, and D.
 2. If A is the reference group, write a regression model using indicators for B, C, and D.
 3. State the expected response for each group.
 
-## Suggested Homework
+**Suggested Homework**
 
 Complete the following tasks:
 
@@ -583,11 +519,9 @@ Complete the following tasks:
 - use `model.matrix()` in R to inspect the design matrix for a model with factors;
 - write a short explanation of why coefficient interpretation changes when additional predictors are added.
 
-## Summary
+**Summary**
 
-In this week, we developed the interpretation of multiple regression models.
-
-We emphasized that:
+In this chapter, we developed the interpretation of multiple regression models. We emphasized that:
 
 - regression coefficients in multiple regression are partial effects;
 - categorical predictors are incorporated through indicator variables;
@@ -595,37 +529,3 @@ We emphasized that:
 - the meaning of a coefficient depends on the full model specification.
 
 These ideas are essential for moving from formal least squares theory to practical statistical modelling.
-
-Next week, a natural continuation is to study multicollinearity, variable selection, and model building, or to move into diagnostics and residual analysis, depending on the course emphasis.
-
-## Appendix: Compact Interpretation Guide
-
-For the additive model
-
-$$
-Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon,
-$$
-
-- $\beta_0$: expected response when $x_1=x_2=0$;
-- $\beta_1$: expected change in response for a one-unit increase in $x_1$, holding $x_2$ fixed;
-- $\beta_2$: expected change in response for a one-unit increase in $x_2$, holding $x_1$ fixed.
-
-For the model with a binary predictor
-
-$$
-Y = \beta_0 + \beta_1 x + \beta_2 z + \varepsilon,
-$$
-
-- $\beta_0$: mean for the reference group when $x=0$;
-- $\beta_1$: slope in $x$ for fixed group;
-- $\beta_2$: group difference for fixed $x$.
-
-For the interaction model
-
-$$
-Y = \beta_0 + \beta_1 x + \beta_2 z + \beta_3 xz + \varepsilon,
-$$
-
-- slope in $x$ when $z=0$: $\beta_1$;
-- slope in $x$ when $z=1$: $\beta_1+\beta_3$;
-- group difference when $x=0$: $\beta_2$.

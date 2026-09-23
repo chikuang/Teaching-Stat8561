@@ -13,16 +13,29 @@ book:
     - 01_matrix_representation.qmd
     - 02_LSE.qmd
     - 03_OLS_inference.qmd
+    - 04.qmd
+    - 05.qmd
+    - 06.qmd
+    - 07.qmd
+    - 08.qmd
+    - 09.qmd
+    - 10.qmd
+    - 11.qmd
     - references.qmd
-
-    - part: "Appendix"
-      chapters:
-        - App_A-matrix.qmd
 
     - part: "Assessments"
       chapters:
         - Assignment1.qmd
         - Assignment2.qmd
+
+  appendices:
+    - App_A-matrix.qmd
+    - App_B-linear-model-extensions.qmd
+    - App_C-model-selection.qmd
+    - App_D-gls.qmd
+    - App_E-glm-theory.qmd
+    - App_F-quantile-regression.qmd
+    - App_G-mixed-effects.qmd
 
   navbar:
     right:
@@ -47,6 +60,8 @@ format:
       - pulse
       - brand
     css: custom-callouts.css
+    code-fold: true
+    code-summary: "Show R code"
     cache: true
     include-after-body:
       - solution-collapse.html

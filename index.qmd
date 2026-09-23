@@ -2,11 +2,13 @@
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-### Prerequisites
+The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are marked optional in the appendices.
+
+**Prerequisites**
 
 Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Statistics II.
 
-### Instructor
+**Instructor**
 
 [Chi-Kuang Yeh](https://chikuang.github.io/), Assistant Professor in the [Department of Mathematics and Statistics](https://mathstat.gsu.edu/), [Georgia State University](https://www.gsu.edu/).
 
@@ -45,7 +47,19 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 |   ✅      |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--3   |
 |     ✅  ️   |  Ch. 2  | [Least Squares Estimation](02_LSE.qmd) |    3--6   |
 |    ️⏳ ️   |  Ch. 3  | [Inference on Least Square Estimation](03_OLS_inference.qmd) |    7--   |
-<!-- 🚧🛠️⏳   -->
+| ⏳ | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | TBA |
+| ⏳ | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | TBA |
+| ⏳ | Ch. 6 | [Contrasts and Estimable Comparisons](06.qmd) | TBA |
+| ⏳ | Ch. 7 | [Experimental Design Models: ANOVA and ANCOVA](07.qmd) | TBA |
+| ⏳ | Ch. 8 | [Diagnostics and Model Adequacy](08.qmd) | TBA |
+| ⏳ | Ch. 9 | [Transformations and Weighted Least Squares](09.qmd) | TBA |
+| ⏳ | Ch. 10 | [Model Assessment and Prediction](10.qmd) | TBA |
+| ⏳ | Ch. 11 | [Introduction to Generalized Linear Models](11.qmd) | TBA |
+<!-- Future lecture coverage will be updated after class. -->
+
+**Optional self-study readings**
+
+Students interested in extensions can read [Quantile Regression](App_F-quantile-regression.qmd) and [Mixed-Effects Models](App_G-mixed-effects.qmd). These appendices include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.
 
 ## Recommended Textbooks
 

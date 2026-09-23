@@ -1,692 +1,251 @@
-# Week 11: Generalized Least Squares, Correlated Errors, and Beyond Ordinary Least Squares
+# Introduction to Generalized Linear Models {#sec-glm}
 
-In this week, we study what happens when the error terms in a linear model are no longer independent with common variance. This leads to generalized least squares, a natural extension of ordinary least squares that accounts for nonidentity covariance structure. The goal is to help students understand how the linear model changes when observations are correlated or have unequal precision in a more general matrix form.
+The same design matrix can represent continuous predictors, groups, interactions, and experimental comparisons. What changes when the response is a binary outcome or an event count? A generalized linear model (GLM) retains the linear predictor and changes the response distribution and its connection to the conditional mean.
 
-## Learning Objectives
+**Learning objectives.** Choose a response family and link, interpret logistic and Poisson coefficients, obtain fitted probabilities or rates, compare nested models, and recognize when the basic model is inadequate. The core unit takes two lectures, followed by an integrated case in the final class.
 
-By the end of this week, students should be able to:
+## From the normal linear model to GLMs
 
-- explain why ordinary least squares is not always appropriate when errors are correlated or heteroscedastic;
-- state the generalized linear model covariance assumption for the error vector in a linear model context;
-- derive the generalized least squares estimator;
-- explain how generalized least squares reduces to ordinary least squares and weighted least squares in special cases;
-- interpret the transformed-model view of generalized least squares;
-- recognize practical examples of correlated errors and structured covariance models.
+The normal linear model uses $\mathbb{E}(Y_i\mid x_i)=x_i^\top\beta$ and constant conditional variance. A binary outcome instead has a probability between zero and one, while a count is nonnegative and often becomes more variable as its mean increases.
 
-## Reading
+::: {#def-glm-components}
 
-Recommended reading for this week:
+## Components of a Generalized Linear Model
 
-- Seber and Lee:
-  - sections on generalized least squares
-  - correlated observations and covariance structure
-  - extensions of least squares methods
-- Montgomery, Peck, and Vining:
-  - sections on departures from ordinary linear model assumptions
-  - weighted and generalized least squares ideas
-  - practical modelling considerations for dependence and unequal variance
-
-## Why Ordinary Least Squares Can Fail
-
-So far, much of the course has relied on the classical assumption
+For conditionally independent observations, specify a response distribution, a linear predictor $\eta_i=x_i^\top\beta$, and a link function $g$ satisfying
 
 $$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n.
+g(\mu_i)=\eta_i,\qquad \mu_i=\mathbb{E}(Y_i\mid x_i).
 $$
 
-This means:
+The chosen family also specifies how the conditional variance depends on the mean and, when applicable, a dispersion parameter.
 
-- all observations have the same error variance;
-- errors are uncorrelated.
+:::
 
-But many real datasets do not satisfy this assumption.
+| Response | Conditional distribution | Link | Conditional mean |
+|---|---|---|---|
+| Continuous | Gaussian | identity | $\mu_i=x_i^\top\beta$ |
+| Binary | Bernoulli | logit | $\pi_i=\{1+\exp(-x_i^\top\beta)\}^{-1}$ |
+| Count | Poisson | log | $\mu_i=\exp(x_i^\top\beta)$ |
 
-Examples include:
+**What stays the same?** Building $X$, representing factors and interactions, defining a comparison, and checking the observational unit remain essential. The Gaussian identity-link GLM recovers the ordinary normal linear model.
 
-- repeated observations on the same unit;
-- measurements taken over time;
-- clustered or grouped data;
-- observations with known unequal precision;
-- spatial or serial dependence.
+**What changes?** The mean can be nonlinear in $x$, the variance need not be constant, and estimation generally uses likelihood rather than minimizing unweighted SSE. The link transforms the conditional mean; it does not require transforming each observed response. This matters when the data contain zeros.
 
-In such cases, ordinary least squares may still be unbiased for the mean model under suitable assumptions, but it is no longer the most efficient linear estimator, and the usual standard error formulas become incorrect.
+::: {.callout-important title="GLM and GLS address different extensions"}
 
-## Review of the Linear Model
+GLM means **generalized linear model** and concerns the response family and mean link. GLS means **generalized least squares** and concerns a covariance model for linear-mean regression. A standard independent-observation GLM does not automatically account for repeated observations on the same subject. Correlated-error GLS is in an [optional appendix](App_D-gls.qmd).
 
-Recall the linear model
+:::
 
-$$
-\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
-$$
+## Logistic regression: probabilities and odds
 
-with
+For $Y_i\mid x_i\sim\operatorname{Bernoulli}(\pi_i)$, the conditional variance is $\pi_i(1-\pi_i)$. Logistic regression specifies
 
 $$
-\mathbb{E}[\boldsymbol{\varepsilon}] = \mathbf{0}.
-$$
-
-Under ordinary least squares, we assumed
-
-$$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}_n.
-$$
-
-This gave the estimator
-
-$$
-\hat{\boldsymbol{\beta}}_{OLS}
-=
-(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
-$$
-
-Now we allow a more general covariance structure.
-
-## A More General Covariance Model
-
-Suppose instead that
-
-$$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{V},
-$$
-
-where $\mathbf{V}$ is a known positive definite matrix.
-
-Then
-
-$$
-\mathrm{Var}(\mathbf{Y}) = \sigma^2 \mathbf{V}.
-$$
-
-The matrix $\mathbf{V}$ may represent:
-
-- unequal variances;
-- correlations among observations;
-- both at once.
-
-This is the setting of generalized least squares.
-
-## Why the Covariance Matrix Matters
-
-If two observations are highly correlated, then together they contain less independent information than two unrelated observations.
-
-If one observation has much larger variance than another, it should typically receive less weight in estimation.
-
-Thus the covariance structure affects how much information each part of the data contributes.
-
-Ordinary least squares ignores this structure. Generalized least squares incorporates it directly.
-
-## The Generalized Least Squares Criterion
-
-In generalized least squares, we minimize the quadratic form
-
-$$
-Q(\boldsymbol{\beta})
-=
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})^\top
-\mathbf{V}^{-1}
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}).
-$$
-
-This is the natural analogue of the ordinary least squares criterion
-
-$$
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})^\top
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}),
-$$
-
-but now weighted by the inverse covariance structure.
-
-The matrix $\mathbf{V}^{-1}$ downweights directions in the data that are more variable or more redundant.
-
-## Derivation of the Generalized Least Squares Estimator
-
-Differentiate the generalized least squares criterion with respect to $\boldsymbol{\beta}$ and set the derivative equal to zero.
-
-This gives the generalized normal equations
-
-$$
-\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{X}\,\hat{\boldsymbol{\beta}}_{GLS}
-=
-\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{Y}.
-$$
-
-Assuming invertibility, the generalized least squares estimator is
-
-$$
-\hat{\boldsymbol{\beta}}_{GLS}
-=
-(\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{X})^{-1}
-\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{Y}.
-$$
-
-This is the central formula for the week.
-
-## Interpretation of the GLS Estimator
-
-The GLS estimator has the same structural form as OLS and WLS, but with the covariance matrix inserted.
-
-It can be interpreted as an estimator that gives appropriate weight to observations according to the joint covariance structure.
-
-Compared with OLS:
-
-- observations with larger variance are effectively downweighted;
-- correlated observations are not treated as if they were independent;
-- the estimator uses the information in the data more efficiently when $\mathbf{V}$ is correctly specified.
-
-## Special Case: Ordinary Least Squares
-
-If
-
-$$
-\mathbf{V} = \mathbf{I}_n,
-$$
-
-then GLS becomes
-
-$$
-\hat{\boldsymbol{\beta}}_{GLS}
-=
-(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y},
-$$
-
-which is exactly the ordinary least squares estimator.
-
-So OLS is a special case of GLS.
-
-## Special Case: Weighted Least Squares
-
-If the covariance matrix is diagonal,
-
-$$
-\mathbf{V} = \mathrm{diag}(v_1,\dots,v_n),
-$$
-
-then
-
-$$
-\mathbf{V}^{-1} = \mathrm{diag}(1/v_1,\dots,1/v_n).
-$$
-
-This is the weighted least squares setting from the previous week, with weights proportional to inverse variances.
-
-So WLS is also a special case of GLS.
-
-## The Transformed-Model View
-
-A very important way to understand GLS is through a transformation.
-
-Because $\mathbf{V}$ is positive definite, there exists a matrix $\mathbf{A}$ such that
-
-$$
-\mathbf{A}^\top \mathbf{A} = \mathbf{V}^{-1}.
-$$
-
-For example, we may take $\mathbf{A} = \mathbf{V}^{-1/2}$.
-
-Multiplying the model by $\mathbf{A}$ gives
-
-$$
-\mathbf{A}\mathbf{Y}
-=
-\mathbf{A}\mathbf{X}\boldsymbol{\beta}
-+
-\mathbf{A}\boldsymbol{\varepsilon}.
-$$
-
-Now the transformed error has variance
-
-$$
-\mathrm{Var}(\mathbf{A}\boldsymbol{\varepsilon})
-=
-\mathbf{A}(\sigma^2 \mathbf{V})\mathbf{A}^\top
-=
-\sigma^2 \mathbf{I}_n.
-$$
-
-So GLS can be viewed as ordinary least squares applied to a transformed model with spherical errors.
-
-This is one of the most important conceptual ideas in the course.
-
-## Distribution of the GLS Estimator
-
-If the covariance structure is correctly specified and
-
-$$
-\mathbf{Y} \sim N_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{V}),
-$$
-
-then the GLS estimator is normally distributed:
-
-$$
-\hat{\boldsymbol{\beta}}_{GLS}
-\sim
-N_p\!\left(
-\boldsymbol{\beta},
-\sigma^2
-(\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{X})^{-1}
-\right).
-$$
-
-This parallels the OLS distribution theory, but with $\mathbf{V}^{-1}$ appearing throughout.
-
-## Gauss-Markov Interpretation
-
-Under the covariance model
-
-$$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{V},
-$$
-
-the generalized least squares estimator is the best linear unbiased estimator among all linear unbiased estimators.
-
-So GLS is the natural Gauss-Markov extension of OLS to nonidentity covariance structures.
-
-This is sometimes phrased by saying that OLS is BLUE under spherical errors, while GLS is BLUE under the more general covariance model.
-
-## Estimating Sigma Squared Under GLS
-
-In the transformed model, residual sums of squares can be defined using the GLS criterion.
-
-The generalized residual sum of squares is
-
-$$
-SSE_{GLS}
-=
-(\mathbf{Y} - \mathbf{X}\hat{\boldsymbol{\beta}}_{GLS})^\top
-\mathbf{V}^{-1}
-(\mathbf{Y} - \mathbf{X}\hat{\boldsymbol{\beta}}_{GLS}).
-$$
-
-Under the normal model with known $\mathbf{V}$, this plays the same role as the ordinary SSE after transformation.
-
-An estimator of $\sigma^2$ is then
-
-$$
-\hat{\sigma}^2_{GLS}
-=
-\frac{SSE_{GLS}}{n-p}.
-$$
-
-## Why Known V Is Rare
-
-In practice, the covariance matrix $\mathbf{V}$ is usually not known exactly.
-
-Instead, we may have:
-
-- scientific knowledge suggesting a covariance pattern;
-- repeated-measures structure suggesting dependence;
-- known weights from design considerations;
-- an estimated covariance model.
-
-When $\mathbf{V}$ is replaced by an estimate, the resulting estimator is often called **feasible GLS**.
-
-## Feasible Generalized Least Squares
-
-The basic idea of feasible GLS is:
-
-- propose a covariance model for $\mathbf{V}$;
-- estimate the unknown covariance parameters from the data;
-- plug the estimated covariance matrix into the GLS formula.
-
-This is practical, but it introduces an extra modelling step and relies on the covariance model being approximately correct.
-
-## Examples of Covariance Structures
-
-Several structured covariance matrices appear often in applications.
-
-### Unequal Variances Only
-
-If observations are independent but have different variances, then $\mathbf{V}$ is diagonal.
-
-This is the weighted least squares case.
-
-### Compound Symmetry
-
-In grouped or repeated-measures settings, one may assume a common variance and a common correlation within group.
-
-This gives a covariance pattern often called compound symmetry.
-
-### Autoregressive Structure
-
-For time-ordered observations, nearby errors may be more strongly correlated than distant ones.
-
-A simple model is the AR(1) structure, where correlations decay geometrically with lag.
-
-### Block-Diagonal Structure
-
-If observations are grouped into independent clusters, then $\mathbf{V}$ may be block diagonal, with each block describing within-cluster dependence.
-
-These examples help students see that covariance structure is part of model formulation, not just a technical afterthought.
-
-## Correlated Errors in Time-Ordered Data
-
-Suppose we observe data over time:
-
-$$
-Y_t = \beta_0 + \beta_1 x_t + \varepsilon_t.
-$$
-
-If the errors satisfy
-
-$$
-\mathrm{Corr}(\varepsilon_t,\varepsilon_{t-1}) \neq 0,
-$$
-
-then ordinary least squares may still estimate the mean trend, but standard errors based on independence are not trustworthy.
-
-This is one of the classic motivations for generalized least squares.
-
-## Clustered and Repeated Observations
-
-Suppose several observations come from the same individual, school, hospital, or geographic region.
-
-Then responses within the same cluster may be correlated.
-
-In this case, the assumption of independent errors is not appropriate, and a structured covariance model or a mixed-model approach may be better suited.
-
-GLS provides an important stepping stone toward these more advanced frameworks.
-
-## Relationship to Robust Standard Errors
-
-One alternative to full covariance modelling is to keep the OLS mean estimator but adjust the standard errors to be robust to heteroscedasticity or dependence.
-
-This is a different strategy from GLS.
-
-- GLS changes the estimator itself using a covariance model;
-- robust standard errors keep the estimator but correct inference approximately.
-
-Both are useful, but they serve different purposes.
-
-This distinction is valuable for students to understand even if robust methods are treated only briefly.
-
-## When GLS Is Worth Using
-
-GLS is especially attractive when:
-
-- there is a defensible covariance model;
-- the dependence or heteroscedasticity is substantial;
-- efficient estimation matters;
-- the transformed model remains interpretable.
-
-If the covariance model is poorly specified, the gains from GLS may be limited, and robustness or alternative modelling strategies may be preferable.
-
-## Diagnostics for Correlated Errors
-
-Symptoms that may suggest correlated errors include:
-
-- residuals that display runs or systematic temporal patterns;
-- residual plots against time showing clustering;
-- repeated-measures structure built into the design;
-- known grouping or spatial dependence in the data collection process.
-
-The key lesson is that covariance structure should be motivated both by diagnostics and by how the data were collected.
-
-## Worked Example With Known Unequal Precision
-
-Suppose each response is an average of $m_i$ repeated measurements.
-
-Then the variance of the average may satisfy
-
-$$
-\mathrm{Var}(Y_i) = \frac{\sigma^2}{m_i}.
-$$
-
-In that case, a natural choice is
-
-$$
-v_i = \frac{1}{m_i},
+\log\left(\frac{\pi_i}{1-\pi_i}\right)=x_i^\top\beta,
 \qquad
-w_i = m_i.
+\pi_i=\frac{\exp(x_i^\top\beta)}{1+\exp(x_i^\top\beta)}.
 $$
 
-So observations based on more repeated measurements get more weight.
+**Interpretation.** In a model without an interaction involving $x_j$, a one-unit increase in $x_j$, holding other predictors fixed, multiplies the odds by $\exp(\beta_j)$. It does not multiply the probability by that number, and it does not give a constant probability difference. An interaction makes the corresponding odds ratio depend on the interacting predictor.
 
-This is a very intuitive example of GLS through weighted least squares.
+::: {#exm-odds-and-probability}
 
-## Worked Example With Correlated Pairs
+## The Same Odds Ratio Can Imply Different Probability Changes
 
-Suppose observations come in natural pairs, and within each pair the errors are positively correlated.
+An odds ratio of 2 changes a baseline probability of 0.10 to $2(0.10)/(1-0.10+2(0.10))\approx0.182$. At a baseline probability of 0.50 it gives $2(0.50)/(1-0.50+2(0.50))\approx0.667$. Report predicted probabilities for meaningful predictor values when communicating the result.
 
-Then the covariance matrix has a block structure, with a $2\times2$ covariance block for each pair.
+:::
 
-GLS accounts for the fact that the two observations in a pair do not contribute as much independent information as two unrelated observations would.
-
-## R Demonstration With Weighted Least Squares as GLS
-
-## Simulate data with unequal variances
+**Simulated example.** Imagine a binary completion outcome, a centered baseline score, and a group indicator. The following data are simulated to illustrate the model; they are not observations from a real study.
 
 ```{r}
-set.seed(123)
-n <- 40
-x <- seq(1, 20, length.out = n)
-v <- 0.3 + 0.08 * x^2
-y <- 5 + 1.2 * x + rnorm(n, sd = sqrt(v))
-
-dat <- data.frame(y = y, x = x, v = v)
-
-fit_ols <- lm(y ~ x, data = dat)
-fit_wls <- lm(y ~ x, data = dat, weights = 1 / v)
-
-summary(fit_ols)
-summary(fit_wls)
+set.seed(8561)
+n <- 240
+score <- runif(n, -2, 2)
+group <- factor(sample(c("Control", "Treatment"), n, replace = TRUE))
+prob <- plogis(-0.5 + 0.8 * score + 0.6 * (group == "Treatment"))
+binary <- data.frame(score, group,
+                     completed = rbinom(n, size = 1, prob = prob))
+fit_logit <- glm(completed ~ score + group,
+                 family = binomial(link = "logit"),
+                 data = binary)
+summary(fit_logit)
 ```
 
-## Compare fitted lines
+**Coefficient intervals and fitted probabilities.** The intervals below are approximate Wald intervals. Exponentiating the intercept gives baseline odds at score zero in the reference group; exponentiating the remaining coefficients gives the corresponding conditional odds ratios for this additive model.
 
 ```{r}
-plot(dat$x, dat$y, pch = 19, xlab = "x", ylab = "y")
-abline(fit_ols, lwd = 2)
-abline(fit_wls, lwd = 2, lty = 2)
-legend("topleft",
-       legend = c("OLS", "WLS / GLS"),
-       lty = c(1, 2),
-       lwd = 2,
-       bty = "n")
+b <- coef(fit_logit)
+se <- sqrt(diag(vcov(fit_logit)))
+exp(cbind(estimate = b, lower = b - qnorm(0.975) * se,
+          upper = b + qnorm(0.975) * se))
+
+new_binary <- expand.grid(score = seq(-2, 2, length.out = 100),
+                          group = levels(binary$group))
+link_fit <- predict(fit_logit, newdata = new_binary,
+                    type = "link", se.fit = TRUE)
+new_binary$probability <- plogis(link_fit$fit)
+new_binary$lower <- plogis(link_fit$fit - qnorm(0.975) * link_fit$se.fit)
+new_binary$upper <- plogis(link_fit$fit + qnorm(0.975) * link_fit$se.fit)
 ```
-
-## R Demonstration With a Hand-Built GLS Computation
-
-## Construct a covariance matrix and compute GLS directly
 
 ```{r}
-set.seed(456)
-n2 <- 8
-x2 <- seq(1, n2)
-X <- cbind(1, x2)
-
-rho <- 0.6
-V <- outer(1:n2, 1:n2, function(i, j) rho^abs(i - j))
-beta_true <- c(2, 1.5)
-
-eps <- t(chol(V)) %*% rnorm(n2)
-y2 <- as.vector(X %*% beta_true + eps)
-
-Y <- matrix(y2, ncol = 1)
-
-beta_gls <- solve(t(X) %*% solve(V) %*% X) %*% t(X) %*% solve(V) %*% Y
-beta_ols <- solve(t(X) %*% X) %*% t(X) %*% Y
-
-beta_gls
-beta_ols
+#| label: fig-logistic-probabilities
+#| fig-cap: "Fitted completion probabilities with approximate pointwise 95% confidence bands. Group differences on the probability scale vary with the baseline score."
+#| fig-width: 7
+#| fig-height: 4
+cols <- c(Control = "steelblue4", Treatment = "darkorange3")
+plot(NA, xlim = range(new_binary$score), ylim = c(0, 1),
+     xlab = "Centered baseline score", ylab = "Completion probability")
+for (g in levels(binary$group)) {
+  z <- new_binary[new_binary$group == g, ]
+  polygon(c(z$score, rev(z$score)), c(z$lower, rev(z$upper)),
+          border = NA, col = adjustcolor(cols[g], 0.13))
+  lines(z$score, z$probability, col = cols[g], lwd = 2)
+}
+legend("topleft", legend = names(cols), col = cols, lwd = 2, bty = "n")
 ```
 
-## Transform the model and verify the GLS view
+::: {.callout-note title="Confidence for a probability is not prediction of an individual outcome"}
+
+These bands quantify uncertainty in the fitted conditional probability. An individual future outcome is still either zero or one. The Gaussian prediction-interval formula from Chapter 3 does not transfer directly to a Bernoulli outcome. The bands are pointwise, not simultaneous bands over the entire score range.
+
+:::
+
+## Poisson regression: counts, rates, and exposure
+
+For a Poisson outcome, $\mathbb{E}(Y_i\mid x_i)=\operatorname{Var}(Y_i\mid x_i)=\mu_i$. With a log link, $\log\mu_i=x_i^\top\beta$, ensuring positive fitted means.
+
+**Counts versus rates.** Units may be observed for different lengths of time. If $t_i>0$ is the known exposure, model the rate $\lambda_i$ using
+
+$$
+\mu_i=t_i\lambda_i,\qquad
+\log\mu_i=\log t_i+x_i^\top\beta.
+$$
+
+The term $\log t_i$ is an **offset** with coefficient fixed at one. Under this rate model, doubling exposure doubles the expected count while leaving the rate unchanged. For an additive log-rate model, $\exp(\beta_j)$ is a conditional rate ratio for a one-unit increase in $x_j$.
+
+::: {.callout-important title="A log link does not mean taking log of the observed count"}
+
+A Poisson GLM models $\log\{\mathbb{E}(Y_i\mid x_i)\}$. It can use zero counts directly. Replacing the response with $\log(Y_i+1)$ creates a different model with a different target and is not an equivalent implementation.
+
+:::
+
+**Simulated example.** Suppose sites have different exposure times, a baseline workload, and two service protocols. Here exposure is measured in days, so the model's rate is events per day.
 
 ```{r}
-A <- solve(chol(V))
-Y_tilde <- A %*% Y
-X_tilde <- A %*% X
-
-beta_transformed <- solve(t(X_tilde) %*% X_tilde) %*% t(X_tilde) %*% Y_tilde
-beta_transformed
+set.seed(8561)
+n <- 240
+workload <- runif(n, -1.5, 1.5)
+protocol <- factor(sample(c("A", "B"), n, replace = TRUE))
+exposure <- runif(n, 1, 8)
+rate <- exp(-0.1 + 0.35 * workload + 0.4 * (protocol == "B"))
+counts <- data.frame(workload, protocol, exposure,
+                     events = rpois(n, lambda = exposure * rate))
+fit_pois <- glm(events ~ workload + protocol + offset(log(exposure)),
+                family = poisson(link = "log"), data = counts)
+summary(fit_pois)
 ```
 
-## Compare residual patterns
+For a one-day exposure, a fitted expected count is also a fitted daily rate. Use the original exposure for expected counts over the original observation periods.
 
 ```{r}
-fit_ols2 <- lm(y2 ~ x2)
-
-plot(x2, resid(fit_ols2), type = "b", pch = 19,
-     xlab = "Time order", ylab = "OLS residual")
-abline(h = 0, lty = 2)
+new_counts <- expand.grid(workload = seq(-1.5, 1.5, length.out = 100),
+                          protocol = levels(counts$protocol), exposure = 1)
+new_counts$rate <- predict(fit_pois, newdata = new_counts, type = "response")
+c(rate_ratio_protocol_B = exp(coef(fit_pois)["protocolB"]))
 ```
-
-## Simple example of grouped covariance intuition
 
 ```{r}
-set.seed(789)
-group <- rep(1:10, each = 3)
-x3 <- rnorm(length(group))
-u <- rnorm(10, sd = 1.2)
-eps3 <- rep(u, each = 3) + rnorm(length(group), sd = 0.5)
-y3 <- 4 + 2 * x3 + eps3
-
-dat3 <- data.frame(y = y3, x = x3, group = factor(group))
-fit3 <- lm(y ~ x, data = dat3)
-summary(fit3)
+#| label: fig-poisson-rates
+#| fig-cap: "Observed events per exposure day and fitted conditional rates. Different exposure times make the observed rates unequally variable; the model fits counts with a log-exposure offset."
+#| fig-width: 7
+#| fig-height: 4
+cols <- c(A = "steelblue4", B = "darkorange3")
+plot(counts$workload, counts$events / counts$exposure, pch = 19,
+     col = adjustcolor(cols[as.character(counts$protocol)], 0.35),
+     xlab = "Centered workload", ylab = "Events per day")
+for (g in levels(counts$protocol)) {
+  z <- new_counts[new_counts$protocol == g, ]
+  lines(z$workload, z$rate, col = cols[g], lwd = 2)
+}
+legend("topleft", legend = names(cols), col = cols, lwd = 2, bty = "n")
 ```
 
-## Interpreting Software Output
+## Inference and model checks
 
-In base R, ordinary `lm()` directly handles OLS and weighted least squares through the `weights=` argument.
+**From sums of squares to likelihood.** OLS compares residual sums of squares. In a GLM, the likelihood measures how well the fitted conditional distribution accounts for the observations. Deviance measures lack of fit relative to a saturated model; for the binomial and Poisson models here, a difference in deviances equals twice the difference in maximized log likelihoods.
 
-More general correlated-error models often require additional packages in practice, but the matrix formula is already enough to understand the core idea of GLS.
+::: {#thm-glm-likelihood-ratio}
 
-Students should focus on:
+## Approximate Likelihood-Ratio Test
 
-- what covariance structure is being assumed;
-- why that structure is plausible;
-- how the weighting or transformation changes the estimator;
-- what practical goal is being improved.
-
-## A Practical Workflow for GLS Thinking
-
-A sensible workflow is:
-
-- ask whether independence and equal variance are plausible from the design of the study;
-- inspect residual patterns for signs of heteroscedasticity or dependence;
-- propose a covariance structure or weighting scheme when justified;
-- compare OLS and GLS-style fits;
-- interpret the results in light of both efficiency and model credibility.
-
-## In-Class Discussion Questions
-
-1. Why is weighted least squares a special case of generalized least squares?
-2. Why can correlated observations carry less information than independent observations?
-3. What is the conceptual benefit of the transformed-model view of GLS?
-4. When might robust standard errors be preferred to specifying a full covariance model?
-
-## Practice Problems
-
-## Conceptual
-
-1. Explain why OLS is not generally efficient when the covariance matrix is not proportional to the identity.
-2. Explain how GLS uses the inverse covariance matrix to weight information in the data.
-3. Explain the difference between modelling the covariance structure and simply correcting standard errors.
-
-## Computational
-
-Suppose
+For nested, correctly specified binomial or Poisson GLMs fitted to the same responses and observations, let the full model add $r$ identifiable parameters. Under the reduced model and standard regularity conditions, including an interior true parameter and finite, regular maximum-likelihood estimates,
 
 $$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{V},
-\qquad
-\mathbf{V} =
-\begin{bmatrix}
-1 & 0 \\
-0 & 4
-\end{bmatrix}.
+D_R-D_F=2(\ell_F-\ell_R)\ \overset{\mathrm{approx}}{\sim}\ \chi^2_r.
 $$
 
-1. Write down $\mathbf{V}^{-1}$.
-2. Which observation receives more weight in GLS?
-3. Explain why.
+This is an asymptotic approximation, not the exact finite-sample F test of the normal linear model. Separation, sparse data, or boundary problems can invalidate the usual approximation.
 
-Now suppose
+:::
 
-$$
-\hat{\boldsymbol{\beta}}_{GLS}
-=
-(\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{X})^{-1}
-\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{Y}.
-$$
+```{r}
+fit_logit_reduced <- glm(completed ~ score,
+                         family = binomial(), data = binary)
+anova(fit_logit_reduced, fit_logit, test = "LRT")
 
-1. Show how this reduces to OLS when $\mathbf{V} = \mathbf{I}_n$.
-2. Show how this reduces to WLS when $\mathbf{V}$ is diagonal.
+fit_pois_reduced <- glm(events ~ workload + offset(log(exposure)),
+                        family = poisson(), data = counts)
+anova(fit_pois_reduced, fit_pois, test = "LRT")
+```
 
-## Modelling Problem
+In each comparison, state the group or protocol question before reading the p-value. Keep the response, observations, exposure definition, and relevant likelihood assumptions comparable. For estimated-dispersion quasi models, the Poisson/binomial chi-square rule is not automatically appropriate; see [R's analysis-of-deviance documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/anova.glm.html).
 
-You have repeated observations on each subject over time.
+**Check the model in the units of the question.**
 
-1. Why is the independence assumption questionable?
-2. What kinds of covariance structure might be reasonable?
-3. Why might GLS be more appropriate than OLS in this setting?
+| Question | What to inspect |
+|---|---|
+| Is the observation unit independent? | Repeated subjects, sites, clustering, and time order; a different family alone does not remove dependence. |
+| Is the mean structure reasonable? | Curvature, interactions, fitted probabilities or rates across the observed predictor range. |
+| Is the logistic fit regular? | Convergence warnings, sparse predictor patterns, very large coefficients/SEs, and separation. |
+| Is a Poisson variance plausible? | Pearson residuals, unusually variable counts conditional on predictors, and unexplained heterogeneity. |
+| Will predictions transfer? | Held-out loss and observed-versus-predicted summaries in a split that matches future use. |
 
-## Suggested Homework
+For a Poisson fit, the Pearson statistic divided by residual degrees of freedom is a useful rough dispersion diagnostic:
 
-Complete the following tasks:
+```{r}
+pearson_dispersion <- sum(residuals(fit_pois, type = "pearson")^2) /
+  df.residual(fit_pois)
+pearson_dispersion
+```
 
-- fit an OLS model and a weighted least squares model for data with unequal variance;
-- compare coefficient estimates, standard errors, and residual plots;
-- compute a GLS estimator by hand for a small example with a known covariance matrix;
-- explain the transformed-model view in your own words;
-- write a short discussion of when a covariance model is scientifically credible enough to justify GLS.
+A value substantially above one can signal overdispersion, missing mean structure, dependence, or other misspecification. It is not a stand-alone proof of a particular alternative model, especially with sparse counts. Recognizing when the basic model is inadequate is required; negative-binomial, quasi-likelihood, zero-inflated, and mixed-model remedies are beyond this introductory unit.
 
-## Summary
+**A simple held-out probability check.** The Brier score is the mean squared difference between a predicted probability and a binary outcome. The following split evaluates a prespecified logistic model and an intercept-only baseline. Both are fitted on the training set.
 
-In this week, we studied generalized least squares as an extension of ordinary least squares to models with nonidentity covariance structure.
+```{r}
+set.seed(8561)
+train <- sample(seq_len(nrow(binary)), floor(0.7 * nrow(binary)))
+fit_train <- glm(completed ~ score + group,
+                 family = binomial(), data = binary[train, ])
+test <- binary[-train, ]
+p_hat <- predict(fit_train, newdata = test, type = "response")
+p_baseline <- mean(binary$completed[train])
+c(model_Brier = mean((test$completed - p_hat)^2),
+  baseline_Brier = mean((test$completed - p_baseline)^2))
+```
 
-We emphasized that:
+A single small split is noisy. Use it to understand the evaluation procedure, not to assert that one model universally dominates another. A classification accuracy at one threshold does not summarize the quality of predicted probabilities.
 
-- OLS assumes spherical errors;
-- GLS allows unequal variances and correlated errors;
-- WLS is a special case of GLS;
-- GLS can be understood as OLS on a transformed model;
-- covariance structure is part of model formulation and should be justified by both design and diagnostics.
+For the likelihood representation, the role of WLS in fitting, and further theory, see [GLM Likelihood and Computation (Optional)](App_E-glm-theory.qmd).
 
-Next week, a natural continuation is to move toward repeated-measures ideas, mixed models, or robust inference, depending on the course emphasis.
+## Practice and integrated analysis
 
-## Appendix: Compact Formula Summary
-
-General covariance model:
-
-$$
-\mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{V}.
-$$
-
-GLS criterion:
-
-$$
-Q(\boldsymbol{\beta})
-=
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})^\top
-\mathbf{V}^{-1}
-(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}).
-$$
-
-GLS estimator:
-
-$$
-\hat{\boldsymbol{\beta}}_{GLS}
-=
-(\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{X})^{-1}
-\mathbf{X}^\top \mathbf{V}^{-1}\mathbf{Y}.
-$$
-
-Transformed model idea:
-
-$$
-\mathbf{A}\mathbf{Y}
-=
-\mathbf{A}\mathbf{X}\boldsymbol{\beta}
-+
-\mathbf{A}\boldsymbol{\varepsilon},
-\qquad
-\mathbf{A}^\top \mathbf{A} = \mathbf{V}^{-1}.
-$$
-
-Key message:
-
-- OLS, WLS, and GLS are all part of one least squares framework;
-- the difference lies in how the covariance structure is represented.
-
+1. Explain which GLM component changes when moving from Gaussian OLS to logistic regression, and which parts of the design matrix can remain the same.
+2. Convert an odds ratio of 1.5 into a new probability for baseline probabilities 0.10 and 0.60. Explain why the probability differences differ.
+3. Explain why exposure belongs in the Poisson example as an offset rather than an ordinary predictor with an estimated coefficient under the proportional-exposure model.
+4. State the null hypothesis tested by each R model comparison. Explain why the reference distribution differs from Chapter 4's F test.
+5. Write a one-page analysis: define the observational unit, choose a response family/link, report a probability or rate comparison with uncertainty, and identify one model limitation. Separate uncertainty about a conditional mean from variation in a future observation.

@@ -1,0 +1,56 @@
+# GLM Likelihood and Computation (Optional) {#sec-glm-theory}
+
+::: {.callout-note title="Optional appendix"}
+
+The main GLM chapter emphasizes response distributions, links, interpretation, and practical model checks. This appendix connects those ideas to exponential-family likelihoods and iteratively reweighted least squares. The general regularity theory is outside the core syllabus.
+
+:::
+
+## Exponential-family structure
+
+For independent observations conditional on the predictors, a standard exponential-dispersion-family representation is
+
+$$
+f(y_i;\theta_i,\phi)=\exp\left\{\frac{y_i\theta_i-b(\theta_i)}{a_i(\phi)}+c(y_i,\phi)\right\}.
+$$
+
+Then $\mu_i=b'(\theta_i)$ and $\operatorname{Var}(Y_i\mid x_i)=a_i(\phi)b''(\theta_i)$. For unit-weight observations it is common to write this variance as $\phi V(\mu_i)$. A link specifies $g(\mu_i)=x_i^\top\beta$; a canonical link makes the linear predictor equal to the natural parameter $\theta_i$.
+
+| Family | Mean | Variance, unit weight | Canonical link |
+|---|---|---|---|
+| Gaussian | $\mu$ | $\sigma^2$ | identity |
+| Bernoulli | $\pi$ | $\pi(1-\pi)$ | logit |
+| Poisson | $\mu$ | $\mu$ | log |
+
+For grouped binomial observations, the trial count must be included; the mean and variance for a count differ from those for a proportion.
+
+## Why weighted least squares reappears
+
+At a current fit, let $\eta_i=x_i^\top\beta+o_i$, where $o_i$ is a known offset, and define the working response and weights
+
+$$
+z_i=\eta_i+(y_i-\mu_i)g'(\mu_i),\qquad
+w_i=\left\{\operatorname{Var}(Y_i\mid x_i)[g'(\mu_i)]^2\right\}^{-1}.
+$$
+
+A Fisher-scoring step solves weighted least squares for $z-o$:
+
+$$
+\beta^{new}=(X^\top W X)^{-1}X^\top W(z-o).
+$$
+
+In computation, solve the weighted system with a factorization rather than explicitly forming this inverse. Recompute the working mean and weights until convergence. These are local, iteration-dependent weights; they are different from fixed precision weights in the Gaussian WLS model.
+
+For Bernoulli logistic regression, $w_i=\pi_i(1-\pi_i)$; for Poisson regression with a log link, $w_i=\mu_i$. For a Gaussian identity-link model with constant variance, the update reduces to ordinary least squares.
+
+**Why convergence matters.** A full-rank design alone does not guarantee a finite logistic-regression MLE. Complete or quasi-complete separation can drive coefficients toward infinity. Inspect fitting warnings and the data pattern before interpreting standard errors or Wald tests.
+
+R's `glm.fit()` uses iteratively reweighted least squares; its working weights should not be confused with the user-supplied prior weights. See the [R glm documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/glm.html).
+
+## Likelihood-based inference
+
+A local quadratic approximation to the log likelihood gives an approximate covariance based on Fisher information. Under suitable regularity conditions, this yields asymptotic normal inference for estimable coefficients. For nested models and an interior null parameter, twice the maximized log-likelihood difference has an asymptotic chi-square reference distribution with degrees of freedom equal to the number of independent restrictions.
+
+These approximations can fail or be inaccurate near boundaries, under separation, with sparse data, or with an incorrectly specified sampling model. They are not the exact finite-sample t and F results established for the normal linear model.
+
+**Beyond the core.** Profile likelihood, bias-reduced logistic estimation, negative-binomial models, quasi-likelihood, and clustered/generalized mixed models require additional assumptions and methods. Recognizing the limitation of a basic fit is a core skill; developing all of these remedies is supplementary.

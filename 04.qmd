@@ -1,10 +1,10 @@
-# Week 4: ANOVA Decomposition, Overall F Test, and Nested Models
+# Model Comparison, Partial F Tests, and ANOVA {#sec-model-comparison}
 
-In this week, we study the ANOVA decomposition for linear regression, the overall significance test, and the comparison of nested models. These ideas connect the geometry of least squares with the inferential tools developed in previous weeks.
+In this chapter, we study the ANOVA decomposition for linear regression, the overall significance test, and the comparison of nested models. These ideas connect the geometry of least squares with the inferential tools developed in earlier chapters.
 
-## Learning Objectives
+**Learning Objectives**
 
-By the end of this week, students should be able to:
+By the end of this chapter, students should be able to:
 
 -   define the total, regression, and error sums of squares;
 -   explain the ANOVA decomposition in regression with an intercept;
@@ -13,9 +13,9 @@ By the end of this week, students should be able to:
 -   compare nested linear models using extra sums of squares;
 -   interpret ANOVA tables produced by statistical software.
 
-## Reading
+**Reading**
 
-Recommended reading for this week:
+Recommended reading for this chapter:
 
 -   Seber and Lee:
     -   sections on analysis of variance in regression
@@ -26,7 +26,7 @@ Recommended reading for this week:
     -   overall model significance
     -   partial and sequential sums of squares
 
-## Review of the Linear Model
+**Review of the Linear Model**
 
 Recall the normal linear model
 
@@ -56,28 +56,20 @@ $$
 \mathbf{e} = \mathbf{Y} - \hat{\mathbf{Y}}.
 $$
 
-From Week 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Week 3, we know that this leads to useful distributional results for inference.
-
-This week, we organize these ideas into the ANOVA framework.
+From Chapter 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Chapter 3, we know that this leads to useful distributional results for inference. In this chapter, we organize these ideas into the ANOVA framework.
 
 ## Total, Explained, and Unexplained Variation
 
-A central question in regression is:
-
-How much of the variation in the response can be explained by the model?
-
-To answer this, we decompose the total variation in $\mathbf{Y}$ into:
+A central question in regression is: How much of the variation in the response can be explained by the model? To answer this, we decompose the total variation in $\mathbf{Y}$ into:
 
 -   variation explained by regression;
 -   variation left unexplained by the model.
 
 When the model includes an intercept, this decomposition takes a particularly simple and important form.
 
-## Total Sum of Squares
+**Total Sum of Squares**
 
-Assume the model contains an intercept.
-
-The total variation in the response is measured by the **total sum of squares**
+Assume the model contains an intercept. The total variation in the response is measured by the **total sum of squares**
 
 $$
 \mathrm{SST}
@@ -101,7 +93,7 @@ $$
 
 This measures variation around the sample mean.
 
-## Error Sum of Squares
+**Error Sum of Squares**
 
 The error sum of squares is
 
@@ -113,11 +105,9 @@ $$
 \mathbf{e}^\top \mathbf{e}.
 $$
 
-This is the variation not explained by the fitted regression model.
+This is the variation not explained by the fitted regression model. It measures how far the observed responses are from the fitted values.
 
-It measures how far the observed responses are from the fitted values.
-
-## Regression Sum of Squares
+**Regression Sum of Squares**
 
 The regression sum of squares is
 
@@ -127,9 +117,7 @@ $$
 \sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2.
 $$
 
-This measures the part of the total variation explained by the regression model.
-
-In vector form,
+This measures the part of the total variation explained by the regression model. In vector form,
 
 $$
 \mathrm{SSR}
@@ -137,26 +125,23 @@ $$
 (\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})^\top(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}).
 $$
 
-## The ANOVA Decomposition
+::: {#thm-anova-decomposition}
 
-When the model includes an intercept, we have the decomposition
+## ANOVA Decomposition with an Intercept
+
+For an ordinary least squares fit whose design matrix contains an intercept,
 
 $$
-\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}.
 $$
 
-This is one of the most important identities in regression.
+The centered fitted vector $\hat{\mathbf Y}-\bar Y\mathbf 1$ is orthogonal to the residual vector $\mathbf e$. Thus total variation around the sample mean splits into explained variation and residual variation. This geometric identity does not require normal errors.
 
-It says that the total variation around the sample mean can be decomposed into:
+:::
 
--   variation explained by the regression model;
--   variation remaining in the residuals.
+**Why the Decomposition Holds**
 
-## Why the Decomposition Holds
-
-The key reason is orthogonality.
-
-We can write
+The key reason is orthogonality. We can write
 
 $$
 \mathbf{Y} - \bar{Y}\mathbf{1}
@@ -174,9 +159,7 @@ $$
 (\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}) + \mathbf{e}.
 $$
 
-Because the model contains an intercept, the vector $\bar{Y}\mathbf{1}$ lies in the column space of $\mathbf{X}$. Hence both $\hat{\mathbf{Y}}$ and $\bar{Y}\mathbf{1}$ lie in the model space, so their difference also lies in the model space.
-
-Since the residual vector $\mathbf{e}$ is orthogonal to the model space, we have
+Because the model contains an intercept, the vector $\bar{Y}\mathbf{1}$ lies in the column space of $\mathbf{X}$. Hence both $\hat{\mathbf{Y}}$ and $\bar{Y}\mathbf{1}$ lie in the model space, so their difference also lies in the model space. Since the residual vector $\mathbf{e}$ is orthogonal to the model space, we have
 
 $$
 (\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})^\top \mathbf{e} = 0.
@@ -198,11 +181,9 @@ $$
 \mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
 $$
 
-## Degrees of Freedom
+**Degrees of Freedom**
 
-The ANOVA decomposition is accompanied by a decomposition of degrees of freedom.
-
-When the model includes an intercept and $\mathbf{X}$ has rank $p$, we have:
+The ANOVA decomposition is accompanied by a decomposition of degrees of freedom. When the model includes an intercept and $\mathbf{X}$ has rank $p$, we have:
 
 -   total degrees of freedom: $n-1$;
 -   regression degrees of freedom: $p-1$;
@@ -220,11 +201,9 @@ $$
 \mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
 $$
 
-## Mean Squares
+**Mean Squares**
 
-To compare sums of squares on a common scale, we divide by their associated degrees of freedom.
-
-The **mean square for regression** is
+To compare sums of squares on a common scale, we divide by their associated degrees of freedom. The **mean square for regression** is
 
 $$
 \mathrm{MSR} = \frac{\mathrm{SSR}}{p-1}.
@@ -236,73 +215,55 @@ $$
 \mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}.
 $$
 
-From Week 3, we know that MSE is an unbiased estimator of $\sigma^2$.
+From Chapter 3, we know that MSE is an unbiased estimator of $\sigma^2$.
 
 ## The Overall F Test
 
-A major inferential question is whether the regression model provides any explanatory power beyond the intercept-only model.
-
-Suppose the model includes an intercept and $p-1$ additional predictors. The null hypothesis is
+A major inferential question is whether the regression model provides any explanatory power beyond the intercept-only model. Suppose the model includes an intercept and $p-1$ additional predictors. The null hypothesis is
 
 $$
-H_0: \beta_2 = \beta_3 = \cdots = \beta_p = 0,
+H_0: \beta_1 = \beta_2 = \cdots = \beta_{p-1} = 0,
 $$
 
-if the first coefficient corresponds to the intercept.
+where $\beta_0$ is the intercept and $p$ counts all regression coefficients. Equivalently, under $H_0$, the mean response does not depend on the predictors. The alternative is that at least one non-intercept coefficient is nonzero.
 
-Equivalently, under $H_0$, the mean response does not depend on the predictors.
+::: {#thm-overall-f}
 
-The alternative is that at least one non-intercept coefficient is nonzero.
+## Overall F Test
 
-## Test Statistic
-
-The overall $F$ statistic is
+Under the normal linear model with a fixed, full-rank design containing an intercept and $1<p<n$, the null hypothesis that all non-intercept coefficients are zero gives
 
 $$
-F = \frac{\mathrm{MSR}}{\mathrm{MSE}}
-=
-\frac{\mathrm{SSR}/(p-1)}{\mathrm{SSE}/(n-p)}.
+F=\frac{\mathrm{SSR}/(p-1)}{\mathrm{SSE}/(n-p)}
+=\frac{\mathrm{MSR}}{\mathrm{MSE}}
+\sim F_{p-1,n-p}.
 $$
 
-Under the null hypothesis,
+Large values provide evidence against the intercept-only mean model. Exact finite-sample inference requires the normal, common-variance error assumptions; the sum-of-squares identity alone does not supply this distribution.
 
-$$
-F \sim F_{p-1,\;n-p}.
-$$
+:::
 
-Large values of $F$ provide evidence against $H_0$.
+**Interpretation of the Overall F Test**
 
-## Interpretation of the Overall F Test
-
-The numerator measures explained variation per regression degree of freedom.
-
-The denominator measures unexplained variation per residual degree of freedom.
-
-So the $F$ statistic compares:
+The numerator measures explained variation per regression degree of freedom. The denominator measures unexplained variation per residual degree of freedom. So the $F$ statistic compares:
 
 -   how much signal the model explains;
 -   how much noise remains in the residuals.
 
-If the predictors have no effect, then both quantities should be of similar size, and the ratio should not be unusually large.
+If the predictors have no effect, then both quantities should be of similar size, and the ratio should not be unusually large. If the predictors explain substantial variation, then the numerator should be much larger than the denominator.
 
-If the predictors explain substantial variation, then the numerator should be much larger than the denominator.
-
-## Relationship to the Intercept-Only Model
+**Relationship to the Intercept-Only Model**
 
 The overall $F$ test compares two models:
 
 -   the reduced model: intercept only;
 -   the full model: intercept plus predictors.
 
-Thus the ANOVA decomposition provides the basis for formal model comparison.
-
-This leads naturally to the idea of nested models.
+Thus the ANOVA decomposition provides the basis for formal model comparison. This leads naturally to the idea of nested models.
 
 ## Nested Models
 
-Two models are **nested** if the reduced model is obtained by imposing constraints on the full model.
-
-For example:
+Two models are **nested** if the reduced model is obtained by imposing constraints on the full model. For example:
 
 -   reduced model: $$
     Y_i = \beta_0 + \beta_1 x_{i1} + \varepsilon_i;
@@ -312,83 +273,58 @@ For example:
     Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
     $$
 
-The reduced model is nested within the full model because it is obtained by setting
+The reduced model is nested within the full model because it is obtained by setting $\beta_2 = 0$.
 
-$$
-\beta_2 = 0.
-$$
-
-## Extra Sum of Squares Principle
+**Extra Sum of Squares Principle**
 
 Suppose:
 
 -   the reduced model has error sum of squares $\mathrm{SSE}_R$ and rank $p_R$;
 -   the full model has error sum of squares $\mathrm{SSE}_F$ and rank $p_F$.
 
-Since the full model has more flexibility, it cannot fit worse, so
+Since the full model has more flexibility, it cannot fit worse, so $\mathrm{SSE}_F \le \mathrm{SSE}_R$. The quantity $\mathrm{SSE}_R - \mathrm{SSE}_F$ measures the reduction in error due to adding the extra predictors. This is called the **extra sum of squares** due to the added terms.
+
+::: {#thm-partial-f}
+
+## Partial F Test for Nested Normal Linear Models
+
+Fit both models to the **same response and the same observations**. Suppose their fixed design matrices have nested column spaces, with ranks $p_R<p_F<n$, and the full model has independent $N(0,\sigma^2)$ errors. Under the null hypothesis that the mean belongs to the reduced model,
 
 $$
-\mathrm{SSE}_F \le \mathrm{SSE}_R.
+F=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}{\mathrm{SSE}_F/(n-p_F)}
+\sim F_{p_F-p_R,n-p_F}.
 $$
 
-The quantity
+Large values give evidence against the reduced mean model. The numerator measures improvement per added degree of freedom; the denominator estimates the unexplained variance under the full model.
 
-$$
-\mathrm{SSE}_R - \mathrm{SSE}_F
-$$
+:::
 
-measures the reduction in error due to adding the extra predictors.
+::: {.callout-important title="Compare the models, not just the printed p-values"}
 
-This is called the **extra sum of squares** due to the added terms.
+Different missing-value patterns can cause two R fits to use different observations. Construct a common analysis dataset before comparing them. For one added coefficient, the partial F statistic equals the square of its two-sided t-test statistic from the full model.
 
-## F Test for Nested Models
+:::
 
-To test whether the extra predictors in the full model are needed, we use
+**Connection with General Linear Hypotheses**
 
-$$
-F
-=
-\frac{
-(\mathrm{SSE}_R - \mathrm{SSE}_F)/(p_F - p_R)
-}{
-\mathrm{SSE}_F/(n-p_F)
-}.
-$$
-
-Under the null hypothesis that the additional parameters are unnecessary,
-
-$$
-F \sim F_{p_F-p_R,\;n-p_F}.
-$$
-
-Large values indicate that the full model provides a significantly better fit.
-
-## Connection with General Linear Hypotheses
-
-This nested-model $F$ test is equivalent to testing a general linear hypothesis of the form
+Nested column-space models correspond to linear restrictions on the full-model coefficients. More generally, Chapter 3 allows a specified affine restriction of the form
 
 $$
 H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}.
 $$
 
-So the ANOVA comparison of nested models is another way of expressing the general $F$ test from Week 3.
+So the ANOVA comparison of nested models is another way of expressing the general $F$ test from Chapter 3. In practice, this is one of the most common uses of regression ANOVA tables.
 
-In practice, this is one of the most common uses of regression ANOVA tables.
+**Sequential and Partial Sums of Squares**
 
-## Sequential and Partial Sums of Squares
-
-In multiple regression, sums of squares can be defined in different ways depending on what is being adjusted for.
-
-Two common ideas are:
+In multiple regression, sums of squares can be defined in different ways depending on what is being adjusted for. Two common ideas are:
 
 -   **sequential sums of squares**: terms are added in a specified order;
 -   **partial sums of squares**: each term is tested after adjusting for the others.
 
-This distinction becomes important when predictors are correlated.
+This distinction becomes important when predictors are correlated. In this course, the main conceptual priority is to understand the extra sum of squares principle. Details of Type I, Type II, and Type III sums of squares can be introduced later if needed.
 
-In this course, the main conceptual priority is to understand the extra sum of squares principle. Details of Type I, Type II, and Type III sums of squares can be introduced later if needed.
-
-## Coefficient of Determination
+**Coefficient of Determination**
 
 The coefficient of determination is
 
@@ -396,22 +332,18 @@ $$
 R^2 = \frac{\mathrm{SSR}}{\mathrm{SST}} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}}.
 $$
 
-It measures the proportion of total variation explained by the regression model.
+It measures the proportion of total variation explained by the regression model. For an OLS fit with an intercept and $\mathrm{SST}>0$, its values lie between 0 and 1. If every observed response is identical, this ratio is undefined.
 
-Its values lie between 0 and 1.
-
-## Interpretation of R Squared
+**Interpretation of R Squared**
 
 -   If $R^2$ is close to 1, the model explains a large proportion of the variation in the response.
 -   If $R^2$ is close to 0, the model explains little of the variation.
 
 However, $R^2$ alone does not guarantee that the model is appropriate. A high $R^2$ does not ensure that assumptions are satisfied, and a low $R^2$ does not necessarily imply the model is useless.
 
-## Adjusted R Squared
+**Adjusted R Squared**
 
-Because $R^2$ never decreases when additional predictors are added, it can overstate improvement.
-
-A commonly used adjustment is
+Because $R^2$ never decreases when additional predictors are added, it can overstate improvement. A commonly used adjustment is
 
 $$
 R^2_{\mathrm{adj}}
@@ -421,123 +353,33 @@ $$
 
 Adjusted $R^2$ penalizes the inclusion of unnecessary predictors.
 
-## Worked Example by Hand
+::: {#exm-anova-by-hand}
 
-Consider the data
+## A Small ANOVA Calculation
 
-$$
-\begin{array}{c|cccc}
-x_i & 0 & 1 & 2 & 3 \\
-\hline
-y_i & 1 & 3 & 3 & 5
-\end{array}
-$$
-
-We already found that the fitted regression line is
+For $x=(0,1,2,3)$ and $y=(1,3,3,5)$, the fitted line is $\hat y=1.2+1.2x$. Therefore $\hat{\mathbf y}=(1.2,2.4,3.6,4.8)^\top$, $\mathbf e=(-0.2,0.6,-0.6,0.2)^\top$, and $\bar y=3$.
 
 $$
-\hat{Y} = 1.2 + 1.2x.
+\begin{aligned}
+\mathrm{SST}&=(1-3)^2+(3-3)^2+(3-3)^2+(5-3)^2=8,\\
+\mathrm{SSE}&=(-0.2)^2+0.6^2+(-0.6)^2+0.2^2=0.8,\\
+\mathrm{SSR}&=\mathrm{SST}-\mathrm{SSE}=8-0.8=7.2.
+\end{aligned}
 $$
 
-The observed response vector is
+Here $n=4$ and $p=2$, so the regression, residual, and total degrees of freedom are 1, 2, and 3, respectively.
 
-$$
-\mathbf{Y}
-=
-\begin{bmatrix}
-1 \\ 3 \\ 3 \\ 5
-\end{bmatrix},
-$$
+| Source | Sum of squares | df | Mean square | F |
+|---|---:|---:|---:|---:|
+| Regression | 7.2 | 1 | 7.2 | 18 |
+| Error | 0.8 | 2 | 0.4 | |
+| Total | 8.0 | 3 | | |
 
-and the fitted values are
+The model has $R^2=7.2/8=0.9$, yet the F-test p-value is $P(F_{1,2}\ge18)\approx0.0513$. With only two residual degrees of freedom, a high training $R^2$ does not automatically give evidence at the 5% significance level.
 
-$$
-\hat{\mathbf{Y}}
-=
-\begin{bmatrix}
-1.2 \\ 2.4 \\ 3.6 \\ 4.8
-\end{bmatrix}.
-$$
+:::
 
-The sample mean is
-
-$$
-\bar{Y} = 3.
-$$
-
-### Compute SST
-
-$$
-\mathrm{SST}
-=
-(1-3)^2 + (3-3)^2 + (3-3)^2 + (5-3)^2
-=
-4 + 0 + 0 + 4
-=
-8.
-$$
-
-### Compute SSE
-
-The residuals are
-
-$$
-\mathbf{e}
-=
-\begin{bmatrix}
--0.2 \\ 0.6 \\ -0.6 \\ 0.2
-\end{bmatrix},
-$$
-
-so
-
-$$
-\mathrm{SSE}
-=
-(-0.2)^2 + 0.6^2 + (-0.6)^2 + 0.2^2
-=
-0.8.
-$$
-
-### Compute SSR
-
-Using $\mathrm{SSR} = \mathrm{SST} - \mathrm{SSE}$,
-
-$$
-\mathrm{SSR} = 8 - 0.8 = 7.2.
-$$
-
-### Check the decomposition
-
-$$
-8 = 7.2 + 0.8.
-$$
-
-### Degrees of freedom
-
-Here $n=4$ and $p=2$, so:
-
--   total df: $4-1=3$;
--   regression df: $2-1=1$;
--   error df: $4-2=2$.
-
-### Mean squares
-
-$$
-\mathrm{MSR} = \frac{7.2}{1} = 7.2,
-\qquad
-\mathrm{MSE} = \frac{0.8}{2} = 0.4.
-$$
-
-### F statistic
-
-$$
-F = \frac{7.2}{0.4} = 18.
-$$
-
-This is the overall significance test for the regression.
-
-## ANOVA Table Structure
+**ANOVA Table Structure**
 
 A standard regression ANOVA table has the following structure:
 
@@ -555,7 +397,7 @@ Students should learn to move fluently between:
 
 ## R Demonstration
 
-## Fit a simple regression model
+**Fit a simple regression model**
 
 ```{r}
 x <- c(0, 1, 2, 3)
@@ -565,13 +407,13 @@ fit <- lm(y ~ x)
 summary(fit)
 ```
 
-## Obtain the ANOVA table
+**Obtain the ANOVA table**
 
 ```{r}
 anova(fit)
 ```
 
-## Verify sums of squares manually
+**Verify sums of squares manually**
 
 ```{r}
 ybar <- mean(y)
@@ -586,16 +428,43 @@ c(SST = SST, SSR = SSR, SSE = SSE)
 SST - SSR - SSE
 ```
 
-## Compute R squared manually
+**See the three sources of variation.** Each vertical segment below represents one deviation. Squaring and adding the four segment lengths gives the corresponding sum of squares.
+
+```{r}
+#| label: fig-anova-variation
+#| fig-cap: "Total deviations from the sample mean, explained deviations of fitted values from the mean, and residual deviations from the fitted line. SST = SSR + SSE holds after summing across observations; it is not a point-by-point identity between squared deviations."
+#| fig-width: 7
+#| fig-height: 3.2
+par(mfrow = c(1, 3), mar = c(4, 4, 2.4, 0.6),
+    mgp = c(2.4, 0.7, 0))
+for (component in c("Total", "Explained", "Residual")) {
+  plot(x, y, pch = 16, ylim = c(0.5, 5.5), xlab = "x", ylab = "y",
+       main = component, cex.main = 1)
+  abline(h = ybar, col = "gray60", lty = 2)
+  abline(fit, col = "steelblue4")
+  if (component == "Total") {
+    segments(x, ybar, x, y, col = "gray35", lwd = 2)
+  } else if (component == "Explained") {
+    segments(x, ybar, x, yhat, col = "steelblue4", lwd = 2)
+    points(x, yhat, pch = 1, col = "steelblue4")
+  } else {
+    segments(x, yhat, x, y, col = "darkorange3", lwd = 2)
+  }
+}
+par(mfrow = c(1, 1))
+```
+
+**Compute R squared manually**
 
 ```{r}
 R2 <- SSR / SST
 R2
 summary(fit)$r.squared
 summary(fit)$adj.r.squared
+pf(18, df1 = 1, df2 = 2, lower.tail = FALSE)
 ```
 
-## Compare nested models
+**Compare nested models**
 
 ```{r}
 dat <- data.frame(
@@ -610,24 +479,24 @@ fit_full <- lm(y ~ x1 + x2, data = dat)
 anova(fit_reduced, fit_full)
 ```
 
-## Inspect the two fitted models
+**Inspect the two fitted models**
 
 ```{r}
 summary(fit_reduced)
 summary(fit_full)
 ```
 
-## Interpretation of Software Output
+**Interpretation of Software Output**
 
 For a fitted model in R:
 
--   `anova(fit)` gives the ANOVA decomposition for a single model;
+-   `anova(fit)` gives sequential sums of squares in the order terms enter a single model;
 -   `anova(fit_reduced, fit_full)` compares nested models;
 -   `summary(fit)` reports the overall $F$ statistic, $R^2$, and adjusted $R^2$.
 
 Students should understand that these outputs are not separate topics. They are all built from the same least squares geometry and distribution theory.
 
-## In-Class Discussion Questions
+**In-Class Discussion Questions**
 
 1.  Why does the ANOVA decomposition require an intercept for the usual SST = SSR + SSE identity?
 2.  Why must $\mathrm{SSE}_F \le \mathrm{SSE}_R$ for nested models?
@@ -636,13 +505,13 @@ Students should understand that these outputs are not separate topics. They are 
 
 ## Practice Problems
 
-## Conceptual
+**Conceptual**
 
 1.  Explain the meaning of SST, SSR, and SSE in words.
 2.  Explain why the regression degrees of freedom are $p-1$ when the model includes an intercept.
 3.  Explain the difference between the overall $F$ test and a test for a single coefficient.
 
-## Computational
+**Computational**
 
 Suppose a regression model with intercept has:
 
@@ -660,25 +529,11 @@ Compute:
 5.  the overall $F$ statistic,
 6.  $R^2$.
 
-## Nested Model Problem
+**Nested Model Problem**
 
-A reduced model has
+A reduced model has $\mathrm{SSE}_R = 120$ with $p_R = 3$, and a full model has $\mathrm{SSE}_F = 90$ with $p_F = 5$. If $n=30$, compute the nested-model $F$ statistic.
 
-$$
-\mathrm{SSE}_R = 120
-$$
-
-with $p_R = 3$, and a full model has
-
-$$
-\mathrm{SSE}_F = 90
-$$
-
-with $p_F = 5$.
-
-If $n=30$, compute the nested-model $F$ statistic.
-
-## Suggested Homework
+**Suggested Homework**
 
 Complete the following tasks:
 
@@ -688,11 +543,9 @@ Complete the following tasks:
 -   compare two nested models using an extra sum of squares test;
 -   interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
 
-## Summary
+**Summary**
 
-In this week, we developed the ANOVA framework for linear regression.
-
-We defined:
+In this chapter, we developed the ANOVA framework for linear regression. We defined:
 
 $$
 \mathrm{SST}, \qquad \mathrm{SSR}, \qquad \mathrm{SSE},
@@ -710,49 +563,3 @@ This decomposition led to:
 -   the overall $F$ test for regression;
 -   the comparison of nested models through extra sums of squares;
 -   the interpretation of $R^2$ and adjusted $R^2$.
-
-Next week, a natural continuation is to study multiple regression in greater depth, including interpretation of partial regression coefficients and multicollinearity, or to move into matrix-based general linear hypotheses and estimability, depending on the course emphasis.
-
-## Appendix: Compact Formula Summary
-
-With an intercept in the model,
-
-$$
-\mathrm{SST}
-=
-\sum_{i=1}^n (Y_i-\bar{Y})^2,
-$$
-
-$$
-\mathrm{SSE}
-=
-\sum_{i=1}^n (Y_i-\hat{Y}_i)^2,
-$$
-
-$$
-\mathrm{SSR}
-=
-\sum_{i=1}^n (\hat{Y}_i-\bar{Y})^2,
-$$
-
-and
-
-$$
-\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
-$$
-
-Also,
-
-$$
-\mathrm{MSR} = \frac{\mathrm{SSR}}{p-1},
-\qquad
-\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p},
-\qquad
-F = \frac{\mathrm{MSR}}{\mathrm{MSE}},
-$$
-
-and
-
-$$
-R^2 = \frac{\mathrm{SSR}}{\mathrm{SST}} = 1-\frac{\mathrm{SSE}}{\mathrm{SST}}.
-$$

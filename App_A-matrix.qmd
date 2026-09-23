@@ -1,10 +1,10 @@
-# Matrix Algebra Review {#sec-matrix .unnumbered}
+# Matrix Algebra Review {#sec-matrix}
 
-## Matrix dimensions
+**Matrix dimensions**
 
 If $\mathbf{A}$ is $m \times n$ and $\mathbf{B}$ is $n \times p$, then $\mathbf{A}\mathbf{B}$ is defined and is $m \times p$.
 
-## Transpose rules
+**Transpose rules**
 
 For conformable matrices,
 
@@ -12,7 +12,7 @@ $$
 (\mathbf{A}\mathbf{B})^\top = \mathbf{B}^\top \mathbf{A}^\top.
 $$
 
-## Inverse rule
+**Inverse rule**
 
 If $\mathbf{A}$ and $\mathbf{B}$ are invertible, then
 
@@ -20,7 +20,7 @@ $$
 (\mathbf{A}\mathbf{B})^{-1} = \mathbf{B}^{-1}\mathbf{A}^{-1}.
 $$
 
-Symmetric matrices
+**Symmetric matrices**
 
 A matrix $\mathbf{A}$ is symmetric if
 
