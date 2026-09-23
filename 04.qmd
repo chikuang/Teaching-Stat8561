@@ -67,63 +67,26 @@ A central question in regression is: How much of the variation in the response c
 
 When the model includes an intercept, this decomposition takes a particularly simple and important form.
 
-**Total Sum of Squares**
+::: {#def-regression-sums-of-squares}
 
-Assume the model contains an intercept. The total variation in the response is measured by the **total sum of squares**
+## Regression Sums of Squares
 
-$$
-\mathrm{SST}
-=
-\sum_{i=1}^n (Y_i - \bar{Y})^2,
-$$
-
-where
+For an OLS fit with an intercept, let $\bar Y=n^{-1}\sum_{i=1}^nY_i$, $\hat{\mathbf Y}=\mathbf X\hat{\boldsymbol\beta}$, and $\mathbf e=\mathbf Y-\hat{\mathbf Y}$. Define the **total**, **error**, and **regression sums of squares** by
 
 $$
-\bar{Y} = \frac{1}{n}\sum_{i=1}^n Y_i.
+\begin{aligned}
+\mathrm{SST}&=\sum_{i=1}^n(Y_i-\bar Y)^2
+=\|\mathbf Y-\bar Y\mathbf 1\|^2,\\
+\mathrm{SSE}&=\sum_{i=1}^n(Y_i-\hat Y_i)^2
+=\mathbf e^\top\mathbf e,\\
+\mathrm{SSR}&=\sum_{i=1}^n(\hat Y_i-\bar Y)^2
+=\|\hat{\mathbf Y}-\bar Y\mathbf 1\|^2.
+\end{aligned}
 $$
 
-In vector form, if $\mathbf{1}$ denotes the vector of ones, then
+:::
 
-$$
-\mathrm{SST}
-=
-(\mathbf{Y} - \bar{Y}\mathbf{1})^\top(\mathbf{Y} - \bar{Y}\mathbf{1}).
-$$
-
-This measures variation around the sample mean.
-
-**Error Sum of Squares**
-
-The error sum of squares is
-
-$$
-\mathrm{SSE}
-=
-\sum_{i=1}^n (Y_i - \hat{Y}_i)^2
-=
-\mathbf{e}^\top \mathbf{e}.
-$$
-
-This is the variation not explained by the fitted regression model. It measures how far the observed responses are from the fitted values.
-
-**Regression Sum of Squares**
-
-The regression sum of squares is
-
-$$
-\mathrm{SSR}
-=
-\sum_{i=1}^n (\hat{Y}_i - \bar{Y})^2.
-$$
-
-This measures the part of the total variation explained by the regression model. In vector form,
-
-$$
-\mathrm{SSR}
-=
-(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1})^\top(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}).
-$$
+SST measures variation around the sample mean; SSE measures deviations from the fitted model; SSR measures how much the fitted values vary around the sample mean. These are definitions. Their additive relationship below follows from OLS orthogonality and the inclusion of an intercept.
 
 ::: {#thm-anova-decomposition}
 
@@ -201,21 +164,22 @@ $$
 \mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
 $$
 
-**Mean Squares**
+::: {#def-regression-mean-squares}
 
-To compare sums of squares on a common scale, we divide by their associated degrees of freedom. The **mean square for regression** is
+## Regression and Error Mean Squares
 
-$$
-\mathrm{MSR} = \frac{\mathrm{SSR}}{p-1}.
-$$
-
-The **mean square error** is
+A **mean square** is a sum of squares divided by its associated degrees of freedom. For a full-rank regression design with an intercept and $1<p<n$, define
 
 $$
-\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}.
+\mathrm{MSR}=\frac{\mathrm{SSR}}{p-1},\qquad
+\mathrm{MSE}=\frac{\mathrm{SSE}}{n-p}.
 $$
 
-From Chapter 3, we know that MSE is an unbiased estimator of $\sigma^2$.
+Here $p$ includes the intercept coefficient.
+
+:::
+
+Dividing by degrees of freedom accounts for the different dimensions contributing to each sum of squares. Under the linear-model moment assumptions from Chapter 3, MSE is an unbiased estimator of $\sigma^2$. MSR estimates the same noise level under the overall null hypothesis, which motivates their ratio.
 
 ## The Overall F Test
 
@@ -263,26 +227,43 @@ Thus the ANOVA decomposition provides the basis for formal model comparison. Thi
 
 ## Nested Models
 
-Two models are **nested** if the reduced model is obtained by imposing constraints on the full model. For example:
+::: {#def-nested-linear-models}
 
--   reduced model: $$
-    Y_i = \beta_0 + \beta_1 x_{i1} + \varepsilon_i;
-    $$
+## Nested Linear Models
 
--   full model: $$
-    Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
-    $$
+For the same response vector and observations, let the reduced and full models have mean spaces $\mathcal C(\mathbf X_R)$ and $\mathcal C(\mathbf X_F)$. The models are **nested** when
 
-The reduced model is nested within the full model because it is obtained by setting $\beta_2 = 0$.
+$$
+\mathcal C(\mathbf X_R)\subseteq\mathcal C(\mathbf X_F).
+$$
 
-**Extra Sum of Squares Principle**
+Thus every mean vector allowed by the reduced model is also allowed by the full model. A strict comparison requires ranks $p_R<p_F$; adding columns that are linear combinations of existing columns does not enlarge the mean space.
 
-Suppose:
+:::
 
--   the reduced model has error sum of squares $\mathrm{SSE}_R$ and rank $p_R$;
--   the full model has error sum of squares $\mathrm{SSE}_F$ and rank $p_F$.
+::: {#exm-nested-regression-models}
 
-Since the full model has more flexibility, it cannot fit worse, so $\mathrm{SSE}_F \le \mathrm{SSE}_R$. The quantity $\mathrm{SSE}_R - \mathrm{SSE}_F$ measures the reduction in error due to adding the extra predictors. This is called the **extra sum of squares** due to the added terms.
+## Adding a Predictor
+
+Consider the reduced model $Y_i=\beta_0+\beta_1x_{i1}+\varepsilon_i$ and the full model $Y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\varepsilon_i$. Setting $\beta_2=0$ recovers the reduced model. If the $x_2$ column is not in the span of the intercept and $x_1$, the full model adds one degree of freedom.
+
+:::
+
+::: {#def-extra-sum-of-squares}
+
+## Extra Sum of Squares
+
+For nested models fitted by OLS to the same response and observations, define the **extra sum of squares** for the full model relative to the reduced model as
+
+$$
+\mathrm{SS}_{\mathrm{extra}}=\mathrm{SSE}_R-\mathrm{SSE}_F.
+$$
+
+Its associated degrees of freedom are $p_F-p_R$, where $p_R$ and $p_F$ are the design-matrix ranks.
+
+:::
+
+The full model minimizes residual variation over a larger mean space, so $\mathrm{SSE}_F\le\mathrm{SSE}_R$. Extra sum of squares therefore measures a nonnegative improvement in fit. A positive improvement alone is not evidence against the reduced model: the F test scales that improvement by its degrees of freedom and the estimated noise variance.
 
 ::: {#thm-partial-f}
 
@@ -315,24 +296,33 @@ $$
 
 So the ANOVA comparison of nested models is another way of expressing the general $F$ test from Chapter 3. In practice, this is one of the most common uses of regression ANOVA tables.
 
-**Sequential and Partial Sums of Squares**
+::: {#def-sequential-partial-sums-of-squares}
 
-In multiple regression, sums of squares can be defined in different ways depending on what is being adjusted for. Two common ideas are:
+## Sequential and Partial Sums of Squares
 
--   **sequential sums of squares**: terms are added in a specified order;
--   **partial sums of squares**: each term is tested after adjusting for the others.
+For a term in a specified regression model, both quantities are extra sums of squares from a nested comparison on the same observations:
 
-This distinction becomes important when predictors are correlated. In this course, the main conceptual priority is to understand the extra sum of squares principle. Details of Type I, Type II, and Type III sums of squares can be introduced later if needed.
+- **Sequential sum of squares:** the reduction in SSE when the term is added after the preceding terms in a specified order.
+- **Partial sum of squares:** the increase in SSE when the specified term is removed from a full model while the other specified terms are retained.
 
-**Coefficient of Determination**
+:::
 
-The coefficient of determination is
+When predictors are correlated, sequential sums of squares can depend on their order. Partial sums of squares answer a comparison conditional on the terms retained in the reduced model. With interactions or rank deficiency, state the exact restriction and respect model hierarchy rather than relying only on a Type I, II, or III label.
+
+::: {#def-coefficient-of-determination}
+
+## Coefficient of Determination
+
+For an OLS fit with an intercept and $\mathrm{SST}>0$, the **coefficient of determination** is
 
 $$
-R^2 = \frac{\mathrm{SSR}}{\mathrm{SST}} = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}}.
+R^2=\frac{\mathrm{SSR}}{\mathrm{SST}}
+=1-\frac{\mathrm{SSE}}{\mathrm{SST}}.
 $$
 
-It measures the proportion of total variation explained by the regression model. For an OLS fit with an intercept and $\mathrm{SST}>0$, its values lie between 0 and 1. If every observed response is identical, this ratio is undefined.
+:::
+
+By the ANOVA decomposition, $R^2$ lies between 0 and 1 and measures the proportion of centered variation explained by the fitted model. If every observed response is identical, $\mathrm{SST}=0$ and this ratio is undefined.
 
 **Interpretation of R Squared**
 
@@ -341,17 +331,20 @@ It measures the proportion of total variation explained by the regression model.
 
 However, $R^2$ alone does not guarantee that the model is appropriate. A high $R^2$ does not ensure that assumptions are satisfied, and a low $R^2$ does not necessarily imply the model is useless.
 
-**Adjusted R Squared**
+::: {#def-adjusted-r-squared}
 
-Because $R^2$ never decreases when additional predictors are added, it can overstate improvement. A commonly used adjustment is
+## Adjusted Coefficient of Determination
+
+For an OLS fit with an intercept, $\mathrm{SST}>0$, and design rank $p<n$, define the **adjusted coefficient of determination** as
 
 $$
 R^2_{\mathrm{adj}}
-=
-1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+=1-\frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
 $$
 
-Adjusted $R^2$ penalizes the inclusion of unnecessary predictors.
+:::
+
+Ordinary $R^2$ cannot decrease when the model space is enlarged on the same data. Adjusted $R^2$ accounts for the loss of residual degrees of freedom and can decrease or become negative. It compares residual mean square with the sample variance of the response; it is not a literal proportion of explained variation or an estimate of out-of-sample predictive performance.
 
 ::: {#exm-anova-by-hand}
 
