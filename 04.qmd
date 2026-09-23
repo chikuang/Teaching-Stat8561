@@ -26,7 +26,7 @@ Recommended reading for this chapter:
     -   overall model significance
     -   partial and sequential sums of squares
 
-::: {.callout-note title="Optional motivation: does measuring tree height add useful information?"}
+::: {.callout-note title="Motivation: does measuring tree height add useful information?"}
 
 Suppose a forestry team wants to estimate timber volume before felling a tree. Diameter is already available; measuring height requires additional effort. Does height contribute information beyond diameter?
 
@@ -173,6 +173,20 @@ $$
 \mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
 $$
 
+::: {#exr-intercept-anova-discussion}
+
+## In-Class Discussion: Why Does the Intercept Matter?
+
+Why does the usual centered decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ require the model space to contain the constant vector? Which step could fail without an intercept? Does this identity require normal errors?
+
+:::
+
+::: {#sol-intercept-anova-discussion}
+
+With an intercept, $\mathbf 1$ and therefore $\bar Y\mathbf 1$ belong to the model space. Thus the centered fitted vector $\hat{\mathbf Y}-\bar Y\mathbf 1$ is orthogonal to $\mathbf e$, and the cross term vanishes when its squared norm is expanded. Without a constant vector in the model space, $\sum_i e_i$ need not be zero, so the cross term $\mathbf e^\top(\hat{\mathbf Y}-\bar Y\mathbf 1)=-\bar Y\sum_i e_i$ need not vanish. The identity follows from OLS geometry, not normality.
+
+:::
+
 ::: {#exr-identify-anova-deviations}
 
 ## In Class: One Observation, Three Deviations
@@ -263,13 +277,13 @@ If the predictors have no effect, then both quantities should be of similar size
 
 ## In Class: What Does an Overall Rejection Mean?
 
-An intercept model with two predictors is fitted to $n=25$ observations using a full-rank design. Write the overall null hypothesis and the F reference degrees of freedom under the normal linear model. If the test rejects, must both individual slope tests also reject?
+An intercept model with two predictors is fitted to $n=25$ observations using a full-rank design. Write the overall null hypothesis and the F reference degrees of freedom under the normal linear model. How does this joint test differ from the individual t tests? If it rejects, must both individual slope tests also reject?
 
 :::
 
 ::: {#sol-overall-f-question}
 
-Here $p=3$, so $H_0:\beta_1=\beta_2=0$ and the reference distribution is $F_{2,22}$. Rejection gives evidence that the two slopes are not jointly zero. It does not show that both are nonzero, and it does not require either individual test to reject at the same level. Joint and individual tests answer different questions, especially when predictors are correlated.
+Here $p=3$, so $H_0:\beta_1=\beta_2=0$ and the reference distribution is $F_{2,22}$. Rejection gives evidence that the two slopes are not jointly zero. It does not show that both are nonzero, and it does not require either individual test to reject at the same level. Each individual t test asks whether one slope is zero while retaining the other predictor; the overall F test asks whether both slopes are jointly zero. These are different questions, especially when predictors are correlated.
 
 :::
 
@@ -320,7 +334,21 @@ Its associated degrees of freedom are $p_F-p_R$, where $p_R$ and $p_F$ are the d
 
 :::
 
-The full model minimizes residual variation over a larger mean space, so $\mathrm{SSE}_F\le\mathrm{SSE}_R$. Extra sum of squares therefore measures a nonnegative improvement in fit. A positive improvement alone is not evidence against the reduced model: the F test scales that improvement by its degrees of freedom and the estimated noise variance.
+::: {#exr-nested-sse-discussion}
+
+## In-Class Discussion: Can the Larger Model Fit Worse?
+
+Why must $\mathrm{SSE}_F\le\mathrm{SSE}_R$ when nested models are fitted by OLS to the same observations? Must the inequality be strict whenever a genuinely new predictor direction is added?
+
+:::
+
+::: {#sol-nested-sse-discussion}
+
+Every fitted mean vector allowed by the reduced model is also available to the full model. Minimizing the same residual sum of squares over this larger set cannot give a larger minimum. Equality is possible even if the model space grows: for the observed response, the added directions may provide no further reduction in residual variation. Thus greater flexibility guarantees a weak improvement in training fit, not a strictly positive improvement or a useful predictor.
+
+:::
+
+A positive extra sum of squares alone is not evidence against the reduced model: the F test scales that improvement by its degrees of freedom and the estimated noise variance.
 
 ::: {#thm-partial-f}
 
@@ -447,13 +475,13 @@ The model has $R^2=7.2/8=0.9$, yet the F-test p-value is $P(F_{1,2}\ge18)\approx
 
 ## In Class: Can Two Fit Summaries Disagree?
 
-For the same $n=10$ observations with $\mathrm{SST}=100$, an intercept model has rank 2 and SSE 20. Adding a predictor whose column is linearly independent of the existing columns increases the rank to 3 and reduces SSE to 19. Compute $R^2$ and adjusted $R^2$ for both fits. Did the one-unit reduction in SSE improve both summaries?
+For the same $n=10$ observations with $\mathrm{SST}=100$, an intercept model has rank 2 and SSE 20. Adding a predictor whose column is linearly independent of the existing columns increases the rank to 3 and reduces SSE to 19. Compute $R^2$ and adjusted $R^2$ for both fits. Did the one-unit reduction in SSE improve both summaries? Why can relying on $R^2$ alone be misleading?
 
 :::
 
 ::: {#sol-r-squared-versus-adjustment}
 
-Ordinary $R^2$ increases from $1-20/100=0.80$ to $1-19/100=0.81$. Adjusted $R^2$ decreases from $1-(20/8)/(100/9)=0.775$ to $1-(19/7)/(100/9)\approx0.756$. The extra predictor reduces SSE but increases residual mean square, from $2.5$ to about $2.714$. Neither summary alone establishes better prediction on new observations.
+Ordinary $R^2$ increases from $1-20/100=0.80$ to $1-19/100=0.81$. Adjusted $R^2$ decreases from $1-(20/8)/(100/9)=0.775$ to $1-(19/7)/(100/9)\approx0.756$. The extra predictor reduces SSE but increases residual mean square, from $2.5$ to about $2.714$. Training $R^2$ cannot decrease when the model space grows, even when the new term only fits noise. A high $R^2$ also does not establish a correct mean function, appropriate error assumptions, or causality. Neither summary alone establishes better prediction on new observations.
 
 :::
 
@@ -639,12 +667,26 @@ par(op)
 
 :::
 
-**In-Class Discussion Questions**
+## Summary
 
-1.  Why does the ANOVA decomposition require an intercept for the usual SST = SSR + SSE identity?
-2.  Why must $\mathrm{SSE}_F \le \mathrm{SSE}_R$ for nested models?
-3.  What does the overall $F$ test tell us that individual $t$ tests do not?
-4.  Why can $R^2$ be misleading if used alone?
+In this chapter, we developed the ANOVA framework for linear regression. We defined:
+
+$$
+\mathrm{SST}, \qquad \mathrm{SSR}, \qquad \mathrm{SSE},
+$$
+
+and showed that, with an intercept,
+
+$$
+\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
+$$
+
+This decomposition led to:
+
+-   the ANOVA table;
+-   the overall $F$ test for regression;
+-   the comparison of nested models through extra sums of squares;
+-   the interpretation of $R^2$ and adjusted $R^2$.
 
 ## Practice Problems
 
@@ -685,24 +727,3 @@ Complete the following tasks:
 -   fit a regression model in R and reproduce the ANOVA table by hand;
 -   compare two nested models using an extra sum of squares test;
 -   interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
-
-**Summary**
-
-In this chapter, we developed the ANOVA framework for linear regression. We defined:
-
-$$
-\mathrm{SST}, \qquad \mathrm{SSR}, \qquad \mathrm{SSE},
-$$
-
-and showed that, with an intercept,
-
-$$
-\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
-$$
-
-This decomposition led to:
-
--   the ANOVA table;
--   the overall $F$ test for regression;
--   the comparison of nested models through extra sums of squares;
--   the interpretation of $R^2$ and adjusted $R^2$.
