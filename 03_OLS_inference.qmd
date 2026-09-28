@@ -2688,6 +2688,10 @@ regression models.
 
 :::
 
+```{=latex}
+\clearpage
+```
+
 ## Side Fact {#sec-ols-side-fact}
 
 These three reference distributions are built from normal variables:
@@ -2698,4 +2702,4 @@ These three reference distributions are built from normal variables:
 
 For the general linear hypothesis, $r$ is the number of independent restrictions and $\nu=n-p$ is the residual degrees of freedom. The normal model gives the required independence between the numerator quadratic form and the residual sum of squares.
 
-The full explanations, density derivations, independence proof, regression applications, and reference books are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*. [Download the appendix PDF](handouts/STAT8561_Appendix_H_Basic_Mathematical_Statistics.pdf).
+The full explanations, density derivations, independence proof, regression applications, and reference books are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*.

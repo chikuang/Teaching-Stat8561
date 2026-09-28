@@ -1,7 +1,5 @@
 project:
   type: book
-  resources:
-    - handouts/*.pdf
 
 book:
   title: "STAT8561 - Linear Statistical Analysis I"

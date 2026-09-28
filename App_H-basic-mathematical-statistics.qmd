@@ -1,7 +1,5 @@
 # Basic Mathematical Statistics {#sec-basic-mathematical-statistics}
 
-[Download this appendix as a PDF](handouts/STAT8561_Appendix_H_Basic_Mathematical_Statistics.pdf).
-
 The chi-square, Student's $t$, and $F$ distributions all arise from normal random variables. This appendix explains the constructions, proves the distributional results, and connects them to the general linear hypothesis in Chapter 3, Section 3.8.
 
 The logical order is **normal variables $\longrightarrow$ sums of squares $\longrightarrow$ standardized ratios**. Degrees of freedom count independent normal components. Independence is essential when forming the ratios.
@@ -294,4 +292,8 @@ The null reference distributions are $t_{17}$ and $F_{1,17}$, respectively.
 1. **Seber, G. A. F., and Lee, A. J. (2003). _Linear Regression Analysis_, 2nd ed. Wiley.** Read Chapter 2, *Multivariate Normal Distribution*, for the normal-vector background; Chapter 3, *Linear Regression: Estimation and Distribution Theory*, for regression sampling distributions; and Chapter 4, *Hypothesis Testing*, for linear restrictions. This is the main reference for the regression applications above. [Publisher and contents](https://onlinelibrary.wiley.com/doi/book/10.1002/9780471722199).
 2. **Casella, G., and Berger, R. (2024 reprint). _Statistical Inference_, 2nd ed. Chapman & Hall/CRC.** Chapters 3, *Common Families of Distributions*, and 5, *Properties of a Random Sample*, provide the probability background for chi-square, $t$, and $F$ distributions. The publisher identifies this as a reprint of the earlier second edition. [Publisher and contents](https://www.routledge.com/link/link/p/book/9781032593036).
 
+::: {.content-visible when-format="html"}
+
 The derivations here are written out for these notes; the books provide further development and exercises. This appendix supports the [STAT 8561 Chapter 3 notes](https://chikuang.github.io/teaching/2026F_stat8561/03_OLS_inference.html#general-linear-hypotheses).
+
+:::

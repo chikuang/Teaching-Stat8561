@@ -4,178 +4,323 @@ show-solutions: false
 
 # Assignment 2 {.unnumbered}
 
+**STAT 8561 \| Fall 2026**\
+**Due date:** September 30, 2026\
+**Total:** 40 points\
+**Coverage:** Chapter 2 (Least Squares Estimation) and Chapter 3 (Distribution Theory of OLS and Inference).
 
-## Question: Distribution and Inference [12]
+This assignment emphasizes conceptual understanding of least squares, projection, and inference. Read the assumptions in each question carefully.
 
-Suppose a multiple linear regression model has $n=20$ observations and $p=3$ regression parameters. Assume
+::: {.callout-note title="Submission on iCollege"}
+Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 2** submission folder on **iCollege**:
 
-$$
-  \mathbf{Y}
-\sim
-N_{20}
-\left(
-  \mathbf{X}\boldsymbol{\beta},
-  \sigma^2\mathbf{I}_{20}
-  \right).
-$$
-  
-  Suppose
+1.  Your rendered **PDF**, named `A2_LastName_FirstName.pdf`.
+2.  Its matching source file, named `A2_LastName_FirstName.qmd` or `A2_LastName_FirstName.Rmd`.
 
-$$
-  \hat{\boldsymbol{\beta}}
-=
-  \begin{pmatrix}
-2.0\\
-1.5\\
--0.5
-\end{pmatrix},
-$$
-  
-  $$
-  (\mathbf{X}^\top\mathbf{X})^{-1}
-=
-  \begin{pmatrix}
-0.20 & 0 & 0\\
-0 & 0.05 & 0\\
-0 & 0 & 0.08
-\end{pmatrix},
-$$
-  
-  and
+The PDF must be generated from the submitted source file. **HTML alone does not satisfy the submission requirement.**
 
-$$
-  \mathrm{SSE}=34.
-$$
-  
-  Use
+- Put your name and course number at the beginning of the PDF.
+- Use the **Answer Summary** at the end as a guide to the answer format and item labels.
+- For each multiple-choice item, select **exactly one** answer. Enter only the letter.
+- For True/False items, enter only `T` or `F`. For matching items, enter one letter per row; letters may be reused.
+- Questions 1-4 require **no written explanations, derivations, or R output**. Work through the reasoning before selecting your answers.
+- Question 5 requires only the requested choices and numerical answers. Round numerical answers to **three decimal places**, retaining full precision during calculations.
+- R is optional for checking calculations. If you use R, include your code after your answers in executable chunks.
+- Your source must render from beginning to end without errors. Type mathematical expressions using LaTeX; do not submit screenshots of answers or code.
+:::
 
-$$
-  t_{0.975,17}=2.110.
-$$
-  
-### (a) [3]
-  
-  Choose the correct distributions.
+::: {tbl-colwidths="[12,75,13]"}
 
-For $\hat{\boldsymbol{\beta}}$:
-  
-  - [ ] **A.** $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$
-  
-  - [ ] **B.** $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$
-  
-  - [ ] **C.** $t_{17}$
-  
-  - [ ] **D.** $\chi^2_{17}$
-  
-  For $\mathrm{SSE}/\sigma^2$:
-  
-  - [ ] **A.** $N(0,1)$
-  
-  - [ ] **B.** $t_{17}$
-  
-  - [ ] **C.** $\chi^2_{17}$
-  
-  - [ ] **D.** $F_{3,17}$
-  
-::: {.solution .content-visible when-meta="show-solutions"}
-
-**Solution:** B and C
+  Question    Topic                                              Points
+  ----------- -------------------------------------------------- --------
+  1           Least squares: assumptions and consequences        6
+  2           Projection geometry and rank                       8
+  3           Sampling properties and the role of normality      8
+  4           Interpreting confidence and prediction intervals   6
+  5           Distribution and inference for OLS                 12
+  **Total**                                                      **40**
 
 :::
-  
-### (b) [2]
-  
+
+All necessary information is supplied in the questions. No external data or additional R packages are required.
+
+## Question 1: Least Squares: Assumptions and Consequences \[6\]
+
+Consider $\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\varepsilon}$, where $\mathbf{X}$ is fixed, has full column rank, and $n>p$. Select **one answer per part**.
+
+### (a) Changing the distributional assumption \[2\]
+
+Two students use the same observed $\mathbf{X}$ and $\mathbf{Y}$. One assumes normal errors; the other does not specify an error distribution. Both define their estimate by minimizing
+
+$$
+S(\boldsymbol{\beta})=\|\mathbf{Y}-\mathbf{X}\boldsymbol{\beta}\|^2.
+$$
+
+Which statement is correct?
+
+A. The second student cannot compute a least squares estimate.\
+B. The estimates must differ because the distributional assumptions differ.\
+C. The estimates are the same because they minimize the same criterion for the same data.\
+D. The estimates are the same only if the observed residuals are all zero.
+
+### (b) What makes the minimizer unique? \[2\]
+
+Which statement explains why solving the normal equations gives a **unique** least squares minimizer under the stated assumptions?
+
+A. Full column rank makes $\mathbf{X}^\top\mathbf{X}$ positive definite.\
+B. Normal errors make every system of normal equations invertible.\
+C. Having more observations than parameters guarantees full column rank for any design matrix.\
+D. Minimizing the sum of squared residuals forces every residual to be zero.
+
+### (c) Shifting every response \[2\]
+
+Now suppose the model includes an intercept. Add 5 to **every observed response**, keep all predictors unchanged, and refit the same model by least squares. What happens?
+
+A. Every slope increases by 5, while the intercept is unchanged.\
+B. The coefficients are unchanged, and every residual increases by 5.\
+C. The intercept increases by 5, and every residual increases by 5.\
+D. The intercept increases by 5, the slopes are unchanged, and the residuals are unchanged.
+
+## Question 2: Projection Geometry and Rank \[8\]
+
+For parts (a) and (c), let $\mathbf{X}$ have full column rank. Define
+
+$$
+\mathbf{H}=\mathbf{X}(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top,
+\quad \mathbf{M}=\mathbf{I}_n-\mathbf{H},
+\quad \hat{\mathbf{Y}}=\mathbf{H}\mathbf{Y},
+\quad \mathbf{e}=\mathbf{M}\mathbf{Y}.
+$$
+
+### (a) Projecting a second time \[2\]
+
+A student applies $\mathbf{H}$ to the fitted vector and to the residual vector. Which pair of results must hold?
+
+A. $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{0}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.\
+B. $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{0}$.\
+C. $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{Y}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.\
+D. $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.
+
+### (b) Adding a redundant predictor \[2\]
+
+Suppose $\mathbf{x}$ is not constant. Compare the least squares fits using
+
+$$
+\mathbf{X}=[\mathbf{1}_n,\mathbf{x}]
+\quad\text{and}\quad
+\mathbf{W}=[\mathbf{1}_n,\mathbf{x},2\mathbf{x}]
+$$
+
+for the **same response vector**. Which statement is correct?
+
+A. The extra column must strictly reduce SSE.\
+B. The fit using $\mathbf{W}$ does not exist because $\mathbf{W}^\top\mathbf{W}$ is singular.\
+C. The fit using $\mathbf{W}$ has nonunique coefficients, but its fitted values and SSE equal those from $\mathbf{X}$.\
+D. The fit using $\mathbf{W}$ has nonunique coefficients and therefore nonunique fitted values.
+
+### (c) Geometric consequences \[4\]
+
+Enter `T` or `F`. Each statement is worth **1 point**. Here $\bar Y=n^{-1}\sum_iY_i$.
+
+::: {tbl-colwidths="[88,12]"}
+
+  Statement                                                                                                                                                                T/F
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -------
+  \(i\) The uncentered identity $\mathbf{Y}^\top\mathbf{Y}=\hat{\mathbf{Y}}^\top\hat{\mathbf{Y}}+\mathbf{e}^\top\mathbf{e}$ holds for the least squares fit.               `___`
+  \(ii\) The centered identity $\sum_i(Y_i-\bar Y)^2=\sum_i(\hat Y_i-\bar Y)^2+\mathrm{SSE}$ is guaranteed for every least squares model, even one without an intercept.   `___`
+  \(iii\) If the model includes an intercept, the average fitted value equals the average observed response.                                                               `___`
+  \(iv\) The residual vector must be orthogonal to the observed response vector $\mathbf{Y}$ itself.                                                                       `___`
+
+:::
+
+## Question 3: Sampling Properties and the Role of Normality \[8\]
+
+Throughout this question, $\mathbf{X}$ is fixed with full column rank, $n>p$, and $\sigma^2>0$.
+
+### (a) Match the result to its assumptions \[4\]
+
+Choose the **weakest sufficient set of assumptions among A, B, and C** for each result. Each row is worth **1 point**. Letters may be reused.
+
+A. The least squares criterion and full column rank alone; no error moment or distribution assumptions.\
+B. $\mathbb{E}(\boldsymbol{\varepsilon})=\mathbf{0}$ and $\operatorname{Var}(\boldsymbol{\varepsilon})=\sigma^2\mathbf{I}_n$, without assuming normality.\
+C. The normal linear model, $\boldsymbol{\varepsilon}\sim N_n(\mathbf{0},\sigma^2\mathbf{I}_n)$.
+
+::: {tbl-colwidths="[88,12]"}
+
+  Result                                                                                            Letter
+  ------------------------------------------------------------------------------------------------- --------
+  \(i\) The least squares coefficient vector is the unique minimizer of $S(\boldsymbol{\beta})$.    `___`
+  \(ii\) $\mathbb{E}(\hat{\boldsymbol{\beta}})=\boldsymbol{\beta}$.                                 `___`
+  \(iii\) $\mathrm{SSE}/\sigma^2\sim\chi^2_{n-p}$.                                                  `___`
+  \(iv\) $\operatorname{Var}(\hat{\boldsymbol{\beta}})=\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$.   `___`
+
+:::
+
+### (b) Why does independence follow? \[2\]
+
+Under the normal linear model, which argument correctly explains why $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ are independent?
+
+A. $\hat{\boldsymbol{\beta}}$ and $\mathbf{e}$ are jointly normal with zero covariance, and SSE is a function of $\mathbf{e}$.\
+B. Any two uncorrelated random vectors are independent, regardless of their distribution.\
+C. They estimate different parameters, so they must be independent.\
+D. Each observed residual is independent of every other observed residual in every normal linear model.
+
+### (c) Increasing the error variance \[2\]
+
+Keep $\mathbf{X}$ and $\boldsymbol{\beta}$ fixed. In a second model, the errors still have mean zero, but their covariance is $4\sigma^2\mathbf{I}_n$ instead of $\sigma^2\mathbf{I}_n$. Which statement describes the **sampling distribution's mean and covariance** for the OLS estimator?
+
+A. Its mean and covariance are both multiplied by 4.\
+B. Its mean is unchanged, and its covariance is multiplied by 16.\
+C. Its mean and covariance are both unchanged.\
+D. Its mean is unchanged, and its covariance is multiplied by 4; each coefficient's standard deviation doubles.
+
+## Question 4: Interpreting Confidence and Prediction Intervals \[6\]
+
+Assume a correctly specified normal linear model. For prediction, a future observation has an error independent of the original data and with the same error variance.
+
+### (a) Mean response versus one future response \[2\]
+
+At the **same predictor value**, software reports two intervals at the 95% level:
+
+- Interval I: $(2.493,3.507)$;
+- Interval II: $(1.659,4.341)$.
+
+One is a confidence interval for the mean response; the other is a prediction interval for one future response. Which interpretation is correct?
+
+A. I is the prediction interval because predicting one observation involves less uncertainty than estimating a mean.\
+B. Both intervals describe the same target; their different widths are only rounding error.\
+C. I is the mean-response interval; II is the prediction interval because it also accounts for the new observation's error.\
+D. II is the mean-response interval because averaging adds the new observation's error variance.
+
+### (b) Connecting a confidence interval and a test \[2\]
+
+A 95% confidence interval for $\beta_1$ is $(0.4,1.6)$. Consider the corresponding two-sided $t$ test of
+
+$$
+H_0:\beta_1=1\qquad\text{versus}\qquad H_1:\beta_1\neq1
+$$
+
+at $\alpha=0.05$. Which conclusion is correct?
+
+A. Reject $H_0$ because zero is outside the interval.\
+B. Fail to reject $H_0$ because 1 is inside the interval; this does not prove that $\beta_1=1$.\
+C. Accept $H_0$ as proven true because 1 is inside the interval.\
+D. No conclusion is possible because a $t$ test can only test a coefficient against zero.
+
+### (c) What an interval means \[2\]
+
+Enter `T` or `F`. Each statement is worth **1 point**. Assume a positive estimated error variance and $\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0>0$.
+
+::: {tbl-colwidths="[88,12]"}
+
+  Statement                                                                                                                                   T/F
+  ------------------------------------------------------------------------------------------------------------------------------------------- -------
+  \(i\) Holding the data and predictor value fixed, changing a mean-response confidence level from 95% to 99% makes the interval wider.       `___`
+  \(ii\) A 95% confidence interval for the mean response is designed to contain 95% of individual future responses at that predictor value.   `___`
+
+:::
+
+## Question 5: Distribution and Inference \[12\]
+
+Suppose a multiple linear regression model has $n=20$ observations and $p=3$ parameters: an intercept and two slopes. The first column of $\mathbf{X}$ is $\mathbf{1}_{20}$. Assume
+
+$$
+\mathbf{Y}\sim N_{20}\!\left(\mathbf{X}\boldsymbol{\beta},\sigma^2\mathbf{I}_{20}\right).
+$$
+
+Suppose
+
+$$
+\hat{\boldsymbol{\beta}}=\begin{pmatrix}2.0\\1.5\\-0.5\end{pmatrix},
+\qquad
+(\mathbf{X}^\top\mathbf{X})^{-1}
+=\begin{pmatrix}0.05&0&0\\0&0.05&0\\0&0&0.08\end{pmatrix},
+$$
+
+and $\mathrm{SSE}=34$. Use $t_{0.975,17}=2.110$.
+
+### (a) \[3\]
+
+Choose the correct distributions.
+
+For $\hat{\boldsymbol{\beta}}$:
+
+A. $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$\
+B. $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$\
+C. $t_{17}$\
+D. $\chi^2_{17}$
+
+For $\mathrm{SSE}/\sigma^2$:
+
+A. $N(0,1)$\
+B. $t_{17}$\
+C. $\chi^2_{17}$\
+D. $F_{3,17}$
+
+### (b) \[2\]
+
 Compute
 
 $$
-  \hat{\sigma}^2
-=
-  \frac{\mathrm{SSE}}{n-p}.
+\hat{\sigma}^2 = \frac{\mathrm{SSE}}{n-p}
+= \underline{\hspace{2cm}}.
 $$
-  
-  $$
-  \hat{\sigma}^2 = \underline{\hspace{2cm}}.
-$$
-  
-::: {.solution .content-visible when-meta="show-solutions"}
 
-**Solution:**
-  
-  $$
-  \boxed{\hat{\sigma}^2=2}.
-$$
-  
-:::
-  
-### (c) [4]
-  
-  For testing
+### (c) \[4\]
+
+For testing
 
 $$
-  H_0:\beta_1=0
+H_0:\beta_1=0
 \qquad\text{versus}\qquad
 H_1:\beta_1\neq0,
 $$
-  
-  where $\beta_1$ is the second entry of $\boldsymbol{\beta}$, fill in the following:
-  
-  $$
-  \mathrm{SE}(\hat{\beta}_1)
-=
-  \underline{\hspace{2cm}},
-$$
-  
-  $$
-  t
-=
-  \underline{\hspace{2cm}},
-$$
-  
-  and choose the decision:
-  
-  - [ ] **A.** Reject $H_0$
-  
-  - [ ] **B.** Fail to reject $H_0$
-  
-::: {.solution .content-visible when-meta="show-solutions"}
 
-**Solution:**
-  
-  $$
-  \mathrm{SE}(\hat{\beta}_1)
-=
-  \sqrt{2(0.05)}
-=
-  0.3162,
-$$
-  
-  $$
-  t
-=
-  \frac{1.5}{0.3162}
-=
-  4.7434.
-$$
-  
-  Since $|4.7434|>2.110$, the answer is **A: Reject $H_0$**.
+where $\beta_1$ is the second entry of $\boldsymbol{\beta}$, fill in the following. Use significance level $\alpha=0.05$.
 
-:::
-  
-### (d) [3]
+$$
+\mathrm{SE}(\hat{\beta}_1)=\underline{\hspace{2cm}},
+\qquad t=\underline{\hspace{2cm}},
+$$
+
+and choose the decision:
+
+A. Reject $H_0$\
+B. Fail to reject $H_0$
+
+### (d) \[3\]
 
 Which of the following is the 95% confidence interval for $\beta_1$?
-  
-- [ ] **A.** $(0.8329,\;2.1671)$
-  
-- [ ] **B.** $(1.1838,\;1.8162)$
-  
-- [ ] **C.** $(-0.6671,\;0.6671)$
-  
-- [ ] **D.** $(0,\;3.0000)$
-  
-::: {.solution .content-visible when-meta="show-solutions"}
 
-**Solution:** A
+A. $(0.8329,\;2.1671)$\
+B. $(1.1838,\;1.8162)$\
+C. $(-0.6671,\;0.6671)$\
+D. $(0,\;3.0000)$
+
+## Answer Summary
+
+Use the format below to present your answers. For items with multiple responses, list them from left to right. No explanations or derivations are required.
+
+::: {tbl-colwidths="[14,76,10]"}
+
+  Part        Your answer                                                                            Points
+  ----------- -------------------------------------------------------------------------------------- --------
+  1(a)        `___`                                                                                  2
+  1(b)        `___`                                                                                  2
+  1(c)        `___`                                                                                  2
+  2(a)        `___`                                                                                  2
+  2(b)        `___`                                                                                  2
+  2(c)        \(i\) `___`; (ii) `___`; (iii) `___`; (iv) `___`                                       4
+  3(a)        \(i\) `___`; (ii) `___`; (iii) `___`; (iv) `___`                                       4
+  3(b)        `___`                                                                                  2
+  3(c)        `___`                                                                                  2
+  4(a)        `___`                                                                                  2
+  4(b)        `___`                                                                                  2
+  4(c)        \(i\) `___`; (ii) `___`                                                                2
+  5(a)        Distribution of $\hat{\boldsymbol{\beta}}$: `___`; of $\mathrm{SSE}/\sigma^2$: `___`   3
+  5(b)        $\hat{\sigma}^2=$ `___`                                                                2
+  5(c)        SE: `___`; $t$: `___`; decision letter: `___`                                          4
+  5(d)        `___`                                                                                  3
+  **Total**                                                                                          **40**
 
 :::
-  
