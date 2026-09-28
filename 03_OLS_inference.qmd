@@ -1880,6 +1880,8 @@ F_{r,\;n-p}.
 }
 $$
 
+For the distribution background, see @sec-ols-side-fact; the full derivations are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*.
+
 [**Relationship Between $t$ and $F$**]{#relationship-between-t-and-f}
 
 When only one restriction is being tested, $r=1$. In this case,
@@ -2686,89 +2688,14 @@ regression models.
 
 :::
 
----
+## Side Fact {#sec-ols-side-fact}
 
-Side Fact: Distribution Results Used in This Chapter
+These three reference distributions are built from normal variables:
 
-::: {.callout-theorem title="Useful Distribution Facts"}
+- **Chi-square** measures squared variation: if $Z_1,\ldots,Z_r$ are independent $N(0,1)$ variables, then $U=\sum_{j=1}^r Z_j^2\sim\chi^2_r$.
+- **Student's $t$** standardizes a normal variable by an estimated standard deviation: if $Z\sim N(0,1)$ and $V\sim\chi^2_\nu$ are independent, then $T=Z/\sqrt{V/\nu}\sim t_\nu$.
+- **$F$** compares two independent variance quantities: if $U\sim\chi^2_r$ and $V\sim\chi^2_\nu$ are independent, then $F=(U/r)/(V/\nu)\sim F_{r,\nu}$.
 
-If
+For the general linear hypothesis, $r$ is the number of independent restrictions and $\nu=n-p$ is the residual degrees of freedom. The normal model gives the required independence between the numerator quadratic form and the residual sum of squares.
 
-$$
-\mathbf{Z}
-\sim
-N_n
-\left(
-\mathbf{0},
-\mathbf{I}_n
-\right)
-$$
-
-and $\mathbf{A}$ is symmetric and idempotent with $\operatorname{rank}(\mathbf{A}) = r$, then
-
-$$
-\boxed{
-\mathbf{Z}^\top
-\mathbf{A}
-\mathbf{Z}
-\sim
-\chi^2_r.
-}
-$$
-
-If
-
-$$
-Z
-\sim
-N(0,1),
-\qquad
-U
-\sim
-\chi^2_\nu,
-$$
-
-and $Z$ and $U$ are independent, then
-
-$$
-\boxed{
-\frac{
-Z
-}{
-\sqrt{U/\nu}
-}
-\sim
-t_\nu.
-}
-$$
-
-If
-
-$$
-U_1
-\sim
-\chi^2_r,
-\qquad
-U_2
-\sim
-\chi^2_\nu,
-$$
-
-and $U_1$ and $U_2$ are independent, then
-
-$$
-\boxed{
-\frac{
-U_1/r
-}{
-U_2/\nu
-}
-\sim
-F_{r,\nu}.
-}
-$$
-
-These results provide the distributional foundation for regression
-inference.
-
-:::
+The full explanations, density derivations, independence proof, regression applications, and reference books are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*. [Download the appendix PDF](handouts/STAT8561_Appendix_H_Basic_Mathematical_Statistics.pdf).

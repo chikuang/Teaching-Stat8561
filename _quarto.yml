@@ -1,5 +1,7 @@
 project:
   type: book
+  resources:
+    - handouts/*.pdf
 
 book:
   title: "STAT8561 - Linear Statistical Analysis I"
@@ -36,6 +38,7 @@ book:
     - App_E-glm-theory.qmd
     - App_F-quantile-regression.qmd
     - App_G-mixed-effects.qmd
+    - App_H-basic-mathematical-statistics.qmd
 
   navbar:
     right:
