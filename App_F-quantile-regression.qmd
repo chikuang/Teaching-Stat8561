@@ -1,6 +1,6 @@
-# Quantile Regression (Optional) {#sec-quantile-regression .unnumbered}
+# Quantile Regression {#sec-quantile-regression .unnumbered}
 
-::: {.callout-note title="Optional self-study topic"}
+::: {.callout-note title="Self-study topic"}
 
 This reading extends the regression framework to conditional quantiles. It is supplementary to the main lecture sequence. Read [Chapter 2 — Least Squares Estimation](02_LSE.qmd), [Chapter 5 — Multiple Regression and Categorical Predictors](05.qmd), and [Chapter 8 — Diagnostics and Model Adequacy](08.qmd) first: least squares, coefficient interpretation, and diagnostics are the useful prerequisites. The R examples use the `quantreg` package; install it once with `install.packages("quantreg")` if needed.
 
@@ -143,9 +143,9 @@ If one slope is significant at $\tau=0.1$ and another is not significant at $\ta
 
 **Evaluate the stated target.** For held-out data, compare candidate predictions at the same $\tau$ using mean check loss. A coverage diagnostic compares the fraction of responses below the predicted quantile with $\tau$, including checks across meaningful predictor ranges. Good overall coverage can hide poor conditional coverage. Use splits that match future prediction, as in [Chapter 10 — Model Assessment and Prediction](10.qmd).
 
-## Optional application and self-study {.unnumbered}
+## Application and self-study {.unnumbered}
 
-::: {.callout-note title="Optional application: household expenditure"}
+::: {.callout-note title="Application: household expenditure"}
 
 The `engel` dataset bundled with `quantreg` contains income and food expenditure. Use `data("engel", package = "quantreg")`, plot the variables, and fit the 0.1, 0.5, and 0.9 conditional quantiles of `foodexp` given `income`. Explain how a household-expenditure quantile differs from mean expenditure. Treat the fitted relationships as descriptive associations, and avoid extrapolating beyond the observed incomes.
 
