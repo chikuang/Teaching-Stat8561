@@ -1,12 +1,12 @@
-# Mixed-Effects Models (Optional) {#sec-mixed-effects}
+# Mixed-Effects Models (Optional) {#sec-mixed-effects .unnumbered}
 
-::: {.callout-note title="Optional self-study appendix"}
+::: {.callout-note title="Optional self-study topic"}
 
-This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. Chapters 1, 3, and 7 supply the useful prerequisites: covariance, inference, and the experimental unit. The R examples use `lme4`; install it once with `install.packages("lme4")` if needed. The covariance connection to GLS is developed here, so the GLS appendix is not a prerequisite.
+This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd), [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), and [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) supply the useful prerequisites: covariance, inference, and the experimental unit. The R examples use `lme4`; install it once with `install.packages("lme4")` if needed. The covariance connection to GLS is developed here, so the [Generalized Least Squares and Correlated Errors topic](App_D-gls.qmd) is not a prerequisite.
 
 :::
 
-## Why group membership changes the analysis
+## Why group membership changes the analysis {.unnumbered}
 
 Measurements from the same person, classroom, clinic, or production batch often share influences. Treating all rows as independent can give misleading standard errors. Repeated measurements provide information about within-unit change, but they do not create additional independently sampled or randomized units.
 
@@ -14,7 +14,7 @@ A linear mixed-effects model combines shared regression coefficients with group-
 
 ::: {#def-random-intercept}
 
-## A Random-Intercept Model
+## A Random-Intercept Model {.unnumbered}
 
 For observation $i$ in group $j$, let
 
@@ -56,7 +56,7 @@ The basic model assumes independent groups and independent residual errors condi
 
 :::
 
-## Partial pooling and shrinkage
+## Partial pooling and shrinkage {.unnumbered}
 
 Three possible analyses of group means illustrate what the random-effects assumption adds:
 
@@ -68,7 +68,7 @@ Three possible analyses of group means illustrate what the random-effects assump
 
 ::: {#prp-random-intercept-shrinkage}
 
-## Shrinkage in the Intercept-Only Model
+## Shrinkage in the Intercept-Only Model {.unnumbered}
 
 For $Y_{ij}=\mu+b_j+\varepsilon_{ij}$ under the Gaussian assumptions above, suppose $\mu$, $\tau^2>0$, and $\sigma^2>0$ are known. If group $j$ has $n_j$ observations, then
 
@@ -128,7 +128,7 @@ legend("top", legend = c("Separate means", "Partial pooling"),
 
 **What shrinkage does not establish.** It is not evidence that a small group's true mean equals the common mean. It reflects uncertainty and the assumed distribution of group effects. Point predictions of group deviations are also not confidence intervals or a justified ranking of all groups.
 
-## Optional application: repeated measurements and random slopes
+## Optional application: repeated measurements and random slopes {.unnumbered}
 
 ::: {.callout-note title="Optional application: reaction times during sleep restriction"}
 
@@ -159,7 +159,7 @@ lme4::VarCorr(fit_sleep)
 lme4::isSingular(fit_sleep)
 ```
 
-In `(day | Subject)`, the random intercept is included along with the random slope, and their covariance is estimated. This is a model for continuous Gaussian responses. Binary or count outcomes with random effects lead to **generalized linear mixed models**, which add a link and response family; they require further study beyond this appendix.
+In `(day | Subject)`, the random intercept is included along with the random slope, and their covariance is estimated. This is a model for continuous Gaussian responses. Binary or count outcomes with random effects lead to **generalized linear mixed models**, which add a link and response family; they require further study beyond this topic.
 
 ```{r}
 #| label: fig-mixed-subject-trends
@@ -188,11 +188,11 @@ par(op)
 
 **Prediction target.** For a previously observed subject, predictions can use that subject's estimated random effects. For a new subject with no response data yet, those deviations are unknown; setting them to zero gives the population mean in this Gaussian identity-link model. A prediction interval for the new subject must still include between-subject and residual variation, together with parameter uncertainty. A fixed-effect line alone is not such an interval. With a nonlinear GLMM link, setting random effects to zero generally does not equal averaging the response over their distribution.
 
-## Inference, model checks, and further reading
+## Inference, model checks, and further reading {.unnumbered}
 
 **ML and REML.** Maximum likelihood estimates regression and covariance parameters through the marginal model. Restricted maximum likelihood (REML) accounts for the estimation of fixed effects when fitting covariance parameters. When comparing different fixed-effect structures by likelihood, use ML fits on the same observations and keep the specified random-effects structure comparable; the REML criterion is not directly comparable across different fixed-effect designs.
 
-The following comparison asks whether the average linear trend is zero while allowing the same subject-specific random intercept and slope structure in both models. Its likelihood-ratio reference is asymptotic, not Chapter 4's exact F distribution.
+The following comparison asks whether the average linear trend is zero while allowing the same subject-specific random intercept and slope structure in both models. Its likelihood-ratio reference is asymptotic, not the exact F distribution from [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd).
 
 ```{r}
 fit_sleep_ml <- update(fit_sleep, REML = FALSE)

@@ -1,6 +1,6 @@
 # Transformations and Weighted Least Squares {#sec-remedies}
 
-In this chapter, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from the preceding chapter, we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
+In this chapter, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from [Chapter 8 — Diagnostics and Model Adequacy](08.qmd), we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
 
 **Learning Objectives**
 

@@ -1,12 +1,12 @@
-# GLM Likelihood and Computation (Optional) {#sec-glm-theory}
+# GLM Likelihood and Computation (Optional) {#sec-glm-theory .unnumbered}
 
-::: {.callout-note title="Optional appendix"}
+::: {.callout-note title="Optional topic"}
 
-The main GLM chapter emphasizes response distributions, links, interpretation, and practical model checks. This appendix connects those ideas to exponential-family likelihoods and iteratively reweighted least squares. The general regularity theory is outside the core syllabus.
+The main GLM chapter emphasizes response distributions, links, interpretation, and practical model checks. This topic connects those ideas to exponential-family likelihoods and iteratively reweighted least squares. The general regularity theory is outside the core syllabus.
 
 :::
 
-## Exponential-family structure
+## Exponential-family structure {.unnumbered}
 
 For independent observations conditional on the predictors, a standard exponential-dispersion-family representation is
 
@@ -24,7 +24,7 @@ Then $\mu_i=b'(\theta_i)$ and $\operatorname{Var}(Y_i\mid x_i)=a_i(\phi)b''(\the
 
 For grouped binomial observations, the trial count must be included; the mean and variance for a count differ from those for a proportion.
 
-## Why weighted least squares reappears
+## Why weighted least squares reappears {.unnumbered}
 
 At a current fit, let $\eta_i=x_i^\top\beta+o_i$, where $o_i$ is a known offset, and define the working response and weights
 
@@ -47,7 +47,7 @@ For Bernoulli logistic regression, $w_i=\pi_i(1-\pi_i)$; for Poisson regression 
 
 R's `glm.fit()` uses iteratively reweighted least squares; its working weights should not be confused with the user-supplied prior weights. See the [R glm documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/glm.html).
 
-## Likelihood-based inference
+## Likelihood-based inference {.unnumbered}
 
 A local quadratic approximation to the log likelihood gives an approximate covariance based on Fisher information. Under suitable regularity conditions, this yields asymptotic normal inference for estimable coefficients. For nested models and an interior null parameter, twice the maximized log-likelihood difference has an asymptotic chi-square reference distribution with degrees of freedom equal to the number of independent restrictions.
 

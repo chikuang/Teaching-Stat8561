@@ -1,10 +1,10 @@
-# Generalized Least Squares and Correlated Errors (Optional) {#sec-gls-optional}
+# Generalized Least Squares and Correlated Errors (Optional) {#sec-gls-optional .unnumbered}
 
-In this optional appendix, we study what happens when the error terms in a linear model are no longer independent with common variance. This leads to generalized least squares, a natural extension of ordinary least squares that accounts for nonidentity covariance structure. The goal is to help students understand how the linear model changes when observations are correlated or have unequal precision in a more general matrix form.
+In this optional topic, we study what happens when the error terms in a linear model are no longer independent with common variance. This leads to generalized least squares, a natural extension of ordinary least squares that accounts for nonidentity covariance structure. The goal is to help students understand how the linear model changes when observations are correlated or have unequal precision in a more general matrix form.
 
-::: {.callout-note title="Optional appendix: GLS is different from GLM"}
+::: {.callout-note title="Optional topic: GLS is different from GLM"}
 
-GLS retains the mean model $\mathbb{E}(Y)=X\beta$ and changes the error covariance. A generalized linear model instead specifies a response family and a link for its conditional mean. This appendix is supplementary to the main course.
+GLS retains the mean model $\mathbb{E}(Y)=X\beta$ and changes the error covariance. A generalized linear model instead specifies a response family and a link for its conditional mean. This topic is supplementary to the main course.
 
 :::
 
@@ -85,7 +85,7 @@ $$
 
 Now we allow a more general covariance structure.
 
-## A More General Covariance Model
+## A More General Covariance Model {.unnumbered}
 
 Suppose instead that
 
@@ -113,7 +113,7 @@ The effect of correlation depends on the quantity being estimated. For equal mar
 
 Thus the covariance structure affects how much information each part of the data contributes. Ordinary least squares ignores this structure. Generalized least squares incorporates it directly.
 
-## The Generalized Least Squares Criterion
+## The Generalized Least Squares Criterion {.unnumbered}
 
 In generalized least squares, we minimize the quadratic form
 
@@ -183,9 +183,9 @@ $$
 \mathbf{V}^{-1} = \mathrm{diag}(1/v_1,\dots,1/v_n).
 $$
 
-This is the weighted least squares setting from the preceding chapter, with weights proportional to inverse variances. So WLS is also a special case of GLS.
+This is the weighted least squares setting from [Chapter 9 — Transformations and Weighted Least Squares](09.qmd), with weights proportional to inverse variances. So WLS is also a special case of GLS.
 
-## The Transformed-Model View
+## The Transformed-Model View {.unnumbered}
 
 A very important way to understand GLS is through a transformation. Because $\mathbf{V}$ is positive definite, there exists a matrix $\mathbf{A}$ such that
 
@@ -306,7 +306,7 @@ The basic idea of feasible GLS is:
 
 This is practical, but it introduces an extra modelling step and relies on the covariance model being approximately correct.
 
-## Examples of Covariance Structures
+## Examples of Covariance Structures {.unnumbered}
 
 Several structured covariance matrices appear often in applications.
 
@@ -432,7 +432,7 @@ legend("topleft",
        bty = "n")
 ```
 
-## R Demonstration With a Hand-Built GLS Computation
+## R Demonstration With a Hand-Built GLS Computation {.unnumbered}
 
 **Construct a covariance matrix and compute GLS directly**
 
@@ -522,7 +522,7 @@ A sensible workflow is:
 3. What is the conceptual benefit of the transformed-model view of GLS?
 4. When might robust standard errors be preferred to specifying a full covariance model?
 
-## Practice Problems
+## Practice Problems {.unnumbered}
 
 **Conceptual**
 

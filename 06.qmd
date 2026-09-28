@@ -1,6 +1,6 @@
 # Contrasts and Estimable Comparisons {#sec-contrasts}
 
-A scientific question often concerns a difference between means rather than one coefficient printed by software. This chapter uses the linear-combination inference from @sec-ols-inference to express those questions. The next chapter connects these comparisons to experimental designs.
+A scientific question often concerns a difference between means rather than one coefficient printed by software. This chapter uses the linear-combination inference from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) to express those questions. [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) connects these comparisons to experimental designs.
 
 **Learning objectives.** Express a comparison of group means as a linear function of regression coefficients, obtain its estimate and interval, and distinguish a meaningful comparison from a coding-dependent coefficient.
 
@@ -38,7 +38,7 @@ $$
 \sqrt{\mathbf{a}^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{a}}.
 $$
 
-A confidence interval is $\hat\theta\pm t_{1-\alpha/2,n-p}\operatorname{SE}(\hat\theta)$. This is the same procedure as in Chapter 3, applied to a different target. Several independent restrictions can be collected into $C\beta=d$, with $\operatorname{rank}(C)=r$, and tested jointly using the general F test.
+A confidence interval is $\hat\theta\pm t_{1-\alpha/2,n-p}\operatorname{SE}(\hat\theta)$. This is the same procedure as in [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), applied to a different target. Several independent restrictions can be collected into $C\beta=d$, with $\operatorname{rank}(C)=r$, and tested jointly using the general F test.
 
 **Interpretation.** Report the contrast estimate in the units of the response, its interval, and which population means it compares. Equality of two slopes is only a meaningful scientific question when their units and scales make that comparison defensible.
 

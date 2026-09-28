@@ -1,10 +1,10 @@
-# Basic Mathematical Statistics {#sec-basic-mathematical-statistics}
+# Basic Mathematical Statistics {#sec-basic-mathematical-statistics .unnumbered}
 
-The chi-square, Student's $t$, and $F$ distributions all arise from normal random variables. This appendix explains the constructions, proves the distributional results, and connects them to the general linear hypothesis in Chapter 3, Section 3.8.
+The chi-square, Student's $t$, and $F$ distributions all arise from normal random variables. This appendix explains the constructions, proves the distributional results, and connects them to the general linear hypothesis in [Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses](03_OLS_inference.qmd#general-linear-hypotheses).
 
 The logical order is **normal variables $\longrightarrow$ sums of squares $\longrightarrow$ standardized ratios**. Degrees of freedom count independent normal components. Independence is essential when forming the ratios.
 
-## Chi-square: a sum of squared standard normals {#sec-bms-chi-square}
+## Chi-square: a sum of squared standard normals {#sec-bms-chi-square .unnumbered}
 
 **Construction and interpretation.** If $Z_1,\ldots,Z_r$ are independent $N(0,1)$ variables, then
 
@@ -57,7 +57,7 @@ $$
 
 In particular, $U/r$ has mean $1$ and variance $2/r$: it estimates a unit variance more stably as the degrees of freedom increase.
 
-## Why normal quadratic forms are chi-square {#sec-bms-quadratic-forms}
+## Why normal quadratic forms are chi-square {#sec-bms-quadratic-forms .unnumbered}
 
 **Result.** Let $\mathbf Z\sim N_n(\mathbf0,\mathbf I_n)$, and let $\mathbf A$ be symmetric and idempotent, with rank $r\geq1$. Then
 
@@ -117,7 +117,7 @@ $$
 
 A jointly normal vector with zero cross-covariance has a characteristic function that factors into the two marginal characteristic functions. Thus these vectors are independent, even though the residual covariance is singular. Since $\mathrm{SSE}=\mathbf e^\top\mathbf e$, $\hat{\boldsymbol\beta}$ and $\mathrm{SSE}$ are independent. Zero covariance alone would not suffice without joint normality.
 
-## Student's t: estimating an unknown scale {#sec-bms-student-t}
+## Student's t: estimating an unknown scale {#sec-bms-student-t .unnumbered}
 
 **Construction and interpretation.** Let $Z\sim N(0,1)$ and $U\sim\chi^2_\nu$ be independent, with $\nu>0$. Then
 
@@ -175,7 +175,7 @@ $$
 
 Under $H_0:\mathbf a^\top\boldsymbol\beta=d$, replace the true contrast in the numerator by $d$. Choosing a coordinate vector for $\mathbf a$ gives the usual coefficient $t$ test.
 
-## F: comparing two independent sums of squares {#sec-bms-f}
+## F: comparing two independent sums of squares {#sec-bms-f .unnumbered}
 
 **Construction and interpretation.** If $U_1\sim\chi^2_r$ and $U_2\sim\chi^2_\nu$ are independent, with $r,\nu>0$, then
 
@@ -222,7 +222,7 @@ $$
 
 **Why the normalization matters.** The raw ratio $U_1/U_2$ equals $(r/\nu)F$, and hence is not generally $F_{r,\nu}$. Reversing the numerator and denominator gives $1/F\sim F_{\nu,r}$.
 
-## Proof of the general linear hypothesis F test {#sec-bms-general-linear-hypothesis}
+## Proof of the general linear hypothesis F test {#sec-bms-general-linear-hypothesis .unnumbered}
 
 Consider $H_0:\mathbf C\boldsymbol\beta=\mathbf d$, where $\mathbf C$ is $r\times p$ with row rank $r$, $1\leq r\leq p$, and $\mathbf d\in\mathbb R^r$. Keep the normal-model assumptions from the [normal quadratic-form section](#sec-bms-quadratic-forms), and write
 
@@ -258,7 +258,7 @@ $$
 \sim F_{r,n-p}\quad\text{under }H_0.}
 $$
 
-Substituting $\mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d$ and $\mathbf D=\mathbf C(\mathbf X^\top\mathbf X)^{-1}\mathbf C^\top$ recovers the statistic in Chapter 3, Section 3.8. Thus $r$ counts the independent restrictions and $n-p$ counts residual degrees of freedom. Large values indicate a departure from $H_0$; a level-$\alpha$ test rejects when $F>F_{1-\alpha;r,n-p}$, where the right-hand side is an upper quantile. The central $F$ law above is a null distribution; under an alternative the numerator is generally noncentral chi-square.
+Substituting $\mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d$ and $\mathbf D=\mathbf C(\mathbf X^\top\mathbf X)^{-1}\mathbf C^\top$ recovers the statistic in [Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses](03_OLS_inference.qmd#general-linear-hypotheses). Thus $r$ counts the independent restrictions and $n-p$ counts residual degrees of freedom. Large values indicate a departure from $H_0$; a level-$\alpha$ test rejects when $F>F_{1-\alpha;r,n-p}$, where the right-hand side is an upper quantile. The central $F$ law above is a null distribution; under an alternative the numerator is generally noncentral chi-square.
 
 **Why $T^2=F$ for one restriction.** When $r=1$ and $\mathbf C=\mathbf a^\top$,
 
@@ -269,7 +269,7 @@ $$
 
 Equivalently, squaring the defining ratio for $T$ gives $T^2=(Z^2/1)/(U/\nu)$, and $Z^2\sim\chi^2_1$ independently of $U$. Hence $T^2\sim F_{1,\nu}$. The upper-tail $F$ test matches the **two-sided** $t$ test, not a one-sided test.
 
-## A compact regression example and reading guide {#sec-bms-example}
+## A compact regression example and reading guide {#sec-bms-example .unnumbered}
 
 **Example.** Suppose the normal linear model has $n=20$ observations and $p=3$ coefficients, including an intercept. Then $\nu=17$. If $\mathrm{SSE}=34$, the observed variance estimate is $\hat\sigma^2=34/17=2$.
 
@@ -294,6 +294,6 @@ The null reference distributions are $t_{17}$ and $F_{1,17}$, respectively.
 
 ::: {.content-visible when-format="html"}
 
-The derivations here are written out for these notes; the books provide further development and exercises. This appendix supports the [STAT 8561 Chapter 3 notes](https://chikuang.github.io/teaching/2026F_stat8561/03_OLS_inference.html#general-linear-hypotheses).
+The derivations here are written out for these notes; the books provide further development and exercises. This appendix supports the [Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses](03_OLS_inference.qmd#general-linear-hypotheses).
 
 :::

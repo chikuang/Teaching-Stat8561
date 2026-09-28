@@ -1,6 +1,6 @@
 # Distribution Theory of OLS and Inference {#sec-ols-inference}
 
-In the previous chapter, we studied least squares primarily from an
+In [Chapter 2 — Least Squares Estimation](02_LSE.qmd), we studied least squares primarily from an
 **algebraic and geometric** point of view.
 
 We obtained
@@ -94,7 +94,7 @@ Recommended reading for this chapter:
 
 ::: {.callout-note title="Recap from Least Squares"}
 
-From @sec-lse, when $\mathbf{X}$ has full column rank,
+From [Chapter 2 — Least Squares Estimation](02_LSE.qmd), when $\mathbf{X}$ has full column rank,
 
 $$
 \hat{\boldsymbol{\beta}}
@@ -789,7 +789,7 @@ $t$ distribution.
 
 ## Residual Sum of Squares and Estimation of $\sigma^2$
 
-Recall from @sec-lse that
+Recall from [Chapter 2 — Least Squares Estimation](02_LSE.qmd) that
 
 $$
 \mathbf{e}
@@ -1218,8 +1218,7 @@ $$
 }
 $$
 
-This result is closely connected to the projection geometry from the
-previous chapter.
+This result is closely connected to the projection geometry from [Chapter 2 — Least Squares Estimation](02_LSE.qmd).
 
 
 ### Why Does Independence Occur?
@@ -1254,7 +1253,7 @@ orthogonal parts of the response vector.
 
 ::: {.callout-note title="Geometry Becomes Probability"}
 
-In the previous chapter, we learned that
+In [Chapter 2 — Least Squares Estimation](02_LSE.qmd), we learned that
 
 $$
 \hat{\mathbf{Y}}
@@ -1880,7 +1879,7 @@ F_{r,\;n-p}.
 }
 $$
 
-For the distribution background, see @sec-ols-side-fact; the full derivations are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*.
+For the distribution background, see @sec-ols-side-fact; the full derivations are in the [Basic Mathematical Statistics appendix](App_H-basic-mathematical-statistics.qmd).
 
 [**Relationship Between $t$ and $F$**]{#relationship-between-t-and-f}
 
@@ -1892,7 +1891,7 @@ F=T^2.
 }
 $$
 
-Thus, the familiar $t$ test for one coefficient is a special case of the general $F$ test. We will study $F$ tests more thoroughly in the next chapter when we develop the ANOVA decomposition and compare nested regression models.
+Thus, the familiar $t$ test for one coefficient is a special case of the general $F$ test. We will study $F$ tests more thoroughly in [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd) when we develop the ANOVA decomposition and compare nested regression models.
 
 ::: {#exr-t-vs-f}
 
@@ -2102,7 +2101,7 @@ The first question concerns the **mean response**, so we use a confidence interv
 
 ## Worked Example
 
-Consider again the simple regression dataset from @sec-lse:
+Consider again the simple regression dataset from [Chapter 2 — Least Squares Estimation](02_LSE.qmd):
 
 $$
 \begin{array}{c|cccc}
@@ -2134,7 +2133,7 @@ $$
 \end{pmatrix}.
 $$
 
-From the previous chapter,
+From [Chapter 2 — Least Squares Estimation](02_LSE.qmd),
 
 $$
 \hat{\boldsymbol{\beta}}
@@ -2520,7 +2519,7 @@ The output also includes:
 - an overall $F$ test.
 
 We will study $R^2$, the ANOVA decomposition, and the overall $F$ test
-more carefully in the next chapter.
+more carefully in [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd).
 
 ::: {#exr-read-r-output}
 
@@ -2682,7 +2681,7 @@ The independence of $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ allows us to r
 - confidence intervals for the mean response;
 - prediction intervals for future observations.
 
-In the next chapter, we will use these results to develop the ANOVA
+In [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd), we will use these results to develop the ANOVA
 decomposition, the overall $F$ test, and comparisons of nested
 regression models.
 
@@ -2702,4 +2701,4 @@ These three reference distributions are built from normal variables:
 
 For the general linear hypothesis, $r$ is the number of independent restrictions and $\nu=n-p$ is the residual degrees of freedom. The normal model gives the required independence between the numerator quadratic form and the residual sum of squares.
 
-The full explanations, density derivations, independence proof, regression applications, and reference books are in @sec-basic-mathematical-statistics, *Basic Mathematical Statistics*.
+The full explanations, density derivations, independence proof, regression applications, and reference books are in the [Basic Mathematical Statistics appendix](App_H-basic-mathematical-statistics.qmd).

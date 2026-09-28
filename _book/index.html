@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Chi-Kuang Yeh">
-<meta name="dcterms.date" content="2026-09-22">
+<meta name="dcterms.date" content="2026-09-28">
 
 <title>STAT8561 - Linear Statistical Analysis I</title>
 <style>
@@ -25,7 +25,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
   vertical-align: middle;
 }
 /* CSS for citations */
@@ -119,14 +119,14 @@ div.csl-indent {
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/chikuang/Teaching-Stat8561"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
+</i>
 <span class="menu-text"></span></a>
-  </li>  
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="././STAT8561---Linear-Statistical-Analysis-I.pdf"> <i class="bi bi-file-pdf" role="img" aria-label="Download PDF">
-</i> 
+</i>
 <span class="menu-text"></span></a>
-  </li>  
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -139,7 +139,7 @@ div.csl-indent {
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         </a>
     </div>
   </nav>
@@ -148,164 +148,181 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="sidebar-menu-container"> 
+    <div class="sidebar-menu-container">
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./01_matrix_representation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Matrix Representation and Notation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./02_LSE.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Least Squares Estimation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./03_OLS_inference.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Distribution Theory of OLS and Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Model Comparison, Partial F Tests, and ANOVA</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Multiple Regression and Categorical Predictors</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./06.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Contrasts and Estimable Comparisons</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./07.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Experimental Design Models: ANOVA and ANCOVA</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./08.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Diagnostics and Model Adequacy</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Transformations and Weighted Least Squares</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./10.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Model Assessment and Prediction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./11.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Generalized Linear Models</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Optional Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a>
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_B-linear-model-extensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear-Model Extensions (Optional)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_C-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automatic Model Selection (Optional)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_D-gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generalized Least Squares and Correlated Errors (Optional)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_E-glm-theory.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Likelihood and Computation (Optional)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_F-quantile-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quantile Regression (Optional)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container">
+  <a href="./App_G-mixed-effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed-Effects Models (Optional)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Assessments</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+      <div class="sidebar-item-container">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+          </a>
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Assignment1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Assignment 1</span></a>
+  <div class="sidebar-item-container">
+  <a href="./App_A-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Matrix Algebra Review</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Assignment2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Assignment 2</span></a>
+  <div class="sidebar-item-container">
+  <a href="./App_H-basic-mathematical-statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic Mathematical Statistics</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+      <div class="sidebar-item-container">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Assessments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+          </a>
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_A-matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Matrix Algebra Review</span></span></a>
+  <div class="sidebar-item-container">
+  <a href="./Assignment1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 1</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_B-linear-model-extensions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Linear-Model Extensions (Optional)</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_C-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Automatic Model Selection (Optional)</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_D-gls.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Generalized Least Squares and Correlated Errors (Optional)</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_E-glm-theory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">GLM Likelihood and Computation (Optional)</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_F-quantile-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Quantile Regression (Optional)</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./App_G-mixed-effects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">Mixed-Effects Models (Optional)</span></span></a>
+  <div class="sidebar-item-container">
+  <a href="./Assignment2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 2</span></a>
   </div>
 </li>
       </ul>
@@ -318,7 +335,7 @@ div.csl-indent {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
-   
+
   <ul>
   <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a>
   <ul class="collapse">
@@ -352,17 +369,17 @@ div.csl-indent {
              <p>Chi-Kuang Yeh </p>
           </div>
   </div>
-    
+
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 22, 2026</p>
+      <p class="date">September 28, 2026</p>
     </div>
   </div>
-  
-    
+
+
   </div>
-  
+
 
 
 </header>
@@ -371,7 +388,7 @@ div.csl-indent {
 <section id="preface" class="level1 unnumbered">
 <h1 class="unnumbered">Preface</h1>
 <p>The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.</p>
-<p>The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are marked optional in the appendices.</p>
+<p>The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are collected under <strong>Optional Topics</strong>.</p>
 <p><strong>Prerequisites</strong></p>
 <p>Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Statistics II.</p>
 <p><strong>Instructor</strong></p>
@@ -496,8 +513,8 @@ div.csl-indent {
 </tbody>
 </table>
 <!-- Future lecture coverage will be updated after class. -->
-<p><strong>Optional self-study readings</strong></p>
-<p>Students interested in extensions can read <a href="./App_F-quantile-regression.html">Quantile Regression</a> and <a href="./App_G-mixed-effects.html">Mixed-Effects Models</a>. These appendices include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.</p>
+<p><strong>Optional Topics</strong></p>
+<p>Students interested in extensions can read <a href="./App_F-quantile-regression.html">Quantile Regression</a> and <a href="./App_G-mixed-effects.html">Mixed-Effects Models</a>. These readings include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.</p>
 </section>
 <section id="recommended-textbooks" class="level2">
 <h2 class="anchored" data-anchor-id="recommended-textbooks">Recommended Textbooks</h2>
@@ -531,11 +548,11 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
 </main> <!-- /main -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    
+
     document
     .querySelectorAll('div.solution.proof[id^="sol-"]')
     .forEach(function (solution) {
-      
+
       // Get Quarto's automatically generated title,
       // e.g. "Solution 2.1"
       const proofTitle = solution.querySelector(".proof-title");
@@ -599,7 +616,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
+        if (clz.startsWith('code-annotation-')) {
           return true;
         }
       }
@@ -619,11 +636,11 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
+        tooltip = new bootstrap.Tooltip(button,
+          { trigger: "manual",
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();    
+        tooltip.show();
       }
       setTimeout(function() {
         if (tooltip) {
@@ -700,7 +717,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config); 
+      window.tippy(el, config);
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -775,7 +792,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined; 
+        let hash = undefined;
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -803,7 +820,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              } 
+              }
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -827,7 +844,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            } 
+            }
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -867,7 +884,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
+              // cook up a div (if necessary) and position it
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");

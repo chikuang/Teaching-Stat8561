@@ -358,7 +358,7 @@ Plan scientifically meaningful comparisons before inspecting the results when po
 - treatment versus control;
 - preplanned contrasts.
 
-These are again linear functions of model parameters. Use a stated comparison family: for example, Tukey intervals for all pairwise mean differences, or Holm-adjusted p-values for a specified family of tests. Planned comparisons also require multiplicity control when the inferential claim concerns a family. These comparisons use the contrast framework from the preceding chapter.
+These are again linear functions of model parameters. Use a stated comparison family: for example, Tukey intervals for all pairwise mean differences, or Holm-adjusted p-values for a specified family of tests. Planned comparisons also require multiplicity control when the inferential claim concerns a family. These comparisons use the contrast framework from [Chapter 6 — Contrasts and Estimable Comparisons](06.qmd).
 
 **Interpretation and Caution**
 

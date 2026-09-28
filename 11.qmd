@@ -110,7 +110,7 @@ legend("topleft", legend = names(cols), col = cols, lwd = 2, bty = "n")
 
 ::: {.callout-note title="Confidence for a probability is not prediction of an individual outcome"}
 
-These bands quantify uncertainty in the fitted conditional probability. An individual future outcome is still either zero or one. The Gaussian prediction-interval formula from Chapter 3 does not transfer directly to a Bernoulli outcome. The bands are pointwise, not simultaneous bands over the entire score range.
+These bands quantify uncertainty in the fitted conditional probability. An individual future outcome is still either zero or one. The Gaussian prediction-interval formula from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) does not transfer directly to a Bernoulli outcome. The bands are pointwise, not simultaneous bands over the entire score range.
 
 :::
 
@@ -247,5 +247,5 @@ For the likelihood representation, the role of WLS in fitting, and further theor
 1. Explain which GLM component changes when moving from Gaussian OLS to logistic regression, and which parts of the design matrix can remain the same.
 2. Convert an odds ratio of 1.5 into a new probability for baseline probabilities 0.10 and 0.60. Explain why the probability differences differ.
 3. Explain why exposure belongs in the Poisson example as an offset rather than an ordinary predictor with an estimated coefficient under the proportional-exposure model.
-4. State the null hypothesis tested by each R model comparison. Explain why the reference distribution differs from Chapter 4's F test.
+4. State the null hypothesis tested by each R model comparison. Explain why the reference distribution differs from the F test in [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd).
 5. Write a one-page analysis: define the observational unit, choose a response family/link, report a probability or rate comparison with uncertainty, and identify one model limitation. Separate uncertainty about a conditional mean from variation in a future observation.

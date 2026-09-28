@@ -2665,7 +2665,7 @@ We defined $\hat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^
 
 However, under the statistical model, $\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\varepsilon},$ the response $\mathbf{Y}$ is random. Therefore, $\hat{\boldsymbol{\beta}}$ is also a random vector.
 
-In next chapter, we will study quantities such as
+In [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), we will study quantities such as
 
 $$
 \mathbb{E}
@@ -2778,7 +2778,7 @@ $$
 
 is an orthogonal decomposition.
 
-In next chapter, we will treat
+In [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), we will treat
 $\hat{\boldsymbol{\beta}}$ as a random vector and study its expectation,
 variance, sampling distribution, and the foundations of statistical
 inference for linear models.

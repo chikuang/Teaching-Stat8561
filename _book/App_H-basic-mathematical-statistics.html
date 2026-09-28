@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Automatic Model Selection (Optional) – STAT8561 - Linear Statistical Analysis I</title>
+<title>Basic Mathematical Statistics – STAT8561 - Linear Statistical Analysis I</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -71,8 +36,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./App_D-gls.html" rel="next">
-<link href="./App_B-linear-model-extensions.html" rel="prev">
+<link href="./Assignment1.html" rel="next">
+<link href="./App_A-matrix.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -182,7 +147,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./App_B-linear-model-extensions.html">Optional Topics</a></li><li class="breadcrumb-item"><a href="./App_C-model-selection.html">Automatic Model Selection (Optional)</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./App_A-matrix.html">Appendix</a></li><li class="breadcrumb-item"><a href="./App_H-basic-mathematical-statistics.html">Basic Mathematical Statistics</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         </a>
     </div>
@@ -289,7 +254,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container">
-  <a href="./App_C-model-selection.html" class="sidebar-item-text sidebar-link active">
+  <a href="./App_C-model-selection.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Automatic Model Selection (Optional)</span></a>
   </div>
 </li>
@@ -342,7 +307,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container">
-  <a href="./App_H-basic-mathematical-statistics.html" class="sidebar-item-text sidebar-link">
+  <a href="./App_H-basic-mathematical-statistics.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Basic Mathematical Statistics</span></a>
   </div>
 </li>
@@ -381,18 +346,21 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
 
   <ul>
-  <li><a href="#forward-selection" id="toc-forward-selection" class="nav-link active" data-scroll-target="#forward-selection">Forward Selection</a></li>
-  <li><a href="#additional-comparison-criteria" id="toc-additional-comparison-criteria" class="nav-link" data-scroll-target="#additional-comparison-criteria">Additional comparison criteria</a></li>
-  <li><a href="#an-executable-selection-example" id="toc-an-executable-selection-example" class="nav-link" data-scroll-target="#an-executable-selection-example">An executable selection example</a></li>
+  <li><a href="#sec-bms-chi-square" id="toc-sec-bms-chi-square" class="nav-link active" data-scroll-target="#sec-bms-chi-square">Chi-square: a sum of squared standard normals</a></li>
+  <li><a href="#sec-bms-quadratic-forms" id="toc-sec-bms-quadratic-forms" class="nav-link" data-scroll-target="#sec-bms-quadratic-forms">Why normal quadratic forms are chi-square</a></li>
+  <li><a href="#sec-bms-student-t" id="toc-sec-bms-student-t" class="nav-link" data-scroll-target="#sec-bms-student-t">Student’s t: estimating an unknown scale</a></li>
+  <li><a href="#sec-bms-f" id="toc-sec-bms-f" class="nav-link" data-scroll-target="#sec-bms-f">F: comparing two independent sums of squares</a></li>
+  <li><a href="#sec-bms-general-linear-hypothesis" id="toc-sec-bms-general-linear-hypothesis" class="nav-link" data-scroll-target="#sec-bms-general-linear-hypothesis">Proof of the general linear hypothesis F test</a></li>
+  <li><a href="#sec-bms-example" id="toc-sec-bms-example" class="nav-link" data-scroll-target="#sec-bms-example">A compact regression example and reading guide</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./App_B-linear-model-extensions.html">Optional Topics</a></li><li class="breadcrumb-item"><a href="./App_C-model-selection.html">Automatic Model Selection (Optional)</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./App_A-matrix.html">Appendix</a></li><li class="breadcrumb-item"><a href="./App_H-basic-mathematical-statistics.html">Basic Mathematical Statistics</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-selection-optional" class="quarto-section-identifier">Automatic Model Selection (Optional)</span></h1>
+<h1 class="title"><span id="sec-basic-mathematical-statistics" class="quarto-section-identifier">Basic Mathematical Statistics</span></h1>
 </div>
 
 
@@ -409,274 +377,223 @@ window.Quarto = {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled" title="Optional topic">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Optional topic
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The main course compares a small set of scientifically justified models and checks predictive performance. Automatic searches and additional selection criteria are supplementary. A search-selected model does not inherit the usual fixed-model interpretation of its p-values and confidence intervals.</p>
-</div>
-</div>
-<section id="forward-selection" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="forward-selection">Forward Selection</h2>
-<p>In <strong>forward selection</strong>, we begin with a small model, often the intercept-only model, and add predictors one at a time. At each step, we add the variable that gives the best improvement according to some criterion, such as:</p>
-<ul>
-<li>partial <span class="math inline">\(F\)</span> test;</li>
-<li>smallest <span class="math inline">\(p\)</span>-value;</li>
-<li>largest drop in AIC;</li>
-<li>largest increase in adjusted <span class="math inline">\(R^2\)</span>.</li>
-</ul>
-<p>This continues until no candidate addition meets the chosen rule. <strong>Backward Elimination</strong> In <strong>backward elimination</strong>, we begin with a larger model and remove predictors one at a time. At each step, we remove the least useful variable according to a chosen rule. This continues until all remaining variables satisfy the stopping criterion. Backward elimination requires that the initial model be estimable, and it may be sensitive to collinearity and hierarchical structure. <strong>Stepwise Selection</strong></p>
-<p><strong>Stepwise selection</strong> combines forward and backward ideas. A variable may enter at one stage and later be removed if its contribution becomes weak after other variables enter the model. This procedure is popular in software because it is automated, but it should be used cautiously. Automatic procedures can be unstable and may encourage overly mechanical modelling. <strong>Problems With Automatic Selection</strong></p>
-<p>Automatic variable selection can create several difficulties:</p>
-<ul>
-<li>it ignores model uncertainty;</li>
-<li>repeated searching inflates the chance of false discoveries;</li>
-<li>selected coefficients and <span class="math inline">\(p\)</span>-values may look more certain than they really are;</li>
-<li>different but similar datasets may lead to different selected models;</li>
-<li>scientific structure may be lost if the procedure is used blindly.</li>
-</ul>
-<p>So automated methods should be treated as exploratory tools, not as final arbiters of truth.</p>
+<p>The chi-square, Student’s <span class="math inline">\(t\)</span>, and <span class="math inline">\(F\)</span> distributions all arise from normal random variables. This appendix explains the constructions, proves the distributional results, and connects them to the general linear hypothesis in <a href="./03_OLS_inference.html#general-linear-hypotheses">Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses</a>.</p>
+<p>The logical order is <strong>normal variables <span class="math inline">\(\longrightarrow\)</span> sums of squares <span class="math inline">\(\longrightarrow\)</span> standardized ratios</strong>. Degrees of freedom count independent normal components. Independence is essential when forming the ratios.</p>
+<section id="sec-bms-chi-square" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-chi-square">Chi-square: a sum of squared standard normals</h2>
+<p><strong>Construction and interpretation.</strong> If <span class="math inline">\(Z_1,\ldots,Z_r\)</span> are independent <span class="math inline">\(N(0,1)\)</span> variables, then</p>
+<p><span class="math display">\[
+U=\sum_{j=1}^{r}Z_j^2\sim\chi^2_r.
+\]</span></p>
+<p>Each squared standardized component contributes one degree of freedom. Thus <span class="math inline">\(U\)</span> measures a total squared distance from zero. Its density is</p>
+<p><span class="math display">\[
+\boxed{f_U(u)=\frac{u^{r/2-1}e^{-u/2}}{2^{r/2}\Gamma(r/2)},\qquad u&gt;0.}
+\]</span></p>
+<p>This is a gamma density with shape <span class="math inline">\(r/2\)</span> and <strong>scale</strong> <span class="math inline">\(2\)</span>. Here <span class="math inline">\(\Gamma(a)=\int_0^\infty x^{a-1}e^{-x}\,dx\)</span> for <span class="math inline">\(a&gt;0\)</span>. For the sum-of-squares construction, <span class="math inline">\(r\)</span> is a positive integer; the density also defines <span class="math inline">\(\chi^2_r\)</span> for any real <span class="math inline">\(r&gt;0\)</span>.</p>
+<p><strong>Proof of the density via moment-generating functions.</strong> For <span class="math inline">\(s&lt;1/2\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb E(e^{sZ_j^2})
+&amp;=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+   \exp\!\left\{-\frac{1-2s}{2}z^2\right\}\,dz\\
+&amp;=(1-2s)^{-1/2}.
+\end{aligned}
+\]</span></p>
+<p>The substitution <span class="math inline">\(w=\sqrt{1-2s}\,z\)</span> gives the second equality. Independence therefore gives</p>
+<p><span class="math display">\[
+M_U(s)=\prod_{j=1}^{r}\mathbb E(e^{sZ_j^2})=(1-2s)^{-r/2}.
+\]</span></p>
+<p>To identify the law, integrate the displayed gamma density against <span class="math inline">\(e^{su}\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\int_0^\infty e^{su}\frac{u^{r/2-1}e^{-u/2}}{2^{r/2}\Gamma(r/2)}\,du
+&amp;=\frac{\Gamma(r/2)(1/2-s)^{-r/2}}{2^{r/2}\Gamma(r/2)}\\
+&amp;=(1-2s)^{-r/2}.
+\end{aligned}
+\]</span></p>
+<p>Moment-generating functions finite in a neighborhood of zero uniquely determine a probability law, so <span class="math inline">\(U\)</span> has the claimed density. Differentiating at zero gives</p>
+<p><span class="math display">\[
+\mathbb E(U)=r,\qquad \operatorname{Var}(U)=2r.
+\]</span></p>
+<p>In particular, <span class="math inline">\(U/r\)</span> has mean <span class="math inline">\(1\)</span> and variance <span class="math inline">\(2/r\)</span>: it estimates a unit variance more stably as the degrees of freedom increase.</p>
 </section>
-<section id="additional-comparison-criteria" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="additional-comparison-criteria">Additional comparison criteria</h2>
-<p><strong>Criteria for Comparing Models</strong></p>
-<p>Several criteria are commonly used in model comparison.</p>
-<p><strong>Adjusted R Squared</strong></p>
-<p>Adjusted <span class="math inline">\(R^2\)</span> is</p>
+<section id="sec-bms-quadratic-forms" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-quadratic-forms">Why normal quadratic forms are chi-square</h2>
+<p><strong>Result.</strong> Let <span class="math inline">\(\mathbf Z\sim N_n(\mathbf0,\mathbf I_n)\)</span>, and let <span class="math inline">\(\mathbf A\)</span> be symmetric and idempotent, with rank <span class="math inline">\(r\geq1\)</span>. Then</p>
 <p><span class="math display">\[
-R^2_{\mathrm{adj}}
-=
-1 - \frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+\boxed{\mathbf Z^\top\mathbf A\mathbf Z\sim\chi^2_r.}
 \]</span></p>
-<p>Unlike ordinary <span class="math inline">\(R^2\)</span>, adjusted <span class="math inline">\(R^2\)</span> can decrease when unnecessary predictors are added. It rewards fit but penalizes unnecessary complexity in a simple way.</p>
-<p><strong>AIC</strong></p>
-<p>The Akaike information criterion is typically written as</p>
+<p><strong>Proof.</strong> The spectral theorem gives an orthogonal matrix <span class="math inline">\(\mathbf Q\)</span> such that</p>
 <p><span class="math display">\[
-\mathrm{AIC} = -2\log L + 2k,
+\mathbf A=\mathbf Q\operatorname{diag}(\mathbf I_r,\mathbf0)\mathbf Q^\top.
 \]</span></p>
-<p>where <span class="math inline">\(L\)</span> is the fitted likelihood and <span class="math inline">\(k\)</span> is the number of estimated parameters. Smaller AIC indicates a better tradeoff between fit and complexity. AIC is often more prediction-oriented than strict parsimony-oriented.</p>
-<p><strong>BIC</strong></p>
-<p>The Bayesian information criterion is</p>
+<p>Indeed, idempotence implies <span class="math inline">\(\lambda^2=\lambda\)</span>, so every eigenvalue is <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>; exactly <span class="math inline">\(r\)</span> eigenvalues are <span class="math inline">\(1\)</span>. Set <span class="math inline">\(\mathbf W=\mathbf Q^\top\mathbf Z\)</span>. An orthogonal transformation preserves the standard multivariate normal law, because its mean is zero and its covariance is <span class="math inline">\(\mathbf Q^\top\mathbf Q=\mathbf I_n\)</span>. Hence the <span class="math inline">\(W_j\)</span> are independent <span class="math inline">\(N(0,1)\)</span> variables, and</p>
 <p><span class="math display">\[
-\mathrm{BIC} = -2\log L + k\log n.
+\mathbf Z^\top\mathbf A\mathbf Z
+=\mathbf W^\top\operatorname{diag}(\mathbf I_r,\mathbf0)\mathbf W
+=\sum_{j=1}^{r}W_j^2\sim\chi^2_r.
 \]</span></p>
-<p>Because the penalty term is stronger than that of AIC when <span class="math inline">\(n\)</span> is moderate or large, BIC tends to favor smaller models.</p>
-<p><strong>Mallows’ Cp</strong></p>
-<p>Another classical criterion is Mallows’ <span class="math inline">\(C_p\)</span>, which compares model bias and variance relative to a fuller model. It is less frequently emphasized in introductory software workflows today, but it remains conceptually important in regression theory.</p>
+<p>Geometrically, <span class="math inline">\(\mathbf A\)</span> projects onto an <span class="math inline">\(r\)</span>-dimensional subspace. The quadratic form is the squared length of the projected normal vector. If <span class="math inline">\(r=0\)</span>, it is identically zero rather than having a positive-degree chi-square density.</p>
+<p><strong>Application to residual variation.</strong> Throughout the regression applications, assume</p>
+<p><span class="math display">\[
+\mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon,
+\quad \boldsymbol\varepsilon\sim N_n(\mathbf0,\sigma^2\mathbf I_n),
+\quad \sigma^2&gt;0,\quad \operatorname{rank}(\mathbf X)=p&lt;n,
+\]</span></p>
+<p>with fixed <span class="math inline">\(\mathbf X\)</span>. Write</p>
+<p><span class="math display">\[
+\mathbf V=(\mathbf X^\top\mathbf X)^{-1},\quad
+\mathbf H=\mathbf X\mathbf V\mathbf X^\top,\quad
+\mathbf M=\mathbf I_n-\mathbf H,\quad \nu=n-p.
+\]</span></p>
+<p>Since <span class="math inline">\(\mathbf M\)</span> is symmetric and idempotent with rank <span class="math inline">\(\nu\)</span>, and <span class="math inline">\(\mathbf M\mathbf X=\mathbf0\)</span>,</p>
+<p><span class="math display">\[
+\frac{\mathrm{SSE}}{\sigma^2}
+=\left(\frac{\boldsymbol\varepsilon}{\sigma}\right)^\top
+\mathbf M\left(\frac{\boldsymbol\varepsilon}{\sigma}\right)
+\sim\chi^2_\nu.
+\]</span></p>
+<p>Consequently, <span class="math inline">\(\hat\sigma^2=\mathrm{SSE}/\nu\)</span> is unbiased for <span class="math inline">\(\sigma^2\)</span>.</p>
+<p><strong>Why the independence needed below holds.</strong> Both <span class="math inline">\(\hat{\boldsymbol\beta}-\boldsymbol\beta=\mathbf V\mathbf X^\top\boldsymbol\varepsilon\)</span> and <span class="math inline">\(\mathbf e=\mathbf M\boldsymbol\varepsilon\)</span> are jointly normal, and</p>
+<p><span class="math display">\[
+\operatorname{Cov}(\hat{\boldsymbol\beta},\mathbf e)
+=\sigma^2\mathbf V\mathbf X^\top\mathbf M=\mathbf0.
+\]</span></p>
+<p>A jointly normal vector with zero cross-covariance has a characteristic function that factors into the two marginal characteristic functions. Thus these vectors are independent, even though the residual covariance is singular. Since <span class="math inline">\(\mathrm{SSE}=\mathbf e^\top\mathbf e\)</span>, <span class="math inline">\(\hat{\boldsymbol\beta}\)</span> and <span class="math inline">\(\mathrm{SSE}\)</span> are independent. Zero covariance alone would not suffice without joint normality.</p>
 </section>
-<section id="an-executable-selection-example" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="an-executable-selection-example">An executable selection example</h2>
-<p><strong>Generate data with multicollinearity</strong></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8561</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">80</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fl">0.92</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="fl">0.25</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x3 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> x3 <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">x1 =</span> x1, <span class="at">x2 =</span> x2, <span class="at">x3 =</span> x3)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>fit_full <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, <span class="at">data =</span> dat)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ x1 + x2 + x3, data = dat)
-
-Residuals:
-     Min       1Q   Median       3Q      Max
--2.53882 -0.85013 -0.08111  0.85767  2.24530
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   3.0750     0.1281  24.008  &lt; 2e-16 ***
-x1            2.0710     0.4768   4.343 4.28e-05 ***
-x2           -1.6962     0.5124  -3.310  0.00143 **
-x3            1.1336     0.1277   8.880 2.27e-13 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.117 on 76 degrees of freedom
-Multiple R-squared:  0.5981,    Adjusted R-squared:  0.5822
-F-statistic:  37.7 on 3 and 76 DF,  p-value: 4.966e-15</code></pre>
-</div>
-</div>
-<p><strong>Compare with simpler models</strong></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit_small <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x3, <span class="at">data =</span> dat)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit_alt <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x2 <span class="sc">+</span> x3, <span class="at">data =</span> dat)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_small)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ x1 + x3, data = dat)
-
-Residuals:
-    Min      1Q  Median      3Q     Max
--2.7697 -0.6645 -0.1148  0.9949  2.3101
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   3.1177     0.1354   23.02  &lt; 2e-16 ***
-x1            0.5343     0.1159    4.61 1.57e-05 ***
-x3            1.1421     0.1356    8.42 1.58e-12 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.187 on 77 degrees of freedom
-Multiple R-squared:  0.5401,    Adjusted R-squared:  0.5282
-F-statistic: 45.22 on 2 and 77 DF,  p-value: 1.027e-13</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_alt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ x2 + x3, data = dat)
-
-Residuals:
-    Min      1Q  Median      3Q     Max
--2.7455 -0.7881 -0.1158  1.0147  2.5958
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   3.1185     0.1417  22.003  &lt; 2e-16 ***
-x2            0.4702     0.1301   3.615 0.000534 ***
-x3            1.1415     0.1417   8.057 7.91e-12 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.24 on 77 degrees of freedom
-Multiple R-squared:  0.4983,    Adjusted R-squared:  0.4853
-F-statistic: 38.24 on 2 and 77 DF,  p-value: 2.927e-12</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fit_small, fit_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Analysis of Variance Table
-
-Model 1: y ~ x1 + x3
-Model 2: y ~ x1 + x2 + x3
-  Res.Df     RSS Df Sum of Sq      F   Pr(&gt;F)
-1     77 108.498
-2     76  94.824  1    13.673 10.959 0.001427 **
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
-<p><strong>Use AIC-based stepwise selection</strong></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_null <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dat)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit_scope <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, <span class="at">data =</span> dat)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>step_forward <span class="ot">&lt;-</span> <span class="fu">step</span>(fit_null,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">scope =</span> <span class="fu">list</span>(<span class="at">lower =</span> fit_null, <span class="at">upper =</span> fit_scope),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">direction =</span> <span class="st">"forward"</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">trace =</span> <span class="dv">0</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>step_backward <span class="ot">&lt;-</span> <span class="fu">step</span>(fit_scope, <span class="at">direction =</span> <span class="st">"backward"</span>, <span class="at">trace =</span> <span class="dv">0</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(step_forward)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ x3 + x1 + x2, data = dat)
-
-Residuals:
-     Min       1Q   Median       3Q      Max
--2.53882 -0.85013 -0.08111  0.85767  2.24530
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   3.0750     0.1281  24.008  &lt; 2e-16 ***
-x3            1.1336     0.1277   8.880 2.27e-13 ***
-x1            2.0710     0.4768   4.343 4.28e-05 ***
-x2           -1.6962     0.5124  -3.310  0.00143 **
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.117 on 76 degrees of freedom
-Multiple R-squared:  0.5981,    Adjusted R-squared:  0.5822
-F-statistic:  37.7 on 3 and 76 DF,  p-value: 4.966e-15</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(step_backward)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ x1 + x2 + x3, data = dat)
-
-Residuals:
-     Min       1Q   Median       3Q      Max
--2.53882 -0.85013 -0.08111  0.85767  2.24530
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)   3.0750     0.1281  24.008  &lt; 2e-16 ***
-x1            2.0710     0.4768   4.343 4.28e-05 ***
-x2           -1.6962     0.5124  -3.310  0.00143 **
-x3            1.1336     0.1277   8.880 2.27e-13 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1.117 on 76 degrees of freedom
-Multiple R-squared:  0.5981,    Adjusted R-squared:  0.5822
-F-statistic:  37.7 on 3 and 76 DF,  p-value: 4.966e-15</code></pre>
-</div>
-</div>
-<p><strong>Compare AIC, BIC, and adjusted R squared</strong></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Show R code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(model) {</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AIC =</span> <span class="fu">AIC</span>(model),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">BIC =</span> <span class="fu">BIC</span>(model),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">adj_R2 =</span> <span class="fu">summary</span>(model)<span class="sc">$</span>adj.r.squared</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">small =</span> <span class="fu">model_summary</span>(fit_small),</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">alt =</span> <span class="fu">model_summary</span>(fit_alt),</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">full =</span> <span class="fu">model_summary</span>(fit_full),</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">step_forward =</span> <span class="fu">model_summary</span>(step_forward),</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">step_backward =</span> <span class="fu">model_summary</span>(step_backward)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>                   AIC      BIC    adj_R2
-small         259.4064 268.9345 0.5281786
-alt           266.3670 275.8951 0.4852878
-full          250.6302 262.5403 0.5822139
-step_forward  250.6302 262.5403 0.5822139
-step_backward 250.6302 262.5403 0.5822139</code></pre>
-</div>
-</div>
-<p><strong>Interpretation.</strong> Compare the selected variable sets, but do not treat this demonstration as evidence that an automatic search is scientifically optimal. If evaluating a selection procedure by resampling, run the entire selection procedure inside each training fold. Ordinary prediction validation does not repair post-selection confidence intervals.</p>
+<section id="sec-bms-student-t" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-student-t">Student’s t: estimating an unknown scale</h2>
+<p><strong>Construction and interpretation.</strong> Let <span class="math inline">\(Z\sim N(0,1)\)</span> and <span class="math inline">\(U\sim\chi^2_\nu\)</span> be independent, with <span class="math inline">\(\nu&gt;0\)</span>. Then</p>
+<p><span class="math display">\[
+\boxed{T=\frac{Z}{\sqrt{U/\nu}}\sim t_\nu.}
+\]</span></p>
+<p>The denominator is a random estimate of a standard deviation. It can be small, producing larger standardized values than a normal denominator fixed at <span class="math inline">\(1\)</span> would produce. The result is a symmetric density with heavier tails than the standard normal density.</p>
+<p><strong>Proof by a change of variables.</strong> Use <span class="math inline">\(t=z/\sqrt{u/\nu}\)</span> and retain <span class="math inline">\(u\)</span>. The inverse map and absolute Jacobian determinant are</p>
+<p><span class="math display">\[
+z=t\sqrt{u/\nu},\qquad
+\left|\frac{\partial(z,u)}{\partial(t,u)}\right|=\sqrt{u/\nu}.
+\]</span></p>
+<p>Independence gives a product joint density. Integrating out <span class="math inline">\(u\)</span> yields</p>
+<p><span class="math display">\[
+\begin{aligned}
+f_T(t)
+&amp;=\int_0^\infty
+\frac{e^{-t^2u/(2\nu)}}{\sqrt{2\pi}}
+\frac{u^{\nu/2-1}e^{-u/2}}{2^{\nu/2}\Gamma(\nu/2)}
+\sqrt{\frac{u}{\nu}}\,du\\
+&amp;=\frac{1}{\sqrt{2\pi\nu}\,2^{\nu/2}\Gamma(\nu/2)}
+\int_0^\infty u^{(\nu+1)/2-1}
+e^{-(1+t^2/\nu)u/2}\,du.
+\end{aligned}
+\]</span></p>
+<p>Using <span class="math inline">\(\int_0^\infty u^{a-1}e^{-bu}\,du=\Gamma(a)b^{-a}\)</span> for <span class="math inline">\(a,b&gt;0\)</span>, we obtain</p>
+<p><span class="math display">\[
+\boxed{f_T(t)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\nu\pi}\,\Gamma(\nu/2)}
+\left(1+\frac{t^2}{\nu}\right)^{-(\nu+1)/2},\qquad t\in\mathbb R.}
+\]</span></p>
+<p>This is the Student <span class="math inline">\(t\)</span> density. Its dependence on <span class="math inline">\(t^2\)</span> proves symmetry. Its tails decay polynomially, as <span class="math inline">\(|t|^{-(\nu+1)}\)</span>, rather than exponentially as for a normal density. Also, <span class="math inline">\(\operatorname{Var}(U/\nu)=2/\nu\to0\)</span>, so <span class="math inline">\(U/\nu\to1\)</span> in probability and <span class="math inline">\(t_\nu\)</span> approaches <span class="math inline">\(N(0,1)\)</span> as <span class="math inline">\(\nu\to\infty\)</span>.</p>
+<p><strong>Application to a regression contrast.</strong> For any fixed nonzero <span class="math inline">\(\mathbf a\in\mathbb R^p\)</span>, let <span class="math inline">\(v_a=\mathbf a^\top\mathbf V\mathbf a&gt;0\)</span>. Then</p>
+<p><span class="math display">\[
+Z=\frac{\mathbf a^\top\hat{\boldsymbol\beta}-\mathbf a^\top\boldsymbol\beta}
+{\sigma\sqrt{v_a}}\sim N(0,1),\qquad
+U=\frac{\mathrm{SSE}}{\sigma^2}\sim\chi^2_\nu.
+\]</span></p>
+<p>The <a href="#sec-bms-quadratic-forms">normal quadratic-form section</a> proves their independence. Therefore</p>
+<p><span class="math display">\[
+\frac{\mathbf a^\top\hat{\boldsymbol\beta}-\mathbf a^\top\boldsymbol\beta}
+{\hat\sigma\sqrt{v_a}}\sim t_\nu.
+\]</span></p>
+<p>Under <span class="math inline">\(H_0:\mathbf a^\top\boldsymbol\beta=d\)</span>, replace the true contrast in the numerator by <span class="math inline">\(d\)</span>. Choosing a coordinate vector for <span class="math inline">\(\mathbf a\)</span> gives the usual coefficient <span class="math inline">\(t\)</span> test.</p>
+</section>
+<section id="sec-bms-f" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-f">F: comparing two independent sums of squares</h2>
+<p><strong>Construction and interpretation.</strong> If <span class="math inline">\(U_1\sim\chi^2_r\)</span> and <span class="math inline">\(U_2\sim\chi^2_\nu\)</span> are independent, with <span class="math inline">\(r,\nu&gt;0\)</span>, then</p>
+<p><span class="math display">\[
+\boxed{F=\frac{U_1/r}{U_2/\nu}\sim F_{r,\nu}.}
+\]</span></p>
+<p>The two degrees of freedom have different roles: <span class="math inline">\(r\)</span> belongs to the numerator and <span class="math inline">\(\nu\)</span> to the denominator. Both normalized sums of squares have expectation <span class="math inline">\(1\)</span>. Their ratio is positive and can be large when the numerator is unusually large or the denominator is small. The ratio itself does not have mean <span class="math inline">\(1\)</span>: its mean is <span class="math inline">\(\nu/(\nu-2)\)</span> when <span class="math inline">\(\nu&gt;2\)</span>.</p>
+<p><strong>Proof by a change of variables.</strong> Put <span class="math inline">\(a=r/2\)</span>, <span class="math inline">\(b=\nu/2\)</span>, and <span class="math inline">\(c=r/\nu\)</span>. Transform <span class="math inline">\((U_1,U_2)\)</span> to <span class="math inline">\((F,V)\)</span>, where <span class="math inline">\(V=U_2\)</span>. The inverse map is</p>
+<p><span class="math display">\[
+u_1=cfv,\qquad u_2=v,\qquad f&gt;0,\ v&gt;0,
+\]</span></p>
+<p>and its absolute Jacobian determinant is</p>
+<p><span class="math display">\[
+\left|\det\begin{pmatrix}cv&amp;cf\\0&amp;1\end{pmatrix}\right|=cv.
+\]</span></p>
+<p>Using independence and the two chi-square densities,</p>
+<p><span class="math display">\[
+\begin{aligned}
+f_F(f)
+&amp;=\int_0^\infty
+\frac{(cfv)^{a-1}e^{-cfv/2}}{2^a\Gamma(a)}
+\frac{v^{b-1}e^{-v/2}}{2^b\Gamma(b)}\,cv\,dv\\
+&amp;=\frac{c^a f^{a-1}}{2^{a+b}\Gamma(a)\Gamma(b)}
+\int_0^\infty v^{a+b-1}e^{-(1+cf)v/2}\,dv\\
+&amp;=\frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}
+c^a f^{a-1}(1+cf)^{-(a+b)}.
+\end{aligned}
+\]</span></p>
+<p>Substituting the definitions of <span class="math inline">\(a,b,c\)</span> gives the <span class="math inline">\(F\)</span> density:</p>
+<p><span class="math display">\[
+\boxed{f_F(f)=\frac{\Gamma((r+\nu)/2)}{\Gamma(r/2)\Gamma(\nu/2)}
+\left(\frac r\nu\right)^{r/2}
+f^{r/2-1}\left(1+\frac r\nu f\right)^{-(r+\nu)/2},\quad f&gt;0.}
+\]</span></p>
+<p><strong>Why the normalization matters.</strong> The raw ratio <span class="math inline">\(U_1/U_2\)</span> equals <span class="math inline">\((r/\nu)F\)</span>, and hence is not generally <span class="math inline">\(F_{r,\nu}\)</span>. Reversing the numerator and denominator gives <span class="math inline">\(1/F\sim F_{\nu,r}\)</span>.</p>
+</section>
+<section id="sec-bms-general-linear-hypothesis" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-general-linear-hypothesis">Proof of the general linear hypothesis F test</h2>
+<p>Consider <span class="math inline">\(H_0:\mathbf C\boldsymbol\beta=\mathbf d\)</span>, where <span class="math inline">\(\mathbf C\)</span> is <span class="math inline">\(r\times p\)</span> with row rank <span class="math inline">\(r\)</span>, <span class="math inline">\(1\leq r\leq p\)</span>, and <span class="math inline">\(\mathbf d\in\mathbb R^r\)</span>. Keep the normal-model assumptions from the <a href="#sec-bms-quadratic-forms">normal quadratic-form section</a>, and write</p>
+<p><span class="math display">\[
+\mathbf D=\mathbf C\mathbf V\mathbf C^\top,
+\qquad \mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d.
+\]</span></p>
+<p><strong>Step 1: standardize the restrictions.</strong> The matrix <span class="math inline">\(\mathbf D\)</span> is positive definite: for nonzero <span class="math inline">\(\mathbf b\)</span>, full row rank implies <span class="math inline">\(\mathbf C^\top\mathbf b\ne\mathbf0\)</span>, so <span class="math inline">\(\mathbf b^\top\mathbf D\mathbf b=(\mathbf C^\top\mathbf b)^\top\mathbf V(\mathbf C^\top\mathbf b)&gt;0\)</span>. Under <span class="math inline">\(H_0\)</span>, <span class="math inline">\(\mathbf L\sim N_r(\mathbf0,\sigma^2\mathbf D)\)</span>. Consequently,</p>
+<p><span class="math display">\[
+\mathbf W=\sigma^{-1}\mathbf D^{-1/2}\mathbf L\sim N_r(\mathbf0,\mathbf I_r),
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf D^{-1/2}\)</span> is the symmetric positive definite inverse square root. The numerator quadratic form therefore satisfies</p>
+<p><span class="math display">\[
+Q=\frac{\mathbf L^\top\mathbf D^{-1}\mathbf L}{\sigma^2}
+=\mathbf W^\top\mathbf W\sim\chi^2_r.
+\]</span></p>
+<p><strong>Step 2: identify the independent denominator.</strong> We already proved <span class="math inline">\(U=\mathrm{SSE}/\sigma^2\sim\chi^2_\nu\)</span>, with <span class="math inline">\(\nu=n-p\)</span>. The quantity <span class="math inline">\(Q\)</span> is a function of <span class="math inline">\(\hat{\boldsymbol\beta}\)</span>, whereas <span class="math inline">\(U\)</span> is a function of <span class="math inline">\(\mathrm{SSE}\)</span>. Their independence follows from the normal-model independence proved in the <a href="#sec-bms-quadratic-forms">normal quadratic-form section</a>.</p>
+<p><strong>Step 3: form the ratio.</strong> Apply the <a href="#sec-bms-f">F ratio result</a> and cancel <span class="math inline">\(\sigma^2\)</span>:</p>
+<p><span class="math display">\[
+\boxed{F=\frac{Q/r}{U/\nu}
+=\frac{\mathbf L^\top\mathbf D^{-1}\mathbf L}{r\hat\sigma^2}
+\sim F_{r,n-p}\quad\text{under }H_0.}
+\]</span></p>
+<p>Substituting <span class="math inline">\(\mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d\)</span> and <span class="math inline">\(\mathbf D=\mathbf C(\mathbf X^\top\mathbf X)^{-1}\mathbf C^\top\)</span> recovers the statistic in <a href="./03_OLS_inference.html#general-linear-hypotheses">Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses</a>. Thus <span class="math inline">\(r\)</span> counts the independent restrictions and <span class="math inline">\(n-p\)</span> counts residual degrees of freedom. Large values indicate a departure from <span class="math inline">\(H_0\)</span>; a level-<span class="math inline">\(\alpha\)</span> test rejects when <span class="math inline">\(F&gt;F_{1-\alpha;r,n-p}\)</span>, where the right-hand side is an upper quantile. The central <span class="math inline">\(F\)</span> law above is a null distribution; under an alternative the numerator is generally noncentral chi-square.</p>
+<p><strong>Why <span class="math inline">\(T^2=F\)</span> for one restriction.</strong> When <span class="math inline">\(r=1\)</span> and <span class="math inline">\(\mathbf C=\mathbf a^\top\)</span>,</p>
+<p><span class="math display">\[
+F=\frac{(\mathbf a^\top\hat{\boldsymbol\beta}-d)^2}
+{\hat\sigma^2\mathbf a^\top\mathbf V\mathbf a}=T^2.
+\]</span></p>
+<p>Equivalently, squaring the defining ratio for <span class="math inline">\(T\)</span> gives <span class="math inline">\(T^2=(Z^2/1)/(U/\nu)\)</span>, and <span class="math inline">\(Z^2\sim\chi^2_1\)</span> independently of <span class="math inline">\(U\)</span>. Hence <span class="math inline">\(T^2\sim F_{1,\nu}\)</span>. The upper-tail <span class="math inline">\(F\)</span> test matches the <strong>two-sided</strong> <span class="math inline">\(t\)</span> test, not a one-sided test.</p>
+</section>
+<section id="sec-bms-example" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-bms-example">A compact regression example and reading guide</h2>
+<p><strong>Example.</strong> Suppose the normal linear model has <span class="math inline">\(n=20\)</span> observations and <span class="math inline">\(p=3\)</span> coefficients, including an intercept. Then <span class="math inline">\(\nu=17\)</span>. If <span class="math inline">\(\mathrm{SSE}=34\)</span>, the observed variance estimate is <span class="math inline">\(\hat\sigma^2=34/17=2\)</span>.</p>
+<ul>
+<li>The sampling law of <span class="math inline">\(\mathrm{SSE}/\sigma^2\)</span> is <span class="math inline">\(\chi^2_{17}\)</span>; the observed value <span class="math inline">\(34\)</span> does not identify the unknown <span class="math inline">\(\sigma^2\)</span>.</li>
+<li>For <span class="math inline">\(H_0:\beta_1=0\)</span>, suppose <span class="math inline">\(\hat\beta_1=1.5\)</span> and <span class="math inline">\(V_{22}=0.05\)</span> (the intercept is the first coordinate). Then</li>
+</ul>
+<p><span class="math display">\[
+T=\frac{1.5}{\sqrt{2(0.05)}}\approx4.743,
+\qquad F=T^2=22.5.
+\]</span></p>
+<p>The null reference distributions are <span class="math inline">\(t_{17}\)</span> and <span class="math inline">\(F_{1,17}\)</span>, respectively.</p>
+<ul>
+<li>For a joint test of two independent restrictions, <span class="math inline">\(r=2\)</span>. If the observed unscaled numerator quadratic form <span class="math inline">\(\mathbf L^\top\mathbf D^{-1}\mathbf L\)</span> is <span class="math inline">\(12\)</span>, then <span class="math inline">\(F=12/(2\times2)=3\)</span>, compared with <span class="math inline">\(F_{2,17}\)</span>.</li>
+</ul>
+<p><strong>What to check before using these results.</strong> Confirm the normal-model assumptions, the rank of the projection or restriction matrix, the residual degrees of freedom, and the required independence. A symmetric matrix alone is not enough for the quadratic-form chi-square result: idempotence is also needed. Likewise, correct marginal distributions alone do not establish a <span class="math inline">\(t\)</span> or <span class="math inline">\(F\)</span> ratio law.</p>
+<p><strong>Reference books.</strong></p>
+<ol type="1">
+<li><strong>Seber, G. A. F., and Lee, A. J. (2003). <em>Linear Regression Analysis</em>, 2nd ed.&nbsp;Wiley.</strong> Read Chapter 2, <em>Multivariate Normal Distribution</em>, for the normal-vector background; Chapter 3, <em>Linear Regression: Estimation and Distribution Theory</em>, for regression sampling distributions; and Chapter 4, <em>Hypothesis Testing</em>, for linear restrictions. This is the main reference for the regression applications above. <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9780471722199">Publisher and contents</a>.</li>
+<li><strong>Casella, G., and Berger, R. (2024 reprint). <em>Statistical Inference</em>, 2nd ed.&nbsp;Chapman &amp; Hall/CRC.</strong> Chapters 3, <em>Common Families of Distributions</em>, and 5, <em>Properties of a Random Sample</em>, provide the probability background for chi-square, <span class="math inline">\(t\)</span>, and <span class="math inline">\(F\)</span> distributions. The publisher identifies this as a reprint of the earlier second edition. <a href="https://www.routledge.com/link/link/p/book/9781032593036">Publisher and contents</a>.</li>
+</ol>
+<p>The derivations here are written out for these notes; the books provide further development and exercises. This appendix supports the <a href="./03_OLS_inference.html#general-linear-hypotheses">Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses</a>.</p>
 
 
 </section>
@@ -1143,13 +1060,13 @@ step_backward 250.6302 262.5403 0.5822139</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./App_B-linear-model-extensions.html" class="pagination-link" aria-label="Linear-Model Extensions (Optional)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Linear-Model Extensions (Optional)</span>
+      <a href="./App_A-matrix.html" class="pagination-link" aria-label="Matrix Algebra Review">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Matrix Algebra Review</span>
       </a>
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./App_D-gls.html" class="pagination-link" aria-label="Generalized Least Squares and Correlated Errors (Optional)">
-        <span class="nav-page-text">Generalized Least Squares and Correlated Errors (Optional)</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./Assignment1.html" class="pagination-link" aria-label="Assignment 1">
+        <span class="nav-page-text">Assignment 1</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,12 +1,12 @@
-# Automatic Model Selection (Optional) {#sec-selection-optional}
+# Automatic Model Selection (Optional) {#sec-selection-optional .unnumbered}
 
-::: {.callout-note title="Optional appendix"}
+::: {.callout-note title="Optional topic"}
 
 The main course compares a small set of scientifically justified models and checks predictive performance. Automatic searches and additional selection criteria are supplementary. A search-selected model does not inherit the usual fixed-model interpretation of its p-values and confidence intervals.
 
 :::
 
-## Forward Selection
+## Forward Selection {.unnumbered}
 
 In **forward selection**, we begin with a small model, often the intercept-only model, and add predictors one at a time. At each step, we add the variable that gives the best improvement according to some criterion, such as:
 
@@ -29,7 +29,7 @@ Automatic variable selection can create several difficulties:
 
 So automated methods should be treated as exploratory tools, not as final arbiters of truth.
 
-## Additional comparison criteria
+## Additional comparison criteria {.unnumbered}
 
 **Criteria for Comparing Models**
 
@@ -71,7 +71,7 @@ Because the penalty term is stronger than that of AIC when $n$ is moderate or la
 
 Another classical criterion is Mallows' $C_p$, which compares model bias and variance relative to a fuller model. It is less frequently emphasized in introductory software workflows today, but it remains conceptually important in regression theory.
 
-## An executable selection example
+## An executable selection example {.unnumbered}
 
 **Generate data with multicollinearity**
 

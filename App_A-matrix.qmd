@@ -1,4 +1,4 @@
-# Matrix Algebra Review {#sec-matrix}
+# Matrix Algebra Review {#sec-matrix .unnumbered}
 
 **Matrix dimensions**
 

@@ -1,6 +1,6 @@
 # Model Comparison, Partial F Tests, and ANOVA {#sec-model-comparison}
 
-In this chapter, we study the ANOVA decomposition for linear regression, the overall significance test, and the comparison of nested models. These ideas connect the geometry of least squares with the inferential tools developed in earlier chapters.
+In this chapter, we study the ANOVA decomposition for linear regression, the overall significance test, and the comparison of nested models. These ideas connect the geometry of least squares with the inferential tools developed in [Chapter 2 — Least Squares Estimation](02_LSE.qmd) and [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd).
 
 > **Learning Objectives**
 >
@@ -83,7 +83,7 @@ $$
 \mathbf{e} = \mathbf{Y} - \hat{\mathbf{Y}}.
 $$
 
-From Chapter 2, we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From Chapter 3, we know that this leads to useful distributional results for inference. In this chapter, we organize these ideas into the ANOVA framework.
+From [Chapter 2 — Least Squares Estimation](02_LSE.qmd), we know that $\hat{\mathbf{Y}}$ and $\mathbf{e}$ are orthogonal. From [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), we know that this leads to useful distributional results for inference. In this chapter, we organize these ideas into the ANOVA framework.
 
 :::
 
@@ -238,7 +238,7 @@ Here $p$ includes the intercept coefficient.
 
 :::
 
-Dividing by degrees of freedom accounts for the different dimensions contributing to each sum of squares. Under the linear-model moment assumptions from Chapter 3, MSE is an unbiased estimator of $\sigma^2$. MSR estimates the same noise level under the overall null hypothesis, which motivates their ratio.
+Dividing by degrees of freedom accounts for the different dimensions contributing to each sum of squares. Under the linear-model moment assumptions from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), MSE is an unbiased estimator of $\sigma^2$. MSR estimates the same noise level under the overall null hypothesis, which motivates their ratio.
 
 ## The Overall F Test
 
@@ -389,13 +389,13 @@ The improvement is $90-78=12$ on $4-2=2$ degrees of freedom. The full-model MSE 
 
 **Connection with General Linear Hypotheses**
 
-Nested column-space models correspond to linear restrictions on the full-model coefficients. More generally, Chapter 3 allows a specified affine restriction of the form
+Nested column-space models correspond to linear restrictions on the full-model coefficients. More generally, [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) allows a specified affine restriction of the form
 
 $$
 H_0: \mathbf{C}\boldsymbol{\beta} = \mathbf{d}.
 $$
 
-So the ANOVA comparison of nested models is another way of expressing the general $F$ test from Chapter 3. In practice, this is one of the most common uses of regression ANOVA tables.
+So the ANOVA comparison of nested models is another way of expressing the general $F$ test from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd). In practice, this is one of the most common uses of regression ANOVA tables.
 
 ::: {#def-sequential-partial-sums-of-squares}
 

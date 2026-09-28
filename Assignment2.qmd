@@ -7,7 +7,7 @@ show-solutions: false
 **STAT 8561 \| Fall 2026**\
 **Due date:** September 30, 2026\
 **Total:** 40 points\
-**Coverage:** Chapter 2 (Least Squares Estimation) and Chapter 3 (Distribution Theory of OLS and Inference).
+**Coverage:** [Chapter 2 — Least Squares Estimation](02_LSE.qmd) and [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd).
 
 This assignment emphasizes conceptual understanding of least squares, projection, and inference. Read the assumptions in each question carefully.
 

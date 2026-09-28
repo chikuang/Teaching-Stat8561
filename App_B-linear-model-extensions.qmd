@@ -1,16 +1,16 @@
-# Linear-Model Extensions (Optional) {#sec-linear-extensions}
+# Linear-Model Extensions (Optional) {#sec-linear-extensions .unnumbered}
 
-::: {.callout-note title="Optional appendix"}
+::: {.callout-note title="Optional topic"}
 
-The main chapters use identifiable mean comparisons and practical diagnostics. This appendix develops the Gauss–Markov result, rank deficiency, and additional diagnostics; it is not a prerequisite for the GLM chapter.
+The main chapters use identifiable mean comparisons and practical diagnostics. This topic develops the Gauss–Markov result, rank deficiency, and additional diagnostics; it is not a prerequisite for the GLM chapter.
 
 :::
 
-**Efficiency of least squares.** The following result supplements the moment calculations in Chapter 3.
+**Efficiency of least squares.** The following result supplements the moment calculations in [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd).
 
 ::: {#thm-gauss-markov}
 
-## Gauss–Markov: What “Best” Means
+## Gauss–Markov: What “Best” Means {.unnumbered}
 
 Let $X$ be fixed with full column rank, $\mathbb{E}(\varepsilon\mid X)=0$, and $\operatorname{Var}(\varepsilon\mid X)=\sigma^2 I_n$. Among estimators linear in $Y$ and unbiased for every $\beta$, OLS has the smallest covariance in the positive-semidefinite ordering. Thus every fixed linear combination of its coefficients has variance no larger than that of any competing linear unbiased estimator. Normality is not required.
 
@@ -25,7 +25,7 @@ $$
 
 **Scope.** “Best” refers to this linear unbiased class and these covariance assumptions. It does not claim optimality among all biased or nonlinear estimators, nor that OLS keeps this efficiency property under arbitrary unequal variances or correlation.
 
-## Estimability
+## Estimability {.unnumbered}
 
 So far, we have mostly assumed that $\mathbf{X}$ has full column rank. But in some important cases, the design matrix is rank-deficient. Then the parameter vector itself is not uniquely identifiable. In such settings, we ask a more refined question: Which linear functions of $\boldsymbol{\beta}$ can still be estimated uniquely from the model? This leads to the concept of **estimability**. **Why Estimability Is Needed** Suppose two different parameter vectors, say $\boldsymbol{\beta}$ and $\boldsymbol{\beta}^*$, produce the same mean vector:
 
@@ -56,7 +56,7 @@ for groups $i=1,\dots,g$. If we include all group indicators together with an in
 This is a classic example. **Estimable Functions in Rank-Deficient Models** Even when the coefficient vector is not unique, fitted values are still unique, provided we project onto the column space of $\mathbf{X}$. Likewise, every estimable linear function has a unique value determined by the model.
 
 So regression analysis in rank-deficient settings often focuses on estimable functions rather than on individual raw coefficients.
-## Least Squares in Rank-Deficient Models
+## Least Squares in Rank-Deficient Models {.unnumbered}
 
 When $\mathbf{X}$ is rank-deficient, the normal equations do not yield a unique coefficient vector. Different generalized inverse solutions may produce different coefficient vectors. However:
 
@@ -83,7 +83,7 @@ ncol(X_bad)
 X_bad
 ```
 
-## DFFITS and DFBETAS
+## DFFITS and DFBETAS {.unnumbered}
 
 Other influence measures include:
 
@@ -93,7 +93,7 @@ Other influence measures include:
 These are useful when we want to know not only whether a point is influential, but how it changes the model.
 
 For an introductory treatment, Cook's distance and leverage usually provide a strong starting point.
-## Added-Variable and Partial Residual Plots
+## Added-Variable and Partial Residual Plots {.unnumbered}
 
 When there are several predictors, ordinary residual plots may not fully reveal whether one variable needs a nonlinear term or whether its effect remains after adjustment. Useful advanced plots include:
 

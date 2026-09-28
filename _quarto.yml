@@ -21,22 +21,25 @@ book:
     - 09.qmd
     - 10.qmd
     - 11.qmd
+    - part: "Optional Topics"
+      chapters:
+        - App_B-linear-model-extensions.qmd
+        - App_C-model-selection.qmd
+        - App_D-gls.qmd
+        - App_E-glm-theory.qmd
+        - App_F-quantile-regression.qmd
+        - App_G-mixed-effects.qmd
     - references.qmd
+
+    - part: "Appendix"
+      chapters:
+        - App_A-matrix.qmd
+        - App_H-basic-mathematical-statistics.qmd
 
     - part: "Assessments"
       chapters:
         - Assignment1.qmd
         - Assignment2.qmd
-
-  appendices:
-    - App_A-matrix.qmd
-    - App_B-linear-model-extensions.qmd
-    - App_C-model-selection.qmd
-    - App_D-gls.qmd
-    - App_E-glm-theory.qmd
-    - App_F-quantile-regression.qmd
-    - App_G-mixed-effects.qmd
-    - App_H-basic-mathematical-statistics.qmd
 
   navbar:
     right:
@@ -69,6 +72,8 @@ format:
 
   pdf:
     documentclass: scrreprt
+    filters:
+      - filters/course-links.lua
     cache: true
 
 editor: source

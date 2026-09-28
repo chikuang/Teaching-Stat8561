@@ -1,18 +1,18 @@
-# Quantile Regression (Optional) {#sec-quantile-regression}
+# Quantile Regression (Optional) {#sec-quantile-regression .unnumbered}
 
-::: {.callout-note title="Optional self-study appendix"}
+::: {.callout-note title="Optional self-study topic"}
 
-This reading extends the regression framework to conditional quantiles. It is supplementary to the main lecture sequence. Read Chapters 2, 5, and 8 first: least squares, coefficient interpretation, and diagnostics are the useful prerequisites. The R examples use the `quantreg` package; install it once with `install.packages("quantreg")` if needed.
+This reading extends the regression framework to conditional quantiles. It is supplementary to the main lecture sequence. Read [Chapter 2 — Least Squares Estimation](02_LSE.qmd), [Chapter 5 — Multiple Regression and Categorical Predictors](05.qmd), and [Chapter 8 — Diagnostics and Model Adequacy](08.qmd) first: least squares, coefficient interpretation, and diagnostics are the useful prerequisites. The R examples use the `quantreg` package; install it once with `install.packages("quantreg")` if needed.
 
 :::
 
-## When the mean is not the whole question
+## When the mean is not the whole question {.unnumbered}
 
 OLS describes a conditional mean. In some studies, the scientific question concerns a typical response, a low outcome, or an unusually high outcome. For example, average delivery time and the 90th percentile of delivery time answer different service-planning questions. A covariate may change the spread of the response even when its relationship with the mean is simple.
 
 ::: {#def-conditional-quantile}
 
-## Conditional Quantile
+## Conditional Quantile {.unnumbered}
 
 For $0<\tau<1$, define
 
@@ -46,7 +46,7 @@ At $\tau=0.5$, minimizing check loss is equivalent to minimizing the sum of abso
 
 ::: {#prp-check-loss-quantile}
 
-## Why Check Loss Targets a Quantile
+## Why Check Loss Targets a Quantile {.unnumbered}
 
 If $\mathbb{E}(|Y|)<\infty$, the minimizers of $\mathbb{E}\{\rho_\tau(Y-a)\}$ are characterized by $F(a-)\le\tau\le F(a)$; the conditional-quantile definition above selects the lower endpoint when the minimizer is not unique. Where $F$ is continuous, the derivative with respect to $a$ is $F(a)-\tau$. It is nonpositive below a minimizing quantile and nonnegative above it. The same argument applies to the conditional distribution at a fixed $x$.
 
@@ -71,7 +71,7 @@ legend("top", legend = paste("tau =", taus), col = cols,
        lty = 1, lwd = 2, bty = "n", horiz = TRUE)
 ```
 
-## A mean model can miss changing spread
+## A mean model can miss changing spread {.unnumbered}
 
 Consider the simulated model $Y=5+2x+(0.5+0.8x)Z$, with $0\le x\le4$ and $Z\sim N(0,1)$ independent of $x$. Its conditional mean and median are both $5+2x$, while
 
@@ -113,7 +113,7 @@ legend("topleft", legend = c(paste("Quantile", taus), "OLS mean"),
 
 **Read the graph.** Compare the predicted 10th, 50th, and 90th percentiles at a fixed $x$. The gap between the 10th and 90th percentiles describes an interval containing the central 80% of a continuous conditional distribution when the quantile model is correct. The fitted gap is not a confidence interval for the mean or for a regression coefficient, and its predictive coverage is not guaranteed in a finite sample.
 
-## Uncertainty and practical checks
+## Uncertainty and practical checks {.unnumbered}
 
 Quantile regression avoids a normal-error or constant-variance requirement for defining its target, but it is not assumption-free. Reliable estimation and inference still depend on the quantile specification, the design, the sampling structure, and sufficient information near the quantile of interest. Very extreme quantiles are difficult to estimate from small datasets.
 
@@ -131,7 +131,7 @@ c(slope = unname(b), bootstrap_SE = se_b,
   upper = unname(b + qnorm(0.975) * se_b))
 ```
 
-This is not the exact finite-sample OLS t interval from Chapter 3. For dependent or clustered observations, an independent-pairs bootstrap generally fails to preserve the sampling structure. The package's [`summary.rq()` documentation](https://search.r-project.org/CRAN/refmans/quantreg/html/summary.rq.html) describes alternative inference methods.
+This is not the exact finite-sample OLS t interval from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd). For dependent or clustered observations, an independent-pairs bootstrap generally fails to preserve the sampling structure. The package's [`summary.rq()` documentation](https://search.r-project.org/CRAN/refmans/quantreg/html/summary.rq.html) describes alternative inference methods.
 
 ::: {.callout-important title="Two fitted quantiles need a joint comparison"}
 
@@ -141,9 +141,9 @@ If one slope is significant at $\tau=0.1$ and another is not significant at $\ta
 
 **Before interpreting a fit:** check the functional form, influential predictor values, the amount of information in the tails, and whether separately fitted quantiles cross. Linear loss is less sensitive to very large response residuals than squared loss, but it does not eliminate leverage problems. Crossing fitted quantiles cannot describe a valid ordered distribution at that $x$; investigate misspecification or use methods that enforce ordering rather than silently relabeling the curves.
 
-**Evaluate the stated target.** For held-out data, compare candidate predictions at the same $\tau$ using mean check loss. A coverage diagnostic compares the fraction of responses below the predicted quantile with $\tau$, including checks across meaningful predictor ranges. Good overall coverage can hide poor conditional coverage. Use splits that match future prediction, as in Chapter 10.
+**Evaluate the stated target.** For held-out data, compare candidate predictions at the same $\tau$ using mean check loss. A coverage diagnostic compares the fraction of responses below the predicted quantile with $\tau$, including checks across meaningful predictor ranges. Good overall coverage can hide poor conditional coverage. Use splits that match future prediction, as in [Chapter 10 — Model Assessment and Prediction](10.qmd).
 
-## Optional application and self-study
+## Optional application and self-study {.unnumbered}
 
 ::: {.callout-note title="Optional application: household expenditure"}
 
