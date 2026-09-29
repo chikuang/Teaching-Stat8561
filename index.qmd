@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # Preface {.unnumbered}
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
@@ -42,19 +46,20 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 Those chapters are based on the lecture notes. This part will be updated frequently.
 
 | Status | Chapter |        Topic         | Lecture |
-|:------:|:-------:|:--------------------:|:-------:|
-|  ✅      | | [Welcome and Overview](intro.qmd)|    1    |
-|   ✅      |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--3   |
-|     ✅  ️   |  Ch. 2  | [Least Squares Estimation](02_LSE.qmd) |    3--6   |
-| ✅ | Ch. 3 | [Inference on Least Square Estimation](03_OLS_inference.qmd) | 7--10 |
-| ⏳ | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | TBA |
-| ⏳ | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | TBA |
-| ⏳ | Ch. 6 | [Contrasts and Estimable Comparisons](06.qmd) | TBA |
-| ⏳ | Ch. 7 | [Experimental Design Models: ANOVA and ANCOVA](07.qmd) | TBA |
-| ⏳ | Ch. 8 | [Diagnostics and Model Adequacy](08.qmd) | TBA |
-| ⏳ | Ch. 9 | [Transformations and Weighted Least Squares](09.qmd) | TBA |
-| ⏳ | Ch. 10 | [Model Assessment and Prediction](10.qmd) | TBA |
-| ⏳ | Ch. 11 | [Introduction to Generalized Linear Models](11.qmd) | TBA |
+|:------:|:---------:|:------------------------------------------------:|:---------:|
+| `r if (knitr::is_latex_output()) "Done" else "✅"` | | [Welcome and Overview](intro.qmd)|    1    |
+| `r if (knitr::is_latex_output()) "Done" else "✅"` |  Ch. 1  |[Math Notation](01_matrix_representation.qmd) |    2--3   |
+| `r if (knitr::is_latex_output()) "Done" else "✅"` |  Ch. 2  | [Least Squares Estimation](02_LSE.qmd) |    3--6   |
+| `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 3 | [Inference on Least Square Estimation](03_OLS_inference.qmd) | 7--10 |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | 11-- |
+| `r if (knitr::is_latex_output()) "Exam" else "📝"` |  | Exam 1 | 15 |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 6 | [Contrasts and Estimable Comparisons](06.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 7 | [Experimental Design Models: ANOVA and ANCOVA](07.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 8 | [Diagnostics and Model Adequacy](08.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 9 | [Transformations and Weighted Least Squares](09.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 10 | [Model Assessment and Prediction](10.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 11 | [Introduction to Generalized Linear Models](11.qmd) | TBA |
 <!-- Future lecture coverage will be updated after class. -->
 
 **Optional Topics**
