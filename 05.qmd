@@ -1,531 +1,608 @@
+---
+execute:
+  cache: false
+---
+
 # Multiple Regression and Categorical Predictors {#sec-multiple-regression}
 
-In this chapter, we move from simple regression ideas to multiple regression. We study how regression coefficients are interpreted when several predictors are included in the model, how categorical predictors enter through indicator variables, and how interactions change the meaning of coefficients. The main goal is to help students read, build, and interpret regression models in realistic settings.
-
-**Learning Objectives**
-
-By the end of this chapter, students should be able to:
-
-- interpret coefficients in a multiple regression model;
-- explain the meaning of a partial regression coefficient;
-- distinguish between marginal association and adjusted association;
-- incorporate categorical predictors using indicator variables;
-- interpret regression models with interactions;
-- use software output to explain fitted multiple regression models.
-
-**Reading**
-
-Recommended reading for this chapter:
-
-- Seber and Lee:
-  - sections on multiple linear regression
-  - interpretation of regression coefficients
-  - indicator variables and model formulation
-- Montgomery, Peck, and Vining:
-  - sections on multiple regression
-  - qualitative predictors
-  - interaction terms and interpretation
-
-**Review of the Regression Framework**
-
-Recall the linear model
-
-$$
-\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
-\qquad
-\boldsymbol{\varepsilon} \sim N_n(\mathbf{0}, \sigma^2 \mathbf{I}_n).
-$$
-
-When the design matrix $\mathbf{X}$ has full column rank, the ordinary least squares estimator is
-
-$$
-\hat{\boldsymbol{\beta}}
-=
-(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
-$$
-
-In earlier weeks, we focused on estimation, inference, ANOVA decomposition, and the comparison of nested models. In this chapter, the emphasis shifts toward interpretation and modelling structure.
-
-## From Simple Regression to Multiple Regression
-
-In simple linear regression, we write
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i.
-$$
-
-Here, the slope $\beta_1$ measures the expected change in the response associated with a one-unit increase in $x$. In multiple regression, the model becomes
-
-$$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i.
-$$
-
-Here there are $k$ predictors and $p=k+1$ regression parameters, including the intercept. Throughout the course, $p$ counts all columns of the full-rank design matrix. Now each coefficient must be interpreted while holding the other predictors fixed. This is the key conceptual shift.
-
-**Why Multiple Regression Matters**
-
-Multiple regression is important because real data usually involve several explanatory variables. Reasons for including multiple predictors include:
-
-- improving prediction;
-- adjusting for confounding variables;
-- estimating the effect of one variable while controlling for others;
-- allowing more realistic scientific interpretation.
-
-A coefficient in multiple regression is therefore usually an adjusted effect, not a purely marginal one.
-
-**Interpreting the Intercept**
-
-In the model
-
-$$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik} + \varepsilon_i,
-$$
-
-the intercept $\beta_0$ is the expected value of the response when all predictors equal zero:
-
-$$
-\mathbb{E}[Y_i \mid x_{i1}, \dots, x_{ip}] = \beta_0
-\quad \text{when } x_{i1} = \cdots = x_{ip} = 0.
-$$
-
-This interpretation may or may not be scientifically meaningful. Sometimes zero is a natural baseline. Sometimes it is outside the observed range, in which case the intercept is mainly a mathematical anchor for the model.
-
-**Interpreting Partial Regression Coefficients**
-
-Consider the model
-
-$$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
-$$
-
-Then:
-
-- $\beta_1$ is the expected change in $Y$ associated with a one-unit increase in $x_1$, holding $x_2$ fixed;
-- $\beta_2$ is the expected change in $Y$ associated with a one-unit increase in $x_2$, holding $x_1$ fixed.
-
-This is called a **partial effect** or **adjusted effect**. The phrase “holding other variables fixed” is essential and should always be stated clearly.
-
-**Marginal Association Versus Adjusted Association**
-
-Suppose $x_1$ and $x_2$ are correlated. Then the relationship between $Y$ and $x_1$ in a simple regression of $Y$ on $x_1$ alone may differ from the coefficient of $x_1$ in a multiple regression including both $x_1$ and $x_2$. This happens because:
-
-- the simple regression coefficient describes a marginal association;
-- the multiple regression coefficient describes an adjusted association.
-
-These can differ substantially when predictors are related to each other.
-
-**Example of Adjusted Interpretation**
-
-Suppose we fit
-
-$$
-\widehat{Y} = 12.5 + 0.8\,x_1 - 1.2\,x_2.
-$$
-
-Then:
-
-- for each one-unit increase in $x_1$, the fitted mean response increases by 0.8 units, holding $x_2$ fixed;
-- for each one-unit increase in $x_2$, the fitted mean response decreases by 1.2 units, holding $x_1$ fixed.
-
-This interpretation is valid only within the modelling assumptions and over the range of data where the model is reasonable.
-
-**Matrix View of Multiple Regression**
-
-In multiple regression, the design matrix has the form
-
-$$
-\mathbf{X}
-=
-\begin{bmatrix}
-1 & x_{11} & x_{12} & \cdots & x_{1k} \\
-1 & x_{21} & x_{22} & \cdots & x_{2k} \\
-\vdots & \vdots & \vdots & \ddots & \vdots \\
-1 & x_{n1} & x_{n2} & \cdots & x_{nk}
-\end{bmatrix}.
-$$
-
-Each column corresponds to a predictor or model term. This allows the same least squares and inference framework to handle:
-
-- continuous predictors;
-- categorical predictors represented by indicator variables;
-- interactions;
-- polynomial terms.
-
-So the general linear model framework is highly flexible.
-
-## Categorical Predictors and Indicator Variables
-
-Many real predictors are categorical rather than numeric. Examples include:
-
-- treatment group;
-- sex;
-- school type;
-- region;
-- machine type.
-
-These enter a regression model through indicator variables, also called dummy variables.
-
-**Binary Predictor**
-
-Suppose $z_i$ is a binary variable:
-
-$$
-z_i =
-\begin{cases}
-1, & \text{if observation } i \text{ is in group A}, \\
-0, & \text{if observation } i \text{ is in group B}.
-\end{cases}
-$$
-
-Then the model
-
-$$
-Y_i = \beta_0 + \beta_1 z_i + \varepsilon_i
-$$
-
-has the following interpretation:
-
-- when $z_i = 0$, the expected response is $\beta_0$;
-- when $z_i = 1$, the expected response is $\beta_0 + \beta_1$.
-
-Thus, $\beta_1$ measures the difference in group means.
-
-**More Than Two Categories**
-
-Suppose a categorical predictor has three levels:
-
-- A,
-- B,
-- C.
-
-We usually represent it with two indicator variables, for example:
-
-$$
-z_{1i} =
-\begin{cases}
-1, & \text{if level B},\\
-0, & \text{otherwise},
-\end{cases}
-\qquad
-z_{2i} =
-\begin{cases}
-1, & \text{if level C},\\
-0, & \text{otherwise}.
-\end{cases}
-$$
-
-Then level A is the reference group, and the model is
-
-$$
-Y_i = \beta_0 + \beta_1 z_{1i} + \beta_2 z_{2i} + \varepsilon_i.
-$$
-
-Interpretation:
-
-- level A mean: $\beta_0$;
-- level B mean: $\beta_0 + \beta_1$;
-- level C mean: $\beta_0 + \beta_2$.
-
-So coefficients are interpreted relative to the reference category.
-
-**Why We Do Not Include All Indicators with an Intercept**
-
-If a categorical variable has $k$ levels, then with an intercept we include only $k-1$ indicator variables. If we include all $k$ indicators and also include an intercept, then the columns of the design matrix become linearly dependent. This causes rank deficiency. This is sometimes called the dummy variable trap.
-
-**Continuous and Categorical Predictors Together**
-
-Regression models often mix continuous and categorical predictors. For example,
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i
-$$
-
-may contain:
-
-- a continuous predictor $x_i$;
-- a binary indicator $z_i$.
-
-Interpretation:
-
-- $\beta_1$ is the slope in $x$ holding group fixed;
-- $\beta_2$ is the group difference holding $x$ fixed.
-
-This is one of the simplest forms of ANCOVA-style modelling.
-
-## Interactions
-
-An interaction allows the effect of one predictor to depend on the value of another predictor. For two continuous predictors, we may write
-
-$$
-Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i1}x_{i2} + \varepsilon_i.
-$$
-
-Now the effect of $x_1$ is no longer constant. Instead,
-
-$$
-\frac{\partial \mathbb{E}[Y_i \mid x_{i1},x_{i2}]}{\partial x_{i1}}
-=
-\beta_1 + \beta_3 x_{i2}.
-$$
-
-So the slope for $x_1$ depends on the value of $x_2$. Likewise, the slope for $x_2$ depends on $x_1$.
-
-**Interaction Between a Continuous and a Binary Predictor**
-
-Suppose we fit
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i,
-$$
-
-where $z_i \in \{0,1\}$. Then:
-
-- when $z_i = 0$,
-  $$
-  \mathbb{E}[Y_i \mid x_i, z_i=0] = \beta_0 + \beta_1 x_i;
-  $$
-
-- when $z_i = 1$,
-  $$
-  \mathbb{E}[Y_i \mid x_i, z_i=1] = (\beta_0+\beta_2) + (\beta_1+\beta_3)x_i.
-  $$
-
-So:
-
-- $\beta_2$ changes the intercept;
-- $\beta_3$ changes the slope.
-
-This allows the two groups to have different regression lines.
-
-**Main Effects in the Presence of Interaction**
-
-When an interaction is present, the meaning of the main effects changes. For example, in
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i,
-$$
-
-the coefficient $\beta_1$ is the slope for $x$ only when $z=0$, the reference group. Similarly, $\beta_2$ is the group difference only when $x=0$. So students should be careful not to interpret main effects in isolation when interactions are included.
-
-**Centering Predictors for Interpretation**
-
-Sometimes the value zero is not meaningful for a continuous predictor. In that case, it can be helpful to centre the predictor: $x_i^* = x_i - \bar{x}$. Then the intercept becomes the expected response at the average value of $x$, which may be much easier to interpret. Centering can also improve interpretability in models with interactions.
-
-**Comparing Models With and Without Interaction**
-
-To assess whether an interaction is needed, we can compare nested models. For example:
-
-- reduced model:
-  $$
-  Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i;
-  $$
-
-- full model:
-  $$
-  Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i.
-  $$
-
-The reduced model is nested within the full model by setting $\beta_3 = 0$. So the interaction can be tested by a standard extra sum of squares $F$ test.
-
-**Collinearity and Interpretation**
-
-In multiple regression, predictors may be strongly related to each other. When this happens:
-
-- coefficient estimates can become unstable;
-- standard errors can become large;
-- interpretation becomes more delicate.
-
-Even when the overall model seems useful, individual coefficients may be hard to estimate precisely. This issue is called **multicollinearity**. We will study diagnostics for it more formally later, but students should already know that “holding other variables fixed” may become practically difficult if predictors tend to move together.
-
-::: {.callout-important title="Adjusted association and causal effects"}
-
-An adjusted regression coefficient describes a conditional association under the chosen mean model. A causal interpretation additionally requires a defensible study design and identification assumptions. Check the overlap of predictor values across groups before interpreting an adjusted comparison.
+[Chapter 4](04.qmd) asked whether additional columns of a design matrix improve a model. This chapter asks what those columns mean. We connect a scientific comparison to a mean function, construct the corresponding design matrix, and interpret the fitted coefficients.
+
+> **Learning Objectives**
+>
+> By the end of this chapter, students should be able to:
+>
+> - distinguish a marginal association from an adjusted association;
+> - translate a factor into indicator columns and identify the reference group;
+> - count model parameters and recognize redundant columns;
+> - write group-specific mean functions for additive and interaction models;
+> - explain how centering and reference coding change coefficient meanings;
+> - match a scientific question to a nested-model comparison;
+> - use `model.matrix()`, `lm()`, and predictions to check an interpretation.
+
+**Reading.** Read the sections on multiple regression, qualitative predictors, and interaction terms in Montgomery, Peck, and Vining [@montgomery:2021:book] and Seber and Lee [@seber:2003:book]. The R examples use built-in datasets and require no additional data downloads.
+
+::: {.callout-note title="Two class meetings, one modelling workflow"}
+
+In the first meeting, focus on adjusted interpretation, indicator coding, and additive models. In the second, study interactions, centering, and the model comparisons that distinguish different scientific questions. Chapter 6 will develop contrasts and inference for selected comparisons in more detail.
+
+Our workflow is **question → mean function → design matrix → interpretation → comparison**. The least squares and inference tools remain those from Chapters 2–4.
 
 :::
 
-**Multiple Regression as Conditional Mean Modelling**
+## Multiple regression and adjusted interpretation {#sec-ch5-adjusted}
 
-A good way to summarize multiple regression is: $\mathbb{E}[Y \mid X_1,\dots,X_k]$ is being modelled as a linear function of predictors and model terms. This viewpoint helps unify:
-
-- continuous predictors;
-- factors;
-- interactions;
-- transformed predictors.
-
-It also helps students distinguish between the response itself and its conditional mean.
-
-**Worked Example With a Continuous and a Binary Predictor**
-
-Suppose we observe a response $Y$, a study-hours variable $x$, and a tutoring indicator $z$, where
-
-- $z=0$ means no tutoring;
-- $z=1$ means tutoring.
-
-Consider the model
+For $k$ continuous predictors, an additive mean model is
 
 $$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i.
+\mu(\mathbf x_i)=\mathbb E(Y_i\mid\mathbf x_i)
+=\beta_0+\sum_{j=1}^{k}\beta_j x_{ij},
+\qquad Y_i=\mu(\mathbf x_i)+\varepsilon_i.
 $$
 
-Suppose the fitted equation is
+With an intercept and no redundant columns, $p=k+1$. Throughout this course, **$p$ counts columns of the design matrix, including the intercept**. A factor or an interaction can contribute several columns, so the number of named variables need not equal the number of parameters.
+
+The design matrix is
 
 $$
-\hat{Y} = 50 + 3x + 8z.
+\mathbf X=
+\begin{bmatrix}
+1&x_{11}&\cdots&x_{1k}\\
+1&x_{21}&\cdots&x_{2k}\\
+\vdots&\vdots&&\vdots\\
+1&x_{n1}&\cdots&x_{nk}
+\end{bmatrix}.
 $$
 
-Then:
+Full column rank gives the familiar estimator $(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf Y$. Least squares itself does not require normal errors. For the exact $t$ and $F$ procedures in this chapter, we use the normal linear model from [Chapter 3](03_OLS_inference.qmd): fixed full-rank $\mathbf X$ and independent $N(0,\sigma^2)$ errors.
 
-- among students with the same tutoring status, one extra hour of study is associated with an increase of 3 points in the fitted mean score;
-- among students with the same number of study hours, the tutoring group has a fitted mean score 8 points higher than the non-tutoring group.
+::: {#def-ch5-adjusted-coefficient}
 
-If we add an interaction and obtain
+## Adjusted Regression Coefficient
+
+In an additive linear mean model, $\beta_j$ is the difference in mean response associated with a one-unit increase in $x_j$, **holding the other predictors fixed**:
 
 $$
-\hat{Y} = 48 + 4x + 10z - 1.5xz,
+\mu(x_1,\ldots,x_j+1,\ldots,x_k)
+-\mu(x_1,\ldots,x_j,\ldots,x_k)=\beta_j.
 $$
 
-then:
+The intercept is the mean response when $x_1=\cdots=x_k=0$. It may describe a useful baseline, or a point outside the range supported by the data.
 
-- for students without tutoring, the slope in study hours is 4;
-- for students with tutoring, the slope in study hours is $4 - 1.5 = 2.5$.
+:::
 
-Thus, the effect of study time depends on tutoring status.
+**Why an added predictor can change a coefficient.** A simple regression of $Y$ on $x_1$ compares observations with different $x_1$ values while leaving their other characteristics unadjusted. A regression on both $x_1$ and $x_2$ describes the association with $x_1$ at fixed $x_2$. If $x_1$ and $x_2$ vary together, these are different comparisons. Neither slope should be interpreted without naming its model.
 
-## R Demonstration With Multiple Regression
+::: {#exm-ch5-tree-adjustment}
 
-**Fit a model with two continuous predictors**
+## The Same Height Measurement, Two Comparisons
+
+Return to the 31 black cherry trees from Chapter 4. `Volume` is timber volume in cubic feet, `Height` is height in feet, and R's variable `Girth` actually records diameter in inches. Each row is one tree. We rename that variable `Diameter`. [Dataset documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
 
 ```{r}
-dat1 <- data.frame(
-  y = c(12, 15, 14, 18, 20, 19, 23, 25),
-  x1 = c(1, 2, 2, 3, 4, 4, 5, 6),
-  x2 = c(5, 4, 6, 4, 3, 5, 2, 1)
-)
-
-fit1 <- lm(y ~ x1 + x2, data = dat1)
-summary(fit1)
+#| label: ch5-tree-models
+ch5_trees <- transform(datasets::trees, Diameter = Girth)
+ch5_tree_simple <- lm(Volume ~ Height, data = ch5_trees)
+ch5_tree_adjusted <- lm(Volume ~ Height + Diameter, data = ch5_trees)
+knitr::kable(data.frame(
+  Model = c("Height alone", "Height adjusted for diameter"),
+  Height_coefficient = c(coef(ch5_tree_simple)["Height"],
+                         coef(ch5_tree_adjusted)["Height"])),
+  digits = 3, col.names = c("Model", "Height coefficient"),
+  row.names = FALSE)
 ```
 
-**Compare with a simple regression**
-
-```{r}
-fit1_simple <- lm(y ~ x1, data = dat1)
-summary(fit1_simple)
-summary(fit1)
-```
-
-**Fit a model with a categorical predictor**
-
-```{r}
-dat2 <- data.frame(
-  y = c(60, 62, 58, 71, 73, 70, 66, 68),
-  hours = c(4, 5, 3, 4, 5, 6, 4, 5),
-  group = factor(c("A", "A", "A", "B", "B", "B", "A", "B"))
-)
-
-fit2 <- lm(y ~ hours + group, data = dat2)
-summary(fit2)
-model.matrix(fit2)
-```
-
-**Fit a model with interaction**
-
-```{r}
-fit3 <- lm(y ~ hours * group, data = dat2)
-summary(fit3)
-anova(fit2, fit3)
-```
-
-**Plot group-specific regression lines**
-
-```{r}
-plot(dat2$hours, dat2$y,
-     pch = ifelse(dat2$group == "A", 1, 19),
-     xlab = "Hours",
-     ylab = "Response")
-abline(a = coef(fit3)[1], b = coef(fit3)[2], lwd = 2)
-abline(a = coef(fit3)[1] + coef(fit3)[3],
-       b = coef(fit3)[2] + coef(fit3)[4],
-       lwd = 2, lty = 2)
-legend("topleft", legend = c("Group A", "Group B"),
-       pch = c(1, 19), bty = "n")
-```
-
-**Interpreting Software Output**
-
-In `summary(lm(...))`, each coefficient estimate answers a question about the conditional mean given the model terms included. Students should always ask:
-
-- what variables are being held fixed;
-- what is the reference category;
-- whether an interaction changes the meaning of the main effects;
-- whether zero is a meaningful baseline for interpretation.
-
-These questions matter more than memorizing formulas.
-
-**In-Class Discussion Questions**
-
-1. Why can the coefficient of a predictor change when a second predictor is added to the model?
-2. Why do we need a reference category for categorical predictors?
-3. How does an interaction change the interpretation of a main effect?
-4. When might centring a predictor improve interpretation?
-
-## Practice Problems
-
-**Conceptual**
-
-1. Explain the meaning of a partial regression coefficient in your own words.
-2. Explain the difference between a marginal association and an adjusted association.
-3. Explain why a model with an interaction requires more careful interpretation than an additive model.
-
-**Computational**
-
-Suppose the fitted model is
+The unadjusted height coefficient is about **1.543** cubic feet per foot. The adjusted coefficient is about **0.339**: among trees of the same diameter, one additional foot of height is associated with 0.339 more cubic feet of fitted mean volume. The fitted multiple regression equation is
 
 $$
-\hat{Y} = 10 + 2x_1 - 3x_2.
+\widehat{\mathrm{Volume}}
+=-57.988+0.339\,\mathrm{Height}+4.708\,\mathrm{Diameter}.
 $$
 
-1. Interpret the coefficient of $x_1$.
-2. Interpret the coefficient of $x_2$.
-3. Compute the fitted mean response when $x_1 = 4$ and $x_2 = 1$.
+These slopes answer different questions. The multiple-regression height coefficient is also the coefficient tested when Chapter 4 compared the diameter-only model with the diameter-plus-height model.
 
-Now suppose the fitted model is
+:::
+
+::: {.callout-important title="Adjustment, overlap, and causal interpretation"}
+
+“Holding diameter fixed” describes a comparison in the mean model; it does not mean an experiment made the same tree taller. An adjusted association is not automatically causal. A causal interpretation needs a defensible design and additional assumptions.
+
+Also inspect which predictor combinations occur. If two predictors nearly move together, the data provide little information about changing one while holding the other fixed. Exact linear dependence causes rank deficiency; strong but imperfect dependence can inflate coefficient uncertainty. Detailed diagnostics come later.
+
+:::
+
+::: {#exr-ch5-adjusted-interpretation}
+
+## In Class: Interpret 0.339
+
+Which interpretation matches the adjusted height coefficient?
+
+A. Increasing any tree's height by one foot causes its volume to increase by 0.339 cubic feet.
+
+B. At the same diameter, a one-foot height difference corresponds to a 0.339-cubic-foot difference in fitted mean volume.
+
+C. Every tree one foot taller has exactly 0.339 more cubic feet of observed volume.
+
+:::
+
+::: {#sol-ch5-adjusted-interpretation}
+
+**B.** The coefficient describes an adjusted mean association. It is neither an automatic causal effect nor an exact difference between individual responses.
+
+:::
+
+## Categorical predictors are columns of a design matrix {#sec-ch5-factor-coding}
+
+A categorical variable records group membership. Its labels do not supply numerical distances. Coding three unordered groups as 1, 2, and 3 and fitting one slope would impose equally spaced means; that is a modelling restriction, not a neutral relabeling.
+
+::: {#def-ch5-treatment-coding}
+
+## Reference-Group Indicator Coding
+
+For a factor with $g$ observed levels, choose one reference level. With an intercept, use $g-1$ indicators for the remaining levels. For levels A, B, and C with A as reference, let
 
 $$
-\hat{Y} = 20 + 5x + 7z - 2xz,
+D_{Bi}=\mathbb 1\{G_i=\mathrm B\},\qquad
+D_{Ci}=\mathbb 1\{G_i=\mathrm C\}.
 $$
 
-where $z$ is binary.
+Then
 
-1. Write the fitted mean function when $z=0$.
-2. Write the fitted mean function when $z=1$.
-3. Interpret the interaction coefficient.
+$$
+\mathbb E(Y_i\mid G_i)=\beta_0+\beta_BD_{Bi}+\beta_CD_{Ci}.
+$$
 
-**Indicator Variable Problem**
+| Group | Row of $\mathbf X$ | Mean |
+|:---:|:---:|:---:|
+| A | $(1\;0\;0)$ | $\beta_0$ |
+| B | $(1\;1\;0)$ | $\beta_0+\beta_B$ |
+| C | $(1\;0\;1)$ | $\beta_0+\beta_C$ |
 
-A factor has four levels: A, B, C, and D.
+Thus $\beta_B=\mu_B-\mu_A$ and $\beta_C=\mu_C-\mu_A$. A comparison of B with C is $\beta_B-\beta_C$, not either coefficient alone.
 
-1. How many indicator variables are needed if the model includes an intercept?
-2. If A is the reference group, write a regression model using indicators for B, C, and D.
-3. State the expected response for each group.
+:::
 
-**Suggested Homework**
+For two observations from each group, ordered A, A, B, B, C, C,
 
-Complete the following tasks:
+$$
+\mathbf X=
+\begin{bmatrix}
+1&0&0\\1&0&0\\1&1&0\\1&1&0\\1&0&1\\1&0&1
+\end{bmatrix},\qquad p=3.
+$$
 
-- fit a multiple regression model with at least two continuous predictors and interpret all coefficients;
-- fit a model with one continuous predictor and one categorical predictor, then identify the reference category and explain all coefficients;
-- add an interaction term and compare the additive and interaction models;
-- use `model.matrix()` in R to inspect the design matrix for a model with factors;
-- write a short explanation of why coefficient interpretation changes when additional predictors are added.
+```{r}
+#| label: ch5-indicator-matrix
+ch5_groups <- data.frame(
+  group = factor(rep(c("A", "B", "C"), each = 2),
+                 levels = c("A", "B", "C")))
+contrasts(ch5_groups$group) <-
+  contr.treatment(levels(ch5_groups$group), base = 1)
+knitr::kable(model.matrix(~ group, data = ch5_groups),
+             row.names = FALSE)
+```
 
-**Summary**
+**Why not use all indicators with an intercept?** For every observation,
 
-In this chapter, we developed the interpretation of multiple regression models. We emphasized that:
+$$
+D_{Ai}+D_{Bi}+D_{Ci}=1.
+$$
 
-- regression coefficients in multiple regression are partial effects;
-- categorical predictors are incorporated through indicator variables;
-- interactions allow the effect of one predictor to depend on another;
-- the meaning of a coefficient depends on the full model specification.
+The intercept column is therefore the sum of the three indicator columns. Four written coefficients would represent only three independent columns. One alternative is to remove the intercept and use all three indicators:
 
-These ideas are essential for moving from formal least squares theory to practical statistical modelling.
+$$
+\mathbb E(Y_i\mid G_i)=\mu_AD_{Ai}+\mu_BD_{Bi}+\mu_CD_{Ci}.
+$$
+
+This **cell-means parameterization** describes the same set of mean vectors. In R it is `y ~ 0 + group`. Removing the intercept here does not force the group means to zero; the indicator columns already span the constant vector.
+
+::: {#exm-ch5-reference-change}
+
+## Different Coefficients, the Same Group Means
+
+Suppose the fitted means for A, B, and C are 18, 22, and 19.
+
+| Reference | Intercept | Other coefficients |
+|:---:|:---:|:---:|
+| A | 18 | B minus A: 4; C minus A: 1 |
+| B | 22 | A minus B: −4; C minus B: −3 |
+
+Changing the reference changes the coordinate system for the same fitted means. It does not change fitted values, residuals, SSE, or model rank. A coefficient test can nevertheless change because its named comparison has changed: B versus A is a different null hypothesis from C versus B.
+
+:::
+
+::: {#exr-ch5-rank}
+
+## In Class: Count Columns, Not Variable Names
+
+A model contains an intercept, two continuous predictors, and one four-level factor using reference coding. Assume all columns are independent and $n=40$.
+
+1. How many regression parameters are there?
+2. What are the residual degrees of freedom?
+3. Would replacing the three factor indicators by all four indicators while retaining the intercept add an identifiable parameter?
+
+:::
+
+::: {#sol-ch5-rank}
+
+There are $p=1+2+3=6$ parameters and $40-6=34$ residual degrees of freedom. **No:** all four indicators together with the intercept introduce a redundant column.
+
+:::
+
+## A continuous predictor and a group indicator {#sec-ch5-additive}
+
+We now follow one dataset through several models. R's `ToothGrowth` data record an odontoblast-length response from 60 guinea pigs. The predictors are vitamin C dose (0.5, 1, or 2 mg/day) and delivery method: orange juice (`OJ`) or ascorbic acid (`VC`). Each row is one animal. [Dataset documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html).
+
+**Question.** How does the mean response vary with dose, and is the OJ-minus-VC mean difference the same at every dose? We first describe fitted associations. The dataset documentation alone is not a complete account of randomization or of all conditions needed for a causal conclusion.
+
+```{r}
+#| label: ch5-tooth-data
+ch5_tooth <- datasets::ToothGrowth
+ch5_tooth$supp <- factor(ch5_tooth$supp, levels = c("VC", "OJ"))
+ch5_tooth$dose_c <- ch5_tooth$dose - 1
+ch5_tooth$dose_f <- factor(ch5_tooth$dose, levels = c(0.5, 1, 2))
+contrasts(ch5_tooth$supp) <-
+  contr.treatment(levels(ch5_tooth$supp), base = 1)
+contrasts(ch5_tooth$dose_f) <-
+  contr.treatment(levels(ch5_tooth$dose_f), base = 1)
+stopifnot(!anyNA(ch5_tooth))
+ch5_cell_summary <- aggregate(
+  len ~ supp + dose, data = ch5_tooth,
+  FUN = function(y) c(n = length(y), mean = mean(y)))
+ch5_summary_table <- data.frame(ch5_cell_summary[1:2],
+                                 ch5_cell_summary$len)
+knitr::kable(ch5_summary_table, digits = 2,
+  col.names = c("Method", "Dose (mg/day)", "n", "Mean length"))
+```
+
+Both delivery methods are observed at each of the three doses, with 10 animals per combination. This gives overlap for comparing methods at those doses. It does not supply observations at every dose between them or outside the observed range.
+
+::: {#def-ch5-additive-model}
+
+## Additive Continuous-by-Group Model
+
+Let $x$ be dose, $x_c=x-1$, and $z=\mathbb 1\{\mathrm{OJ}\}$. The additive model is
+
+$$
+\mu(x,z)=\beta_0+\beta_x x_c+\beta_g z.
+$$
+
+| Method | Mean function | Slope in dose |
+|:---:|:---:|:---:|
+| VC ($z=0$) | $\beta_0+\beta_x(x-1)$ | $\beta_x$ |
+| OJ ($z=1$) | $\beta_0+\beta_g+\beta_x(x-1)$ | $\beta_x$ |
+
+The two lines are parallel, and $\mu(x,1)-\mu(x,0)=\beta_g$ at every dose. The intercept is the VC mean at **1 mg/day**, because that is where $x_c=0$.
+
+:::
+
+```{r}
+#| label: ch5-additive-fit
+ch5_fit_add <- lm(len ~ dose_c + supp, data = ch5_tooth)
+knitr::kable(coef(summary(ch5_fit_add))[, 1:2], digits = 3,
+             col.names = c("Estimate", "Standard error"))
+```
+
+The fitted equation is
+
+$$
+\widehat\mu(x,z)=15.336+9.764(x-1)+3.700z.
+$$
+
+At a fixed delivery method, a one-mg/day dose increase is associated with 9.764 more units of fitted mean length under this linear model. At a fixed dose, the fitted OJ mean exceeds the VC mean by 3.700 units. Neither statement says that every individual response follows its fitted mean exactly.
+
+**Read the design matrix.** There are three columns: intercept, centered dose, and the OJ indicator. The table below shows one row for each predictor combination; the full matrix repeats each combination for 10 animals.
+
+```{r}
+#| label: ch5-additive-design
+ch5_profiles <- unique(ch5_tooth[, c("dose_c", "supp")])
+ch5_profile_order <- order(ch5_profiles$supp, ch5_profiles$dose_c)
+ch5_profiles <- ch5_profiles[ch5_profile_order, ]
+knitr::kable(model.matrix(~ dose_c + supp, data = ch5_profiles),
+             row.names = FALSE)
+```
+
+With full rank, this model has $p=3$ and $60-3=57$ residual degrees of freedom. Using numeric dose imposes a straight-line mean within each method; treating the same three doses as a factor permits a separate mean at each dose. We will compare those assumptions below.
+
+## Interactions and conditional comparisons {#sec-ch5-interaction}
+
+::: {#def-ch5-interaction}
+
+## Continuous-by-Group Interaction
+
+Add the product column $x_cz$:
+
+$$
+\mu(x,z)=\beta_0+\beta_x x_c+\beta_gz+\beta_{xg}x_cz.
+$$
+
+The design row is $(1\;x_c\;z\;x_cz)$, so this two-group model has four parameters when full rank.
+
+| Method | Mean function | Slope in dose |
+|:---:|:---:|:---:|
+| VC | $\beta_0+\beta_x(x-1)$ | $\beta_x$ |
+| OJ | $(\beta_0+\beta_g)+(\beta_x+\beta_{xg})(x-1)$ | $\beta_x+\beta_{xg}$ |
+
+The group difference at dose $x$ is
+
+$$
+\boxed{\Delta(x)=\mu(x,1)-\mu(x,0)=\beta_g+\beta_{xg}(x-1).}
+$$
+
+Thus $\beta_g$ is the group difference at 1 mg/day, and $\beta_{xg}$ is the OJ-minus-VC difference in slopes. An interaction means that one comparison depends on another predictor.
+
+:::
+
+```{r}
+#| label: ch5-interaction-fit
+ch5_fit_int <- lm(len ~ dose_c * supp, data = ch5_tooth)
+knitr::kable(coef(summary(ch5_fit_int))[, 1:2], digits = 3,
+             col.names = c("Estimate", "Standard error"))
+```
+
+R expands `dose_c * supp` into `dose_c + supp + dose_c:supp`; `:` denotes the interaction term. See the [R formula documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html). The fitted equation is
+
+$$
+\widehat\mu(x,z)=15.011+11.716(x-1)+4.351z-3.904(x-1)z.
+$$
+
+The VC slope is about 11.716, and the OJ slope is $\hat\beta_x+\hat\beta_{xg}\approx7.811$, using the unrounded estimates. The OJ-minus-VC difference is about 4.351 at 1 mg/day and 0.446 at 2 mg/day. A negative interaction coefficient means that the group difference decreases as dose increases; it does not mean that the OJ dose slope is negative.
+
+```{r}
+#| label: fig-ch5-parallel-versus-interaction
+#| echo: false
+#| fig-cap: "Additive and interaction fits to the same observations. Horizontal jitter separates overlapping points for display only; both models use the original doses. The additive model imposes parallel lines. The interaction model permits different slopes, while still requiring each method's mean to be linear in dose."
+#| fig-alt: "Two panels show length against vitamin C dose for VC and OJ. The additive fit has parallel lines; the interaction fit has a steeper VC line. Both panels display the same individual observations."
+#| fig-width: 7
+#| fig-height: 3.7
+set.seed(8561)
+ch5_xplot <- ch5_tooth$dose + runif(nrow(ch5_tooth), -0.035, 0.035)
+ch5_cols <- c(VC = "steelblue4", OJ = "darkorange3")
+ch5_pch <- c(VC = 16, OJ = 17)
+ch5_grid <- seq(0.5, 2, length.out = 100)
+ch5_op <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 0.5), mgp = c(2.5, 0.7, 0))
+for (model_name in c("Additive: common slope", "Interaction: two slopes")) {
+  fit <- if (startsWith(model_name, "Additive")) ch5_fit_add else ch5_fit_int
+  plot(ch5_xplot, ch5_tooth$len, xlim = c(0.4, 2.1), ylim = c(0, 37),
+       col = adjustcolor(ch5_cols[as.character(ch5_tooth$supp)], alpha.f = 0.6),
+       pch = ch5_pch[as.character(ch5_tooth$supp)], cex = 0.7,
+       xlab = "Dose (mg/day)", ylab = "Length (recorded scale)", main = model_name)
+  for (method in levels(ch5_tooth$supp)) {
+    new_data <- data.frame(dose_c = ch5_grid - 1,
+                          supp = factor(method, levels = levels(ch5_tooth$supp)))
+    lines(ch5_grid, predict(fit, newdata = new_data), col = ch5_cols[method], lwd = 2)
+  }
+  legend("topleft", names(ch5_cols), col = ch5_cols, pch = ch5_pch,
+         lty = 1, bty = "n", cex = 0.8)
+}
+par(ch5_op)
+```
+
+**Centering changes the baseline, not the fitted model.** Start with the uncentered expression $b_0+b_xx+b_gz+b_{xg}xz$. Substitute $x=x_c+c$ to obtain
+
+$$
+(b_0+cb_x)+b_xx_c+(b_g+cb_{xg})z+b_{xg}x_cz.
+$$
+
+Centering at $c$ changes the intercept to the reference-group mean at $c$ and the group coefficient to the difference at $c$. The group-specific slopes, fitted means, residuals, and SSE stay the same when all the corresponding terms are retained.
+
+```{r}
+#| label: ch5-centering-check
+ch5_fit_uncentered <- lm(len ~ dose * supp, data = ch5_tooth)
+knitr::kable(data.frame(
+  Parameterization = c("Raw dose (baseline: 0)",
+                       "Centered dose (baseline: 1)"),
+  Group_coefficient = c(coef(ch5_fit_uncentered)["suppOJ"],
+                         coef(ch5_fit_int)["suppOJ"])), digits = 3,
+  col.names = c("Parameterization", "OJ coefficient"),
+  row.names = FALSE)
+stopifnot(isTRUE(all.equal(unname(fitted(ch5_fit_uncentered)),
+                          unname(fitted(ch5_fit_int)))))
+```
+
+Zero dose was not observed. Centering at an observed dose gives the group coefficient a more directly supported meaning. It does not establish linearity or create additional observations.
+
+::: {.callout-important title="Keep the lower-order terms when interpreting an interaction"}
+
+A model such as `dose_c * supp` includes both main effects and their interaction. Do not remove a main effect merely because its coefficient has a large p-value in the interaction model. That coefficient concerns a particular baseline, and dropping it imposes a constraint that can depend on the choice of center or reference group. Start with the scientific restriction you intend to test.
+
+:::
+
+**Other interactions.** For two continuous predictors, $\mu=\beta_0+\beta_1x_1+\beta_2x_2+\beta_{12}x_1x_2$ has slope $\beta_1+\beta_{12}x_2$ in $x_1$. For two factors with $a$ and $b$ levels and all cells observed, reference coding uses $(a-1)(b-1)$ interaction columns. With all main effects, there are $1+(a-1)+(b-1)+(a-1)(b-1)=ab$ parameters, one mean per cell. The same principle applies: a comparison varies with another predictor.
+
+::: {#exr-ch5-interaction-interpretation}
+
+## In Class: Which Difference Is Six?
+
+Suppose $x_c=x-1$ and $\widehat\mu=10+2x_c+6z-x_cz$.
+
+1. What is the slope for $z=1$?
+2. At which original $x$ value is the group difference 6?
+3. What is the group difference at $x=3$?
+
+:::
+
+::: {#sol-ch5-interaction-interpretation}
+
+The slope for $z=1$ is $2-1=1$. The group difference is 6 at $x=1$, where $x_c=0$. At $x=3$, $x_c=2$ and the difference is $6-2=4$.
+
+:::
+
+## Match the hypothesis to the model comparison {#sec-ch5-comparisons}
+
+The [partial F test from Chapter 4](04.qmd#thm-partial-f) compares nested mean spaces on the **same observations**:
+
+$$
+F=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}
+        {\mathrm{SSE}_F/(n-p_F)}.
+$$
+
+Under the reduced model and the stated normal, constant-variance error assumptions, the reference distribution is $F_{p_F-p_R,n-p_F}$. These comparisons answer different questions:
+
+| Question | Reduced model | Full model | Numerator df |
+|----------------------------------------|-------------------------|-------------------------|:----------:|
+| Are the dose slopes equal? | `dose_c + supp` | `dose_c * supp` | 1 |
+| Are the two entire dose lines identical? | `dose_c` | `dose_c * supp` | 2 |
+| Is a straight line within each method adequate at the observed doses? | `dose_c * supp` | `dose_f * supp` | 2 |
+
+**Equal slopes.** The additive model sets $\beta_{xg}=0$. Comparing it with the interaction model tests whether the OJ-minus-VC difference is constant across dose under the two-line framework.
+
+```{r}
+#| label: ch5-equal-slopes-test
+anova(ch5_fit_add, ch5_fit_int)
+```
+
+The comparison has 1 numerator and 56 denominator degrees of freedom, with $F\approx5.334$ and $p\approx0.0246$. Under the model assumptions, this is evidence against equal slopes. It is not a test that the two groups have identical means at every dose.
+
+**Identical lines.** For the two lines to coincide, both $\beta_g=0$ and $\beta_{xg}=0$ must hold. A single p-value for `suppOJ` tests only the difference at the centering dose. Test the two restrictions together instead:
+
+```{r}
+#| label: ch5-identical-lines-test
+ch5_fit_dose <- lm(len ~ dose_c, data = ch5_tooth)
+anova(ch5_fit_dose, ch5_fit_int)
+```
+
+**Check the straight-line restriction.** Dose takes three numerical values; the two-line model constrains each group's three fitted means to lie on a line. A factor-dose-by-method model estimates all six cell means:
+
+```{r}
+#| label: ch5-dose-shape-test
+ch5_fit_cells <- lm(len ~ dose_f * supp, data = ch5_tooth)
+ch5_fits <- list(Additive = ch5_fit_add, Interaction = ch5_fit_int,
+                 `Six cell means` = ch5_fit_cells)
+knitr::kable(data.frame(
+  Model = names(ch5_fits),
+  p = vapply(ch5_fits, function(fit) fit$rank, numeric(1)),
+  Residual_df = vapply(ch5_fits, df.residual, numeric(1)),
+  SSE = vapply(ch5_fits, deviance, numeric(1))),
+  digits = 2, row.names = FALSE,
+  col.names = c("Model", "p", "Residual df", "SSE"))
+anova(ch5_fit_int, ch5_fit_cells)
+```
+
+The six-cell model has $p=6$ and 54 residual degrees of freedom. The comparison adds two independent directions, one departure from a straight line for each method's three means. Here $F\approx8.399$ and $p\approx0.000667$ provide evidence against the straight-line restriction under the common-variance normal model. The fitted lines were useful for learning coefficient interpretation; this check shows why their shape should not be accepted automatically for these data.
+
+```{r}
+#| label: fig-ch5-dose-shape
+#| echo: false
+#| fig-cap: "Cell means and the two-line fit. Points are the observed mean responses at each method-dose combination. The six-cell model reproduces these means; the straight lines impose additional restrictions. No observations outside 0.5–2 mg/day are shown."
+#| fig-alt: "For each delivery method, three cell means are plotted against dose and compared with its fitted straight line. The means at 1 mg/day lie above the fitted lines."
+#| fig-width: 6.5
+#| fig-height: 3.8
+ch5_means <- aggregate(len ~ dose + supp, data = ch5_tooth, mean)
+plot(NA, xlim = c(0.4, 2.1), ylim = c(5, 30), xlab = "Dose (mg/day)",
+     ylab = "Mean length (recorded scale)")
+for (method in levels(ch5_tooth$supp)) {
+  rows <- ch5_means$supp == method
+  points(ch5_means$dose[rows], ch5_means$len[rows],
+         pch = ch5_pch[method], col = ch5_cols[method], cex = 1.2)
+  new_data <- data.frame(dose_c = ch5_grid - 1,
+                        supp = factor(method, levels = levels(ch5_tooth$supp)))
+  lines(ch5_grid, predict(ch5_fit_int, newdata = new_data),
+        col = ch5_cols[method], lwd = 2)
+}
+legend("topleft", names(ch5_cols), col = ch5_cols, pch = ch5_pch,
+       lty = 1, bty = "n")
+```
+
+::: {.callout-note title="A factor is a block of columns"}
+
+The three-level `dose_f` main effect uses two columns. The `dose_f:supp` interaction uses two more. A scientific test concerning an entire factor or interaction may therefore require a joint test, rather than selecting one printed coefficient p-value. Always count independent restrictions and use the full model's residual degrees of freedom.
+
+:::
+
+## Coding checks and the bridge to contrasts {#sec-ch5-coding-checks}
+
+R's [`model.matrix()`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/model.matrix.html) reveals the columns created by a formula. Use it to connect the software coefficients to your written mean model.
+
+```{r}
+#| label: ch5-interaction-design
+knitr::kable(model.matrix(~ dose_c * supp, data = ch5_profiles),
+             row.names = FALSE)
+```
+
+The last column is the product of centered dose and the OJ indicator. It is zero for every VC observation; it changes the OJ slope relative to VC.
+
+**Verify a reference change.** Refit with OJ as the reference while retaining the same model terms and observations:
+
+```{r}
+#| label: ch5-reference-check
+ch5_relevel <- ch5_tooth
+ch5_relevel$supp <- relevel(ch5_relevel$supp, ref = "OJ")
+contrasts(ch5_relevel$supp) <-
+  contr.treatment(levels(ch5_relevel$supp), base = 1)
+ch5_fit_ojref <- lm(len ~ dose_c * supp, data = ch5_relevel)
+knitr::kable(data.frame(
+  Reference = c("VC", "OJ"),
+  Intercept = c(coef(ch5_fit_int)[1], coef(ch5_fit_ojref)[1]),
+  Dose_slope = c(coef(ch5_fit_int)[2], coef(ch5_fit_ojref)[2]),
+  SSE = c(deviance(ch5_fit_int), deviance(ch5_fit_ojref))),
+  digits = 3, row.names = FALSE)
+stopifnot(isTRUE(all.equal(unname(fitted(ch5_fit_int)),
+                          unname(fitted(ch5_fit_ojref)))))
+```
+
+The intercept now describes OJ at 1 mg/day, and the dose coefficient is the OJ slope. The fitted values and SSE agree with the VC-reference fit because the two design matrices span the same column space.
+
+**Express a comparison before calculating it.** In the VC-reference interaction model, order the coefficient vector as $(\beta_0,\beta_x,\beta_g,\beta_{xg})$. The OJ-minus-VC comparison at dose $x_0$ is
+
+$$
+\Delta(x_0)=\boldsymbol\ell^\top\boldsymbol\beta,
+\qquad \boldsymbol\ell=(0,0,1,x_0-1).
+$$
+
+Here the comma-separated tuple denotes a column vector, as in Chapter 4. At $x_0=1$, the comparison is $\beta_g$; at $x_0=2$, it is $\beta_g+\beta_{xg}$. The linear-combination machinery from Chapter 3 therefore applies. Its standard error uses the full coefficient covariance matrix, including the covariance between the group and interaction estimates. Chapter 6 develops these comparisons, coding invariance, and the distinction between one comparison and a family of comparisons.
+
+## Concept checks and practice {#sec-ch5-practice}
+
+::: {#exr-ch5-concept-checks}
+
+## Concept Check: Choose or Mark True/False
+
+1. **T/F.** A multiple-regression coefficient always has the same interpretation as the slope in a simple regression using that predictor alone.
+2. **Multiple choice.** With an intercept, a three-level factor normally contributes **(A)** one, **(B)** two, or **(C)** three independent indicator columns.
+3. **T/F.** Reversing the reference category, while preserving the same model space, changes fitted values and SSE.
+4. **Multiple choice.** In a binary-group interaction model centered at $x=1$, the group coefficient compares the groups **(A)** at every $x$, **(B)** at $x=0$, or **(C)** at $x=1$.
+5. **T/F.** A negative interaction coefficient implies a negative slope in the non-reference group.
+6. **Multiple choice.** Testing identical lines requires **(A)** the interaction coefficient alone, **(B)** the group and interaction coefficients jointly, or **(C)** the intercept alone to be zero.
+7. **T/F.** Replacing numeric dose by a three-level factor merely renames the coefficients and must preserve the fitted means.
+8. **T/F.** Failing to reject equal slopes proves that the two population slopes are exactly equal.
+
+:::
+
+::: {#sol-ch5-concept-checks}
+
+| Item | Answer | Reason |
+|:---:|:---:|-------------------------------------------------------|
+| 1 | F | Adjustment changes the comparison. |
+| 2 | B | One level serves as the reference. |
+| 3 | F | The fitted mean space is unchanged. |
+| 4 | C | The group coefficient is evaluated at centered dose zero. |
+| 5 | F | Add the interaction coefficient to the reference-group slope. |
+| 6 | B | Both intercept difference and slope difference must vanish. |
+| 7 | F | A factor can relax the straight-line restriction. |
+| 8 | F | Non-rejection is not proof of equality. |
+
+:::
+
+::: {#exr-ch5-model-comparison-practice}
+
+## Practice: State the Restrictions and Degrees of Freedom
+
+Consider $n=48$ observations, a binary group $z$, and a continuous predictor $x$. Assume the relevant design matrices have full rank and the normal-model assumptions hold. The full model is $\mu=\beta_0+\beta_xx+\beta_gz+\beta_{xg}xz$.
+
+1. Write the null hypothesis for parallel lines and give both F degrees of freedom.
+2. Write the null hypothesis for identical lines and give both F degrees of freedom.
+3. Express the group difference at $x=2$ as a linear combination of coefficients.
+4. If the full model has SSE 440 and the additive model has SSE 500, compute the partial F statistic for equal slopes.
+
+:::
+
+::: {#sol-ch5-model-comparison-practice}
+
+1. $H_0:\beta_{xg}=0$; degrees of freedom $(1,44)$.
+2. $H_0:\beta_g=\beta_{xg}=0$; degrees of freedom $(2,44)$.
+3. $\Delta(2)=\beta_g+2\beta_{xg}$, with column vector $\boldsymbol\ell=(0,0,1,2)$ in the displayed coefficient order.
+4. $F=\{(500-440)/1\}/(440/44)=6$.
+
+:::
+
+**Summary.** The model's columns determine what its coefficients mean. An additive slope is an adjusted mean comparison; factor coefficients depend on a reference group; an interaction makes a comparison depend on another predictor. Centering and releveling preserve fitted values when they only reparameterize the same mean space. Changing the mean space, such as relaxing a straight-line restriction, is a substantive modelling decision that can be assessed with the nested-model tools from Chapter 4.
