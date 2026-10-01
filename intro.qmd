@@ -4,7 +4,7 @@ This course develops a common language for statistical modelling: specify the re
 
 The core sequence covers matrix notation and least squares; normal distributions and quadratic forms; inference and model comparison; categorical predictors, contrasts, and experimental design; diagnostics, transformations, and weighting; and an introduction to generalized linear models for binary and count responses.
 
-The final GLM unit keeps the same linear predictor while extending the response distribution and mean link. Logistic and Poisson regression provide practical examples. The **Optional Topics** group contains supplementary material on rank-deficient models, automatic selection, correlated errors/GLS, GLM likelihood and computation, quantile regression, and mixed-effects models. Quantile regression and mixed-effects models are self-study readings for students who want to explore distributional features or grouped observations.
+The final GLM unit keeps the same linear predictor while extending the response distribution and mean link. Logistic and Poisson regression provide practical examples. The **Optional topic** group contains supplementary material on rank-deficient models, automatic selection, correlated errors/GLS, GLM likelihood and computation, quantile regression, and mixed-effects models. Quantile regression and mixed-effects models are self-study readings for students who want to explore distributional features or grouped observations.
 
 Lectures, homework, two in-class exams, and a final assessment develop both mathematical reasoning and reproducible analysis in R. Core tasks include interpreting estimates and intervals, identifying the experimental unit, and explaining the limits of an analysis.
 

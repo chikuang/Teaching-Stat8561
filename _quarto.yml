@@ -24,7 +24,7 @@ book:
     - 09.qmd
     - 10.qmd
     - 11.qmd
-    - part: "Optional Topics"
+    - part: "Optional topic"
       chapters:
         - App_B-linear-model-extensions.qmd
         - App_C-model-selection.qmd

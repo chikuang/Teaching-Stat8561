@@ -6,7 +6,7 @@ engine: knitr
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are collected under **Optional Topics**.
+The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are collected under **Optional topic**.
 
 **Prerequisites**
 
@@ -64,7 +64,7 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 11 | [Introduction to Generalized Linear Models](11.qmd) | TBA |
 <!-- Future lecture coverage will be updated after class. -->
 
-**Optional Topics**
+**Optional topic**
 
 Students interested in extensions can read [Quantile Regression](App_F-quantile-regression.qmd) and [Mixed-Effects Models](App_G-mixed-effects.qmd). These readings include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.
 
