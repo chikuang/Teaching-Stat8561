@@ -6,7 +6,11 @@ The logical order is **normal variables $\longrightarrow$ sums of squares $\long
 
 ## Chi-square: a sum of squared standard normals {#sec-bms-chi-square .unnumbered}
 
-**Construction and interpretation.** If $Z_1,\ldots,Z_r$ are independent $N(0,1)$ variables, then
+::: {#def-bms-chi-square}
+
+## Chi-square distribution
+
+If $Z_1,\ldots,Z_r$ are independent $N(0,1)$ variables, then
 
 $$
 U=\sum_{j=1}^{r}Z_j^2\sim\chi^2_r.
@@ -22,7 +26,11 @@ This is a gamma density with shape $r/2$ and **scale** $2$. Here
 $\Gamma(a)=\int_0^\infty x^{a-1}e^{-x}\,dx$ for $a>0$.
 For the sum-of-squares construction, $r$ is a positive integer; the density also defines $\chi^2_r$ for any real $r>0$.
 
-**Proof of the density via moment-generating functions.** For $s<1/2$,
+:::
+
+::: {.callout-note icon="false" title="Proof: chi-square density and moments"}
+
+For $s<1/2$,
 
 $$
 \begin{aligned}
@@ -57,15 +65,25 @@ $$
 
 In particular, $U/r$ has mean $1$ and variance $2/r$: it estimates a unit variance more stably as the degrees of freedom increase.
 
+:::
+
 ## Why normal quadratic forms are chi-square {#sec-bms-quadratic-forms .unnumbered}
 
-**Result.** Let $\mathbf Z\sim N_n(\mathbf0,\mathbf I_n)$, and let $\mathbf A$ be symmetric and idempotent, with rank $r\geq1$. Then
+::: {#thm-bms-quadratic-form}
+
+## Normal quadratic forms
+
+Let $\mathbf Z\sim N_n(\mathbf0,\mathbf I_n)$, and let $\mathbf A$ be symmetric and idempotent, with rank $r\geq1$. Then
 
 $$
 \boxed{\mathbf Z^\top\mathbf A\mathbf Z\sim\chi^2_r.}
 $$
 
-**Proof.** The spectral theorem gives an orthogonal matrix $\mathbf Q$ such that
+:::
+
+::: {.callout-note icon="false" title="Proof: normal quadratic forms"}
+
+The spectral theorem gives an orthogonal matrix $\mathbf Q$ such that
 
 $$
 \mathbf A=\mathbf Q\operatorname{diag}(\mathbf I_r,\mathbf0)\mathbf Q^\top.
@@ -81,7 +99,13 @@ $$
 
 Geometrically, $\mathbf A$ projects onto an $r$-dimensional subspace. The quadratic form is the squared length of the projected normal vector. If $r=0$, it is identically zero rather than having a positive-degree chi-square density.
 
-**Application to residual variation.** Throughout the regression applications, assume
+:::
+
+::: {#cor-bms-residual-variation}
+
+## Residual variation in the normal linear model
+
+Throughout the regression applications, assume
 
 $$
 \mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon,
@@ -108,7 +132,13 @@ $$
 
 Consequently, $\hat\sigma^2=\mathrm{SSE}/\nu$ is unbiased for $\sigma^2$.
 
-**Why the independence needed below holds.** Both $\hat{\boldsymbol\beta}-\boldsymbol\beta=\mathbf V\mathbf X^\top\boldsymbol\varepsilon$ and $\mathbf e=\mathbf M\boldsymbol\varepsilon$ are jointly normal, and
+:::
+
+::: {#prp-bms-ols-residual-independence}
+
+## Independence of OLS estimates and residual variation
+
+Both $\hat{\boldsymbol\beta}-\boldsymbol\beta=\mathbf V\mathbf X^\top\boldsymbol\varepsilon$ and $\mathbf e=\mathbf M\boldsymbol\varepsilon$ are jointly normal, and
 
 $$
 \operatorname{Cov}(\hat{\boldsymbol\beta},\mathbf e)
@@ -117,9 +147,15 @@ $$
 
 A jointly normal vector with zero cross-covariance has a characteristic function that factors into the two marginal characteristic functions. Thus these vectors are independent, even though the residual covariance is singular. Since $\mathrm{SSE}=\mathbf e^\top\mathbf e$, $\hat{\boldsymbol\beta}$ and $\mathrm{SSE}$ are independent. Zero covariance alone would not suffice without joint normality.
 
+:::
+
 ## Student's t: estimating an unknown scale {#sec-bms-student-t .unnumbered}
 
-**Construction and interpretation.** Let $Z\sim N(0,1)$ and $U\sim\chi^2_\nu$ be independent, with $\nu>0$. Then
+::: {#def-bms-student-t}
+
+## Student's t distribution
+
+Let $Z\sim N(0,1)$ and $U\sim\chi^2_\nu$ be independent, with $\nu>0$. Then
 
 $$
 \boxed{T=\frac{Z}{\sqrt{U/\nu}}\sim t_\nu.}
@@ -127,7 +163,11 @@ $$
 
 The denominator is a random estimate of a standard deviation. It can be small, producing larger standardized values than a normal denominator fixed at $1$ would produce. The result is a symmetric density with heavier tails than the standard normal density.
 
-**Proof by a change of variables.** Use $t=z/\sqrt{u/\nu}$ and retain $u$. The inverse map and absolute Jacobian determinant are
+:::
+
+::: {.callout-note icon="false" title="Proof: Student t density"}
+
+Use $t=z/\sqrt{u/\nu}$ and retain $u$. The inverse map and absolute Jacobian determinant are
 
 $$
 z=t\sqrt{u/\nu},\qquad
@@ -158,7 +198,13 @@ $$
 
 This is the Student $t$ density. Its dependence on $t^2$ proves symmetry. Its tails decay polynomially, as $|t|^{-(\nu+1)}$, rather than exponentially as for a normal density. Also, $\operatorname{Var}(U/\nu)=2/\nu\to0$, so $U/\nu\to1$ in probability and $t_\nu$ approaches $N(0,1)$ as $\nu\to\infty$.
 
-**Application to a regression contrast.** For any fixed nonzero $\mathbf a\in\mathbb R^p$, let $v_a=\mathbf a^\top\mathbf V\mathbf a>0$. Then
+:::
+
+::: {#cor-bms-regression-contrast}
+
+## Student t inference for a regression contrast
+
+For any fixed nonzero $\mathbf a\in\mathbb R^p$, let $v_a=\mathbf a^\top\mathbf V\mathbf a>0$. Then
 
 $$
 Z=\frac{\mathbf a^\top\hat{\boldsymbol\beta}-\mathbf a^\top\boldsymbol\beta}
@@ -175,9 +221,15 @@ $$
 
 Under $H_0:\mathbf a^\top\boldsymbol\beta=d$, replace the true contrast in the numerator by $d$. Choosing a coordinate vector for $\mathbf a$ gives the usual coefficient $t$ test.
 
+:::
+
 ## F: comparing two independent sums of squares {#sec-bms-f .unnumbered}
 
-**Construction and interpretation.** If $U_1\sim\chi^2_r$ and $U_2\sim\chi^2_\nu$ are independent, with $r,\nu>0$, then
+::: {#def-bms-f-distribution}
+
+## F distribution
+
+If $U_1\sim\chi^2_r$ and $U_2\sim\chi^2_\nu$ are independent, with $r,\nu>0$, then
 
 $$
 \boxed{F=\frac{U_1/r}{U_2/\nu}\sim F_{r,\nu}.}
@@ -185,7 +237,11 @@ $$
 
 The two degrees of freedom have different roles: $r$ belongs to the numerator and $\nu$ to the denominator. Both normalized sums of squares have expectation $1$. Their ratio is positive and can be large when the numerator is unusually large or the denominator is small. The ratio itself does not have mean $1$: its mean is $\nu/(\nu-2)$ when $\nu>2$.
 
-**Proof by a change of variables.** Put $a=r/2$, $b=\nu/2$, and $c=r/\nu$. Transform $(U_1,U_2)$ to $(F,V)$, where $V=U_2$. The inverse map is
+:::
+
+::: {.callout-note icon="false" title="Proof: F density"}
+
+Put $a=r/2$, $b=\nu/2$, and $c=r/\nu$. Transform $(U_1,U_2)$ to $(F,V)$, where $V=U_2$. The inverse map is
 
 $$
 u_1=cfv,\qquad u_2=v,\qquad f>0,\ v>0,
@@ -220,9 +276,19 @@ $$
 f^{r/2-1}\left(1+\frac r\nu f\right)^{-(r+\nu)/2},\quad f>0.}
 $$
 
-**Why the normalization matters.** The raw ratio $U_1/U_2$ equals $(r/\nu)F$, and hence is not generally $F_{r,\nu}$. Reversing the numerator and denominator gives $1/F\sim F_{\nu,r}$.
+:::
+
+::: {#bms-f-normalization .callout-note icon="false" title="Remark: normalization and order of the degrees of freedom"}
+
+The raw ratio $U_1/U_2$ equals $(r/\nu)F$, and hence is not generally $F_{r,\nu}$. Reversing the numerator and denominator gives $1/F\sim F_{\nu,r}$.
+
+:::
 
 ## Proof of the general linear hypothesis F test {#sec-bms-general-linear-hypothesis .unnumbered}
+
+::: {#thm-bms-general-linear-hypothesis}
+
+## F test for the general linear hypothesis
 
 Consider $H_0:\mathbf C\boldsymbol\beta=\mathbf d$, where $\mathbf C$ is $r\times p$ with row rank $r$, $1\leq r\leq p$, and $\mathbf d\in\mathbb R^r$. Keep the normal-model assumptions from the [normal quadratic-form section](#sec-bms-quadratic-forms), and write
 
@@ -230,6 +296,17 @@ $$
 \mathbf D=\mathbf C\mathbf V\mathbf C^\top,
 \qquad \mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d.
 $$
+
+Under $H_0$, the statistic
+
+$$
+F=\frac{\mathbf L^\top\mathbf D^{-1}\mathbf L}{r\hat\sigma^2}
+\sim F_{r,n-p}.
+$$
+
+:::
+
+::: {.callout-note icon="false" title="Proof: general linear hypothesis F test"}
 
 **Step 1: standardize the restrictions.** The matrix $\mathbf D$ is positive definite: for nonzero $\mathbf b$, full row rank implies $\mathbf C^\top\mathbf b\ne\mathbf0$, so
 $\mathbf b^\top\mathbf D\mathbf b=(\mathbf C^\top\mathbf b)^\top\mathbf V(\mathbf C^\top\mathbf b)>0$.
@@ -260,7 +337,13 @@ $$
 
 Substituting $\mathbf L=\mathbf C\hat{\boldsymbol\beta}-\mathbf d$ and $\mathbf D=\mathbf C(\mathbf X^\top\mathbf X)^{-1}\mathbf C^\top$ recovers the statistic in [Chapter 3 — Distribution Theory of OLS and Inference, Section 3.8: General Linear Hypotheses](03_OLS_inference.qmd#general-linear-hypotheses). Thus $r$ counts the independent restrictions and $n-p$ counts residual degrees of freedom. Large values indicate a departure from $H_0$; a level-$\alpha$ test rejects when $F>F_{1-\alpha;r,n-p}$, where the right-hand side is an upper quantile. The central $F$ law above is a null distribution; under an alternative the numerator is generally noncentral chi-square.
 
-**Why $T^2=F$ for one restriction.** When $r=1$ and $\mathbf C=\mathbf a^\top$,
+:::
+
+::: {#cor-bms-t-squared-f}
+
+## The identity $T^2=F$ for one restriction
+
+When $r=1$ and $\mathbf C=\mathbf a^\top$,
 
 $$
 F=\frac{(\mathbf a^\top\hat{\boldsymbol\beta}-d)^2}
@@ -269,9 +352,15 @@ $$
 
 Equivalently, squaring the defining ratio for $T$ gives $T^2=(Z^2/1)/(U/\nu)$, and $Z^2\sim\chi^2_1$ independently of $U$. Hence $T^2\sim F_{1,\nu}$. The upper-tail $F$ test matches the **two-sided** $t$ test, not a one-sided test.
 
+:::
+
 ## A compact regression example and reading guide {#sec-bms-example .unnumbered}
 
-**Example.** Suppose the normal linear model has $n=20$ observations and $p=3$ coefficients, including an intercept. Then $\nu=17$. If $\mathrm{SSE}=34$, the observed variance estimate is $\hat\sigma^2=34/17=2$.
+::: {#exm-bms-regression}
+
+## Regression with 20 observations and 3 coefficients
+
+Suppose the normal linear model has $n=20$ observations and $p=3$ coefficients, including an intercept. Then $\nu=17$. If $\mathrm{SSE}=34$, the observed variance estimate is $\hat\sigma^2=34/17=2$.
 
 - The sampling law of $\mathrm{SSE}/\sigma^2$ is $\chi^2_{17}$; the observed value $34$ does not identify the unknown $\sigma^2$.
 - For $H_0:\beta_1=0$, suppose $\hat\beta_1=1.5$ and $V_{22}=0.05$ (the intercept is the first coordinate). Then
@@ -285,7 +374,13 @@ The null reference distributions are $t_{17}$ and $F_{1,17}$, respectively.
 
 - For a joint test of two independent restrictions, $r=2$. If the observed unscaled numerator quadratic form $\mathbf L^\top\mathbf D^{-1}\mathbf L$ is $12$, then $F=12/(2\times2)=3$, compared with $F_{2,17}$.
 
-**What to check before using these results.** Confirm the normal-model assumptions, the rank of the projection or restriction matrix, the residual degrees of freedom, and the required independence. A symmetric matrix alone is not enough for the quadratic-form chi-square result: idempotence is also needed. Likewise, correct marginal distributions alone do not establish a $t$ or $F$ ratio law.
+:::
+
+::: {.callout-important icon="false" title="What to check before using these results"}
+
+Confirm the normal-model assumptions, the rank of the projection or restriction matrix, the residual degrees of freedom, and the required independence. A symmetric matrix alone is not enough for the quadratic-form chi-square result: idempotence is also needed. Likewise, correct marginal distributions alone do not establish a $t$ or $F$ ratio law.
+
+:::
 
 **Reference books.**
 
