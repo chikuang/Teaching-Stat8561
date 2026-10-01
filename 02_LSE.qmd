@@ -1373,6 +1373,11 @@ $$
 **R calculation**
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 # Define X and Y
 X <- matrix(
   c(
@@ -2484,18 +2489,13 @@ round(M %*% Y - e, 10)
 Finally, plot the fitted regression line:
 
 ```{r}
-plot(
-  x,
-  y,
-  pch = 19,
-  xlab = "x",
-  ylab = "y"
-)
-
-abline(
-  fit,
-  lwd = 2
-)
+#| label: fig-lse-fitted-line
+#| fig-cap: "The least-squares line for the four-observation example."
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2.5) +
+  geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2],
+              colour = "steelblue4", linewidth = 0.8) +
+  labs(x = "x", y = "y")
 ```
 
 :::

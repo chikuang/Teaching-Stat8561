@@ -1,3 +1,9 @@
+---
+execute:
+  freeze: false
+  cache: false
+---
+
 # Diagnostics and Model Adequacy {#sec-diagnostics}
 
 In this chapter, we study how to assess whether a fitted linear regression model is adequate. After learning estimation, inference, ANOVA, and interpretation, we now turn to model checking. The main tools are residuals, diagnostic plots, and numerical measures that help identify nonlinearity, unequal variance, outliers, and influential observations.
@@ -337,6 +343,11 @@ This is a good example for discussing the difference between an outlier and an i
 **Fit a simple model**
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 x <- 1:8
 y <- c(2, 4, 5, 8, 10, 11, 13, 25)
 
@@ -348,16 +359,27 @@ summary(fit)
 **Scatterplot with fitted line**
 
 ```{r}
-plot(dat$x, dat$y, pch = 19, xlab = "x", ylab = "y")
-abline(fit, lwd = 2)
+#| label: fig-diagnostic-scatterplot
+#| fig-cap: "Eight observations and the fitted line. The observation at x = 8 motivates a closer look at residuals and influence."
+ggplot(dat, aes(x, y)) +
+  geom_point(size = 2.5) +
+  geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2],
+              colour = "steelblue4", linewidth = 0.8) +
+  labs(x = "x", y = "y")
 ```
 
-**Residual plots from base R**
+**Residual plots with ggplot2**
+
+The helper below uses `ggplot2` for the plots and `patchwork` to arrange them. Install `patchwork` once with `install.packages("patchwork")` if needed. It draws residuals versus fitted values, a normal Q-Q plot, a scale-location plot, and standardized residuals versus leverage. The last panel includes Cook's-distance contours; labels identify the three observations with the largest Cook's distances. For weighted least squares, the first panel uses residuals multiplied by the square root of their weights. The other panels use standardized residuals computed for the fitted model.
+
+{{< include _diagnostic-plots.qmd >}}
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit)
-par(mfrow = c(1, 1))
+#| label: fig-08-diagnostics-fit
+#| fig-cap: "Diagnostic plots for the eight-observation example. The observation labels identify large Cook's distances."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit)
 ```
 
 **Extract basic diagnostics numerically**
@@ -384,6 +406,10 @@ which(cooks.distance(fit) > 4 / nrow(dat))
 **Example With Heteroscedasticity-Like Pattern**
 
 ```{r}
+#| label: fig-08-diagnostics-fit2
+#| fig-cap: "Diagnostics for simulated errors whose variance increases with x."
+#| fig-width: 7
+#| fig-height: 5.6
 set.seed(8561)
 x2 <- seq(1, 20, by = 1)
 y2 <- 5 + 2 * x2 + rnorm(length(x2), sd = x2 / 3)
@@ -391,14 +417,16 @@ y2 <- 5 + 2 * x2 + rnorm(length(x2), sd = x2 / 3)
 dat2 <- data.frame(x = x2, y = y2)
 fit2 <- lm(y ~ x, data = dat2)
 
-par(mfrow = c(2, 2))
-plot(fit2)
-par(mfrow = c(1, 1))
+lm_diagnostics(fit2)
 ```
 
 **Example With Curvature**
 
 ```{r}
+#| label: fig-08-diagnostics-fit3
+#| fig-cap: "Diagnostics when a straight-line mean is fitted to data with curvature."
+#| fig-width: 7
+#| fig-height: 5.6
 set.seed(8561)
 x3 <- seq(-3, 3, length.out = 40)
 y3 <- 2 + x3 + 1.5 * x3^2 + rnorm(length(x3), sd = 1)
@@ -406,9 +434,7 @@ y3 <- 2 + x3 + 1.5 * x3^2 + rnorm(length(x3), sd = 1)
 dat3 <- data.frame(x = x3, y = y3)
 fit3 <- lm(y ~ x, data = dat3)
 
-par(mfrow = c(2, 2))
-plot(fit3)
-par(mfrow = c(1, 1))
+lm_diagnostics(fit3)
 ```
 
 **Comparing a Linear and Quadratic Fit**
@@ -423,7 +449,7 @@ summary(fit3_quad)
 
 In practice, useful commands in R include:
 
-- `plot(fit)` for the standard diagnostic panel;
+- `lm_diagnostics(fit)` for the standard diagnostic panel;
 - `resid(fit)` for residuals;
 - `rstandard(fit)` for standardized residuals;
 - `rstudent(fit)` for studentized residuals;

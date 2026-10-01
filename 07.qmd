@@ -82,6 +82,11 @@ Comparing $Y\sim\text{block}$ with $Y\sim\text{block}+\text{treatment}$ tests tr
 :::
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 blocked <- data.frame(block = factor(rep(1:5, each = 3)),
                       unit = rep(1:3, 5))
@@ -103,10 +108,11 @@ anova(fit_block_only, fit_block_treatment)
 #| fig-cap: "Simulated responses within five blocks. Comparing treatments within the same block avoids attributing the large between-batch shifts to treatment. The connecting lines guide comparisons; the model does not assert a linear treatment scale."
 #| fig-width: 6
 #| fig-height: 4
-with(blocked, interaction.plot(treatment, block, y, type = "b", pch = 16,
-                               col = hcl.colors(5, "Dark 3"), lwd = 1.5,
-                               xlab = "Treatment", ylab = "Response",
-                               trace.label = "Block"))
+ggplot(blocked, aes(treatment, y, group = block, colour = block)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 2) +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(x = "Treatment", y = "Response", colour = "Block")
 ```
 
 A randomized complete design without blocks uses treatment alone. The same regression machinery handles either design, but the design and scientific question decide which comparison is meaningful.
@@ -480,8 +486,15 @@ anova(fit2_int)
 **Interaction plot**
 
 ```{r}
-with(dat2, interaction.plot(x.factor = B, trace.factor = A, response = y,
-                            fun = mean, type = "b", legend = TRUE))
+#| label: fig-factor-interaction
+#| fig-cap: "Observed cell means by factors A and B. Nonparallel lines suggest that the difference between B levels varies across A levels."
+cell_means <- aggregate(y ~ A + B, data = dat2, mean)
+ggplot(cell_means, aes(B, y, group = A, colour = A, shape = A)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2.5) +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(x = "Factor B", y = "Mean response", colour = "Factor A",
+    shape = "Factor A")
 ```
 
 **R Demonstration With ANCOVA**
@@ -507,18 +520,20 @@ anova(fit3, fit3_int)
 **Plot ANCOVA fit**
 
 ```{r}
-plot(dat3$x, dat3$y,
-     pch = ifelse(dat3$group == "Control", 1, 19),
-     xlab = "Covariate x",
-     ylab = "Response y")
-abline(a = coef(fit3)[1], b = coef(fit3)[2], lwd = 2)
-abline(a = coef(fit3)[1] + coef(fit3)[3], b = coef(fit3)[2],
-       lwd = 2, lty = 2)
-legend("topleft",
-       legend = c("Control", "Treatment"),
-       pch = c(1, 19),
-       lty = c(1, 2),
-       bty = "n")
+#| label: fig-ancova-fitted-lines
+#| fig-cap: "Observed responses and fitted parallel ANCOVA lines after adjusting for the continuous covariate."
+ancova_grid <- expand.grid(x = seq(min(dat3$x), max(dat3$x),
+  length.out = 100),
+                           group = levels(dat3$group))
+ancova_grid$fitted <- predict(fit3, newdata = ancova_grid)
+ggplot(dat3, aes(x, y, colour = group)) +
+  geom_point(aes(shape = group), alpha = 0.7, size = 2) +
+  geom_line(data = ancova_grid, aes(y = fitted, linetype = group),
+    linewidth = 0.8) +
+  scale_colour_manual(values = c(Control = "steelblue4",
+    Treatment = "darkorange3")) +
+  labs(x = "Covariate x", y = "Response y", colour = "Group", shape = "Group",
+       linetype = "Group")
 ```
 
 **Interpreting Software Output**

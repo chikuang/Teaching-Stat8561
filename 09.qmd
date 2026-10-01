@@ -1,3 +1,9 @@
+---
+execute:
+  freeze: false
+  cache: false
+---
+
 # Transformations and Weighted Least Squares {#sec-remedies}
 
 In this chapter, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from [Chapter 8 — Diagnostics and Model Adequacy](08.qmd), we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
@@ -380,6 +386,11 @@ This gives lower weight to high-variance observations and can produce more stabl
 **Generate heteroscedastic data**
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 x <- seq(1, 20, by = 1)
 y <- exp(1 + 0.12 * x + rnorm(length(x), sd = 0.25))
@@ -397,30 +408,51 @@ summary(fit_raw)
 summary(fit_log)
 ```
 
+**Diagnostic plots with ggplot2**
+
+We reuse the four-panel helper from [Chapter 8](08.qmd). For WLS, its weighted and standardized residuals account for the model's variance weights.
+
+{{< include _diagnostic-plots.qmd >}}
+
 **Diagnostic plots for the untransformed model**
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_raw)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-raw
+#| fig-cap: "Diagnostics on the original response scale."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_raw)
 ```
 
 **Diagnostic plots for the log-transformed model**
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_log)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-log
+#| fig-cap: "Diagnostics after fitting a linear model to log(y)."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_log)
 ```
 
 **Plot data on original and transformed scales**
 
 ```{r}
-plot(dat$x, dat$y, pch = 19, xlab = "x", ylab = "y")
-abline(fit_raw, lwd = 2)
-
-plot(dat$x, log(dat$y), pch = 19, xlab = "x", ylab = "log(y)")
-abline(fit_log, lwd = 2)
+#| label: fig-response-transformation
+#| fig-cap: "The original and log-transformed responses with their fitted lines. The vertical axes use different scales."
+#| fig-width: 7
+#| fig-height: 3.8
+scale_comparison <- rbind(
+  data.frame(x = dat$x, response = dat$y, fitted = fitted(fit_raw),
+    scale = "Original y"),
+  data.frame(x = dat$x, response = log(dat$y), fitted = fitted(fit_log),
+    scale = "log(y)"))
+scale_comparison$scale <- factor(scale_comparison$scale,
+  levels = c("Original y", "log(y)"))
+ggplot(scale_comparison, aes(x, response)) +
+  geom_point(size = 2) +
+  geom_line(aes(y = fitted), colour = "steelblue4", linewidth = 0.8) +
+  facet_wrap(~ scale, scales = "free_y", nrow = 1) +
+  labs(x = "x", y = "Response on the displayed scale")
 ```
 
 **R Demonstration With Weighted Least Squares**
@@ -448,28 +480,38 @@ summary(fit_wls)
 **Compare diagnostic plots**
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_ols)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-ols
+#| fig-cap: "OLS diagnostics for data with variance increasing in x."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_ols)
 ```
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_wls)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-wls
+#| fig-cap: "WLS diagnostics using inverse-variance weights. Weighted and standardized residuals account for the fitted variance structure."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_wls)
 ```
 
 **Plot fitted lines**
 
 ```{r}
-plot(dat2$x, dat2$y, pch = 19, xlab = "x", ylab = "y")
-abline(fit_ols, lwd = 2)
-abline(fit_wls, lwd = 2, lty = 2)
-legend("topleft",
-       legend = c("OLS", "WLS"),
-       lty = c(1, 2),
-       lwd = 2,
-       bty = "n")
+#| label: fig-ols-wls-comparison
+#| fig-cap: "OLS and WLS fitted lines for the same observations."
+line_fits <- data.frame(model = c("OLS", "WLS"),
+                        intercept = c(coef(fit_ols)[1], coef(fit_wls)[1]),
+                        slope = c(coef(fit_ols)[2], coef(fit_wls)[2]))
+ggplot(dat2, aes(x, y)) +
+  geom_point(size = 2) +
+  geom_abline(data = line_fits,
+              aes(intercept = intercept, slope = slope, colour = model,
+                linetype = model),
+              linewidth = 0.8) +
+  scale_colour_manual(values = c("OLS" = "steelblue4",
+    "WLS" = "darkorange3")) +
+  labs(x = "x", y = "y", colour = "Fit", linetype = "Fit")
 ```
 
 **Example With a Quadratic Remedy for Curvature**
@@ -492,15 +534,19 @@ anova(fit_lin, fit_quad)
 **Compare diagnostic plots for linear and quadratic fits**
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_lin)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-lin
+#| fig-cap: "Diagnostics for a straight-line fit to the simulated curved mean."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_lin)
 ```
 
 ```{r}
-par(mfrow = c(2, 2))
-plot(fit_quad)
-par(mfrow = c(1, 1))
+#| label: fig-09-diagnostics-fit-quad
+#| fig-cap: "Diagnostics after adding a quadratic term to the mean model."
+#| fig-width: 7
+#| fig-height: 5.6
+lm_diagnostics(fit_quad)
 ```
 
 **Interpreting Software Output**
@@ -508,7 +554,7 @@ par(mfrow = c(1, 1))
 Useful commands in R include:
 
 - `lm(..., weights = ...)` for weighted least squares;
-- `plot(fit)` for standard diagnostic plots;
+- `lm_diagnostics(fit)` for standard diagnostic plots;
 - `anova(fit1, fit2)` for comparing nested mean models;
 - `predict()` for fitted values on the chosen modelling scale.
 

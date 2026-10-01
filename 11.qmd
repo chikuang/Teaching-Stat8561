@@ -61,6 +61,11 @@ An odds ratio of 2 changes a baseline probability of 0.10 to $2(0.10)/(1-0.10+2(
 **Simulated example.** Imagine a binary completion outcome, a centered baseline score, and a group indicator. The following data are simulated to illustrate the model; they are not observations from a real study.
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 n <- 240
 score <- runif(n, -2, 2)
@@ -96,16 +101,16 @@ new_binary$upper <- plogis(link_fit$fit + qnorm(0.975) * link_fit$se.fit)
 #| fig-cap: "Fitted completion probabilities with approximate pointwise 95% confidence bands. Group differences on the probability scale vary with the baseline score."
 #| fig-width: 7
 #| fig-height: 4
-cols <- c(Control = "steelblue4", Treatment = "darkorange3")
-plot(NA, xlim = range(new_binary$score), ylim = c(0, 1),
-     xlab = "Centered baseline score", ylab = "Completion probability")
-for (g in levels(binary$group)) {
-  z <- new_binary[new_binary$group == g, ]
-  polygon(c(z$score, rev(z$score)), c(z$lower, rev(z$upper)),
-          border = NA, col = adjustcolor(cols[g], 0.13))
-  lines(z$score, z$probability, col = cols[g], lwd = 2)
-}
-legend("topleft", legend = names(cols), col = cols, lwd = 2, bty = "n")
+ggplot(new_binary, aes(score, probability, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  scale_colour_manual(values = c(Control = "steelblue4",
+    Treatment = "darkorange3")) +
+  scale_fill_manual(values = c(Control = "steelblue4",
+    Treatment = "darkorange3")) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Centered baseline score", y = "Completion probability",
+       colour = "Group", fill = "Group")
 ```
 
 ::: {.callout-note title="Confidence for a probability is not prediction of an individual outcome"}
@@ -163,15 +168,11 @@ c(rate_ratio_protocol_B = exp(coef(fit_pois)["protocolB"]))
 #| fig-cap: "Observed events per exposure day and fitted conditional rates. Different exposure times make the observed rates unequally variable; the model fits counts with a log-exposure offset."
 #| fig-width: 7
 #| fig-height: 4
-cols <- c(A = "steelblue4", B = "darkorange3")
-plot(counts$workload, counts$events / counts$exposure, pch = 19,
-     col = adjustcolor(cols[as.character(counts$protocol)], 0.35),
-     xlab = "Centered workload", ylab = "Events per day")
-for (g in levels(counts$protocol)) {
-  z <- new_counts[new_counts$protocol == g, ]
-  lines(z$workload, z$rate, col = cols[g], lwd = 2)
-}
-legend("topleft", legend = names(cols), col = cols, lwd = 2, bty = "n")
+ggplot(counts, aes(workload, events / exposure, colour = protocol)) +
+  geom_point(alpha = 0.35, size = 1.7) +
+  geom_line(data = new_counts, aes(y = rate), linewidth = 0.9) +
+  scale_colour_manual(values = c(A = "steelblue4", B = "darkorange3")) +
+  labs(x = "Centered workload", y = "Events per day", colour = "Protocol")
 ```
 
 ## Inference and model checks

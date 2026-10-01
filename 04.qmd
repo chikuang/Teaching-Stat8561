@@ -508,6 +508,11 @@ Students should learn to move fluently between:
 **Fit a simple regression model**
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 x <- c(0, 1, 2, 3)
 y <- c(1, 3, 3, 5)
 
@@ -543,23 +548,26 @@ SST - SSR - SSE
 #| fig-cap: "Total deviations from the sample mean, explained deviations of fitted values from the mean, and residual deviations from the fitted line. SST = SSR + SSE holds after summing across observations; it is not a point-by-point identity between squared deviations."
 #| fig-width: 7
 #| fig-height: 3.2
-par(mfrow = c(1, 3), mar = c(4, 4, 2.4, 0.6),
-    mgp = c(2.4, 0.7, 0))
-for (component in c("Total", "Explained", "Residual")) {
-  plot(x, y, pch = 16, ylim = c(0.5, 5.5), xlab = "x", ylab = "y",
-       main = component, cex.main = 1)
-  abline(h = ybar, col = "gray60", lty = 2)
-  abline(fit, col = "steelblue4")
-  if (component == "Total") {
-    segments(x, ybar, x, y, col = "gray35", lwd = 2)
-  } else if (component == "Explained") {
-    segments(x, ybar, x, yhat, col = "steelblue4", lwd = 2)
-    points(x, yhat, pch = 1, col = "steelblue4")
-  } else {
-    segments(x, yhat, x, y, col = "darkorange3", lwd = 2)
-  }
-}
-par(mfrow = c(1, 1))
+variation <- rbind(
+  data.frame(x, y, yhat, start = ybar, end = y, component = "Total"),
+  data.frame(x, y, yhat, start = ybar, end = yhat, component = "Explained"),
+  data.frame(x, y, yhat, start = yhat, end = y, component = "Residual"))
+variation$component <- factor(variation$component,
+                              levels = c("Total", "Explained", "Residual"))
+ggplot(variation, aes(x, y)) +
+  geom_hline(yintercept = ybar, colour = "grey60", linetype = "dashed") +
+  geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2],
+              colour = "steelblue4", linewidth = 0.6) +
+  geom_segment(aes(xend = x, y = start, yend = end, colour = component),
+               linewidth = 1, show.legend = FALSE) +
+  geom_point(size = 2) +
+  geom_point(data = subset(variation, component == "Explained"),
+             aes(y = yhat), shape = 1, colour = "steelblue4", size = 2) +
+  scale_colour_manual(values = c(Total = "grey35", Explained = "steelblue4",
+                                  Residual = "darkorange3")) +
+  facet_wrap(~ component, nrow = 1) +
+  coord_cartesian(ylim = c(0.5, 5.5)) +
+  labs(x = "x", y = "y")
 ```
 
 **Compute R squared manually**
@@ -641,26 +649,26 @@ Under the stated normal, common-variance error model, this provides evidence aga
 #| label: fig-tree-model-comparison
 #| fig-cap: "The same 31 trees under two mean models. Black dots are measured volumes; blue circles are fitted volumes. Orange segments show residuals. Adding height reduces the sum of squared residual lengths, but the F test asks whether that improvement is large relative to the estimated noise."
 #| fig-width: 7
-#| fig-height: 3.5
-op <- par(mfrow = c(1, 2), mar = c(4, 4, 2.2, 0.6),
-          mgp = c(2.4, 0.7, 0))
-tree_models <- list("Diameter only" = fit_tree_d,
-                    "Diameter + height" = fit_tree_dh)
-volume_limits <- range(c(tree_dat$Volume, fitted(fit_tree_d),
-                         fitted(fit_tree_dh)))
-for (label in names(tree_models)) {
-  prediction <- fitted(tree_models[[label]])
-  plot(tree_dat$Diameter, tree_dat$Volume, pch = 16, cex = 0.65,
-       ylim = volume_limits, xlab = "Diameter (inches)",
-       ylab = "Timber volume (cubic feet)", main = label)
-  segments(tree_dat$Diameter, tree_dat$Volume,
-           tree_dat$Diameter, prediction, col = "darkorange3")
-  points(tree_dat$Diameter, prediction, pch = 1,
-         col = "steelblue4", cex = 0.8)
-  legend("topleft", c("Observed", "Fitted"), pch = c(16, 1),
-         col = c("black", "steelblue4"), bty = "n", cex = 0.8)
-}
-par(op)
+#| fig-height: 3.8
+tree_comparison <- rbind(
+  transform(tree_dat, prediction = fitted(fit_tree_d),
+    model = "Diameter only"),
+  transform(tree_dat, prediction = fitted(fit_tree_dh),
+    model = "Diameter + height"))
+tree_comparison$model <- factor(tree_comparison$model,
+                                levels = c("Diameter only",
+                                  "Diameter + height"))
+ggplot(tree_comparison, aes(Diameter, Volume)) +
+  geom_segment(aes(xend = Diameter, yend = prediction),
+               colour = "darkorange3", alpha = 0.8) +
+  geom_point(aes(shape = "Observed", colour = "Observed"), size = 1.8) +
+  geom_point(aes(y = prediction, shape = "Fitted", colour = "Fitted"),
+    size = 2) +
+  scale_shape_manual(values = c(Observed = 16, Fitted = 1)) +
+  scale_colour_manual(values = c(Observed = "black", Fitted = "steelblue4")) +
+  facet_wrap(~ model, nrow = 1) +
+  labs(x = "Diameter (inches)", y = "Timber volume (cubic feet)",
+       shape = NULL, colour = NULL)
 ```
 
 **Check your understanding.** Why use 28 rather than 29 in the variance estimate? What would change if some trees had missing heights? The denominator comes from the full model. With missing heights, first form one common dataset and refit both models on it; comparing fits on different observations confounds the added predictor with a changed sample.

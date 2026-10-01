@@ -1,0 +1,64 @@
+```{r}
+#| label: diagnostic-plot-helper
+lm_diagnostics <- function(fit) {
+  stopifnot(inherits(fit, "lm"), !inherits(fit, "glm"))
+  d <- data.frame(fitted = fitted(fit),
+                  residual = weighted.residuals(fit),
+                  standardized = rstandard(fit),
+                  leverage = hatvalues(fit),
+                  cooks_distance = cooks.distance(fit))
+  d$observation <- rownames(d)
+  d$scale_location <- sqrt(abs(d$standardized))
+  marked <- d[head(order(d$cooks_distance, decreasing = TRUE), 3), ]
+
+  residual_plot <- ggplot(d, aes(fitted, residual)) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey60") +
+    geom_point(colour = "steelblue4", size = 1.7) +
+    geom_smooth(method = "loess", formula = y ~ x, span = 1,
+                 se = FALSE, colour = "darkorange3", linewidth = 0.7) +
+    geom_text(data = marked, aes(label = observation), vjust = -0.6,
+               size = 3, check_overlap = TRUE) +
+    scale_y_continuous(expand = expansion(mult = c(0.08, 0.18))) +
+    labs(title = "Residuals vs fitted", x = "Fitted value",
+         y = if (is.null(weights(fit))) "Residual" else "Weighted residual")
+
+  qq_plot <- ggplot(d, aes(sample = standardized)) +
+    stat_qq_line(colour = "darkorange3", linewidth = 0.7) +
+    stat_qq(colour = "steelblue4", size = 1.7) +
+    labs(title = "Normal Q-Q", x = "Theoretical normal quantile",
+         y = "Standardized residual")
+
+  scale_plot <- ggplot(d, aes(fitted, scale_location)) +
+    geom_point(colour = "steelblue4", size = 1.7) +
+    geom_smooth(method = "loess", formula = y ~ x, span = 1,
+                 se = FALSE, colour = "darkorange3", linewidth = 0.7) +
+    labs(title = "Scale-location", x = "Fitted value",
+         y = expression(sqrt(abs("Standardized residual"))))
+
+  contours <- expand.grid(
+    leverage = seq(0.001, min(0.99, max(d$leverage) * 1.15),
+      length.out = 200),
+    distance = c(0.5, 1), sign = c(-1, 1))
+  contours$standardized <- with(contours,
+    sign * sqrt(distance * fit$rank * (1 - leverage) / leverage))
+  limit <- max(3, abs(d$standardized)) * 1.15
+  leverage_plot <- ggplot(d, aes(leverage, standardized)) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey60") +
+    geom_line(data = contours,
+               aes(group = interaction(distance, sign),
+                 linetype = factor(distance)),
+               colour = "grey50", linewidth = 0.5) +
+    geom_point(colour = "steelblue4", size = 1.7) +
+    geom_text(data = marked, aes(label = observation), vjust = -0.6,
+               size = 3, check_overlap = TRUE) +
+    scale_linetype_manual(values = c("dashed", "dotted")) +
+    coord_cartesian(ylim = c(-limit, limit)) +
+    labs(title = "Residuals vs leverage", x = "Leverage",
+         y = "Standardized residual", linetype = "Cook's distance") +
+    theme(legend.text = element_text(size = 8),
+          legend.title = element_text(size = 9))
+
+  patchwork::wrap_plots(residual_plot, qq_plot, scale_plot, leverage_plot,
+    ncol = 2)
+}
+```

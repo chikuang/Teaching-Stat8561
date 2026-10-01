@@ -20,12 +20,13 @@ library(dplyr)
 
 set.seed(8561)
 
-theme_set(theme_minimal())
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
 
 n <- 100
 heights <- rnorm(n, mean = 170, sd = 10)
-weights <- 0.5 * heights + rnorm(n, mean = 0, sd
- = 5)
+weights <- 0.5 * heights + rnorm(n, mean = 0, sd = 5)
 df <- data.frame(heights, weights)
 head(df, 5)
 
@@ -36,7 +37,7 @@ summary(model)
 # Plot the data and the fitted line
 ggplot(df, aes(x = heights, y = weights)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
   labs(title = "Linear Regression of Weights on Heights",
        x = "Height (cm)",
        y = "Weight (kg)")

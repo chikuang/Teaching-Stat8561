@@ -404,6 +404,11 @@ Suppose observations come in natural pairs, and within each pair the errors are 
 **Simulate data with unequal variances**
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 n <- 40
 x <- seq(1, 20, length.out = n)
@@ -422,14 +427,20 @@ summary(fit_wls)
 **Compare fitted lines**
 
 ```{r}
-plot(dat$x, dat$y, pch = 19, xlab = "x", ylab = "y")
-abline(fit_ols, lwd = 2)
-abline(fit_wls, lwd = 2, lty = 2)
-legend("topleft",
-       legend = c("OLS", "WLS / GLS"),
-       lty = c(1, 2),
-       lwd = 2,
-       bty = "n")
+#| label: fig-gls-weighted-lines
+#| fig-cap: "OLS and WLS fitted lines when the relative observation variances are known."
+line_fits <- data.frame(model = c("OLS", "WLS / GLS"),
+                        intercept = c(coef(fit_ols)[1], coef(fit_wls)[1]),
+                        slope = c(coef(fit_ols)[2], coef(fit_wls)[2]))
+ggplot(dat, aes(x, y)) +
+  geom_point(size = 2) +
+  geom_abline(data = line_fits,
+              aes(intercept = intercept, slope = slope, colour = model,
+                linetype = model),
+              linewidth = 0.8) +
+  scale_colour_manual(values = c("OLS" = "steelblue4",
+    "WLS / GLS" = "darkorange3")) +
+  labs(x = "x", y = "y", colour = "Fit", linetype = "Fit")
 ```
 
 ## R Demonstration With a Hand-Built GLS Computation {.unnumbered}
@@ -474,11 +485,15 @@ max(abs(A %*% V %*% t(A) - diag(n2))) # whitening check
 **Compare residual patterns**
 
 ```{r}
+#| label: fig-gls-ordered-residuals
+#| fig-cap: "OLS residuals in time order for the simulated correlated-error example."
 fit_ols2 <- lm(y2 ~ x2)
-
-plot(x2, resid(fit_ols2), type = "b", pch = 19,
-     xlab = "Time order", ylab = "OLS residual")
-abline(h = 0, lty = 2)
+ordered_residuals <- data.frame(time = x2, residual = resid(fit_ols2))
+ggplot(ordered_residuals, aes(time, residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_line(colour = "steelblue4", linewidth = 0.7) +
+  geom_point(colour = "steelblue4", size = 2) +
+  labs(x = "Time order", y = "OLS residual")
 ```
 
 **Simple example of grouped covariance intuition**

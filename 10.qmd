@@ -37,6 +37,11 @@ Random row-wise folds are appropriate only when they match the intended predicti
 The following simulated curvature example uses the same five folds for two prespecified mean models. It illustrates predictive evaluation, not a guarantee that a quadratic model will always win.
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 n <- 100
 x <- runif(n, -2, 2)
@@ -59,15 +64,17 @@ cv_mse
 #| label: fig-validation-predictions
 #| fig-cap: "Predictions made for held-out observations. Every plotted prediction comes from a fit that excluded that observation's fold."
 #| fig-width: 7
-#| fig-height: 3.2
-par(mfrow = c(1, 2))
-for (j in seq_along(models)) {
-  plot(dat$y, pred[, j], pch = 19, col = adjustcolor("steelblue", 0.6),
-       xlab = "Observed response", ylab = "Held-out prediction",
-       main = names(models)[j])
-  abline(0, 1, lty = 2)
-}
-par(mfrow = c(1, 1))
+#| fig-height: 3.8
+validation <- data.frame(observed = rep(dat$y, times = ncol(pred)),
+                          predicted = as.vector(pred),
+                          model = rep(colnames(pred), each = nrow(pred)))
+ggplot(validation, aes(observed, predicted)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed",
+    colour = "grey50") +
+  geom_point(alpha = 0.6, colour = "steelblue4", size = 1.6) +
+  facet_wrap(~ model, nrow = 1) +
+  coord_equal() +
+  labs(x = "Observed response", y = "Held-out prediction")
 ```
 
 **Report more than a winner.** State the loss, the splitting rule, the population or future setting of interest, and how much performance differs. Investigate poor predictions. A single difference in estimated MSE does not establish a universal ranking of the methods.

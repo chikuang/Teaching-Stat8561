@@ -59,16 +59,21 @@ If $\mathbb{E}(|Y|)<\infty$, the minimizers of $\mathbb{E}\{\rho_\tau(Y-a)\}$ ar
 #| fig-cap: "Check loss for three quantiles. A positive residual means the prediction is too low. The upper-quantile loss penalizes that side more strongly."
 #| fig-width: 6.5
 #| fig-height: 3.5
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 check_loss <- function(u, tau) u * (tau - (u < 0))
-u <- seq(-3, 3, length.out = 301)
 taus <- c(0.1, 0.5, 0.9)
-cols <- c("steelblue4", "gray35", "darkorange3")
-loss <- sapply(taus, function(tau) check_loss(u, tau))
-matplot(u, loss, type = "l", lty = 1, lwd = 2, col = cols,
-        xlab = "Residual: observed - predicted", ylab = "Check loss")
-abline(v = 0, lty = 3, col = "gray70")
-legend("top", legend = paste("tau =", taus), col = cols,
-       lty = 1, lwd = 2, bty = "n", horiz = TRUE)
+loss <- expand.grid(u = seq(-3, 3, length.out = 301), tau = taus)
+loss$value <- check_loss(loss$u, loss$tau)
+ggplot(loss, aes(u, value, colour = factor(tau))) +
+  geom_vline(xintercept = 0, linetype = "dotted", colour = "grey70") +
+  geom_line(linewidth = 0.9) +
+  scale_colour_manual(values = c("steelblue4", "grey35", "darkorange3")) +
+  labs(x = "Residual: observed - predicted", y = "Check loss",
+    colour = "Quantile")
 ```
 
 ## A mean model can miss changing spread {.unnumbered}
@@ -99,16 +104,29 @@ The matrix returned by `coef()` contains one column per requested quantile. R's 
 ```{r}
 #| label: fig-conditional-quantiles
 #| fig-cap: "Fitted conditional quantiles and the OLS mean in simulated data with increasing spread. The growing distance between the lower and upper quantiles reveals variation that a mean line alone does not describe."
-#| fig-width: 6.5
-#| fig-height: 4.2
+#| fig-width: 7
+#| fig-height: 4.5
 new_x <- data.frame(x = seq(0, 4, length.out = 200))
 qhat <- predict(fit_quantiles, newdata = new_x)
-plot(dat_qr$x, dat_qr$y, pch = 16, cex = 0.65,
-     col = adjustcolor("gray40", 0.35), xlab = "x", ylab = "Response")
-matlines(new_x$x, qhat, col = cols, lty = 1, lwd = 2)
-abline(fit_mean, lty = 2, lwd = 2)
-legend("topleft", legend = c(paste("Quantile", taus), "OLS mean"),
-       col = c(cols, "black"), lty = c(1, 1, 1, 2), lwd = 2, bty = "n")
+quantile_lines <- data.frame(x = rep(new_x$x, times = length(taus)),
+                              prediction = as.vector(qhat),
+                              target = rep(paste("Quantile", taus),
+                                each = nrow(new_x)))
+prediction_lines <- rbind(quantile_lines,
+  data.frame(x = new_x$x, prediction = predict(fit_mean, newdata = new_x),
+              target = "OLS mean"))
+prediction_lines$target <- factor(prediction_lines$target,
+                                  levels = c(paste("Quantile", taus),
+                                    "OLS mean"))
+ggplot(dat_qr, aes(x, y)) +
+  geom_point(alpha = 0.35, colour = "grey40", size = 1.5) +
+  geom_line(data = prediction_lines,
+             aes(y = prediction, colour = target, linetype = target),
+               linewidth = 0.8) +
+  scale_colour_manual(values = c("steelblue4", "grey35", "darkorange3",
+    "black")) +
+  scale_linetype_manual(values = c("solid", "solid", "solid", "dashed")) +
+  labs(x = "x", y = "Response", colour = NULL, linetype = NULL)
 ```
 
 **Read the graph.** Compare the predicted 10th, 50th, and 90th percentiles at a fixed $x$. The gap between the 10th and 90th percentiles describes an interval containing the central 80% of a continuous conditional distribution when the quantile model is correct. The fitted gap is not a confidence interval for the mean or for a regression coefficient, and its predictive coverage is not guaranteed in a finite sample.

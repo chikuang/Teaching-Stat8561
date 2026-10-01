@@ -2,7 +2,7 @@
 
 ::: {.callout-note title="Self-study topic"}
 
-This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd), [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), and [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) supply the useful prerequisites: covariance, inference, and the experimental unit. The R examples use `lme4`; install it once with `install.packages("lme4")` if needed. The covariance connection to GLS is developed here, so the [Generalized Least Squares and Correlated Errors topic](App_D-gls.qmd) is not a prerequisite.
+This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd), [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), and [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) supply the useful prerequisites: covariance, inference, and the experimental unit. The R examples use `lme4` and `patchwork`; install them once with `install.packages(c("lme4", "patchwork"))` if needed. The covariance connection to GLS is developed here, so the [Generalized Least Squares and Correlated Errors topic](App_D-gls.qmd) is not a prerequisite.
 
 :::
 
@@ -85,6 +85,11 @@ The conditional group mean is a weighted average of the observed group mean and 
 **Why the weight appears.** The sample mean contains a group signal $b_j$ with variance $\tau^2$ and averaged residual noise with variance $\sigma^2/n_j$. Conditioning a jointly normal pair yields the signal-to-total-variance weight. Plugging estimated parameters into this expression gives an empirical best linear unbiased prediction (empirical BLUP) in this simple model. More general random-slope models have a matrix version rather than this scalar weight.
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 n_group <- c(3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 30, 40)
 group <- factor(rep(LETTERS[seq_along(n_group)], n_group))
@@ -111,19 +116,24 @@ The syntax `(1 | group)` requests a random intercept for each group. The shared 
 #| fig-cap: "Unpooled sample means and partially pooled group means in simulated data. The dashed line is the fitted common mean. The amount of shrinkage reflects group sample size and the estimated variance components."
 #| fig-width: 6.5
 #| fig-height: 4.6
-j <- seq_along(n_group)
-plot(raw_mean, j, pch = 1, xlim = range(c(raw_mean, shrunk_mean)),
-     ylim = c(0.5, length(j) + 2), yaxt = "n", xlab = "Group mean",
-     ylab = "Group and sample size")
-axis(2, at = j, labels = paste0(levels(group), " (", n_group, ")"),
-     las = 1, cex.axis = 0.75)
-segments(raw_mean, j, shrunk_mean, j, col = "gray60", lwd = 1.5)
-points(shrunk_mean, j, pch = 16, col = "steelblue4")
-segments(mu_hat, 0.5, mu_hat, length(j) + 0.35,
-         lty = 2, col = "darkorange3")
-legend("top", legend = c("Separate means", "Partial pooling"),
-       pch = c(1, 16), col = c("black", "steelblue4"),
-       horiz = TRUE, cex = 0.85, bty = "n")
+pooling <- data.frame(label = paste0(levels(group), " (", n_group, ")"),
+                       raw = as.numeric(raw_mean),
+                         pooled = as.numeric(shrunk_mean))
+pooling$label <- factor(pooling$label, levels = pooling$label)
+ggplot(pooling, aes(y = label)) +
+  geom_vline(xintercept = mu_hat, linetype = "dashed",
+    colour = "darkorange3") +
+  geom_segment(aes(x = raw, xend = pooled, yend = label), colour = "grey60") +
+  geom_point(aes(x = raw, colour = "Separate means",
+    shape = "Separate means"), size = 2.3) +
+  geom_point(aes(x = pooled, colour = "Partial pooling",
+    shape = "Partial pooling"), size = 2.3) +
+  scale_colour_manual(values = c("Separate means" = "black",
+    "Partial pooling" = "steelblue4")) +
+  scale_shape_manual(values = c("Separate means" = 1,
+    "Partial pooling" = 16)) +
+  labs(x = "Group mean", y = "Group (sample size)", colour = NULL,
+    shape = NULL)
 ```
 
 **What shrinkage does not establish.** It is not evidence that a small group's true mean equals the common mean. It reflects uncertainty and the assumed distribution of group effects. Point predictions of group deviations are also not confidence intervals or a justified ranking of all groups.
@@ -165,25 +175,27 @@ In `(day | Subject)`, the random intercept is included along with the random slo
 #| label: fig-mixed-subject-trends
 #| fig-cap: "Four subjects from the sleepstudy data. Blue lines include each subject's fitted random effects; dashed lines use only the common fixed effects. A common linear trend does not require identical subject trajectories."
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 5.4
 subjects <- levels(study$Subject)[1:4]
-plot_grid <- expand.grid(day = seq(0, 7, length.out = 40),
-                         Subject = subjects)
+plot_grid <- expand.grid(day = seq(0, 7, length.out = 40), Subject = subjects)
 plot_grid$conditional <- predict(fit_sleep, newdata = plot_grid)
-plot_grid$population <- predict(fit_sleep, newdata = plot_grid,
-                                re.form = NA)
-op <- par(mfrow = c(2, 2), mar = c(3.5, 4, 2, 0.5),
-          mgp = c(2.4, 0.7, 0))
-for (subject in subjects) {
-  d <- study[study$Subject == subject, ]
-  g <- plot_grid[plot_grid$Subject == subject, ]
-  plot(d$day, d$Reaction, pch = 16, ylim = range(study$Reaction),
-       xlab = "Days since baseline", ylab = "Reaction time (ms)",
-       main = paste("Subject", subject))
-  lines(g$day, g$conditional, col = "steelblue4", lwd = 2)
-  lines(g$day, g$population, lty = 2, lwd = 2)
-}
-par(op)
+plot_grid$population <- predict(fit_sleep, newdata = plot_grid, re.form = NA)
+subject_lines <- rbind(
+  transform(plot_grid, prediction = conditional, fit = "Subject-specific"),
+  transform(plot_grid, prediction = population, fit = "Population"))
+ggplot(subset(study, Subject %in% subjects), aes(day, Reaction)) +
+  geom_point(size = 1.7) +
+  geom_line(data = subject_lines,
+             aes(y = prediction, colour = fit, linetype = fit),
+               linewidth = 0.8) +
+  scale_colour_manual(values = c("Subject-specific" = "steelblue4",
+    Population = "black")) +
+  scale_linetype_manual(values = c("Subject-specific" = "solid",
+    Population = "dashed")) +
+  facet_wrap(~ Subject, ncol = 2, labeller = label_both) +
+  coord_cartesian(ylim = range(study$Reaction)) +
+  labs(x = "Days since baseline", y = "Reaction time (ms)", colour = NULL,
+    linetype = NULL)
 ```
 
 **Prediction target.** For a previously observed subject, predictions can use that subject's estimated random effects. For a new subject with no response data yet, those deviations are unknown; setting them to zero gives the population mean in this Gaussian identity-link model. A prediction interval for the new subject must still include between-subject and residual variation, together with parameter uncertainty. A fixed-effect line alone is not such an interval. With a nonlinear GLMM link, setting random effects to zero generally does not equal averaging the response over their distribution.
@@ -213,17 +225,18 @@ Testing whether a random-effect variance is zero places the null parameter on a 
 #| label: fig-mixed-diagnostics
 #| fig-cap: "Basic conditional-residual checks for the fitted sleepstudy model. These plots can reveal mean or residual-distribution problems, but they do not prove that the full dependence structure is correct."
 #| fig-width: 7
-#| fig-height: 3.3
-op <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 0.5),
-          mgp = c(2.4, 0.7, 0))
-plot(fitted(fit_sleep), resid(fit_sleep), pch = 16,
-     col = adjustcolor("steelblue4", 0.5),
-     xlab = "Conditional fitted value", ylab = "Conditional residual")
-abline(h = 0, lty = 2)
-qqnorm(resid(fit_sleep), pch = 16, cex = 0.65,
-       main = "Residual Q-Q plot")
-qqline(resid(fit_sleep), col = "darkorange3")
-par(op)
+#| fig-height: 3.6
+conditional_diagnostics <- data.frame(fitted = fitted(fit_sleep),
+                                       residual = resid(fit_sleep))
+residual_plot <- ggplot(conditional_diagnostics, aes(fitted, residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_point(alpha = 0.5, colour = "steelblue4", size = 1.5) +
+  labs(x = "Conditional fitted value", y = "Conditional residual")
+qq_plot <- ggplot(conditional_diagnostics, aes(sample = residual)) +
+  stat_qq_line(colour = "darkorange3") +
+  stat_qq(size = 1.5, colour = "steelblue4") +
+  labs(x = "Theoretical normal quantile", y = "Conditional residual")
+patchwork::wrap_plots(residual_plot, qq_plot, nrow = 1)
 ```
 
 Plots of estimated random effects can be informative, but they display shrunken estimates with unequal uncertainty, not directly observed independent normal draws. With few groups, distributional checks are particularly limited. For prediction to new subjects, evaluate with subject-level holdouts; random row-wise splitting can let the same subject appear in both training and test data.

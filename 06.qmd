@@ -67,6 +67,11 @@ A single prespecified contrast and a search through many contrasts are different
 This simulated example separates the known data-generating means from their noisy estimates. Changing the seed changes the sample, not the target comparison.
 
 ```{r}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
+
 set.seed(8561)
 group <- factor(rep(c("A", "B", "C"), each = 12))
 mu <- c(A = 10, B = 13, C = 15)
@@ -99,10 +104,15 @@ rbind(treatment_coding = c(estimate, se),
 #| label: fig-contrast-interval
 #| fig-cap: "The estimated A-minus-average-of-B-and-C contrast and its 95% confidence interval. Zero represents no difference for this particular comparison."
 #| fig-height: 2.8
-plot(estimate, 1, xlim = range(c(ci, 0)) + c(-0.5, 0.5), ylim = c(0.5, 1.5),
-     yaxt = "n", ylab = "", xlab = "A - (B + C) / 2", pch = 19)
-segments(ci[1], 1, ci[2], 1, lwd = 2)
-abline(v = 0, lty = 2, col = "gray50")
+contrast_result <- data.frame(estimate, lower = ci[1], upper = ci[2],
+                               comparison = "A - (B + C) / 2")
+ggplot(contrast_result, aes(estimate, comparison)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
+  geom_segment(aes(x = lower, xend = upper, yend = comparison),
+               linewidth = 1, colour = "steelblue4") +
+  geom_point(size = 3, colour = "steelblue4") +
+  expand_limits(x = 0) +
+  labs(x = "Estimated contrast and 95% confidence interval", y = NULL)
 ```
 
 **A family of comparisons.** For all three pairwise group differences, fit the one-way ANOVA and request simultaneous Tukey intervals:

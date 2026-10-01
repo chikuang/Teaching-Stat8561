@@ -80,6 +80,10 @@ Return to the 31 black cherry trees from Chapter 4. `Volume` is timber volume in
 
 ```{r}
 #| label: ch5-tree-models
+library(ggplot2)
+theme_set(theme_minimal(base_size = 11) +
+            theme(legend.position = "bottom",
+              panel.grid.minor = element_blank()))
 ch5_trees <- transform(datasets::trees, Diameter = Girth)
 ch5_tree_simple <- lm(Volume ~ Height, data = ch5_trees)
 ch5_tree_adjusted <- lm(Volume ~ Height + Diameter, data = ch5_trees)
@@ -353,28 +357,29 @@ The VC slope is about 11.716, and the OJ slope is $\hat\beta_x+\hat\beta_{xg}\ap
 #| fig-cap: "Additive and interaction fits to the same observations. Horizontal jitter separates overlapping points for display only; both models use the original doses. The additive model imposes parallel lines. The interaction model permits different slopes, while still requiring each method's mean to be linear in dose."
 #| fig-alt: "Two panels show length against vitamin C dose for VC and OJ. The additive fit has parallel lines; the interaction fit has a steeper VC line. Both panels display the same individual observations."
 #| fig-width: 7
-#| fig-height: 3.7
+#| fig-height: 4
 set.seed(8561)
-ch5_xplot <- ch5_tooth$dose + runif(nrow(ch5_tooth), -0.035, 0.035)
+ch5_tooth$dose_plot <- ch5_tooth$dose + runif(nrow(ch5_tooth), -0.035, 0.035)
 ch5_cols <- c(VC = "steelblue4", OJ = "darkorange3")
-ch5_pch <- c(VC = 16, OJ = 17)
-ch5_grid <- seq(0.5, 2, length.out = 100)
-ch5_op <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 0.5), mgp = c(2.5, 0.7, 0))
-for (model_name in c("Additive: common slope", "Interaction: two slopes")) {
-  fit <- if (startsWith(model_name, "Additive")) ch5_fit_add else ch5_fit_int
-  plot(ch5_xplot, ch5_tooth$len, xlim = c(0.4, 2.1), ylim = c(0, 37),
-       col = adjustcolor(ch5_cols[as.character(ch5_tooth$supp)], alpha.f = 0.6),
-       pch = ch5_pch[as.character(ch5_tooth$supp)], cex = 0.7,
-       xlab = "Dose (mg/day)", ylab = "Length (recorded scale)", main = model_name)
-  for (method in levels(ch5_tooth$supp)) {
-    new_data <- data.frame(dose_c = ch5_grid - 1,
-                          supp = factor(method, levels = levels(ch5_tooth$supp)))
-    lines(ch5_grid, predict(fit, newdata = new_data), col = ch5_cols[method], lwd = 2)
-  }
-  legend("topleft", names(ch5_cols), col = ch5_cols, pch = ch5_pch,
-         lty = 1, bty = "n", cex = 0.8)
-}
-par(ch5_op)
+ch5_grid <- expand.grid(dose = seq(0.5, 2, length.out = 100),
+                        supp = levels(ch5_tooth$supp))
+ch5_grid$dose_c <- ch5_grid$dose - 1
+ch5_prediction <- rbind(
+  transform(ch5_grid, length = predict(ch5_fit_add, newdata = ch5_grid),
+            model = "Additive: common slope"),
+  transform(ch5_grid, length = predict(ch5_fit_int, newdata = ch5_grid),
+            model = "Interaction: two slopes"))
+ggplot(ch5_tooth, aes(dose_plot, len, colour = supp)) +
+  geom_point(aes(shape = supp), alpha = 0.6, size = 1.6) +
+  geom_line(data = ch5_prediction, aes(x = dose, y = length),
+    linewidth = 0.8) +
+  scale_colour_manual(values = ch5_cols) +
+  scale_shape_manual(values = c(VC = 16, OJ = 17)) +
+  scale_x_continuous(breaks = c(0.5, 1, 2)) +
+  facet_wrap(~ model, nrow = 1) +
+  coord_cartesian(xlim = c(0.4, 2.1), ylim = c(0, 37)) +
+  labs(x = "Dose (mg/day)", y = "Length (recorded scale)",
+       colour = "Method", shape = "Method")
 ```
 
 **Centering changes the baseline, not the fitted model.** Start with the uncentered expression $b_0+b_xx+b_gz+b_{xg}xz$. Substitute $x=x_c+c$ to obtain
@@ -488,19 +493,17 @@ The six-cell model has $p=6$ and 54 residual degrees of freedom. The comparison 
 #| fig-width: 6.5
 #| fig-height: 3.8
 ch5_means <- aggregate(len ~ dose + supp, data = ch5_tooth, mean)
-plot(NA, xlim = c(0.4, 2.1), ylim = c(5, 30), xlab = "Dose (mg/day)",
-     ylab = "Mean length (recorded scale)")
-for (method in levels(ch5_tooth$supp)) {
-  rows <- ch5_means$supp == method
-  points(ch5_means$dose[rows], ch5_means$len[rows],
-         pch = ch5_pch[method], col = ch5_cols[method], cex = 1.2)
-  new_data <- data.frame(dose_c = ch5_grid - 1,
-                        supp = factor(method, levels = levels(ch5_tooth$supp)))
-  lines(ch5_grid, predict(ch5_fit_int, newdata = new_data),
-        col = ch5_cols[method], lwd = 2)
-}
-legend("topleft", names(ch5_cols), col = ch5_cols, pch = ch5_pch,
-       lty = 1, bty = "n")
+ch5_lines <- transform(ch5_grid,
+                        length = predict(ch5_fit_int, newdata = ch5_grid))
+ggplot(ch5_means, aes(dose, len, colour = supp)) +
+  geom_line(data = ch5_lines, aes(y = length), linewidth = 0.8) +
+  geom_point(aes(shape = supp), size = 3) +
+  scale_colour_manual(values = ch5_cols) +
+  scale_shape_manual(values = c(VC = 16, OJ = 17)) +
+  scale_x_continuous(breaks = c(0.5, 1, 2)) +
+  coord_cartesian(xlim = c(0.4, 2.1), ylim = c(5, 30)) +
+  labs(x = "Dose (mg/day)", y = "Mean length (recorded scale)",
+       colour = "Method", shape = "Method")
 ```
 
 ::: {.callout-note title="A factor is a block of columns"}
