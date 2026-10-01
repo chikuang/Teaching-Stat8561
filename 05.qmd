@@ -45,12 +45,12 @@ The design matrix is
 
 $$
 \mathbf X=
-\begin{bmatrix}
+\begin{pmatrix}
 1&x_{11}&\cdots&x_{1k}\\
 1&x_{21}&\cdots&x_{2k}\\
 \vdots&\vdots&&\vdots\\
 1&x_{n1}&\cdots&x_{nk}
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 Full column rank gives the familiar estimator $(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf Y$. Least squares itself does not require normal errors. For the exact $t$ and $F$ procedures in this chapter, we use the normal linear model from [Chapter 3](03_OLS_inference.qmd): fixed full-rank $\mathbf X$ and independent $N(0,\sigma^2)$ errors.
@@ -169,9 +169,9 @@ For two observations from each group, ordered A, A, B, B, C, C,
 
 $$
 \mathbf X=
-\begin{bmatrix}
+\begin{pmatrix}
 1&0&0\\1&0&0\\1&1&0\\1&1&0\\1&0&1\\1&0&1
-\end{bmatrix},\qquad p=3.
+\end{pmatrix},\qquad p=3.
 $$
 
 ```{r}

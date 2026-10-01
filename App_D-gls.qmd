@@ -553,10 +553,10 @@ $$
 \mathrm{Var}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{V},
 \qquad
 \mathbf{V} =
-\begin{bmatrix}
+\begin{pmatrix}
 1 & 0 \\
 0 & 4
-\end{bmatrix}.
+\end{pmatrix}.
 $$
 
 1. Write down $\mathbf{V}^{-1}$.
