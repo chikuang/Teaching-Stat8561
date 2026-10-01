@@ -13,11 +13,11 @@ This assignment focuses on matrix representation, least squares estimation, proj
 ::: {tbl-colwidths="[16,72,12]"}
 
 | Question | Topic | Points |
-|:---|:---|---:|
-| Question 1 | Matrix representation | 8 |
-| Question 2 | Least squares and projection | 12 |
-| Question 3 | Consequences and geometry of least squares | 12 |
-| Question 4 | Regression in R | 8 |
+|:---:|:---:|:---:|
+| 1 | Matrix representation | 8 |
+| 2 | Least squares and projection | 12 |
+| 3 | Consequences and geometry of least squares | 12 |
+| 4 | Regression in R | 8 |
 | **Total** |  | **40** |
 
 :::

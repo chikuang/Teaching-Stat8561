@@ -14,12 +14,12 @@ This assignment emphasizes conceptual understanding of least squares, projection
 ::: {tbl-colwidths="[16,72,12]"}
 
 | Question | Topic | Points |
-|:---|:---|---:|
-| Question 1 | Least squares: assumptions and consequences | 6 |
-| Question 2 | Projection geometry and rank | 8 |
-| Question 3 | Sampling properties and the role of normality | 8 |
-| Question 4 | Interpreting confidence and prediction intervals | 6 |
-| Question 5 | Distribution and inference for OLS | 12 |
+|:---:|:---:|:---:|
+| 1 | Least squares: assumptions and consequences | 6 |
+| 2 | Projection geometry and rank | 8 |
+| 3 | Sampling properties and the role of normality | 8 |
+| 4 | Interpreting confidence and prediction intervals | 6 |
+| 5 | Distribution and inference for OLS | 12 |
 | **Total** |  | **40** |
 
 :::
