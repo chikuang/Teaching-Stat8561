@@ -4,29 +4,43 @@ show-solutions: true
 
 # Assignment 1 {.unnumbered}
 
-This assignment focuses on the foundations of the linear model: 
+**STAT 8561 \| Fall 2026**\
+**Total:** 40 points\
+**Coverage:** [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd) and [Chapter 2 — Least Squares Estimation](02_LSE.qmd).
 
-+ matrix representation, 
-+ least squares estimation, 
-+ projection
-+ basic inference. 
+This assignment focuses on matrix representation, least squares estimation, projection geometry, and linear regression in R.
+
+::: {tbl-colwidths="[16,72,12]"}
+
+| Question | Topic | Points |
+|:---|:---|---:|
+| Question 1 | Matrix representation | 8 |
+| Question 2 | Least squares and projection | 12 |
+| Question 3 | Consequences and geometry of least squares | 12 |
+| Question 4 | Regression in R | 8 |
+| **Total** |  | **40** |
+
+:::
 
 ::: {.callout-note title="Instructions"}
 
-- Submit both your source file (`.qmd` or `.Rmd`) and the rendered HTML or PDF file.
-- Name your source file as `A1_LastName_FirstName.qmd` or `A1_LastName_FirstName.Rmd`.
+Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 1** submission folder on **iCollege**:
+
+1. Your rendered **PDF**, named `A1_LastName_FirstName.pdf`.
+2. Its matching source file, named `A1_LastName_FirstName.qmd` or `A1_LastName_FirstName.Rmd`.
+
+The PDF must be generated from the submitted source file. **HTML alone does not satisfy the submission requirement.**
+
+- Put your name and course number at the beginning of the PDF.
 - Clearly label every question and subpart.
-- Type all mathematical work using LaTeX.
-- Include all R code used to obtain your answers.
-- Your document must render from beginning to end without error.
-- Do not submit screenshots of code, R output, or mathematical derivations.
-- Round numerical answers to three decimal places when appropriate.
-- For True/False questions, enter only `T` or `F`.
+- For each multiple-choice item, select **exactly one** answer and report its letter. Include an explanation only when requested.
+- For True/False items, enter only `T` or `F`.
 - For short-answer questions, one or two clear sentences are sufficient unless a derivation is requested.
+- Round numerical answers to **three decimal places**, retaining full precision during calculations.
+- Include all R code used to obtain your answers in executable chunks.
+- Your source must render from beginning to end without errors. Type mathematical expressions using LaTeX; do not submit screenshots of answers or code.
 
-::: 
-
-The total value of the assignment is [**40**].
+:::
 
 ## Question 1: Matrix Representation of the Linear Model [8]
 
@@ -51,59 +65,55 @@ with the following observed data:
 
 Which of the following is the correct design matrix $\mathbf{X}$?
 
-- [ ] **A.**
+A.  $$
+    \begin{pmatrix}
+    0 & 2\\
+    1 & 4\\
+    2 & 5\\
+    3 & 8\\
+    4 & 9
+    \end{pmatrix}
+    $$
 
-$$
-\begin{pmatrix}
-0 & 2\\
-1 & 4\\
-2 & 5\\
-3 & 8\\
-4 & 9
-\end{pmatrix}
-$$
+B.  $$
+    \begin{pmatrix}
+    1 & 0\\
+    1 & 1\\
+    1 & 2\\
+    1 & 3\\
+    1 & 4
+    \end{pmatrix}
+    $$
 
-- [ ] **B.**
+C.  $$
+    \begin{pmatrix}
+    0 & 1\\
+    1 & 1\\
+    2 & 1\\
+    3 & 1\\
+    4 & 1
+    \end{pmatrix}
+    $$
 
-$$
-\begin{pmatrix}
-1 & 0\\
-1 & 1\\
-1 & 2\\
-1 & 3\\
-1 & 4
-\end{pmatrix}
-$$
+D.  $$
+    \begin{pmatrix}
+    1 & 2\\
+    1 & 4\\
+    1 & 5\\
+    1 & 8\\
+    1 & 9
+    \end{pmatrix}
+    $$
 
-- [ ] **C.**
+:::: {.content-visible when-meta="show-solutions"}
 
-$$
-\begin{pmatrix}
-0 & 1\\
-1 & 1\\
-2 & 1\\
-3 & 1\\
-4 & 1
-\end{pmatrix}
-$$
+::: {#a1-solution-1a .callout-tip collapse="true" title="Solution 1(a)"}
 
-- [ ] **D.**
-
-$$
-\begin{pmatrix}
-1 & 2\\
-1 & 4\\
-1 & 5\\
-1 & 8\\
-1 & 9
-\end{pmatrix}
-$$
-
-::: {.solution .content-visible when-meta="show-solutions"}
-
-**Solution:** B
+**B.** Each row is $(1,x_i)$: the first column represents the intercept, and the second contains the predictor values.
 
 :::
+
+::::
 
 ### (b) [2]
 
@@ -116,9 +126,9 @@ Fill in the following table.
 | $\boldsymbol{\beta}$ | `___` |
 | $\operatorname{rank}(\mathbf{X})$ | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-1b .callout-tip collapse="true" title="Solution 1(b)"}
 
 | Quantity | Dimension / Rank |
 |:---|:---|
@@ -127,89 +137,95 @@ Fill in the following table.
 | $\boldsymbol{\beta}$ | $2\times 1$ |
 | $\operatorname{rank}(\mathbf{X})$ | $2$ |
 
+The two columns of $\mathbf{X}$ are linearly independent because the predictor is not constant.
+
 :::
+
+::::
 
 ### (c) [2]
 
 Which pair is correct?
 
-- [ ] **A.**
+A.  $$
+    \mathbf{X}^\top\mathbf{X}
+    =
+    \begin{pmatrix}
+    5 & 10\\
+    10 & 30
+    \end{pmatrix},
+    \qquad
+    \mathbf{X}^\top\mathbf{Y}
+    =
+    \begin{pmatrix}
+    28\\
+    74
+    \end{pmatrix}
+    $$
+
+B.  $$
+    \mathbf{X}^\top\mathbf{X}
+    =
+    \begin{pmatrix}
+    5 & 5\\
+    5 & 30
+    \end{pmatrix},
+    \qquad
+    \mathbf{X}^\top\mathbf{Y}
+    =
+    \begin{pmatrix}
+    28\\
+    74
+    \end{pmatrix}
+    $$
+
+C.  $$
+    \mathbf{X}^\top\mathbf{X}
+    =
+    \begin{pmatrix}
+    30 & 10\\
+    10 & 5
+    \end{pmatrix},
+    \qquad
+    \mathbf{X}^\top\mathbf{Y}
+    =
+    \begin{pmatrix}
+    77\\
+    28
+    \end{pmatrix}
+    $$
+
+D.  $$
+    \mathbf{X}^\top\mathbf{X}
+    =
+    \begin{pmatrix}
+    5 & 10\\
+    10 & 20
+    \end{pmatrix},
+    \qquad
+    \mathbf{X}^\top\mathbf{Y}
+    =
+    \begin{pmatrix}
+    28\\
+    77
+    \end{pmatrix}
+    $$
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-1c .callout-tip collapse="true" title="Solution 1(c)"}
+
+**A.** Here $\sum_i x_i=10$, $\sum_i x_i^2=30$, $\sum_i Y_i=28$, and $\sum_i x_iY_i=74$. Thus
 
 $$
-\mathbf{X}^\top\mathbf{X}
-=
-\begin{pmatrix}
-5 & 10\\
-10 & 30
-\end{pmatrix},
+\mathbf{X}^\top\mathbf{X}=\begin{pmatrix}5&10\\10&30\end{pmatrix},
 \qquad
-\mathbf{X}^\top\mathbf{Y}
-=
-\begin{pmatrix}
-28\\
-74
-\end{pmatrix}
+\mathbf{X}^\top\mathbf{Y}=\begin{pmatrix}28\\74\end{pmatrix}.
 $$
-
-- [ ] **B.**
-
-$$
-\mathbf{X}^\top\mathbf{X}
-=
-\begin{pmatrix}
-5 & 5\\
-5 & 30
-\end{pmatrix},
-\qquad
-\mathbf{X}^\top\mathbf{Y}
-=
-\begin{pmatrix}
-28\\
-74
-\end{pmatrix}
-$$
-
-- [ ] **C.**
-
-$$
-\mathbf{X}^\top\mathbf{X}
-=
-\begin{pmatrix}
-30 & 10\\
-10 & 5
-\end{pmatrix},
-\qquad
-\mathbf{X}^\top\mathbf{Y}
-=
-\begin{pmatrix}
-77\\
-28
-\end{pmatrix}
-$$
-
-- [ ] **D.**
-
-$$
-\mathbf{X}^\top\mathbf{X}
-=
-\begin{pmatrix}
-5 & 10\\
-10 & 20
-\end{pmatrix},
-\qquad
-\mathbf{X}^\top\mathbf{Y}
-=
-\begin{pmatrix}
-28\\
-77
-\end{pmatrix}
-$$
-
-::: {.solution .content-visible when-meta="show-solutions"}
-
-**Solution:** A
 
 :::
+
+::::
 
 ### (d) [2]
 
@@ -223,6 +239,8 @@ $$
 
 For each statement, enter `T` or `F`.
 
+::: {tbl-colwidths="[88,12]"}
+
 | Statement | T/F |
 |:---|:---:|
 | $\mathbb{E}[\mathbf{Y}] = \mathbf{X}\boldsymbol{\beta}$ | `___` |
@@ -230,9 +248,13 @@ For each statement, enter `T` or `F`.
 | $\mathbb{E}[\mathbf{Y}] = \mathbf{0}$ | `___` |
 | The five errors all have variance $\sigma^2$ | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::
 
-**Solution:**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-1d .callout-tip collapse="true" title="Solution 1(d)"}
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 |:---|:---:|
@@ -242,6 +264,10 @@ For each statement, enter `T` or `F`.
 | The five errors all have variance $\sigma^2$ | T |
 
 :::
+
+:::
+
+::::
 
 ## Question 2: Least Squares and Projection [12]
 
@@ -270,9 +296,9 @@ and then state the OLS estimator when $\mathbf{X}$ has full column rank.
 
 Keep your derivation concise.
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-2a .callout-tip collapse="true" title="Solution 2(a)"}
 
 Expanding,
 
@@ -317,6 +343,8 @@ $$
 
 :::
 
+::::
+
 ### (b) [3]
 
 Using the quantities from Question 1, compute
@@ -348,23 +376,30 @@ $$
 \underline{\hspace{2cm}}x.
 $$
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-2b .callout-tip collapse="true" title="Solution 2(b)"}
 
-$$
-\hat{\beta}_0=1.4,
-\qquad
-\hat{\beta}_1=2.1,
-$$
-
-so
+Using the data in Question 1,
 
 $$
-\boxed{\hat{Y}=1.4+2.1x}.
+\hat{\boldsymbol{\beta}}
+=\frac{1}{50}\begin{pmatrix}30&-10\\-10&5\end{pmatrix}
+\begin{pmatrix}28\\74\end{pmatrix}
+=\begin{pmatrix}2.0\\1.8\end{pmatrix}.
 $$
+
+Therefore $\hat{\beta}_0=2.000$, $\hat{\beta}_1=1.800$, and
+
+$$
+\boxed{\hat Y=2.0+1.8x}.
+$$
+
+These are the coefficients used in Question 3.
 
 :::
+
+::::
 
 ### (c) [2]
 
@@ -378,26 +413,28 @@ $$
 
 which statement must be true?
 
-- [ ] **A.** $\mathbf{X}\mathbf{e}=\mathbf{0}$
+A.  $\mathbf{X}\mathbf{e}=\mathbf{0}$
 
-- [ ] **B.** $\mathbf{X}^\top\mathbf{e}=\mathbf{0}$
+B.  $\mathbf{X}^\top\mathbf{e}=\mathbf{0}$
 
-- [ ] **C.** $\mathbf{e}^\top\mathbf{e}=0$
+C.  $\mathbf{e}^\top\mathbf{e}=0$
 
-- [ ] **D.** $\mathbf{H}\mathbf{e}=\mathbf{e}$
+D.  $\mathbf{H}\mathbf{e}=\mathbf{e}$
 
 In one sentence, explain the geometric meaning of your choice.
 
 **Your explanation:**  
 `____________________________________________________________`
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:** B
+::: {#a1-solution-2c .callout-tip collapse="true" title="Solution 2(c)"}
 
-The residual vector is orthogonal to the column space of $\mathbf{X}$.
+**B.** The residual vector is orthogonal to the column space of $\mathbf{X}$.
 
 :::
+
+::::
 
 ### (d) [3]
 
@@ -413,6 +450,8 @@ $$
 
 enter `T` or `F`.
 
+::: {tbl-colwidths="[88,12]"}
+
 | Statement | T/F |
 |:---|:---:|
 | $\mathbf{H}^\top=\mathbf{H}$ | `___` |
@@ -420,9 +459,13 @@ enter `T` or `F`.
 | $\hat{\mathbf{Y}}=\mathbf{H}\mathbf{Y}$ | `___` |
 | $\mathbf{H}$ is an orthogonal projection matrix | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::
 
-**Solution:**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-2d .callout-tip collapse="true" title="Solution 2(d)"}
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 |:---|:---:|
@@ -432,6 +475,10 @@ enter `T` or `F`.
 | $\mathbf{H}$ is an orthogonal projection matrix | T |
 
 :::
+
+:::
+
+::::
 
 ## Question 3: Consequences and Geometry of Least Squares [12]
 
@@ -487,9 +534,9 @@ $$
 \end{pmatrix}.
 $$
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-3a .callout-tip collapse="true" title="Solution 3(a)"}
 
 $$
 \hat{\mathbf{Y}}
@@ -515,10 +562,13 @@ $$
 
 :::
 
+::::
 
 ### (b) Consequences of Including an Intercept [3]
 
 For each statement, enter `T` or `F`.
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 | :--- | :---: |
@@ -527,9 +577,13 @@ For each statement, enter `T` or `F`.
 | The vector $\mathbf{1}_n$ belongs to $\mathcal{C}(\mathbf{X})$. | `___` |
 | These properties necessarily hold for every regression model without an intercept. | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::
 
-**Solution:**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-3b .callout-tip collapse="true" title="Solution 3(b)"}
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 | :--- | :---: |
@@ -537,6 +591,8 @@ For each statement, enter `T` or `F`.
 | The fitted values satisfy $\bar{\hat{Y}}=\bar{Y}$. | T |
 | The vector $\mathbf{1}_n$ belongs to $\mathcal{C}(\mathbf{X})$. | T |
 | These properties necessarily hold for every regression model without an intercept. | F |
+
+:::
 
 Because the model contains an intercept, $\mathbf{1}_n$ is a column of
 $\mathbf{X}$. Since $\mathbf{X}^\top\mathbf{e}=\mathbf{0}$,
@@ -559,6 +615,7 @@ $$
 
 :::
 
+::::
 
 ### (c) Residual-Maker Matrix [3]
 
@@ -572,6 +629,8 @@ $$
 
 For each statement, enter `T` or `F`.
 
+::: {tbl-colwidths="[88,12]"}
+
 | Statement | T/F |
 | :--- | :---: |
 | $\mathbf{e}=\mathbf{M}\mathbf{Y}$ | `___` |
@@ -579,9 +638,13 @@ For each statement, enter `T` or `F`.
 | $\mathbf{M}^2=\mathbf{M}$ | `___` |
 | $\mathbf{H}\mathbf{M}=\mathbf{0}$ | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::
 
-**Solution:**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-3c .callout-tip collapse="true" title="Solution 3(c)"}
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 | :--- | :---: |
@@ -590,12 +653,15 @@ For each statement, enter `T` or `F`.
 | $\mathbf{M}^2=\mathbf{M}$ | T |
 | $\mathbf{H}\mathbf{M}=\mathbf{0}$ | T |
 
+:::
+
 The matrix $\mathbf{H}$ projects onto $\mathcal{C}(\mathbf{X})$,
 whereas $\mathbf{M}$ projects onto
 $\mathcal{C}(\mathbf{X})^\perp$.
 
 :::
 
+::::
 
 ### (d) Rank and Uniqueness [3]
 
@@ -604,6 +670,8 @@ column rank.
 
 For each statement, enter `T` or `F`.
 
+::: {tbl-colwidths="[88,12]"}
+
 | Statement | T/F |
 | :--- | :---: |
 | $(\mathbf{X}^\top\mathbf{X})^{-1}$ necessarily exists. | `___` |
@@ -611,9 +679,13 @@ For each statement, enter `T` or `F`.
 | The fitted vector $\hat{\mathbf{Y}}$ is still unique. | `___` |
 | The residual vector $\mathbf{e}$ is still unique. | `___` |
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::
 
-**Solution:**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a1-solution-3d .callout-tip collapse="true" title="Solution 3(d)"}
+
+::: {tbl-colwidths="[88,12]"}
 
 | Statement | T/F |
 | :--- | :---: |
@@ -622,12 +694,15 @@ For each statement, enter `T` or `F`.
 | The fitted vector $\hat{\mathbf{Y}}$ is still unique. | T |
 | The residual vector $\mathbf{e}$ is still unique. | T |
 
+:::
+
 Even when several coefficient vectors produce the same least squares
 solution, the orthogonal projection of $\mathbf{Y}$ onto
 $\mathcal{C}(\mathbf{X})$ is unique.
 
 :::
 
+::::
 
 ## Question 4: Linear Regression in R [8]
 
@@ -652,7 +727,7 @@ $$
 
 Load the data using
 
-```{r}
+```r
 data(cars)
 ```
 
@@ -660,7 +735,7 @@ data(cars)
 
 Fit the model using `lm()` and complete the table.
 
-```{r}
+```r
 fit <- lm(dist ~ speed, data = cars)
 summary(fit)
 ```
@@ -672,17 +747,24 @@ summary(fit)
 
 Which interpretation of $\hat{\beta}_1$ is correct?
 
-- [ ] **A.** For each 1 mph increase in speed, the stopping distance increases by exactly 3.9324 feet for every car.
+A.  For each 1 mph increase in speed, the stopping distance increases by exactly 3.9324 feet for every car.
 
-- [ ] **B.** For each 1 mph increase in speed, the fitted mean stopping distance increases by approximately 3.9324 feet.
+B.  For each 1 mph increase in speed, the fitted mean stopping distance increases by approximately 3.9324 feet.
 
-- [ ] **C.** The average speed increases by 3.9324 mph for every extra foot of stopping distance.
+C.  The average speed increases by 3.9324 mph for every extra foot of stopping distance.
 
-- [ ] **D.** A car travelling at 0 mph has a stopping distance of 3.9324 feet.
+D.  A car travelling at 0 mph has a stopping distance of 3.9324 feet.
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-4a .callout-tip collapse="true" title="Solution 4(a)"}
+
+```{r}
+#| code-fold: false
+data(cars)
+fit <- lm(dist ~ speed, data = cars)
+coef(fit)
+```
 
 $$
 \hat{\beta}_0=-17.5791,
@@ -694,13 +776,15 @@ The correct interpretation is **B**.
 
 :::
 
+::::
+
 ### (b) [4]
 
 Construct $\mathbf{Y}$ and $\mathbf{X}$ manually and reproduce the OLS coefficients using matrix operations.
 
 Complete the following code:
 
-```{r}
+```r
 Y <- matrix(cars$dist, ncol = 1)
 
 X <- cbind(
@@ -725,35 +809,26 @@ $$
 \end{pmatrix}.
 $$
 
-::: {.solution .content-visible when-meta="show-solutions"}
+:::: {.content-visible when-meta="show-solutions"}
 
-**Solution:**
+::: {#a1-solution-4b .callout-tip collapse="true" title="Solution 4(b)"}
 
 ```{r}
+#| code-fold: false
+Y <- matrix(cars$dist, ncol = 1)
+X <- cbind(1, cars$speed)
 beta_hat <- solve(t(X) %*% X) %*% t(X) %*% Y
+beta_hat
 ```
 
-and
+The result agrees with `lm()`:
 
 $$
-\boxed{
 \hat{\boldsymbol{\beta}}
-=
-\begin{pmatrix}
--17.5791\\
-3.9324
-\end{pmatrix}
-}.
+=\begin{pmatrix}-17.579095\\3.932409\end{pmatrix}
+\approx\begin{pmatrix}-17.579\\3.932\end{pmatrix}.
 $$
 
 :::
 
-## Grading Summary
-
-| Question | Topic | Value |
-|:---|:---|---:|
-| Question 1 | Matrix representation | 8 |
-| Question 2 | Least squares and projection | 12 |
-| Question 3 | Distribution and inference | 12 |
-| Question 4 | Regression in R | 8 |
-| **Total** |  | **40** |
+::::

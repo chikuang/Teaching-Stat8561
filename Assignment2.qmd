@@ -1,5 +1,5 @@
 ---
-show-solutions: false
+show-solutions: true
 ---
 
 # Assignment 2 {.unnumbered}
@@ -11,44 +11,46 @@ show-solutions: false
 
 This assignment emphasizes conceptual understanding of least squares, projection, and inference. Read the assumptions in each question carefully.
 
-::: {.callout-note title="Submission on iCollege"}
+::: {tbl-colwidths="[16,72,12]"}
+
+| Question | Topic | Points |
+|:---|:---|---:|
+| Question 1 | Least squares: assumptions and consequences | 6 |
+| Question 2 | Projection geometry and rank | 8 |
+| Question 3 | Sampling properties and the role of normality | 8 |
+| Question 4 | Interpreting confidence and prediction intervals | 6 |
+| Question 5 | Distribution and inference for OLS | 12 |
+| **Total** |  | **40** |
+
+:::
+
+::: {.callout-note title="Instructions"}
+
 Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 2** submission folder on **iCollege**:
 
-1.  Your rendered **PDF**, named `A2_LastName_FirstName.pdf`.
-2.  Its matching source file, named `A2_LastName_FirstName.qmd` or `A2_LastName_FirstName.Rmd`.
+1. Your rendered **PDF**, named `A2_LastName_FirstName.pdf`.
+2. Its matching source file, named `A2_LastName_FirstName.qmd` or `A2_LastName_FirstName.Rmd`.
 
 The PDF must be generated from the submitted source file. **HTML alone does not satisfy the submission requirement.**
 
 - Put your name and course number at the beginning of the PDF.
-- Use the **Answer Summary** at the end as a guide to the answer format and item labels.
+- Clearly label every question and subpart.
 - For each multiple-choice item, select **exactly one** answer. Enter only the letter.
 - For True/False items, enter only `T` or `F`. For matching items, enter one letter per row; letters may be reused.
 - Questions 1-4 require **no written explanations, derivations, or R output**. Work through the reasoning before selecting your answers.
 - Question 5 requires only the requested choices and numerical answers. Round numerical answers to **three decimal places**, retaining full precision during calculations.
 - R is optional for checking calculations. If you use R, include your code after your answers in executable chunks.
 - Your source must render from beginning to end without errors. Type mathematical expressions using LaTeX; do not submit screenshots of answers or code.
-:::
-
-::: {tbl-colwidths="[12,75,13]"}
-
-  Question    Topic                                              Points
-  ----------- -------------------------------------------------- --------
-  1           Least squares: assumptions and consequences        6
-  2           Projection geometry and rank                       8
-  3           Sampling properties and the role of normality      8
-  4           Interpreting confidence and prediction intervals   6
-  5           Distribution and inference for OLS                 12
-  **Total**                                                      **40**
 
 :::
 
 All necessary information is supplied in the questions. No external data or additional R packages are required.
 
-## Question 1: Least Squares: Assumptions and Consequences \[6\]
+## Question 1: Least Squares: Assumptions and Consequences [6]
 
 Consider $\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\varepsilon}$, where $\mathbf{X}$ is fixed, has full column rank, and $n>p$. Select **one answer per part**.
 
-### (a) Changing the distributional assumption \[2\]
+### (a) Changing the distributional assumption [2]
 
 Two students use the same observed $\mathbf{X}$ and $\mathbf{Y}$. One assumes normal errors; the other does not specify an error distribution. Both define their estimate by minimizing
 
@@ -58,30 +60,82 @@ $$
 
 Which statement is correct?
 
-A. The second student cannot compute a least squares estimate.\
-B. The estimates must differ because the distributional assumptions differ.\
-C. The estimates are the same because they minimize the same criterion for the same data.\
-D. The estimates are the same only if the observed residuals are all zero.
+A.  The second student cannot compute a least squares estimate.
 
-### (b) What makes the minimizer unique? \[2\]
+B.  The estimates must differ because the distributional assumptions differ.
+
+C.  The estimates are the same because they minimize the same criterion for the same data.
+
+D.  The estimates are the same only if the observed residuals are all zero.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-1a .callout-tip collapse="true" title="Solution 1(a)"}
+
+**C.** Both students minimize the same function of the same observed data. Normality is not needed to compute the least squares estimate; it is used for exact distributional inference.
+
+:::
+
+::::
+
+### (b) What makes the minimizer unique? [2]
 
 Which statement explains why solving the normal equations gives a **unique** least squares minimizer under the stated assumptions?
 
-A. Full column rank makes $\mathbf{X}^\top\mathbf{X}$ positive definite.\
-B. Normal errors make every system of normal equations invertible.\
-C. Having more observations than parameters guarantees full column rank for any design matrix.\
-D. Minimizing the sum of squared residuals forces every residual to be zero.
+A.  Full column rank makes $\mathbf{X}^\top\mathbf{X}$ positive definite.
 
-### (c) Shifting every response \[2\]
+B.  Normal errors make every system of normal equations invertible.
+
+C.  Having more observations than parameters guarantees full column rank for any design matrix.
+
+D.  Minimizing the sum of squared residuals forces every residual to be zero.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-1b .callout-tip collapse="true" title="Solution 1(b)"}
+
+**A.** Full column rank makes $\mathbf{X}^\top\mathbf{X}$ positive definite because
+
+$$
+\mathbf{a}^\top\mathbf{X}^\top\mathbf{X}\mathbf{a}
+=\|\mathbf{X}\mathbf{a}\|^2>0\quad\text{for every }\mathbf{a}\ne\mathbf{0}.
+$$
+
+The least squares criterion therefore has a unique minimizer. The condition $n>p$ alone does not rule out linearly dependent columns.
+
+:::
+
+::::
+
+### (c) Shifting every response [2]
 
 Now suppose the model includes an intercept. Add 5 to **every observed response**, keep all predictors unchanged, and refit the same model by least squares. What happens?
 
-A. Every slope increases by 5, while the intercept is unchanged.\
-B. The coefficients are unchanged, and every residual increases by 5.\
-C. The intercept increases by 5, and every residual increases by 5.\
-D. The intercept increases by 5, the slopes are unchanged, and the residuals are unchanged.
+A.  Every slope increases by 5, while the intercept is unchanged.
 
-## Question 2: Projection Geometry and Rank \[8\]
+B.  The coefficients are unchanged, and every residual increases by 5.
+
+C.  The intercept increases by 5, and every residual increases by 5.
+
+D.  The intercept increases by 5, the slopes are unchanged, and the residuals are unchanged.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-1c .callout-tip collapse="true" title="Solution 1(c)"}
+
+**D.** Adding 5 to the intercept adds 5 to every fitted response. The slopes are unchanged, and
+
+$$
+(\mathbf{Y}+5\mathbf{1}_n)-(\hat{\mathbf{Y}}+5\mathbf{1}_n)=\mathbf{e},
+$$
+
+so the residuals are unchanged.
+
+:::
+
+::::
+
+## Question 2: Projection Geometry and Rank [8]
 
 For parts (a) and (c), let $\mathbf{X}$ have full column rank. Define
 
@@ -92,16 +146,37 @@ $$
 \quad \mathbf{e}=\mathbf{M}\mathbf{Y}.
 $$
 
-### (a) Projecting a second time \[2\]
+### (a) Projecting a second time [2]
 
 A student applies $\mathbf{H}$ to the fitted vector and to the residual vector. Which pair of results must hold?
 
-A. $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{0}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.\
-B. $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{0}$.\
-C. $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{Y}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.\
-D. $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.
+A.  $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{0}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.
 
-### (b) Adding a redundant predictor \[2\]
+B.  $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{0}$.
+
+C.  $\mathbf{H}\hat{\mathbf{Y}}=\mathbf{Y}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.
+
+D.  $\mathbf{H}\hat{\mathbf{Y}}=\hat{\mathbf{Y}}$ and $\mathbf{H}\mathbf{e}=\mathbf{e}$.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-2a .callout-tip collapse="true" title="Solution 2(a)"}
+
+**B.** Since $\mathbf{H}^2=\mathbf{H}$,
+
+$$
+\mathbf{H}\hat{\mathbf{Y}}=\mathbf{H}^2\mathbf{Y}=\hat{\mathbf{Y}},
+\qquad
+\mathbf{H}\mathbf{e}=\mathbf{H}(\mathbf{I}_n-\mathbf{H})\mathbf{Y}=\mathbf{0}.
+$$
+
+The fitted vector lies in the model space, and the residual vector is orthogonal to it.
+
+:::
+
+::::
+
+### (b) Adding a redundant predictor [2]
 
 Suppose $\mathbf{x}$ is not constant. Compare the least squares fits using
 
@@ -113,72 +188,159 @@ $$
 
 for the **same response vector**. Which statement is correct?
 
-A. The extra column must strictly reduce SSE.\
-B. The fit using $\mathbf{W}$ does not exist because $\mathbf{W}^\top\mathbf{W}$ is singular.\
-C. The fit using $\mathbf{W}$ has nonunique coefficients, but its fitted values and SSE equal those from $\mathbf{X}$.\
-D. The fit using $\mathbf{W}$ has nonunique coefficients and therefore nonunique fitted values.
+A.  The extra column must strictly reduce SSE.
 
-### (c) Geometric consequences \[4\]
+B.  The fit using $\mathbf{W}$ does not exist because $\mathbf{W}^\top\mathbf{W}$ is singular.
+
+C.  The fit using $\mathbf{W}$ has nonunique coefficients, but its fitted values and SSE equal those from $\mathbf{X}$.
+
+D.  The fit using $\mathbf{W}$ has nonunique coefficients and therefore nonunique fitted values.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-2b .callout-tip collapse="true" title="Solution 2(b)"}
+
+**C.** Adding $2\mathbf{x}$ does not change the column space. Both models project the response onto the same space, giving identical fitted values, residuals, and SSE. The coefficients for $\mathbf{W}$ are nonunique because its columns are linearly dependent.
+
+:::
+
+::::
+
+### (c) Geometric consequences [4]
 
 Enter `T` or `F`. Each statement is worth **1 point**. Here $\bar Y=n^{-1}\sum_iY_i$.
 
 ::: {tbl-colwidths="[88,12]"}
 
-  Statement                                                                                                                                                                T/F
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -------
-  \(i\) The uncentered identity $\mathbf{Y}^\top\mathbf{Y}=\hat{\mathbf{Y}}^\top\hat{\mathbf{Y}}+\mathbf{e}^\top\mathbf{e}$ holds for the least squares fit.               `___`
-  \(ii\) The centered identity $\sum_i(Y_i-\bar Y)^2=\sum_i(\hat Y_i-\bar Y)^2+\mathrm{SSE}$ is guaranteed for every least squares model, even one without an intercept.   `___`
-  \(iii\) If the model includes an intercept, the average fitted value equals the average observed response.                                                               `___`
-  \(iv\) The residual vector must be orthogonal to the observed response vector $\mathbf{Y}$ itself.                                                                       `___`
+| Statement | T/F |
+| :--- | :---: |
+| \(i\) The uncentered identity $\mathbf{Y}^\top\mathbf{Y}=\hat{\mathbf{Y}}^\top\hat{\mathbf{Y}}+\mathbf{e}^\top\mathbf{e}$ holds for the least squares fit. | `___` |
+| \(ii\) The centered identity $\sum_i(Y_i-\bar Y)^2=\sum_i(\hat Y_i-\bar Y)^2+\mathrm{SSE}$ is guaranteed for every least squares model, even one without an intercept. | `___` |
+| \(iii\) If the model includes an intercept, the average fitted value equals the average observed response. | `___` |
+| \(iv\) The residual vector must be orthogonal to the observed response vector $\mathbf{Y}$ itself. | `___` |
 
 :::
 
-## Question 3: Sampling Properties and the Role of Normality \[8\]
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-2c .callout-tip collapse="true" title="Solution 2(c)"}
+
+**(i) T; (ii) F; (iii) T; (iv) F.**
+
+- **(i)** $\hat{\mathbf{Y}}^\top\mathbf{e}=0$ gives the uncentered sum-of-squares decomposition.
+- **(ii)** The centered decomposition holds when the model includes an intercept, but is not guaranteed without one.
+- **(iii)** An intercept gives $\mathbf{1}_n^\top\mathbf{e}=0$, so the observed and fitted means agree.
+- **(iv)** In fact, $\mathbf{e}^\top\mathbf{Y}=\mathbf{e}^\top(\hat{\mathbf{Y}}+\mathbf{e})=\mathrm{SSE}$, which need not be zero.
+
+:::
+
+::::
+
+## Question 3: Sampling Properties and the Role of Normality [8]
 
 Throughout this question, $\mathbf{X}$ is fixed with full column rank, $n>p$, and $\sigma^2>0$.
 
-### (a) Match the result to its assumptions \[4\]
+### (a) Match the result to its assumptions [4]
 
 Choose the **weakest sufficient set of assumptions among A, B, and C** for each result. Each row is worth **1 point**. Letters may be reused.
 
-A. The least squares criterion and full column rank alone; no error moment or distribution assumptions.\
-B. $\mathbb{E}(\boldsymbol{\varepsilon})=\mathbf{0}$ and $\operatorname{Var}(\boldsymbol{\varepsilon})=\sigma^2\mathbf{I}_n$, without assuming normality.\
-C. The normal linear model, $\boldsymbol{\varepsilon}\sim N_n(\mathbf{0},\sigma^2\mathbf{I}_n)$.
+A.  The least squares criterion and full column rank alone; no error moment or distribution assumptions.
+
+B.  $\mathbb{E}(\boldsymbol{\varepsilon})=\mathbf{0}$ and $\operatorname{Var}(\boldsymbol{\varepsilon})=\sigma^2\mathbf{I}_n$, without assuming normality.
+
+C.  The normal linear model, $\boldsymbol{\varepsilon}\sim N_n(\mathbf{0},\sigma^2\mathbf{I}_n)$.
 
 ::: {tbl-colwidths="[88,12]"}
 
-  Result                                                                                            Letter
-  ------------------------------------------------------------------------------------------------- --------
-  \(i\) The least squares coefficient vector is the unique minimizer of $S(\boldsymbol{\beta})$.    `___`
-  \(ii\) $\mathbb{E}(\hat{\boldsymbol{\beta}})=\boldsymbol{\beta}$.                                 `___`
-  \(iii\) $\mathrm{SSE}/\sigma^2\sim\chi^2_{n-p}$.                                                  `___`
-  \(iv\) $\operatorname{Var}(\hat{\boldsymbol{\beta}})=\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$.   `___`
+| Result | Letter |
+| :--- | :---: |
+| \(i\) The least squares coefficient vector is the unique minimizer of $S(\boldsymbol{\beta})$. | `___` |
+| \(ii\) $\mathbb{E}(\hat{\boldsymbol{\beta}})=\boldsymbol{\beta}$. | `___` |
+| \(iii\) $\mathrm{SSE}/\sigma^2\sim\chi^2_{n-p}$. | `___` |
+| \(iv\) $\operatorname{Var}(\hat{\boldsymbol{\beta}})=\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$. | `___` |
 
 :::
 
-### (b) Why does independence follow? \[2\]
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-3a .callout-tip collapse="true" title="Solution 3(a)"}
+
+**(i) A; (ii) B; (iii) C; (iv) B.**
+
+- **(i)** Uniqueness of the minimizer is an algebraic consequence of full column rank.
+- **(ii)** Zero-mean errors give $\mathbb{E}(\hat{\boldsymbol{\beta}})=\boldsymbol{\beta}$.
+- **(iii)** The exact chi-square distribution requires the normal linear model among the listed assumptions.
+- **(iv)** The covariance formula follows from $\operatorname{Var}(\boldsymbol{\varepsilon})=\sigma^2\mathbf{I}_n$ without normality.
+
+For (ii), zero-mean errors alone suffice; **B** is the weakest sufficient set *among the choices provided*.
+
+:::
+
+::::
+
+### (b) Why does independence follow? [2]
 
 Under the normal linear model, which argument correctly explains why $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ are independent?
 
-A. $\hat{\boldsymbol{\beta}}$ and $\mathbf{e}$ are jointly normal with zero covariance, and SSE is a function of $\mathbf{e}$.\
-B. Any two uncorrelated random vectors are independent, regardless of their distribution.\
-C. They estimate different parameters, so they must be independent.\
-D. Each observed residual is independent of every other observed residual in every normal linear model.
+A.  $\hat{\boldsymbol{\beta}}$ and $\mathbf{e}$ are jointly normal with zero covariance, and SSE is a function of $\mathbf{e}$.
 
-### (c) Increasing the error variance \[2\]
+B.  Any two uncorrelated random vectors are independent, regardless of their distribution.
+
+C.  They estimate different parameters, so they must be independent.
+
+D.  Each observed residual is independent of every other observed residual in every normal linear model.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-3b .callout-tip collapse="true" title="Solution 3(b)"}
+
+**A.** Both $\hat{\boldsymbol{\beta}}$ and $\mathbf{e}$ are linear transformations of the normal response vector, so they are jointly normal. Also,
+
+$$
+\operatorname{Cov}(\hat{\boldsymbol{\beta}},\mathbf{e})
+=\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{M}
+=\mathbf{0}.
+$$
+
+Joint normality turns zero covariance into independence. Since $\mathrm{SSE}=\mathbf{e}^\top\mathbf{e}$ is a function of $\mathbf{e}$, it is independent of $\hat{\boldsymbol{\beta}}$. Uncorrelatedness alone would not suffice without joint normality.
+
+:::
+
+::::
+
+### (c) Increasing the error variance [2]
 
 Keep $\mathbf{X}$ and $\boldsymbol{\beta}$ fixed. In a second model, the errors still have mean zero, but their covariance is $4\sigma^2\mathbf{I}_n$ instead of $\sigma^2\mathbf{I}_n$. Which statement describes the **sampling distribution's mean and covariance** for the OLS estimator?
 
-A. Its mean and covariance are both multiplied by 4.\
-B. Its mean is unchanged, and its covariance is multiplied by 16.\
-C. Its mean and covariance are both unchanged.\
-D. Its mean is unchanged, and its covariance is multiplied by 4; each coefficient's standard deviation doubles.
+A.  Its mean and covariance are both multiplied by 4.
 
-## Question 4: Interpreting Confidence and Prediction Intervals \[6\]
+B.  Its mean is unchanged, and its covariance is multiplied by 16.
+
+C.  Its mean and covariance are both unchanged.
+
+D.  Its mean is unchanged, and its covariance is multiplied by 4; each coefficient's standard deviation doubles.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-3c .callout-tip collapse="true" title="Solution 3(c)"}
+
+**D.** The estimator remains unbiased, while its covariance becomes
+
+$$
+4\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}.
+$$
+
+Each coefficient's variance is multiplied by 4, so its standard deviation is multiplied by $\sqrt{4}=2$.
+
+:::
+
+::::
+
+## Question 4: Interpreting Confidence and Prediction Intervals [6]
 
 Assume a correctly specified normal linear model. For prediction, a future observation has an error independent of the original data and with the same error variance.
 
-### (a) Mean response versus one future response \[2\]
+### (a) Mean response versus one future response [2]
 
 At the **same predictor value**, software reports two intervals at the 95% level:
 
@@ -187,12 +349,25 @@ At the **same predictor value**, software reports two intervals at the 95% level
 
 One is a confidence interval for the mean response; the other is a prediction interval for one future response. Which interpretation is correct?
 
-A. I is the prediction interval because predicting one observation involves less uncertainty than estimating a mean.\
-B. Both intervals describe the same target; their different widths are only rounding error.\
-C. I is the mean-response interval; II is the prediction interval because it also accounts for the new observation's error.\
-D. II is the mean-response interval because averaging adds the new observation's error variance.
+A.  I is the prediction interval because predicting one observation involves less uncertainty than estimating a mean.
 
-### (b) Connecting a confidence interval and a test \[2\]
+B.  Both intervals describe the same target; their different widths are only rounding error.
+
+C.  I is the mean-response interval; II is the prediction interval because it also accounts for the new observation's error.
+
+D.  II is the mean-response interval because averaging adds the new observation's error variance.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-4a .callout-tip collapse="true" title="Solution 4(a)"}
+
+**C.** At the same predictor value, the mean-response interval uses standard error $\hat\sigma\sqrt{h_0}$, whereas the prediction interval uses $\hat\sigma\sqrt{1+h_0}$, where $h_0=\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0$. The extra 1 accounts for the new observation's error variance. Thus the narrower interval I concerns the mean and the wider interval II concerns one future response.
+
+:::
+
+::::
+
+### (b) Connecting a confidence interval and a test [2]
 
 A 95% confidence interval for $\beta_1$ is $(0.4,1.6)$. Consider the corresponding two-sided $t$ test of
 
@@ -202,25 +377,51 @@ $$
 
 at $\alpha=0.05$. Which conclusion is correct?
 
-A. Reject $H_0$ because zero is outside the interval.\
-B. Fail to reject $H_0$ because 1 is inside the interval; this does not prove that $\beta_1=1$.\
-C. Accept $H_0$ as proven true because 1 is inside the interval.\
-D. No conclusion is possible because a $t$ test can only test a coefficient against zero.
+A.  Reject $H_0$ because zero is outside the interval.
 
-### (c) What an interval means \[2\]
+B.  Fail to reject $H_0$ because 1 is inside the interval; this does not prove that $\beta_1=1$.
+
+C.  Accept $H_0$ as proven true because 1 is inside the interval.
+
+D.  No conclusion is possible because a $t$ test can only test a coefficient against zero.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-4b .callout-tip collapse="true" title="Solution 4(b)"}
+
+**B.** The hypothesized value 1 lies inside $(0.4,1.6)$, so the corresponding two-sided test fails to reject $H_0:\beta_1=1$ at the 5% level. This does not prove the null hypothesis. Whether zero lies in the interval is irrelevant to this stated null value.
+
+:::
+
+::::
+
+### (c) What an interval means [2]
 
 Enter `T` or `F`. Each statement is worth **1 point**. Assume a positive estimated error variance and $\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0>0$.
 
 ::: {tbl-colwidths="[88,12]"}
 
-  Statement                                                                                                                                   T/F
-  ------------------------------------------------------------------------------------------------------------------------------------------- -------
-  \(i\) Holding the data and predictor value fixed, changing a mean-response confidence level from 95% to 99% makes the interval wider.       `___`
-  \(ii\) A 95% confidence interval for the mean response is designed to contain 95% of individual future responses at that predictor value.   `___`
+| Statement | T/F |
+| :--- | :---: |
+| \(i\) Holding the data and predictor value fixed, changing a mean-response confidence level from 95% to 99% makes the interval wider. | `___` |
+| \(ii\) A 95% confidence interval for the mean response is designed to contain 95% of individual future responses at that predictor value. | `___` |
 
 :::
 
-## Question 5: Distribution and Inference \[12\]
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-4c .callout-tip collapse="true" title="Solution 4(c)"}
+
+**(i) T; (ii) F.**
+
+- **(i)** Holding the data fixed, a higher confidence level uses a larger critical value and produces a wider interval.
+- **(ii)** A confidence interval for the mean concerns the unknown mean response. It does not describe a range containing 95% of individual future responses; those require a prediction interval.
+
+:::
+
+::::
+
+## Question 5: Distribution and Inference [12]
 
 Suppose a multiple linear regression model has $n=20$ observations and $p=3$ parameters: an intercept and two slopes. The first column of $\mathbf{X}$ is $\mathbf{1}_{20}$. Assume
 
@@ -239,25 +440,49 @@ $$
 
 and $\mathrm{SSE}=34$. Use $t_{0.975,17}=2.110$.
 
-### (a) \[3\]
+### (a) [3]
 
 Choose the correct distributions.
 
 For $\hat{\boldsymbol{\beta}}$:
 
-A. $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$\
-B. $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$\
-C. $t_{17}$\
-D. $\chi^2_{17}$
+A.  $N_3\!\left(\mathbf{0},\sigma^2\mathbf{I}_3\right)$
+
+B.  $N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right)$
+
+C.  $t_{17}$
+
+D.  $\chi^2_{17}$
 
 For $\mathrm{SSE}/\sigma^2$:
 
-A. $N(0,1)$\
-B. $t_{17}$\
-C. $\chi^2_{17}$\
-D. $F_{3,17}$
+A.  $N(0,1)$
 
-### (b) \[2\]
+B.  $t_{17}$
+
+C.  $\chi^2_{17}$
+
+D.  $F_{3,17}$
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-5a .callout-tip collapse="true" title="Solution 5(a)"}
+
+**B** for $\hat{\boldsymbol{\beta}}$ and **C** for $\mathrm{SSE}/\sigma^2$:
+
+$$
+\hat{\boldsymbol{\beta}}\sim N_3\!\left(\boldsymbol{\beta},\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right),
+\qquad
+\frac{\mathrm{SSE}}{\sigma^2}\sim\chi^2_{17}.
+$$
+
+The residual degrees of freedom are $n-p=20-3=17$.
+
+:::
+
+::::
+
+### (b) [2]
 
 Compute
 
@@ -266,7 +491,19 @@ $$
 = \underline{\hspace{2cm}}.
 $$
 
-### (c) \[4\]
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-5b .callout-tip collapse="true" title="Solution 5(b)"}
+
+$$
+\hat\sigma^2=\frac{34}{20-3}=\boxed{2.000}.
+$$
+
+:::
+
+::::
+
+### (c) [4]
 
 For testing
 
@@ -285,42 +522,56 @@ $$
 
 and choose the decision:
 
-A. Reject $H_0$\
-B. Fail to reject $H_0$
+A.  Reject $H_0$
 
-### (d) \[3\]
+B.  Fail to reject $H_0$
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-5c .callout-tip collapse="true" title="Solution 5(c)"}
+
+Use the second diagonal entry of $(\mathbf{X}^\top\mathbf{X})^{-1}$, which is $0.05$:
+
+$$
+\mathrm{SE}(\hat\beta_1)=\sqrt{2(0.05)}=0.3162278\approx\boxed{0.316},
+$$
+
+$$
+t=\frac{1.5-0}{\sqrt{0.1}}=4.7434165\approx\boxed{4.743}.
+$$
+
+Since $|t|>2.110$, choose **A: Reject $H_0$** at the 5% significance level.
+
+:::
+
+::::
+
+### (d) [3]
 
 Which of the following is the 95% confidence interval for $\beta_1$?
 
-A. $(0.8329,\;2.1671)$\
-B. $(1.1838,\;1.8162)$\
-C. $(-0.6671,\;0.6671)$\
-D. $(0,\;3.0000)$
+A.  $(0.8329,\;2.1671)$
 
-## Answer Summary
+B.  $(1.1838,\;1.8162)$
 
-Use the format below to present your answers. For items with multiple responses, list them from left to right. No explanations or derivations are required.
+C.  $(-0.6671,\;0.6671)$
 
-::: {tbl-colwidths="[14,76,10]"}
+D.  $(0,\;3.0000)$
 
-  Part        Your answer                                                                            Points
-  ----------- -------------------------------------------------------------------------------------- --------
-  1(a)        `___`                                                                                  2
-  1(b)        `___`                                                                                  2
-  1(c)        `___`                                                                                  2
-  2(a)        `___`                                                                                  2
-  2(b)        `___`                                                                                  2
-  2(c)        \(i\) `___`; (ii) `___`; (iii) `___`; (iv) `___`                                       4
-  3(a)        \(i\) `___`; (ii) `___`; (iii) `___`; (iv) `___`                                       4
-  3(b)        `___`                                                                                  2
-  3(c)        `___`                                                                                  2
-  4(a)        `___`                                                                                  2
-  4(b)        `___`                                                                                  2
-  4(c)        \(i\) `___`; (ii) `___`                                                                2
-  5(a)        Distribution of $\hat{\boldsymbol{\beta}}$: `___`; of $\mathrm{SSE}/\sigma^2$: `___`   3
-  5(b)        $\hat{\sigma}^2=$ `___`                                                                2
-  5(c)        SE: `___`; $t$: `___`; decision letter: `___`                                          4
-  5(d)        `___`                                                                                  3
-  **Total**                                                                                          **40**
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a2-solution-5d .callout-tip collapse="true" title="Solution 5(d)"}
+
+**A.** Using the supplied critical value,
+
+$$
+1.5\pm2.110\sqrt{0.1}
+=(0.832759,\;2.167241)
+\approx\boxed{(0.833,\;2.167)}.
+$$
+
+These endpoints agree with option A at the requested three decimal places.
 
 :::
+
+::::

@@ -1,6 +1,9 @@
 project:
   type: book
 
+# Release assignment solutions in the combined PDF as well as HTML.
+show-solutions: true
+
 book:
   title: "STAT8561 - Linear Statistical Analysis I"
   subtitle: "2026 Fall Lecture Notes"
