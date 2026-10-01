@@ -490,7 +490,7 @@ A residual-versus-fitted plot shows a clear U-shape.
 2. What changes to the model might you consider?
 3. Why would simply reporting coefficient $p$-values be insufficient here?
 
-**Suggested Homework**
+**Suggested Take home exercise**
 
 Complete the following tasks:
 

@@ -568,7 +568,7 @@ You have repeated observations on each subject over time.
 2. What kinds of covariance structure might be reasonable?
 3. Why might GLS be more appropriate than OLS in this setting?
 
-**Suggested Homework**
+**Suggested Take home exercise**
 
 Complete the following tasks:
 

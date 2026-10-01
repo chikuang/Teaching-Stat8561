@@ -594,7 +594,7 @@ You fit the following two models:
 2. What scientific question does the comparison test?
 3. Why would a significant interaction affect the interpretation of the group effect?
 
-**Suggested Homework**
+**Suggested Take home exercise**
 
 Complete the following tasks:
 

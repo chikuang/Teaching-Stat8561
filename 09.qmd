@@ -572,7 +572,7 @@ A residual-versus-fitted plot shows both a curved pattern and increasing spread.
 2. Name two possible remedies.
 3. How would you decide which remedy is more appropriate?
 
-**Suggested Homework**
+**Suggested Take home exercise**
 
 Complete the following tasks:
 

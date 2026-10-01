@@ -720,7 +720,7 @@ Compute:
 
 A reduced model has $\mathrm{SSE}_R = 120$ with $p_R = 3$, and a full model has $\mathrm{SSE}_F = 90$ with $p_F = 5$. If $n=30$, compute the nested-model $F$ statistic.
 
-**Suggested Homework**
+**Suggested Take home exercise**
 
 Complete the following tasks:
 
