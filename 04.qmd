@@ -300,6 +300,62 @@ Thus the ANOVA decomposition provides the basis for formal model comparison. Thi
 
 ## Nested Models
 
+Before comparing models, we need to say what their regression parameters mean.
+
+::: {#def-regression-parameter-meaning}
+
+## Regression Coefficients and the Mean Response
+
+For fixed predictor values, consider the additive model
+
+$$
+Y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\varepsilon_i,
+\qquad \mathbb E(\varepsilon_i)=0.
+$$
+
+The **mean response function** is $\mu(x_1,x_2)=\beta_0+\beta_1x_1+\beta_2x_2$. If predictors are random, read this as a conditional mean, with $\mathbb E(\varepsilon\mid x_1,x_2)=0$.
+
+| Parameter | Interpretation in this additive model |
+|:----------:|:--------------------------------------------------|
+| $\beta_0$ | The intercept: mean response when both $x_1=0$ and $x_2=0$. |
+| $\beta_1$ | Difference in mean response for a one-unit increase in $x_1$, holding $x_2$ fixed. |
+| $\beta_2$ | Difference in mean response for a one-unit increase in $x_2$, holding $x_1$ fixed. |
+
+For example,
+
+$$
+\mu(x_1+h,x_2)-\mu(x_1,x_2)=h\beta_1.
+$$
+
+Thus a positive $\beta_1$ means a higher mean response at larger $x_1$ when $x_2$ is fixed; a negative value means a lower mean. Its units are **response units per unit of $x_1$**. A zero coefficient means no change in this model's mean as $x_1$ varies with $x_2$ fixed; it does not rule out an unadjusted association between $x_1$ and $Y$.
+
+:::
+
+**Parameter, estimate, and observation.** The coefficients $\beta_0,\beta_1,\beta_2$ are unknown model parameters. The fitted coefficients $\hat\beta_0,\hat\beta_1,\hat\beta_2$ are estimates calculated from a sample and vary across samples. Substituting them gives a fitted mean $\hat\mu$. An individual observed response also contains its error term, so a slope does not prescribe the exact difference between two observations. These mean comparisons do not by themselves establish a causal effect.
+
+::: {#exm-regression-parameter-meaning}
+
+## Read a Fitted Equation in Its Units
+
+For the trees introduced earlier in this chapter, a fitted equation is
+
+$$
+\widehat{\mathrm{Volume}}
+=-57.988+0.339\,\mathrm{Height}+4.708\,\mathrm{Diameter}.
+$$
+
+Volume is in cubic feet, height in feet, and diameter in inches.
+
+- $\hat\beta_{\mathrm{Height}}=0.339$: at the **same diameter**, trees one foot apart in height differ by an estimated 0.339 cubic feet in mean volume. A five-foot difference corresponds to $5(0.339)=1.695$ cubic feet, using the rounded slope.
+- $\hat\beta_{\mathrm{Diameter}}=4.708$: at the **same height**, a one-inch diameter difference corresponds to an estimated 4.708-cubic-foot difference in mean volume.
+- $\hat\beta_0=-57.988$: the fitted mean at height zero and diameter zero. Those values are outside the observed data, so this intercept is an extrapolated baseline, not a useful prediction for an actual tree.
+
+The larger numerical diameter coefficient does not by itself make diameter the more important predictor: the predictors have different units and ranges, and the two coefficients describe different comparisons. The fitted coefficients also do not tell us their own uncertainty; that requires the standard errors and inference from Chapter 3.
+
+:::
+
+We can now ask how these interpretations change when a predictor is added.
+
 ::: {#def-nested-linear-models}
 
 ## Nested Linear Models
@@ -318,7 +374,52 @@ Thus every mean vector allowed by the reduced model is also allowed by the full 
 
 ## Adding a Predictor
 
-Consider the reduced model $Y_i=\beta_0+\beta_1x_{i1}+\varepsilon_i$ and the full model $Y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\varepsilon_i$. Setting $\beta_2=0$ recovers the reduced model. If the $x_2$ column is not in the span of the intercept and $x_1$, the full model adds one degree of freedom.
+Use different parameter symbols to keep the two candidate mean models distinct:
+
+$$
+\begin{aligned}
+\mu_R(x_1)&=\alpha_0+\alpha_1x_1,\\
+\mu_F(x_1,x_2)&=\beta_0+\beta_1x_1+\beta_2x_2.
+\end{aligned}
+$$
+
+| Coefficient | Mean comparison described by its model |
+|:----------:|:--------------------------------------------------|
+| $\alpha_1$ | A one-unit difference in $x_1$, without adjusting for $x_2$. |
+| $\beta_1$ | A one-unit difference in $x_1$, holding $x_2$ fixed. |
+| $\beta_2$ | A one-unit difference in $x_2$, holding $x_1$ fixed. |
+
+The reduced intercept is the mean at $x_1=0$ under the reduced model; the full intercept is the mean at $x_1=x_2=0$ under the full model. Each interpretation depends on the specified mean function and on whether its baseline is supported by the data.
+
+Setting $\beta_2=0$ recovers the reduced mean function, with $\alpha_0=\beta_0$ and $\alpha_1=\beta_1$ **under that restriction**. If the $x_2$ column is not in the span of the intercept and $x_1$, the full model adds one degree of freedom.
+
+When we fit the two models separately, OLS re-estimates every free coefficient. Nestedness therefore does **not** require $\hat\alpha_1=\hat\beta_1$. Even if the reduced model is true, fitting the unrestricted full model can give different estimates in a finite sample. [Chapter 5](05.qmd#exm-ch5-tree-adjustment) illustrates this with the same height measurements before and after adjustment for diameter.
+
+:::
+
+::: {.callout-note title="Interpret the restriction in the full model"}
+
+For the models above, the partial F comparison tests $H_0:\beta_2=0$: does $x_2$ contribute to the mean after accounting for $x_1$? It does not directly test equality of the two fitted $x_1$ coefficients. A change in the size, sign, or p-value of the $x_1$ coefficient can accompany the change in adjustment; compare the scientific questions before comparing printed numbers.
+
+:::
+
+::: {#exr-nested-parameter-interpretation}
+
+## In Class: Which Parameter Is Being Tested?
+
+Compare `Volume ~ Height` with `Volume ~ Height + Diameter` on the same trees. Which null hypothesis does their partial F test address?
+
+A. The two fitted height coefficients are equal.
+
+B. The diameter coefficient in the full model is zero, after accounting for height.
+
+C. The height coefficient in the full model is zero, after accounting for diameter.
+
+:::
+
+::: {#sol-nested-parameter-interpretation}
+
+**B.** Diameter is the added predictor. Statement C would instead compare `Volume ~ Diameter` with `Volume ~ Diameter + Height`. Neither comparison is a direct test that the height estimates from two different models are equal.
 
 :::
 
