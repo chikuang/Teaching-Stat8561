@@ -42,13 +42,13 @@ This intraclass correlation describes the fraction of conditional-on-predictors 
 
 $$
 \begin{gathered}
-Y=X\beta+Zb+\varepsilon,\qquad b\sim N(0,G),\qquad
-\varepsilon\sim N(0,R),\\
-\operatorname{Var}(Y\mid X,Z)=ZGZ^\top+R,
+\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\mathbf{Z}\mathbf{b}+\boldsymbol{\varepsilon},\qquad \mathbf{b}\sim N(\mathbf{0},\mathbf{G}),\qquad
+\boldsymbol{\varepsilon}\sim N(\mathbf{0},\mathbf{R}),\\
+\operatorname{Var}(\mathbf{Y}\mid\mathbf{X},\mathbf{Z})=\mathbf{Z}\mathbf{G}\mathbf{Z}^\top+\mathbf{R},
 \end{gathered}
 $$
 
-with $b$ and $\varepsilon$ independent and the design conditioned on. For a known covariance $V=ZGZ^\top+R$, estimation of $\beta$ has the GLS form. In practice, the covariance parameters are estimated too, so the exact OLS t/F theory does not transfer unchanged.
+with $\mathbf{b}$ and $\boldsymbol{\varepsilon}$ independent and the design conditioned on. For a known covariance $\mathbf{V}=\mathbf{Z}\mathbf{G}\mathbf{Z}^\top+\mathbf{R}$, estimation of $\boldsymbol{\beta}$ has the GLS form. In practice, the covariance parameters are estimated too, so the exact OLS t/F theory does not transfer unchanged.
 
 ::: {.callout-important title="A random intercept does not repair every dependence problem"}
 
@@ -151,7 +151,7 @@ A random intercept shifts a subject's line vertically. A **random slope** also a
 $$
 Y_{ij}=\beta_0+\beta_1t_{ij}+b_{0j}+b_{1j}t_{ij}+\varepsilon_{ij},
 \qquad
-\begin{pmatrix}b_{0j}\\b_{1j}\end{pmatrix}\sim N_2(0,G).
+\begin{pmatrix}b_{0j}\\b_{1j}\end{pmatrix}\sim N_2(\mathbf{0},\mathbf{G}).
 $$
 
 Here $\beta_1$ describes the average linear trend across the modeled subject population, while $\beta_1+b_{1j}$ is the subject-specific slope. Allowing covariance between $b_{0j}$ and $b_{1j}$ recognizes that baseline level and rate of change may be related.

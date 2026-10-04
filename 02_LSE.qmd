@@ -817,7 +817,7 @@ We will return to this issue later.
 
 ## LSE for Simple Linear Regression continue
 
-As shown in @exm-lse-simple, we know the expression of the LSE $\hat{\mathbf{\beta}}$. Here, we want to see its connection to the matrix Form.
+As shown in @exm-lse-simple, we know the expression of the LSE $\hat{\boldsymbol{\beta}}$. Here, we want to see its connection to the matrix Form.
 
 For simple linear regression,
 

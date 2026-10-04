@@ -92,3 +92,11 @@
 \courseLegacyEnvironment{definition}{Definition}{courseDefinition}
 \courseLegacyEnvironment{algorithm}{Algorithm}{courseAlgorithm}
 \courseLegacyEnvironment{property}{Property}{courseProperty}
+
+% unicode-math needs a symbol alphabet for genuinely bold Greek vectors.
+% Legacy \boldsymbol can otherwise select the regular math font in LuaLaTeX.
+\AtBeginDocument{%
+  \ifdefined\symbfit
+    \renewcommand{\boldsymbol}[1]{\symbfit{#1}}%
+  \fi
+}

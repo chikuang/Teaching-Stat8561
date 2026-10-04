@@ -48,17 +48,17 @@ A major goal of this course is to see these topics under a unified framework.
 A large part of the course can be summarized by the model
 
 $$
-Y = X\beta + \varepsilon,
+\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
 $$
 
 where
 
--   $Y$ is a response vector,
--   $X$ is a design matrix,
--   $\beta$ is an unknown parameter vector,
--   $\varepsilon$ is a random error vector.
+-   $\mathbf{Y}$ is a response vector,
+-   $\mathbf{X}$ is a design matrix,
+-   $\boldsymbol{\beta}$ is an unknown parameter vector,
+-   $\boldsymbol{\varepsilon}$ is a random error vector.
 
-This compact expression contains a great deal of statistical structure. Over the semester, we will study how to estimate $\beta$, quantify uncertainty, test hypotheses, diagnose model failures, and make predictions.
+This compact expression contains a great deal of statistical structure. Over the semester, we will study how to estimate $\boldsymbol{\beta}$, quantify uncertainty, test hypotheses, diagnose model failures, and make predictions.
 
 ## Basic Notation
 
@@ -66,11 +66,13 @@ This compact expression contains a great deal of statistical structure. Over the
 
 We use the following conventions throughout the course:
 
--   scalars are written in lowercase italic letters, such as $a$, $b$, $n$;
--   vectors are written in bold lowercase letters, such as $\mathbf{x}$, $\mathbf{y}$;
+-   scalars are written in ordinary (nonbold) type, such as $a$, $b$, $n$;
+-   vectors are written in boldface, such as $\mathbf{x}$, $\mathbf{y}$, $\boldsymbol{\beta}$, and the random response vector $\mathbf{Y}$;
 -   matrices are written in bold uppercase letters, such as $\mathbf{X}$, $\mathbf{A}$;
 -   random variables are often written in uppercase letters, such as $Y$;
 -   realizations of random variables are written in lowercase letters, such as $y$.
+
+Individual entries remain scalars: $Y_i$ is an entry of $\mathbf{Y}$, $x_{ij}$ is an entry of $\mathbf{X}$, and $\beta_j$ is an entry of $\boldsymbol{\beta}$. The scalar mean $\bar{Y}$ and variance $\sigma^2$ are not bold. We write the zero vector or matrix as $\mathbf{0}$ and the all-ones vector as $\mathbf{1}$; a scalar zero or one remains $0$ or $1$.
 
 **Univariate case**
 

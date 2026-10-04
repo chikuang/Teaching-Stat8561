@@ -584,8 +584,8 @@ The intercept now describes OJ at 1 mg/day, and the dose coefficient is the OJ s
 **Express a comparison before calculating it.** In the VC-reference interaction model, order the coefficient vector as $(\beta_0,\beta_x,\beta_g,\beta_{xg})$. The OJ-minus-VC comparison at dose $x_0$ is
 
 $$
-\Delta(x_0)=\boldsymbol\ell^\top\boldsymbol\beta,
-\qquad \boldsymbol\ell=(0,0,1,x_0-1).
+\Delta(x_0)=\mathbf{l}^\top\boldsymbol\beta,
+\qquad \mathbf{l}=(0,0,1,x_0-1).
 $$
 
 Here the comma-separated tuple denotes a column vector, as in Chapter 4. At $x_0=1$, the comparison is $\beta_g$; at $x_0=2$, it is $\beta_g+\beta_{xg}$. The linear-combination machinery from Chapter 3 therefore applies. Its standard error uses the full coefficient covariance matrix, including the covariance between the group and interaction estimates. Chapter 6 develops these comparisons, coding invariance, and the distinction between one comparison and a family of comparisons.
@@ -645,7 +645,7 @@ Consider $n=48$ observations, a binary group $z$, and a continuous predictor $x$
 
 1. $H_0:\beta_{xg}=0$; degrees of freedom $(1,44)$.
 2. $H_0:\beta_g=\beta_{xg}=0$; degrees of freedom $(2,44)$.
-3. $\Delta(2)=\beta_g+2\beta_{xg}$, with column vector $\boldsymbol\ell=(0,0,1,2)$ in the displayed coefficient order.
+3. $\Delta(2)=\beta_g+2\beta_{xg}$, with column vector $\mathbf{l}=(0,0,1,2)$ in the displayed coefficient order.
 4. $F=\{(500-440)/1\}/(440/44)=6$.
 
 :::

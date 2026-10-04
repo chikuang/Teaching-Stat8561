@@ -17,10 +17,10 @@ OLS describes a conditional mean. In some studies, the scientific question conce
 For $0<\tau<1$, define
 
 $$
-Q_\tau(Y\mid X=x)=\inf\{q:P(Y\le q\mid X=x)\ge\tau\}.
+Q_\tau(Y\mid \mathbf{X}=\mathbf{x})=\inf\{q:P(Y\le q\mid \mathbf{X}=\mathbf{x})\ge\tau\}.
 $$
 
-A linear quantile model specifies $Q_\tau(Y\mid X=x)=x^\top\beta_\tau$. The coefficients may vary with $\tau$. At $\tau=0.5$, the target is a conditional median.
+Here $Y$ is a scalar response, $\mathbf{X}$ is a random predictor vector, and $\mathbf{x}$ is its observed value. A linear quantile model specifies $Q_\tau(Y\mid \mathbf{X}=\mathbf{x})=\mathbf{x}^\top\boldsymbol{\beta}_\tau$. The coefficients may vary with $\tau$. At $\tau=0.5$, the target is a conditional median.
 
 :::
 
@@ -32,13 +32,13 @@ Fitting the 90th percentile does not mean selecting the largest 10% of responses
 
 :::
 
-**Why a different loss?** Least squares penalizes a residual $u=y-x^\top b$ by $u^2$. Quantile regression instead uses the check loss, also called pinball loss:
+**Why a different loss?** Least squares penalizes a residual $u=y-\mathbf{x}^\top\mathbf{b}$ by $u^2$. Quantile regression instead uses the check loss, also called pinball loss:
 
 $$
 \begin{aligned}
-\rho_\tau(u)&=u\{\tau-\mathbf{1}(u<0)\}
+\rho_\tau(u)&=u\{\tau-\mathbb{1}\{u<0\}\}
 =\begin{cases}\tau u,&u\ge0,\\(1-\tau)(-u),&u<0,\end{cases}\\
-\hat\beta_\tau&\in\arg\min_b\sum_{i=1}^n\rho_\tau(y_i-x_i^\top b).
+\hat{\boldsymbol{\beta}}_\tau&\in\arg\min_{\mathbf{b}}\sum_{i=1}^n\rho_\tau(y_i-\mathbf{x}_i^\top\mathbf{b}).
 \end{aligned}
 $$
 
@@ -48,11 +48,11 @@ At $\tau=0.5$, minimizing check loss is equivalent to minimizing the sum of abso
 
 ## Why Check Loss Targets a Quantile {.unnumbered}
 
-If $\mathbb{E}(|Y|)<\infty$, the minimizers of $\mathbb{E}\{\rho_\tau(Y-a)\}$ are characterized by $F(a-)\le\tau\le F(a)$; the conditional-quantile definition above selects the lower endpoint when the minimizer is not unique. Where $F$ is continuous, the derivative with respect to $a$ is $F(a)-\tau$. It is nonpositive below a minimizing quantile and nonnegative above it. The same argument applies to the conditional distribution at a fixed $x$.
+If $\mathbb{E}(|Y|)<\infty$, the minimizers of $\mathbb{E}\{\rho_\tau(Y-a)\}$ are characterized by $F(a-)\le\tau\le F(a)$; the conditional-quantile definition above selects the lower endpoint when the minimizer is not unique. Where $F$ is continuous, the derivative with respect to $a$ is $F(a)-\tau$. It is nonpositive below a minimizing quantile and nonnegative above it. The same argument applies to the conditional distribution at a fixed $\mathbf{x}$.
 
 :::
 
-**Scope of the linear model.** The population argument allows a different quantile at every $x$. A linear quantile regression restricts these values to one linear function. If the true conditional quantile is nonlinear, the fitted line is a best approximation under the chosen loss, rather than an exact description at every predictor value.
+**Scope of the linear model.** The population argument allows a different quantile at every $\mathbf{x}$. A linear quantile regression restricts these values to one linear function. If the true conditional quantile is nonlinear, the fitted line is a best approximation under the chosen loss, rather than an exact description at every predictor value.
 
 ```{r}
 #| label: fig-quantile-check-loss
