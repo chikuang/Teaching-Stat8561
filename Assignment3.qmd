@@ -4,4 +4,20 @@ show-solutions: false
 
 # Assignment 3 {.unnumbered}
 
+::: {.callout-note title="Instructions"}
+
+Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 3** submission folder on **iCollege**:
+
+1. Your rendered **PDF**, named `A3_LastName_FirstName.pdf`.
+2. Its matching source file, named `A3_LastName_FirstName.qmd` or `A3_LastName_FirstName.Rmd`.
+
+The PDF must be generated from the submitted source file. **HTML alone does not satisfy the submission requirement.**
+
+- Put your name and course number at the beginning of the PDF.
+- Clearly label every question and subpart.
+- Include all R code used to obtain your answers in executable chunks.
+- Your source must render from beginning to end without errors. Type mathematical expressions using LaTeX; do not submit screenshots of answers or code.
+
+:::
+
 Content: **TBA**.
