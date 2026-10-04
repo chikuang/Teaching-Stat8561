@@ -42,6 +42,14 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 - [ ] Exam 1, October 14, 2026
 - [ ] Exam 2, November 18, 2026
 
+## Project
+
+Start with [Instructions](Project-Instructions.qmd) for the project overview and follow the [Report requirements](Project-Report.qmd) for the analysis and submission details.
+
+Analyze a real dataset using **multiple linear regression**, explain the findings, and compare predictions with **one machine learning regression algorithm of your choice**. Submit a PDF report and its matching `.qmd` or `.Rmd` source.
+
+- [ ] [Report](Project-Report.qmd): TBA
+
 ## Topics and Corresponding Lectures
 
 Those chapters are based on the lecture notes. This part will be updated frequently.

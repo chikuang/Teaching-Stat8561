@@ -1,0 +1,46 @@
+# Instructions {.unnumbered}
+
+**STAT 8561 | Fall 2026**  
+**Project:** Linear Regression Data Analysis and Machine Learning Comparison  
+**Language:** R or Python  
+**Due date, group arrangements, and course-grade weight:** TBA
+
+Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in the context of a clear research question, and compare the regression model with **one machine learning regression algorithm of your choice**.
+
+The project connects two questions: **What do the fitted relationships mean?** and **How well do the models predict new observations?** Use evidence to answer both.
+
+## What you will produce
+
+::: {tbl-colwidths="[23,62,15]"}
+
+| Component | Deliverable | Due date |
+|:---|:---|:---:|
+| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | TBA |
+| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | TBA |
+
+:::
+
+## How to get started
+
+1. **Choose a question and data.** Identify a continuous outcome, its units, the observational unit, and plausible predictors. Cite the original data source.
+2. **Plan the comparison.** Choose one machine learning method for regression, such as a regression tree, random forest, gradient boosting, or support vector regression. Decide how to reserve test observations before fitting or tuning models.
+3. **Analyze and explain.** Fit and diagnose the linear regression, interpret its coefficients and uncertainty, and compare a scientifically motivated pair of nested linear models.
+4. **Evaluate and communicate.** Compare both methods on the same held-out observations using RMSE and MAE. Explain what each model reveals, where it performs poorly, and which you would use for your stated purpose.
+
+## A few possible questions
+
+- How is a property's sale price associated with floor area and other recorded characteristics, and does a random forest improve prediction?
+- How is a building's energy use associated with its characteristics, and does gradient boosting capture patterns missed by the linear model?
+- How is a measured environmental outcome associated with recorded conditions, and how does a regression tree compare with linear regression?
+
+These are examples of scope; you may choose another application and another suitable regression algorithm.
+
+::: {.callout-note title="What makes a strong project?"}
+
+A strong project gives a defensible linear regression analysis, clear interpretations, a fair prediction comparison, and reproducible evidence. A machine learning model does **not** have to outperform linear regression. Explain the result you obtain, including its limitations.
+
+Use existing software to fit the models, and explain the method, important settings, and analysis decisions. Record **8561** as the seed for randomized procedures. In R, use `set.seed(8561)` and prefer **ggplot2** for figures.
+
+:::
+
+**Next:** [Report requirements, assessment criteria, and submission](Project-Report.qmd).

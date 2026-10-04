@@ -45,6 +45,11 @@ book:
         - Assignment2.qmd
         - Assignment3.qmd
 
+    - part: "Project"
+      chapters:
+        - Project-Instructions.qmd
+        - Project-Report.qmd
+
   navbar:
     right:
       - icon: github

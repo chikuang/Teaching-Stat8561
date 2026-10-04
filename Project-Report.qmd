@@ -1,0 +1,135 @@
+# Report {.unnumbered}
+
+**STAT 8561 | Fall 2026**  
+**Due date:** TBA  
+**Points and course-grade weight:** TBA  
+**Group arrangements:** TBA
+
+Use a real dataset to explain an outcome with **multiple linear regression**, and compare its predictive performance with **one machine learning regression algorithm of your choice**. Begin with the [project overview](Project-Instructions.qmd).
+
+## Research question and data
+
+Choose a continuous response and at least two scientifically meaningful candidate predictors. State what one row represents, the response's units, the population or setting of interest, and the question your analysis will answer. Choose a dataset large enough to support the proposed models and a meaningful evaluation on held-out observations.
+
+- Link to and cite the original data source. Describe how the observations were collected, the sample size, and the variable definitions.
+- Explain exclusions, missing values, unusual observations, and any transformations. Give the number of observations retained for analysis.
+- Distinguish variables available when a prediction would be made from information recorded afterward. Use predictors that would actually be available in the intended application.
+- Explain whether observations are independent. If rows share a subject, site, or time sequence, use a splitting strategy that respects that structure and state the implications for inference.
+
+Before choosing models, write one question about **association or explanation** and one about **prediction**. For example, an adjusted association between size and price is a different question from predicting the price of a new property.
+
+## Linear regression analysis
+
+Use the ideas from [least squares estimation](02_LSE.qmd), [OLS inference](03_OLS_inference.qmd), [model comparison](04.qmd), and [multiple regression and categorical predictors](05.qmd).
+
+1. **Specify the model.** Write the mean model, define its variables and units, and explain why the predictors belong in the analysis. State reference categories and justify any interactions or transformed terms.
+2. **Explain the coefficients.** Interpret at least two scientifically relevant coefficients or contrasts in context, stating the predictor change, response units, and other variables held fixed. Explain the intercept's baseline and whether it is meaningful for the observed data. With an interaction, make clear which coefficient interpretation depends on the other variable's value.
+3. **Report uncertainty.** Give estimates and 95% confidence intervals for the coefficients or contrasts you interpret. State the assumptions supporting the inference. Distinguish an interval for a model parameter from a prediction interval for an individual outcome. Do not equate a small p-value with a large practical effect.
+4. **Compare nested models.** Compare one reduced and one full linear model on the same training observations and response scale. State the restriction, such as an added coefficient or group of coefficients being zero. Use an appropriate partial F test when its assumptions are defensible; otherwise explain the limitation of that test. Explain whether a retained coefficient's meaning or estimate changes when the adjustment set changes.
+5. **Check the model.** Use residual-versus-fitted and normal Q-Q plots, and examine influential observations. Discuss nonlinearity, unequal variance, unusual observations, and the plausibility of independence. Justify any remedial action; do not remove an observation solely to improve a result. See [diagnostics and model adequacy](08.qmd).
+
+Use the training data for these modeling decisions. If you select terms or transformations after examining the data, report that process and treat ordinary confidence intervals and p-values as exploratory: standard fixed-model formulas do not account for data-driven selection. Treat findings from observational data as associations unless the study design justifies a causal interpretation.
+
+## Machine learning comparison
+
+Choose **one** method suited to predicting a continuous response, for example a regression tree, random forest, gradient boosting, or support vector regression. Explain how it produces predictions, why it is appropriate for your data, and which important tuning parameters you choose. Cite the method and software documentation.
+
+Existing implementations are appropriate. Identify the functions, software versions, preprocessing, and settings needed to reproduce the fit. If you report a feature-importance measure or an effect plot, explain what it measures; it is not automatically an adjusted regression coefficient or a causal effect.
+
+### A fair evaluation
+
+1. **Reserve a test set first.** State the split and its rationale. For independent observations, an 80% training / 20% test split is a reasonable starting point. Use a group-aware or chronological split when appropriate. Conduct model-building exploration on the training data.
+2. **Use the same comparison.** Both methods predict the same response for the same test observations and use the same available candidate predictors. Explain any model-specific encoding, transformations, or training-based variable selection.
+3. **Keep learning within training data.** Estimate imputation, scaling, encoding rules, and other learned preprocessing using training data. If you use cross-validation to select a model or tune parameters, repeat all learned preprocessing inside each training fold. Apply the fitted transformations to validation or test observations.
+4. **Tune without the test outcomes.** Choose linear-model terms and machine learning settings using training data, with cross-validation or a separate validation subset as appropriate. Report the candidate settings, validation design, and selection metric. Finalize the models before evaluating them on the test set; do not revise them after seeing test performance.
+5. **Report the comparison.** Evaluate a training-mean baseline, the final linear regression, and the machine learning model on the same test set. Report RMSE and MAE in the original response units. Explain how any response transformation is reversed and how any correction is estimated using training data.
+
+For $m$ test observations, calculate
+
+$$
+\operatorname{RMSE}=\sqrt{\frac{1}{m}\sum_{i=1}^{m}(y_i-\hat y_i)^2},
+\qquad
+\operatorname{MAE}=\frac{1}{m}\sum_{i=1}^{m}|y_i-\hat y_i|.
+$$
+
+The baseline predicts the **training-set mean** for every test observation. Smaller RMSE and MAE indicate smaller prediction errors. Training $R^2$ alone does not establish which model predicts new observations better. See [model assessment and prediction](10.qmd) and the [tidymodels resampling guide](https://www.tidymodels.org/start/resampling/).
+
+{{< pagebreak >}}
+
+Use this format for the main results table; fill it with your own results:
+
+::: {tbl-colwidths="[40,30,30]"}
+
+| Model | Test RMSE | Test MAE |
+|:---|:---:|:---:|
+| Training-mean baseline | Your result | Your result |
+| Multiple linear regression | Your result | Your result |
+| Chosen machine learning method | Your result | Your result |
+
+:::
+
+Include an observed-versus-predicted plot for both fitted models and discuss where errors are largest. Differences on one test set are estimates, not proof of universal superiority; discuss how the sample size, split, and application limit the comparison.
+
+For implementation guidance, consult the [scikit-learn guide to avoiding data leakage](https://scikit-learn.org/stable/common_pitfalls.html) and the [official ensemble-methods documentation](https://scikit-learn.org/stable/modules/ensemble.html) when relevant to your chosen method.
+
+## Explain the findings
+
+Your conclusion should answer the research question in ordinary language and address all of the following:
+
+- **Substantive findings:** Which adjusted relationships are supported, how large are they in meaningful units, and how uncertain are they?
+- **Model comparison:** Did the machine learning method improve test prediction, and is the difference useful in this application? Explain why a flexible model might or might not improve performance.
+- **Interpretation:** What does the linear model make easy to explain? What additional patterns, if any, does the machine learning analysis suggest? Distinguish coefficient estimates from prediction-based importance measures.
+- **Recommendation and limitations:** Which model would you use for the stated purpose, and why? Discuss assumptions, data quality, the scope of generalization, and one useful next step.
+
+## Report format and reproducibility
+
+Write **8-10 pages of main text**, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections.
+
+Organize the report as follows:
+
+1. **Title and summary:** Names, course, project title, research question, and a short statement of the main finding.
+2. **Data and study design:** Source, definitions, cleaning, training-data exploration, and evaluation plan.
+3. **Linear regression analysis:** Model formulation, interpreted estimates and intervals, nested-model comparison, diagnostics, and limitations.
+4. **Machine learning method:** Main idea, preprocessing, tuning procedure, and final settings.
+5. **Prediction comparison:** Test-set results table, plots, and interpretation.
+6. **Discussion and conclusion:** Substantive findings, model recommendation, uncertainty, and limitations.
+7. **References and contributions:** Data, methods, software, and adapted code, plus a brief statement of each author's contribution.
+
+Label and caption every figure and table, and discuss it in the text. Place long code listings and supplementary output in an appendix or supporting files. Include all code needed to reproduce the reported numbers and figures.
+
+Set the seed to **8561** for randomized splitting, resampling, and model fitting; in Python, set the relevant `random_state` or generator seed to `8561`. Save the split identifiers and record the software environment. Prefer **ggplot2** for R figures. Use relative paths and provide instructions that work from a fresh session.
+
+## Assessment criteria
+
+**Point allocation and course-grade weight: TBA.** The following evidence will be assessed.
+
+::: {tbl-colwidths="[28,72]"}
+
+| Criterion | Evidence to include |
+|:---|:---|
+| Question and data | A focused question, a documented real dataset, clear variable definitions, and justified preparation. |
+| Linear model and interpretation | A justified mean model and correct interpretations of coefficients or contrasts, units, adjustment, and uncertainty. |
+| Model comparison and diagnostics | A correctly specified nested-model comparison, informative diagnostics, and a discussion of assumptions and limitations. |
+| Machine learning method | A suitable regression algorithm with an accurate explanation and documented settings and tuning. |
+| Fair predictive evaluation | A common test set, training-only decisions, a baseline, and correctly calculated RMSE and MAE. |
+| Findings and critical discussion | Conclusions supported by the analysis, a reasoned model recommendation, and explicit limitations. |
+| Communication and reproducibility | A clear report, useful figures and tables, attribution, and source files that regenerate the results. |
+
+:::
+
+## Submission {#submission}
+
+::: {.callout-note title="Report submission checklist"}
+
+Upload the following to the **iCollege project submission area** (folder and deadline TBA):
+
+- `Project_Report.pdf`.
+- Its matching `Project_Report.qmd` or `Project_Report.Rmd` source.
+
+If the source depends on supporting files, include them with the source in a ZIP. Provide any required scripts, data that can be redistributed or precise data-access instructions, split identifiers, and software versions and rendering instructions.
+
+Put all author names and **STAT 8561** on the report. The PDF must be generated from the submitted source file; **HTML alone does not satisfy the submission requirement**. Check that the submitted files reproduce the figures, tables, and model-comparison results from beginning to end.
+
+:::
+
+**Related:** [Project instructions](Project-Instructions.qmd).

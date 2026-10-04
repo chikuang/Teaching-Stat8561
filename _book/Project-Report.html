@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Chi-Kuang Yeh">
-<meta name="dcterms.date" content="2026-10-04">
 
-<title>STAT8561 - Linear Statistical Analysis I</title>
+<title>Report – STAT8561 - Linear Statistical Analysis I</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,29 +23,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -57,7 +36,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./intro.html" rel="next">
+<link href="./Project-Instructions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -96,6 +75,35 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="custom-callouts.css">
 </head>
@@ -119,14 +127,14 @@ div.csl-indent {
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/chikuang/Teaching-Stat8561"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
+</i>
 <span class="menu-text"></span></a>
-  </li>  
+  </li>
   <li class="nav-item compact">
     <a class="nav-link" href="././STAT8561---Linear-Statistical-Analysis-I.pdf"> <i class="bi bi-file-pdf" role="img" aria-label="Download PDF">
-</i> 
+</i>
 <span class="menu-text"></span></a>
-  </li>  
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -138,8 +146,8 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Project-Instructions.html">Project</a></li><li class="breadcrumb-item"><a href="./Project-Report.html">Report</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         </a>
     </div>
   </nav>
@@ -148,127 +156,127 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="sidebar-menu-container"> 
+    <div class="sidebar-menu-container">
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <div class="sidebar-item-container">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./01_matrix_representation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Matrix Representation and Notation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./02_LSE.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Least Squares Estimation</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./03_OLS_inference.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Distribution Theory of OLS and Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Model Comparison, Partial F Tests, and ANOVA</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Multiple Regression and Categorical Predictors</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./06.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Contrasts and Estimable Comparisons</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./07.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Experimental Design Models: ANOVA and ANCOVA</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./08.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Diagnostics and Model Adequacy</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Transformations and Weighted Least Squares</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./10.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Model Assessment and Prediction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./11.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Generalized Linear Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
+      <div class="sidebar-item-container">
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Optional topic</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+          </a>
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_B-linear-model-extensions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Linear-Model Extensions (Optional)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_C-model-selection.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Automatic Model Selection (Optional)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_D-gls.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Generalized Least Squares and Correlated Errors (Optional)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_E-glm-theory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">GLM Likelihood and Computation (Optional)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_F-quantile-regression.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quantile Regression</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_G-mixed-effects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Mixed-Effects Models</span></a>
   </div>
@@ -276,28 +284,28 @@ div.csl-indent {
       </ul>
   </li>
         <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
+      <div class="sidebar-item-container">
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Appendix</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+          </a>
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_A-matrix.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Matrix Algebra Review</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./App_H-basic-mathematical-statistics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Basic Mathematical Statistics</span></a>
   </div>
@@ -305,22 +313,22 @@ div.csl-indent {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
+      <div class="sidebar-item-container">
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Assignment</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+          </a>
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./Assignment1.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Assignment 1</span></a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
+  <div class="sidebar-item-container">
   <a href="./Assignment2.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Assignment 2</span></a>
   </div>
@@ -350,7 +358,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container">
-  <a href="./Project-Report.html" class="sidebar-item-text sidebar-link">
+  <a href="./Project-Report.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Report</span></a>
   </div>
 </li>
@@ -364,246 +372,238 @@ div.csl-indent {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
-   
+
   <ul>
-  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a>
+  <li><a href="#research-question-and-data" id="toc-research-question-and-data" class="nav-link active" data-scroll-target="#research-question-and-data">Research question and data</a></li>
+  <li><a href="#linear-regression-analysis" id="toc-linear-regression-analysis" class="nav-link" data-scroll-target="#linear-regression-analysis">Linear regression analysis</a></li>
+  <li><a href="#machine-learning-comparison" id="toc-machine-learning-comparison" class="nav-link" data-scroll-target="#machine-learning-comparison">Machine learning comparison</a>
   <ul class="collapse">
-  <li><a href="#office-hours" id="toc-office-hours" class="nav-link" data-scroll-target="#office-hours">Office Hours</a></li>
-  <li><a href="#grade-distribution" id="toc-grade-distribution" class="nav-link" data-scroll-target="#grade-distribution">Grade Distribution</a></li>
-  <li><a href="#assignment" id="toc-assignment" class="nav-link" data-scroll-target="#assignment">Assignment</a></li>
-  <li><a href="#exam" id="toc-exam" class="nav-link" data-scroll-target="#exam">Exam</a></li>
-  <li><a href="#project" id="toc-project" class="nav-link" data-scroll-target="#project">Project</a></li>
-  <li><a href="#topics-and-corresponding-lectures" id="toc-topics-and-corresponding-lectures" class="nav-link" data-scroll-target="#topics-and-corresponding-lectures">Topics and Corresponding Lectures</a></li>
-  <li><a href="#recommended-textbooks" id="toc-recommended-textbooks" class="nav-link" data-scroll-target="#recommended-textbooks">Recommended Textbooks</a></li>
-  <li><a href="#side-readings" id="toc-side-readings" class="nav-link" data-scroll-target="#side-readings">Side Readings</a></li>
+  <li><a href="#a-fair-evaluation" id="toc-a-fair-evaluation" class="nav-link" data-scroll-target="#a-fair-evaluation">A fair evaluation</a></li>
   </ul></li>
+  <li><a href="#explain-the-findings" id="toc-explain-the-findings" class="nav-link" data-scroll-target="#explain-the-findings">Explain the findings</a></li>
+  <li><a href="#report-format-and-reproducibility" id="toc-report-format-and-reproducibility" class="nav-link" data-scroll-target="#report-format-and-reproducibility">Report format and reproducibility</a></li>
+  <li><a href="#assessment-criteria" id="toc-assessment-criteria" class="nav-link" data-scroll-target="#assessment-criteria">Assessment criteria</a></li>
+  <li><a href="#submission" id="toc-submission" class="nav-link" data-scroll-target="#submission">Submission</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Project-Instructions.html">Project</a></li><li class="breadcrumb-item"><a href="./Project-Report.html">Report</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">STAT8561 - Linear Statistical Analysis I</h1>
-<p class="subtitle lead">2026 Fall Lecture Notes</p>
+<h1 class="title">Report</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Chi-Kuang Yeh </p>
-          </div>
+
+
+
   </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">October 4, 2026</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
+
 
 
 </header>
 
 
-<section id="preface" class="level1 unnumbered">
-<h1 class="unnumbered">Preface</h1>
-<p>The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.</p>
-<p>The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are collected under <strong>Optional topic</strong>.</p>
-<p><strong>Prerequisites</strong></p>
-<p>Math 4751/6751 Mathematical Statistics I and Math 4752/6752 Mathematics and Statistics II.</p>
-<p><strong>Instructor</strong></p>
-<p><a href="https://chikuang.github.io/">Chi-Kuang Yeh</a>, Assistant Professor in the <a href="https://mathstat.gsu.edu/">Department of Mathematics and Statistics</a>, <a href="https://www.gsu.edu/">Georgia State University</a>.</p>
+<p><strong>STAT 8561 | Fall 2026</strong><br>
+<strong>Due date:</strong> TBA<br>
+<strong>Points and course-grade weight:</strong> TBA<br>
+<strong>Group arrangements:</strong> TBA</p>
+<p>Use a real dataset to explain an outcome with <strong>multiple linear regression</strong>, and compare its predictive performance with <strong>one machine learning regression algorithm of your choice</strong>. Begin with the <a href="./Project-Instructions.html">project overview</a>.</p>
+<section id="research-question-and-data" class="level2">
+<h2 class="anchored" data-anchor-id="research-question-and-data">Research question and data</h2>
+<p>Choose a continuous response and at least two scientifically meaningful candidate predictors. State what one row represents, the response’s units, the population or setting of interest, and the question your analysis will answer. Choose a dataset large enough to support the proposed models and a meaningful evaluation on held-out observations.</p>
 <ul>
-<li>Office: Suite 1407, 25 Park Place.</li>
-<li>Email: <a href="mailto:cyeh@gsu.edu">cyeh@gsu.edu</a>.</li>
+<li>Link to and cite the original data source. Describe how the observations were collected, the sample size, and the variable definitions.</li>
+<li>Explain exclusions, missing values, unusual observations, and any transformations. Give the number of observations retained for analysis.</li>
+<li>Distinguish variables available when a prediction would be made from information recorded afterward. Use predictors that would actually be available in the intended application.</li>
+<li>Explain whether observations are independent. If rows share a subject, site, or time sequence, use a splitting strategy that respects that structure and state the implications for inference.</li>
 </ul>
-<section id="office-hours" class="level2">
-<h2 class="anchored" data-anchor-id="office-hours">Office Hours</h2>
-<p>Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.</p>
+<p>Before choosing models, write one question about <strong>association or explanation</strong> and one about <strong>prediction</strong>. For example, an adjusted association between size and price is a different question from predicting the price of a new property.</p>
 </section>
-<section id="grade-distribution" class="level2">
-<h2 class="anchored" data-anchor-id="grade-distribution">Grade Distribution</h2>
-<ul>
-<li>Homework – 40%</li>
-<li>Exam 1 – 20%</li>
-<li>Exam 2 – 20%</li>
-<li>Final – 20%</li>
-<li>Attendance – *7%</li>
-</ul>
+<section id="linear-regression-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression-analysis">Linear regression analysis</h2>
+<p>Use the ideas from <a href="./02_LSE.html">least squares estimation</a>, <a href="./03_OLS_inference.html">OLS inference</a>, <a href="./04.html">model comparison</a>, and <a href="./05.html">multiple regression and categorical predictors</a>.</p>
+<ol type="1">
+<li><strong>Specify the model.</strong> Write the mean model, define its variables and units, and explain why the predictors belong in the analysis. State reference categories and justify any interactions or transformed terms.</li>
+<li><strong>Explain the coefficients.</strong> Interpret at least two scientifically relevant coefficients or contrasts in context, stating the predictor change, response units, and other variables held fixed. Explain the intercept’s baseline and whether it is meaningful for the observed data. With an interaction, make clear which coefficient interpretation depends on the other variable’s value.</li>
+<li><strong>Report uncertainty.</strong> Give estimates and 95% confidence intervals for the coefficients or contrasts you interpret. State the assumptions supporting the inference. Distinguish an interval for a model parameter from a prediction interval for an individual outcome. Do not equate a small p-value with a large practical effect.</li>
+<li><strong>Compare nested models.</strong> Compare one reduced and one full linear model on the same training observations and response scale. State the restriction, such as an added coefficient or group of coefficients being zero. Use an appropriate partial F test when its assumptions are defensible; otherwise explain the limitation of that test. Explain whether a retained coefficient’s meaning or estimate changes when the adjustment set changes.</li>
+<li><strong>Check the model.</strong> Use residual-versus-fitted and normal Q-Q plots, and examine influential observations. Discuss nonlinearity, unequal variance, unusual observations, and the plausibility of independence. Justify any remedial action; do not remove an observation solely to improve a result. See <a href="./08.html">diagnostics and model adequacy</a>.</li>
+</ol>
+<p>Use the training data for these modeling decisions. If you select terms or transformations after examining the data, report that process and treat ordinary confidence intervals and p-values as exploratory: standard fixed-model formulas do not account for data-driven selection. Treat findings from observational data as associations unless the study design justifies a causal interpretation.</p>
 </section>
-<section id="assignment" class="level2">
-<h2 class="anchored" data-anchor-id="assignment">Assignment</h2>
-<ul class="task-list">
-<li><label><input type="checkbox" checked=""><a href="./Assignment1.html">Assignment 1</a>: September 11, 2026</label></li>
-<li><label><input type="checkbox" checked=""><a href="./Assignment2.html">Assignment 2</a>: September 30, 2026</label></li>
-<li><label><input type="checkbox"><a href="./Assignment3.html">Assignment 3</a>: TBA</label></li>
-</ul>
-</section>
-<section id="exam" class="level2">
-<h2 class="anchored" data-anchor-id="exam">Exam</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Exam 1, October 14, 2026</label></li>
-<li><label><input type="checkbox">Exam 2, November 18, 2026</label></li>
-</ul>
-</section>
-<section id="project" class="level2">
-<h2 class="anchored" data-anchor-id="project">Project</h2>
-<p>Start with <a href="./Project-Instructions.html">Instructions</a> for the project overview and follow the <a href="./Project-Report.html">Report requirements</a> for the analysis and submission details.</p>
-<p>Analyze a real dataset using <strong>multiple linear regression</strong>, explain the findings, and compare predictions with <strong>one machine learning regression algorithm of your choice</strong>. Submit a PDF report and its matching <code>.qmd</code> or <code>.Rmd</code> source.</p>
-<ul class="task-list">
-<li><label><input type="checkbox"><a href="./Project-Report.html">Report</a>: TBA</label></li>
-</ul>
-</section>
-<section id="topics-and-corresponding-lectures" class="level2">
-<h2 class="anchored" data-anchor-id="topics-and-corresponding-lectures">Topics and Corresponding Lectures</h2>
-<p>Those chapters are based on the lecture notes. This part will be updated frequently.</p>
+<section id="machine-learning-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="machine-learning-comparison">Machine learning comparison</h2>
+<p>Choose <strong>one</strong> method suited to predicting a continuous response, for example a regression tree, random forest, gradient boosting, or support vector regression. Explain how it produces predictions, why it is appropriate for your data, and which important tuning parameters you choose. Cite the method and software documentation.</p>
+<p>Existing implementations are appropriate. Identify the functions, software versions, preprocessing, and settings needed to reproduce the fit. If you report a feature-importance measure or an effect plot, explain what it measures; it is not automatically an adjusted regression coefficient or a causal effect.</p>
+<section id="a-fair-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="a-fair-evaluation">A fair evaluation</h3>
+<ol type="1">
+<li><strong>Reserve a test set first.</strong> State the split and its rationale. For independent observations, an 80% training / 20% test split is a reasonable starting point. Use a group-aware or chronological split when appropriate. Conduct model-building exploration on the training data.</li>
+<li><strong>Use the same comparison.</strong> Both methods predict the same response for the same test observations and use the same available candidate predictors. Explain any model-specific encoding, transformations, or training-based variable selection.</li>
+<li><strong>Keep learning within training data.</strong> Estimate imputation, scaling, encoding rules, and other learned preprocessing using training data. If you use cross-validation to select a model or tune parameters, repeat all learned preprocessing inside each training fold. Apply the fitted transformations to validation or test observations.</li>
+<li><strong>Tune without the test outcomes.</strong> Choose linear-model terms and machine learning settings using training data, with cross-validation or a separate validation subset as appropriate. Report the candidate settings, validation design, and selection metric. Finalize the models before evaluating them on the test set; do not revise them after seeing test performance.</li>
+<li><strong>Report the comparison.</strong> Evaluate a training-mean baseline, the final linear regression, and the machine learning model on the same test set. Report RMSE and MAE in the original response units. Explain how any response transformation is reversed and how any correction is estimated using training data.</li>
+</ol>
+<p>For <span class="math inline">\(m\)</span> test observations, calculate</p>
+<p><span class="math display">\[
+\operatorname{RMSE}=\sqrt{\frac{1}{m}\sum_{i=1}^{m}(y_i-\hat y_i)^2},
+\qquad
+\operatorname{MAE}=\frac{1}{m}\sum_{i=1}^{m}|y_i-\hat y_i|.
+\]</span></p>
+<p>The baseline predicts the <strong>training-set mean</strong> for every test observation. Smaller RMSE and MAE indicate smaller prediction errors. Training <span class="math inline">\(R^2\)</span> alone does not establish which model predicts new observations better. See <a href="./10.html">model assessment and prediction</a> and the <a href="https://www.tidymodels.org/start/resampling/">tidymodels resampling guide</a>.</p>
+<div style="page-break-after: always;"></div>
+<p>Use this format for the main results table; fill it with your own results:</p>
+<div data-tbl-colwidths="[40,30,30]">
 <table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Status</th>
-<th style="text-align: center;">Chapter</th>
-<th style="text-align: center;">Topic</th>
-<th style="text-align: center;">Lecture</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">Test RMSE</th>
+<th style="text-align: center;">Test MAE</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"><a href="./intro.html">Welcome and Overview</a></td>
-<td style="text-align: center;">1</td>
+<td style="text-align: left;">Training-mean baseline</td>
+<td style="text-align: center;">Your result</td>
+<td style="text-align: center;">Your result</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Ch. 1</td>
-<td style="text-align: center;"><a href="./01_matrix_representation.html">Math Notation</a></td>
-<td style="text-align: center;">2–3</td>
+<td style="text-align: left;">Multiple linear regression</td>
+<td style="text-align: center;">Your result</td>
+<td style="text-align: center;">Your result</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Ch. 2</td>
-<td style="text-align: center;"><a href="./02_LSE.html">Least Squares Estimation</a></td>
-<td style="text-align: center;">3–6</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">Ch. 3</td>
-<td style="text-align: center;"><a href="./03_OLS_inference.html">Inference on Least Square Estimation</a></td>
-<td style="text-align: center;">7–10</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 4</td>
-<td style="text-align: center;"><a href="./04.html">Model Comparison, Partial F Tests, and ANOVA</a></td>
-<td style="text-align: center;">11–</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">📝</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Exam 1</td>
-<td style="text-align: center;">15</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 5</td>
-<td style="text-align: center;"><a href="./05.html">Multiple Regression and Categorical Predictors</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 6</td>
-<td style="text-align: center;"><a href="./06.html">Contrasts and Estimable Comparisons</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 7</td>
-<td style="text-align: center;"><a href="./07.html">Experimental Design Models: ANOVA and ANCOVA</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 8</td>
-<td style="text-align: center;"><a href="./08.html">Diagnostics and Model Adequacy</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 9</td>
-<td style="text-align: center;"><a href="./09.html">Transformations and Weighted Least Squares</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 10</td>
-<td style="text-align: center;"><a href="./10.html">Model Assessment and Prediction</a></td>
-<td style="text-align: center;">TBA</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">📝</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Exam 2</td>
-<td style="text-align: center;">25</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">⏳</td>
-<td style="text-align: center;">Ch. 11</td>
-<td style="text-align: center;"><a href="./11.html">Introduction to Generalized Linear Models</a></td>
-<td style="text-align: center;">TBA</td>
+<td style="text-align: left;">Chosen machine learning method</td>
+<td style="text-align: center;">Your result</td>
+<td style="text-align: center;">Your result</td>
 </tr>
 </tbody>
 </table>
-<!-- Future lecture coverage will be updated after class. -->
-<p><strong>Optional topic</strong></p>
-<p>Students interested in extensions can read <a href="./App_F-quantile-regression.html">Quantile Regression</a> and <a href="./App_G-mixed-effects.html">Mixed-Effects Models</a>. These readings include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.</p>
+</div>
+<p>Include an observed-versus-predicted plot for both fitted models and discuss where errors are largest. Differences on one test set are estimates, not proof of universal superiority; discuss how the sample size, split, and application limit the comparison.</p>
+<p>For implementation guidance, consult the <a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn guide to avoiding data leakage</a> and the <a href="https://scikit-learn.org/stable/modules/ensemble.html">official ensemble-methods documentation</a> when relevant to your chosen method.</p>
 </section>
-<section id="recommended-textbooks" class="level2">
-<h2 class="anchored" data-anchor-id="recommended-textbooks">Recommended Textbooks</h2>
+</section>
+<section id="explain-the-findings" class="level2">
+<h2 class="anchored" data-anchor-id="explain-the-findings">Explain the findings</h2>
+<p>Your conclusion should answer the research question in ordinary language and address all of the following:</p>
 <ul>
-<li><p>Ding, Peng. <em>Linear Model and Extensions</em>. CRC Press, 2027. <a href="https://arxiv.org/abs/2401.00649">arXiv link</a></p></li>
-<li><p>Montgomery, Douglas C., Elizabeth A. Peck, and G. Geoffrey Vining. <em>Introduction to Linear Regression Analysis</em>. John Wiley &amp; Sons, 2021. <span class="citation" data-cites="montgomery:2021:book">(<a href="references.html#ref-montgomery:2021:book" role="doc-biblioref">Montgomery et al. 2021</a>)</span></p></li>
-<li><p>Seber, George AF, and Alan J. Lee. <em>Linear Regression Analysis</em>. John Wiley &amp; Sons, 2003. <span class="citation" data-cites="seber:2003:book">(<a href="references.html#ref-seber:2003:book" role="doc-biblioref">Seber and Lee 2003</a>)</span></p></li>
+<li><strong>Substantive findings:</strong> Which adjusted relationships are supported, how large are they in meaningful units, and how uncertain are they?</li>
+<li><strong>Model comparison:</strong> Did the machine learning method improve test prediction, and is the difference useful in this application? Explain why a flexible model might or might not improve performance.</li>
+<li><strong>Interpretation:</strong> What does the linear model make easy to explain? What additional patterns, if any, does the machine learning analysis suggest? Distinguish coefficient estimates from prediction-based importance measures.</li>
+<li><strong>Recommendation and limitations:</strong> Which model would you use for the stated purpose, and why? Discuss assumptions, data quality, the scope of generalization, and one useful next step.</li>
 </ul>
 </section>
-<section id="side-readings" class="level2">
-<h2 class="anchored" data-anchor-id="side-readings">Side Readings</h2>
-<ul>
-<li>Montgomery, Douglas C. (2017). <em>Design and Analysis of Experiments</em>. John Wiley &amp; Sons. <span class="citation" data-cites="montgomery:2017:doe">(<a href="references.html#ref-montgomery:2017:doe" role="doc-biblioref">Montgomery 2017</a>)</span></li>
-</ul>
-
-
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-montgomery:2017:doe" class="csl-entry" role="listitem">
-Montgomery, Douglas C. 2017. <em>Design and Analysis of Experiments</em>. John wiley &amp; Sons.
-</div>
-<div id="ref-montgomery:2021:book" class="csl-entry" role="listitem">
-Montgomery, Douglas C, Elizabeth A Peck, and G Geoffrey Vining. 2021. <em>Introduction to Linear Regression Analysis</em>. John Wiley &amp; Sons.
-</div>
-<div id="ref-seber:2003:book" class="csl-entry" role="listitem">
-Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. John Wiley &amp; Sons.
-</div>
+<section id="report-format-and-reproducibility" class="level2">
+<h2 class="anchored" data-anchor-id="report-format-and-reproducibility">Report format and reproducibility</h2>
+<p>Write <strong>8-10 pages of main text</strong>, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections.</p>
+<p>Organize the report as follows:</p>
+<ol type="1">
+<li><strong>Title and summary:</strong> Names, course, project title, research question, and a short statement of the main finding.</li>
+<li><strong>Data and study design:</strong> Source, definitions, cleaning, training-data exploration, and evaluation plan.</li>
+<li><strong>Linear regression analysis:</strong> Model formulation, interpreted estimates and intervals, nested-model comparison, diagnostics, and limitations.</li>
+<li><strong>Machine learning method:</strong> Main idea, preprocessing, tuning procedure, and final settings.</li>
+<li><strong>Prediction comparison:</strong> Test-set results table, plots, and interpretation.</li>
+<li><strong>Discussion and conclusion:</strong> Substantive findings, model recommendation, uncertainty, and limitations.</li>
+<li><strong>References and contributions:</strong> Data, methods, software, and adapted code, plus a brief statement of each author’s contribution.</li>
+</ol>
+<p>Label and caption every figure and table, and discuss it in the text. Place long code listings and supplementary output in an appendix or supporting files. Include all code needed to reproduce the reported numbers and figures.</p>
+<p>Set the seed to <strong>8561</strong> for randomized splitting, resampling, and model fitting; in Python, set the relevant <code>random_state</code> or generator seed to <code>8561</code>. Save the split identifiers and record the software environment. Prefer <strong>ggplot2</strong> for R figures. Use relative paths and provide instructions that work from a fresh session.</p>
+</section>
+<section id="assessment-criteria" class="level2">
+<h2 class="anchored" data-anchor-id="assessment-criteria">Assessment criteria</h2>
+<p><strong>Point allocation and course-grade weight: TBA.</strong> The following evidence will be assessed.</p>
+<div data-tbl-colwidths="[28,72]">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Evidence to include</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Question and data</td>
+<td style="text-align: left;">A focused question, a documented real dataset, clear variable definitions, and justified preparation.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Linear model and interpretation</td>
+<td style="text-align: left;">A justified mean model and correct interpretations of coefficients or contrasts, units, adjustment, and uncertainty.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Model comparison and diagnostics</td>
+<td style="text-align: left;">A correctly specified nested-model comparison, informative diagnostics, and a discussion of assumptions and limitations.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Machine learning method</td>
+<td style="text-align: left;">A suitable regression algorithm with an accurate explanation and documented settings and tuning.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fair predictive evaluation</td>
+<td style="text-align: left;">A common test set, training-only decisions, a baseline, and correctly calculated RMSE and MAE.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Findings and critical discussion</td>
+<td style="text-align: left;">Conclusions supported by the analysis, a reasoned model recommendation, and explicit limitations.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Communication and reproducibility</td>
+<td style="text-align: left;">A clear report, useful figures and tables, attribution, and source files that regenerate the results.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
+<section id="submission" class="level2">
+<h2 class="anchored" data-anchor-id="submission">Submission</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Report submission checklist">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Report submission checklist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Upload the following to the <strong>iCollege project submission area</strong> (folder and deadline TBA):</p>
+<ul>
+<li><code>Project_Report.pdf</code>.</li>
+<li>Its matching <code>Project_Report.qmd</code> or <code>Project_Report.Rmd</code> source.</li>
+</ul>
+<p>If the source depends on supporting files, include them with the source in a ZIP. Provide any required scripts, data that can be redistributed or precise data-access instructions, split identifiers, and software versions and rendering instructions.</p>
+<p>Put all author names and <strong>STAT 8561</strong> on the report. The PDF must be generated from the submitted source file; <strong>HTML alone does not satisfy the submission requirement</strong>. Check that the submitted files reproduce the figures, tables, and model-comparison results from beginning to end.</p>
+</div>
+</div>
+<p><strong>Related:</strong> <a href="./Project-Instructions.html">Project instructions</a>.</p>
+
+
 </section>
 
 </main> <!-- /main -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    
+
     document
     .querySelectorAll('div.solution.proof[id^="sol-"]')
     .forEach(function (solution) {
-      
+
       // Get Quarto's automatically generated title,
       // e.g. "Solution 2.1"
       const proofTitle = solution.querySelector(".proof-title");
@@ -667,7 +667,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
+        if (clz.startsWith('code-annotation-')) {
           return true;
         }
       }
@@ -687,11 +687,11 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
+        tooltip = new bootstrap.Tooltip(button,
+          { trigger: "manual",
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();    
+        tooltip.show();
       }
       setTimeout(function() {
         if (tooltip) {
@@ -768,7 +768,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config); 
+      window.tippy(el, config);
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -843,7 +843,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined; 
+        let hash = undefined;
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -871,7 +871,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              } 
+              }
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -895,7 +895,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            } 
+            }
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -935,7 +935,7 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
+              // cook up a div (if necessary) and position it
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");
@@ -1058,11 +1058,11 @@ Seber, George AF, and Alan J Lee. 2003. <em>Linear Regression Analysis</em>. Joh
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./Project-Instructions.html" class="pagination-link" aria-label="Instructions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Instructions</span>
+      </a>
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./intro.html" class="pagination-link" aria-label="Introduction">
-        <span class="nav-page-text">Introduction</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
