@@ -81,7 +81,10 @@ format:
 
   pdf:
     documentclass: scrreprt
+    include-in-header:
+      - pdf-environments.tex
     filters:
+      - filters/pdf-callouts.lua
       - filters/course-links.lua
     cache: true
 
