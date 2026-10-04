@@ -43,6 +43,7 @@ book:
       chapters:
         - Assignment1.qmd
         - Assignment2.qmd
+        - Assignment3.qmd
 
   navbar:
     right:
