@@ -39,7 +39,7 @@ book:
         - App_A-matrix.qmd
         - App_H-basic-mathematical-statistics.qmd
 
-    - part: "Assessments"
+    - part: "Assignment"
       chapters:
         - Assignment1.qmd
         - Assignment2.qmd
