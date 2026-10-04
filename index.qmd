@@ -61,13 +61,7 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | 11-- |
 | `r if (knitr::is_latex_output()) "Exam" else "📝"` |  | Exam 1 | 15 |
 | `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | TBA |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 6 | [Contrasts and Estimable Comparisons](06.qmd) | TBA |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 7 | [Experimental Design Models: ANOVA and ANCOVA](07.qmd) | TBA |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 8 | [Diagnostics and Model Adequacy](08.qmd) | TBA |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 9 | [Transformations and Weighted Least Squares](09.qmd) | TBA |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 10 | [Model Assessment and Prediction](10.qmd) | TBA |
 | `r if (knitr::is_latex_output()) "Exam" else "📝"` |  | Exam 2 | 25 |
-| `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 11 | [Introduction to Generalized Linear Models](11.qmd) | TBA |
 <!-- Future lecture coverage will be updated after class. -->
 
 **Optional topic**

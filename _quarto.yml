@@ -10,6 +10,8 @@ book:
   author: "Chi-Kuang Yeh"
   date: today
 
+  # Keep this list aligned with the published course website.
+  # Draft chapters remain in the repository until they are released.
   chapters:
     - index.qmd
     - intro.qmd
@@ -18,18 +20,8 @@ book:
     - 03_OLS_inference.qmd
     - 04.qmd
     - 05.qmd
-    - 06.qmd
-    - 07.qmd
-    - 08.qmd
-    - 09.qmd
-    - 10.qmd
-    - 11.qmd
     - part: "Optional topic"
       chapters:
-        - App_B-linear-model-extensions.qmd
-        - App_C-model-selection.qmd
-        - App_D-gls.qmd
-        - App_E-glm-theory.qmd
         - App_F-quantile-regression.qmd
         - App_G-mixed-effects.qmd
     - references.qmd
@@ -81,11 +73,16 @@ format:
 
   pdf:
     documentclass: scrreprt
+    colorlinks: true
+    linkcolor: CoursePurple
+    urlcolor: CoursePurple
+    citecolor: CoursePurple
+    toccolor: CoursePurple
     geometry:
       - margin=1in
-      - headheight=14pt
-      - headsep=18pt
-      - footskip=24pt
+      - headheight=38pt
+      - headsep=12pt
+      - footskip=36pt
     include-in-header:
       - pdf-environments.tex
       - pdf-page-style.tex

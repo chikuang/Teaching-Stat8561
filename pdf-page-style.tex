@@ -1,23 +1,91 @@
-% Running course identification for the KOMA-Script PDF book.
-% Starred fields also appear on chapter-opening and other plain-style pages.
-\usepackage[headsepline,plainheadsepline]{scrlayer-scrpage}
+% PDF navigation and palette follow the published Pulse course website.
+\definecolor{CoursePurple}{HTML}{593196}
+\definecolor{CoursePlum}{HTML}{432570}
+\definecolor{CourseMuted}{HTML}{6F5B8E}
+\newcommand*{\CourseURL}{https://chikuang.github.io/teaching/2026F_stat8561/}
+\newcommand*{\InstructorURL}{https://chikuang.github.io/}
+
+% Keep chapter counters and cross-references, but label the hierarchy Section.
+\KOMAoptions{chapterprefix=true}
+\renewcommand*{\chapterformat}{\mbox{Section~\thechapter}}
+\renewcommand*{\sectionformat}{Section~\thesection\enskip}
+\setkomafont{chapterprefix}{\normalfont\sffamily\bfseries\Large\color{CourseMuted}}
+\setkomafont{chapter}{\normalfont\sffamily\bfseries\huge\color{CoursePurple}}
+\setkomafont{section}{\normalfont\sffamily\bfseries\Large\color{CoursePlum}}
+\setkomafont{subsection}{\normalfont\sffamily\bfseries\large\color{CourseMuted}}
+\setkomafont{subsubsection}{\normalfont\sffamily\bfseries\normalsize\color{CourseMuted}}
+
+% Suppress a duplicate lower mark on unnumbered chapter-opening pages.
+\makeatletter
+\newcommand*{\CourseSectionMark}{%
+  \begingroup
+  \protected@edef\CourseChapterMark{\leftmark}%
+  \protected@edef\CourseLowerMark{\rightbotmark}%
+  \ifx\CourseChapterMark\CourseLowerMark\else\rightbotmark\fi
+  \endgroup}
+\makeatother
+
+% Three compact header lines fit above the one-inch body margin.
+\usepackage[headsepline,plainheadsepline,autooneside=false]{scrlayer-scrpage}
+\setlength{\footheight}{22pt}
 \clearpairofpagestyles
+\automark[section]{chapter}
+\renewcommand*{\chaptermarkformat}{Section~\thechapter\enskip}
+\renewcommand*{\sectionmarkformat}{Section~\thesection\enskip}
 \setkomafont{pageheadfoot}{\normalfont\sffamily\footnotesize\color{black!65}}
 \setkomafont{pagenumber}{\normalfont\sffamily\footnotesize}
-\ihead*{\textbf{STAT 8561}\enspace|\enspace Linear Statistical Analysis I}
-\ohead*{Fall 2026}
-\ifoot*{Chi-Kuang Yeh}
-\ofoot*{Page \pagemark}
+\setkomafont{headsepline}{\color{CoursePurple!30}}
+\chead*{\parbox[b]{\textwidth}{%
+  \fontsize{8}{10}\selectfont
+  \textbf{STAT 8561}\enspace|\enspace Linear Statistical Analysis I\hfill Fall 2026\\
+  {\color{CoursePurple}\bfseries\leftmark}\strut\\
+  \CourseSectionMark\strut}}
+\cfoot*{\parbox[t]{\textwidth}{%
+  \fontsize{8}{11}\selectfont
+  Chi-Kuang Yeh\hfill Page \pagemark\\
+  \href{\CourseURL}{chikuang.github.io/teaching/2026F\_stat8561/}}}
 \pagestyle{scrheadings}
-\renewcommand*{\titlepagestyle}{plain.scrheadings}
+\renewcommand*{\titlepagestyle}{empty}
 \renewcommand*{\chapterpagestyle}{plain.scrheadings}
 \renewcommand*{\partpagestyle}{plain.scrheadings}
-% KOMA's full-page title uses an explicit empty style; restore our style
-% before that page is shipped out at the end of the titlepage environment.
-\AddToHook{env/titlepage/end}{\thispagestyle{plain.scrheadings}}
+
+% A dedicated cover has no running header, footer, or page number.
+\makeatletter
+\renewcommand*{\maketitle}{%
+  \begin{titlepage}
+  \thispagestyle{empty}
+  \sffamily\raggedright\setlength{\parindent}{0pt}%
+  \setlength{\parfillskip}{0pt plus 1fil}
+  {\color{CoursePurple}\rule{\textwidth}{1.5pt}}\par
+  \vspace{0.65in}
+  {\color{CourseMuted}\Large Fall 2026 Lecture Notes\par}
+  \vspace{0.2in}
+  {\color{CoursePurple}\fontsize{40}{46}\selectfont\bfseries STAT 8561\par}
+  \vspace{0.2in}
+  {\color{CoursePlum}\fontsize{28}{34}\selectfont\bfseries
+    Linear Statistical\\Analysis I\par}
+  \vfill
+  {\Large\bfseries Chi-Kuang Yeh\par}
+  \vspace{0.12in}
+  {\large Assistant Professor in Statistics\par}
+  \vspace{0.08in}
+  Department of Mathematics and Statistics\par
+  Georgia State University\par
+  \vspace{0.3in}
+  {\small\bfseries Personal website}\par
+  \href{\InstructorURL}{chikuang.github.io}\par
+  \vspace{0.15in}
+  {\small\bfseries Course website}\par
+  \href{\CourseURL}{chikuang.github.io/teaching/2026F\_stat8561/}\par
+  \vspace{0.35in}
+  {\color{CoursePurple!30}\rule{\textwidth}{0.5pt}}\par
+  {\small\color{black!60}Updated \@date\par}
+  \vspace*{0.1in}
+  \end{titlepage}}
+
+\BeforeStartingTOC[toc]{\small}
 
 % Keep three-digit table-of-contents page numbers inside the page margins.
-\makeatletter
 \renewcommand*{\@pnumwidth}{2.5em}
 \renewcommand*{\@tocrmarg}{3.5em}
 \makeatother
