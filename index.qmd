@@ -33,9 +33,9 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 
 ## Assignment
 
-- [x] [Assignment 1](Assignment1.qmd), Due September 11, 2026
-- [x] [Assignment 2](Assignment2.qmd), Due September 30, 2026
-- [ ] [Assignment 3](Assignment3.qmd), Due TBA
+- [x] [Assignment 1](Assignment1.qmd): September 11, 2026
+- [x] [Assignment 2](Assignment2.qmd): September 30, 2026
+- [ ] [Assignment 3](Assignment3.qmd): TBA
 
 ## Exam
 
