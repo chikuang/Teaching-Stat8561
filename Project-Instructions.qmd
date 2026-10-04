@@ -3,7 +3,7 @@
 **STAT 8561 | Fall 2026**  
 **Project:** Linear Regression Data Analysis and Machine Learning Comparison  
 **Language:** R (Python/Jupyter Notebook by prior discussion)  
-**Due date:** December 7, 2026 (last day of class)  
+**Due on December 13, 2026**  
 **Group size:** 2-3 students  
 **Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))
 
@@ -17,8 +17,8 @@ The project connects two questions: **What do the fitted relationships mean?** a
 
 | Component | Deliverable | Due date |
 |:---|:---|:---:|
-| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | December 7, 2026 |
-| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | December 7, 2026 |
+| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | December 13, 2026 |
+| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | December 13, 2026 |
 
 :::
 

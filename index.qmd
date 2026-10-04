@@ -51,7 +51,7 @@ Analyze a real dataset using **multiple linear regression**, explain the finding
 - **Group size:** 2-3 students.
 - **Course-grade weight:** 20%.
 - **Project total:** 100 points.
-- [ ] [Report](Project-Report.qmd): **December 7, 2026 (last day of class)**.
+- [ ] [Report](Project-Report.qmd): **Due on December 13, 2026**.
 
 **Submission**
 

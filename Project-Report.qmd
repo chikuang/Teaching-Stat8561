@@ -1,7 +1,7 @@
 # Report {.unnumbered}
 
 **STAT 8561 | Fall 2026**  
-**Due date:** December 7, 2026 (last day of class)  
+**Due on December 13, 2026**  
 **Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))  
 **Points:** 100  
 **Group size:** 2-3 students
@@ -110,7 +110,7 @@ Set the seed to **8561** for randomized splitting, resampling, and model fitting
 
 ::: {.callout-note title="Report submission checklist"}
 
-Work in **groups of 2-3 students**. Upload the following to the **iCollege project submission area** by **December 7, 2026 (the last day of class)**. The submission folder will be announced on iCollege:
+Work in **groups of 2-3 students**. Upload the following to the **iCollege project submission area** by **December 13, 2026**. The submission folder will be announced on iCollege:
 
 - `Project_Report.pdf`.
 - Its matching `Project_Report.qmd` or `Project_Report.Rmd` source (the default format; see the Python/Jupyter Notebook note below).
