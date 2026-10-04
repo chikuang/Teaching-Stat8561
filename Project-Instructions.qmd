@@ -3,7 +3,9 @@
 **STAT 8561 | Fall 2026**  
 **Project:** Linear Regression Data Analysis and Machine Learning Comparison  
 **Language:** R or Python  
-**Due date, group arrangements, and course-grade weight:** TBA
+**Due date:** December 7, 2026 (last day of class)  
+**Group size:** 2-3 students  
+**Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))
 
 Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in the context of a clear research question, and compare the regression model with **one machine learning regression algorithm of your choice**.
 
@@ -11,12 +13,12 @@ The project connects two questions: **What do the fitted relationships mean?** a
 
 ## What you will produce
 
-::: {tbl-colwidths="[23,62,15]"}
+::: {tbl-colwidths="[23,54,23]"}
 
 | Component | Deliverable | Due date |
 |:---|:---|:---:|
-| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | TBA |
-| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | TBA |
+| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | December 7, 2026 |
+| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | December 7, 2026 |
 
 :::
 

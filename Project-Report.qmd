@@ -1,9 +1,10 @@
 # Report {.unnumbered}
 
 **STAT 8561 | Fall 2026**  
-**Due date:** TBA  
-**Points and course-grade weight:** TBA  
-**Group arrangements:** TBA
+**Due date:** December 7, 2026 (last day of class)  
+**Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))  
+**Points:** TBA  
+**Group size:** 2-3 students
 
 Use a real dataset to explain an outcome with **multiple linear regression**, and compare its predictive performance with **one machine learning regression algorithm of your choice**. Begin with the [project overview](Project-Instructions.qmd).
 
@@ -101,7 +102,7 @@ Set the seed to **8561** for randomized splitting, resampling, and model fitting
 
 ## Assessment criteria
 
-**Point allocation and course-grade weight: TBA.** The following evidence will be assessed.
+The project is worth **20% of the course grade**, as listed under [Grade Distribution](index.qmd#grade-distribution). **Point allocation: TBA.** The following evidence will be assessed.
 
 ::: {tbl-colwidths="[28,72]"}
 
@@ -121,7 +122,7 @@ Set the seed to **8561** for randomized splitting, resampling, and model fitting
 
 ::: {.callout-note title="Report submission checklist"}
 
-Upload the following to the **iCollege project submission area** (folder and deadline TBA):
+Work in **groups of 2-3 students**. Upload the following to the **iCollege project submission area** by **December 7, 2026 (the last day of class)**. The submission folder will be announced on iCollege:
 
 - `Project_Report.pdf`.
 - Its matching `Project_Report.qmd` or `Project_Report.Rmd` source.

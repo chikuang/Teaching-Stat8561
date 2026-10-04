@@ -28,7 +28,7 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 - Homework – 40%
 - Exam 1 – 20%
 - Exam 2 – 20%
-- Final – 20%
+- Final Project – 20%
 - Attendance – *7%
 
 ## Assignment
@@ -48,7 +48,9 @@ Start with [Instructions](Project-Instructions.qmd) for the project overview and
 
 Analyze a real dataset using **multiple linear regression**, explain the findings, and compare predictions with **one machine learning regression algorithm of your choice**. Submit a PDF report and its matching `.qmd` or `.Rmd` source.
 
-- [ ] [Report](Project-Report.qmd): TBA
+Work in **groups of 2-3 students**. The project is worth **20% of the course grade**.
+
+- [ ] [Report](Project-Report.qmd): December 7, 2026 (last day of class)
 
 ## Topics and Corresponding Lectures
 
