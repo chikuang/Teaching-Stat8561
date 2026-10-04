@@ -1,0 +1,18 @@
+The project is graded out of **100 points** and is worth **20% of the course grade**, as listed under [Grade Distribution](index.qmd#grade-distribution). The weights below are percentages of the **project grade**: 25% means 25 of the 100 project points. A project score of 90/100 contributes 18 percentage points to the overall course grade.
+
+::: {tbl-colwidths="[25,13,62]"}
+
+| Criterion | Weight | Full-credit evidence (points) |
+|:---|:---:|:---|
+| Question and data | 10% | Clear question, observational unit, and outcome units (3); cited source and variable definitions (3); justified cleaning, missing-data handling, and dependence assessment (4). |
+| Linear model and interpretation | 25% | Correct mean model and predictor coding (5); correct interpretations of at least two coefficients or contrasts and the intercept, including units and adjustment (12); correct 95% confidence intervals and uncertainty discussion (8). |
+| Model comparison and diagnostics | 20% | Valid nested-model restriction and test, with assumptions addressed (6); explanation of retained coefficients across models (4); informative residual, Q-Q, and influence checks with justified responses to problems (10). |
+| Machine learning method | 10% | Appropriate regression method and accurate explanation (4); documented implementation, preprocessing, and final settings (6). |
+| Fair predictive evaluation | 15% | Appropriate common test set and no data leakage (6); documented training-only validation and tuning (4); correct baseline, test RMSE/MAE, and prediction plots for both models (5). |
+| Findings and critical discussion | 10% | Contextual conclusions about effect size and uncertainty (4); reasoned prediction comparison and model recommendation (3); meaningful limitations and next step (3). |
+| Communication and reproducibility | 10% | Organized report and readable, discussed figures and tables (3); runnable source that reproduces results with documented data, seed, and environment (5); citations and each member's contribution (2). |
+| **Total** | **100%** | **100 points** |
+
+:::
+
+Subitem points appear in parentheses. Partial credit reflects accuracy, completeness, and justification; omissions earn zero. Full credit does not require machine learning to outperform linear regression.

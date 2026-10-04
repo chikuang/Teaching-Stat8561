@@ -1,4 +1,4 @@
-# Instructions {.unnumbered}
+# Instruction {.unnumbered}
 
 **STAT 8561 | Fall 2026**  
 **Project:** Linear Regression Data Analysis and Machine Learning Comparison  

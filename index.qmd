@@ -44,13 +44,32 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 
 ## Project
 
-Start with [Instructions](Project-Instructions.qmd) for the project overview and follow the [Report requirements](Project-Report.qmd) for the analysis and submission details.
+Read [Instruction](Project-Instructions.qmd) for the project overview and [Report requirements](Project-Report.qmd) for the detailed analysis requirements.
 
-Analyze a real dataset using **multiple linear regression**, explain the findings, and compare predictions with **one machine learning regression algorithm of your choice**. Submit a PDF report and its matching `.qmd` or `.Rmd` source. Discuss Python or Jupyter Notebook submissions with the instructor in advance.
+Analyze a real dataset using **multiple linear regression**, explain the findings, and compare predictions with **one machine learning regression algorithm of your choice**.
 
-Work in **groups of 2-3 students**. The project is worth **20% of the course grade**.
+- **Group size:** 2-3 students.
+- **Course-grade weight:** 20%.
+- **Project total:** 100 points.
+- [ ] [Report](Project-Report.qmd): **December 7, 2026 (last day of class)**.
 
-- [ ] [Report](Project-Report.qmd): December 7, 2026 (last day of class)
+**Submission**
+
+Upload **`Project_Report.pdf`** (8-10 pages of main text, excluding the title page, references, and appendices) and **`Project_Report.qmd`** or **`Project_Report.Rmd`** to **iCollege**. The submission folder will be announced on iCollege.
+
+Include required scripts, redistributable data or access instructions, split identifiers, software versions, and rendering instructions; bundle supporting files with the source in a ZIP if needed. List all group members and their contributions. The source must regenerate the PDF and results; HTML alone does not satisfy the requirement.
+
+::: {.callout-note title="Python and Jupyter Notebook submissions"}
+
+Discuss **Python** or **Jupyter Notebook (`.ipynb`)** submissions with the instructor **in advance** and agree on the format. A **PDF report**, **reproducible source**, and supporting files are still required. The same report requirements and grading criteria apply.
+
+:::
+
+{{< pagebreak >}}
+
+**Grading criteria**
+
+{{< include _project-grading.qmd >}}
 
 ## Topics and Corresponding Lectures
 
