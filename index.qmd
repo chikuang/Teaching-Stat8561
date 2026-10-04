@@ -44,32 +44,9 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 
 ## Project
 
-Read [Instruction](Project-Instructions.qmd) for the project overview and [Report requirements](Project-Report.qmd) for the detailed analysis requirements.
+See [Instruction](Project-Instructions.qmd) for the project description, requirements, and grading criteria.
 
-Analyze a real dataset using **multiple linear regression**, explain the findings, and compare predictions with **one machine learning regression algorithm of your choice**.
-
-- **Group size:** 2-3 students.
-- **Course-grade weight:** 20%.
-- **Project total:** 100 points.
-- [ ] [Report](Project-Report.qmd): **Due on December 13, 2026**.
-
-**Submission**
-
-Upload **`Project_Report.pdf`** (8-10 pages of main text, excluding the title page, references, and appendices) and **`Project_Report.qmd`** or **`Project_Report.Rmd`** to **iCollege**. The submission folder will be announced on iCollege.
-
-Include required scripts, redistributable data or access instructions, split identifiers, software versions, and rendering instructions; bundle supporting files with the source in a ZIP if needed. List all group members and their contributions. The source must regenerate the PDF and results; HTML alone does not satisfy the requirement.
-
-::: {.callout-note title="Python and Jupyter Notebook submissions"}
-
-Discuss **Python** or **Jupyter Notebook (`.ipynb`)** submissions with the instructor **in advance** and agree on the format. A **PDF report**, **reproducible source**, and supporting files are still required. The same report requirements and grading criteria apply.
-
-:::
-
-{{< pagebreak >}}
-
-**Grading criteria**
-
-{{< include _project-grading.qmd >}}
+- [ ] [Report](Project-Report.qmd): Due on December 13, 2026 (20%)
 
 ## Topics and Corresponding Lectures
 
