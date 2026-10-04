@@ -1,0 +1,17 @@
+% Running course identification for the KOMA-Script PDF book.
+% Starred fields also appear on chapter-opening and other plain-style pages.
+\usepackage[headsepline,plainheadsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\setkomafont{pageheadfoot}{\normalfont\sffamily\footnotesize\color{black!65}}
+\setkomafont{pagenumber}{\normalfont\sffamily\footnotesize}
+\ihead*{\textbf{STAT 8561}\enspace|\enspace Linear Statistical Analysis I}
+\ohead*{Fall 2026}
+\ifoot*{Chi-Kuang Yeh}
+\ofoot*{Page \pagemark}
+\pagestyle{scrheadings}
+\renewcommand*{\titlepagestyle}{plain.scrheadings}
+\renewcommand*{\chapterpagestyle}{plain.scrheadings}
+\renewcommand*{\partpagestyle}{plain.scrheadings}
+% KOMA's full-page title uses an explicit empty style; restore our style
+% before that page is shipped out at the end of the titlepage environment.
+\AddToHook{env/titlepage/end}{\thispagestyle{plain.scrheadings}}
