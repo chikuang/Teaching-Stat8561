@@ -1,4 +1,4 @@
-The project is graded out of **100 points** and is worth **20% of the course grade**, as listed under [Grade Distribution](index.qmd#grade-distribution). The weights below are percentages of the **project grade**: 25% means 25 of the 100 project points. A project score of 90/100 contributes 18 percentage points to the overall course grade.
+The project totals **100 points** and is worth **20% of the course grade** ([Grade Distribution](index.qmd#grade-distribution)). Each weight below is a percentage of the **project grade**: 25% equals 25 points. A score of 90/100 contributes 18 percentage points to the course grade.
 
 ::: {tbl-colwidths="[25,13,62]"}
 

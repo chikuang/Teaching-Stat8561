@@ -1,30 +1,49 @@
 # Instruction {.unnumbered}
 
-**STAT 8561 | Fall 2026**  
-**Project:** Linear Regression Data Analysis and Machine Learning Comparison  
-**Language:** R (Python/Jupyter Notebook by prior discussion)  
-**Due on December 13, 2026**  
-**Group size:** 2-3 students  
-**Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))
+**STAT 8561 \| Fall 2026**\
+**Due on December 13, 2026**\
+**Total:** 100 points\
+**Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))\
+**Group size:** 2-3 students\
+**Project:** Linear Regression Data Analysis and Machine Learning Comparison
 
-Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in the context of a clear research question, and compare the regression model with **one machine learning regression algorithm of your choice**.
+Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in context, and compare predictions with **one machine learning regression algorithm of your choice**.
 
-The project connects two questions: **What do the fitted relationships mean?** and **How well do the models predict new observations?** Use evidence to answer both.
+::: {tbl-colwidths="[16,72,12]"}
 
-## What you will produce
-
-::: {tbl-colwidths="[23,54,23]"}
-
-| Component | Deliverable | Due date |
-|:---|:---|:---:|
-| [Report](Project-Report.qmd) | An 8-10 page PDF explaining the data, linear regression analysis, machine learning comparison, and findings | December 13, 2026 |
-| [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | December 13, 2026 |
+| Criterion | Topic | Points |
+|:---:|:---:|:---:|
+| 1 | Question and data | 10 |
+| 2 | Linear model and interpretation | 25 |
+| 3 | Model comparison and diagnostics | 20 |
+| 4 | Machine learning method | 10 |
+| 5 | Fair predictive evaluation | 15 |
+| 6 | Findings and critical discussion | 10 |
+| 7 | Communication and reproducibility | 10 |
+| **Total** | | **100** |
 
 :::
 
-**Python or Jupyter Notebook:** If you would like to use Python or submit a Jupyter Notebook (`.ipynb`), discuss your plan with the instructor in advance and agree on the submission format. A PDF report and reproducible source are still required. See the [submission note](Project-Report.qmd#submission).
+::: {.callout-note title="Instruction"}
 
-The project is graded out of **100 points** using the [assessment criteria](Project-Report.qmd#assessment-criteria).
+Use **Quarto** or **R Markdown**. Upload **both** files to the **project submission area on iCollege**:
+
+1. Your rendered **PDF**, named `Project_Report.pdf`.
+2. Its matching source file, named `Project_Report.qmd` or `Project_Report.Rmd`.
+
+Write **8-10 pages of main text**, excluding the title page, references, and appendices. List all group members and their contributions.
+
+The submitted source and supporting files must reproduce the PDF and results. **HTML alone does not satisfy the requirement.**
+
+**Python or Jupyter Notebook:** Discuss the format with the instructor in advance; a PDF and reproducible source are still required.
+
+See [Report requirements and submission](Project-Report.qmd#submission) for the full instructions. The submission folder will be announced on iCollege.
+
+:::
+
+## Assessment criteria
+
+{{< include _project-grading.qmd >}}
 
 ## How to get started
 
