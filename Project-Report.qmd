@@ -3,7 +3,7 @@
 **STAT 8561 | Fall 2026**  
 **Due date:** December 7, 2026 (last day of class)  
 **Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))  
-**Points:** TBA  
+**Points:** 100  
 **Group size:** 2-3 students
 
 Use a real dataset to explain an outcome with **multiple linear regression**, and compare its predictive performance with **one machine learning regression algorithm of your choice**. Begin with the [project overview](Project-Instructions.qmd).
@@ -84,7 +84,7 @@ Your conclusion should answer the research question in ordinary language and add
 
 ## Report format and reproducibility
 
-Write **8-10 pages of main text**, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections.
+Write **8-10 pages of main text**, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections. For a Python or Jupyter Notebook workflow, follow the prior-discussion requirement in the [submission note](#submission).
 
 Organize the report as follows:
 
@@ -100,23 +100,28 @@ Label and caption every figure and table, and discuss it in the text. Place long
 
 Set the seed to **8561** for randomized splitting, resampling, and model fitting; in Python, set the relevant `random_state` or generator seed to `8561`. Save the split identifiers and record the software environment. Prefer **ggplot2** for R figures. Use relative paths and provide instructions that work from a fresh session.
 
+{{< pagebreak >}}
+
 ## Assessment criteria
 
-The project is worth **20% of the course grade**, as listed under [Grade Distribution](index.qmd#grade-distribution). **Point allocation: TBA.** The following evidence will be assessed.
+The project is graded out of **100 points** and is worth **20% of the course grade**, as listed under [Grade Distribution](index.qmd#grade-distribution). The weights below are percentages of the **project grade**: 25% means 25 of the 100 project points. A project score of 90/100 contributes 18 percentage points to the overall course grade.
 
-::: {tbl-colwidths="[28,72]"}
+::: {tbl-colwidths="[25,13,62]"}
 
-| Criterion | Evidence to include |
-|:---|:---|
-| Question and data | A focused question, a documented real dataset, clear variable definitions, and justified preparation. |
-| Linear model and interpretation | A justified mean model and correct interpretations of coefficients or contrasts, units, adjustment, and uncertainty. |
-| Model comparison and diagnostics | A correctly specified nested-model comparison, informative diagnostics, and a discussion of assumptions and limitations. |
-| Machine learning method | A suitable regression algorithm with an accurate explanation and documented settings and tuning. |
-| Fair predictive evaluation | A common test set, training-only decisions, a baseline, and correctly calculated RMSE and MAE. |
-| Findings and critical discussion | Conclusions supported by the analysis, a reasoned model recommendation, and explicit limitations. |
-| Communication and reproducibility | A clear report, useful figures and tables, attribution, and source files that regenerate the results. |
+| Criterion | Weight | Full-credit evidence (points) |
+|:---|:---:|:---|
+| Question and data | 10% | Clear question, observational unit, and outcome units (3); cited source and variable definitions (3); justified cleaning, missing-data handling, and dependence assessment (4). |
+| Linear model and interpretation | 25% | Correct mean model and predictor coding (5); correct interpretations of at least two coefficients or contrasts and the intercept, including units and adjustment (12); correct 95% confidence intervals and uncertainty discussion (8). |
+| Model comparison and diagnostics | 20% | Valid nested-model restriction and test, with assumptions addressed (6); explanation of retained coefficients across models (4); informative residual, Q-Q, and influence checks with justified responses to problems (10). |
+| Machine learning method | 10% | Appropriate regression method and accurate explanation (4); documented implementation, preprocessing, and final settings (6). |
+| Fair predictive evaluation | 15% | Appropriate common test set and no data leakage (6); documented training-only validation and tuning (4); correct baseline, test RMSE/MAE, and prediction plots for both models (5). |
+| Findings and critical discussion | 10% | Contextual conclusions about effect size and uncertainty (4); reasoned prediction comparison and model recommendation (3); meaningful limitations and next step (3). |
+| Communication and reproducibility | 10% | Organized report and readable, discussed figures and tables (3); runnable source that reproduces results with documented data, seed, and environment (5); citations and each member's contribution (2). |
+| **Total** | **100%** | **100 points** |
 
 :::
+
+Points in parentheses identify the parts of each criterion. Awarded credit reflects correctness, completeness, and the quality of the justification; partially correct work receives partial credit, and missing work receives no credit for that part. A machine learning model does **not** need to outperform linear regression to earn full credit.
 
 ## Submission {#submission}
 
@@ -125,11 +130,19 @@ The project is worth **20% of the course grade**, as listed under [Grade Distrib
 Work in **groups of 2-3 students**. Upload the following to the **iCollege project submission area** by **December 7, 2026 (the last day of class)**. The submission folder will be announced on iCollege:
 
 - `Project_Report.pdf`.
-- Its matching `Project_Report.qmd` or `Project_Report.Rmd` source.
+- Its matching `Project_Report.qmd` or `Project_Report.Rmd` source (the default format; see the Python/Jupyter Notebook note below).
 
 If the source depends on supporting files, include them with the source in a ZIP. Provide any required scripts, data that can be redistributed or precise data-access instructions, split identifiers, and software versions and rendering instructions.
 
 Put all author names and **STAT 8561** on the report. The PDF must be generated from the submitted source file; **HTML alone does not satisfy the submission requirement**. Check that the submitted files reproduce the figures, tables, and model-comparison results from beginning to end.
+
+:::
+
+::: {.callout-note title="Python and Jupyter Notebook submissions"}
+
+If you would like to use **Python** or submit a **Jupyter Notebook (`.ipynb`)**, discuss your plan with the instructor **in advance** and agree on the submission format. Python/Jupyter Notebook submissions are subject to that discussion; they are not an automatic alternative to the default `.qmd`/`.Rmd` requirement.
+
+Any agreed alternative must still include a **PDF report**, the **reproducible source** (including the notebook if applicable), and the supporting files needed to regenerate the analysis. The same report requirements and grading criteria apply.
 
 :::
 

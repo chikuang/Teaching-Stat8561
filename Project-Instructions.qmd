@@ -2,7 +2,7 @@
 
 **STAT 8561 | Fall 2026**  
 **Project:** Linear Regression Data Analysis and Machine Learning Comparison  
-**Language:** R or Python  
+**Language:** R (Python/Jupyter Notebook by prior discussion)  
 **Due date:** December 7, 2026 (last day of class)  
 **Group size:** 2-3 students  
 **Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))
@@ -21,6 +21,10 @@ The project connects two questions: **What do the fitted relationships mean?** a
 | [Reproducible files](Project-Report.qmd#submission) | The matching `.qmd` or `.Rmd` source, analysis code, and data or reproducible access instructions | December 7, 2026 |
 
 :::
+
+**Python or Jupyter Notebook:** If you would like to use Python or submit a Jupyter Notebook (`.ipynb`), discuss your plan with the instructor in advance and agree on the submission format. A PDF report and reproducible source are still required. See the [submission note](Project-Report.qmd#submission).
+
+The project is graded out of **100 points** using the [assessment criteria](Project-Report.qmd#assessment-criteria).
 
 ## How to get started
 
