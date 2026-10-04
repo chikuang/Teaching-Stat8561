@@ -15,3 +15,9 @@
 % KOMA's full-page title uses an explicit empty style; restore our style
 % before that page is shipped out at the end of the titlepage environment.
 \AddToHook{env/titlepage/end}{\thispagestyle{plain.scrheadings}}
+
+% Keep three-digit table-of-contents page numbers inside the page margins.
+\makeatletter
+\renewcommand*{\@pnumwidth}{2.5em}
+\renewcommand*{\@tocrmarg}{3.5em}
+\makeatother

@@ -81,6 +81,11 @@ format:
 
   pdf:
     documentclass: scrreprt
+    geometry:
+      - margin=1in
+      - headheight=14pt
+      - headsep=18pt
+      - footskip=24pt
     include-in-header:
       - pdf-environments.tex
       - pdf-page-style.tex
