@@ -4,15 +4,12 @@ show-exam-solutions: true
 
 # Exam 1 {.unnumbered}
 
-<!-- Version A: transcribed from the Overleaf GSU_STAT8561 exam and its instructor key. -->
-
 **Term:** 2026F (Fall 2026)  
-**Version:** A  
 **Instructor:** [Chi-Kuang Yeh](https://chikuang.github.io/)  
 **Date:** October 14, 2026  
 **Status:** Completed  
 **Time:** 75 minutes  
-**Total:** 100 regular points + 20 bonus points; the recorded grade is capped at 100.  
+**Total:** 100 points  
 **Coverage:** [Assignment 1](Assignment1.qmd)–[Assignment 2](Assignment2.qmd) and lecture notes through [Section 4.2: The Overall F Test](04.qmd#the-overall-f-test); Definition 4.4 and later material are excluded.  
 **Emphasis:** Model interpretation, least squares geometry, and statistical reasoning.  
 **Notation:** $p$ is the number of coefficients, including any intercept. Vectors are boldfaced; comma-separated tuples are column vectors.  
@@ -25,9 +22,7 @@ show-exam-solutions: true
 | 1 | Multiple Choice (10 parts, 5 points each) | 50 |
 | 2 | True or False (5 parts, 4 points each) | 20 |
 | 3 | Conceptual (3 parts, 10 points each) | 30 |
-| **Regular total** | | **100** |
-| 4 | **Bonus** (5 parts, 4 points each) | **20** |
-| **Total** | | **120** |
+| **Total** | | **100** |
 
 :::
 
@@ -35,10 +30,10 @@ show-exam-solutions: true
 
 1. Work independently. Only a **non-programmable calculator** is permitted as an electronic device. No code execution is required.
 2. Record Questions 1–2 on the separate answer sheet: one letter A–D or T/F per part. Only the grid is graded; no explanations are required.
-3. For Question 3, use one or two sentences per numbered part on the separate answer sheet. Question 4 is the optional **bonus [20]**.
-4. Submit only the two-page answer sheet. You may keep the question paper. The recorded grade is capped at **[100] points**, including bonus.
+3. For Question 3, use one or two sentences per numbered part on the separate answer sheet.
+4. Submit only the answer sheet. You may keep the question paper.
 
-**Answer sheet:** Write all final answers on the separate two-page answer sheet: page 1 for Questions 1–3 and page 2 for Question 4.
+**Answer sheet:** Write all final answers on the separate answer sheet.
 
 :::
 
@@ -397,39 +392,6 @@ From the same fitted normal linear model and data, compare the usual 95% confide
 
 ::::
 
-## Question 4: Bonus! [20] {#exam2026-q4}
-
-This question is optional. Write one short sentence or bullet per part on the separate answer sheet; phrases are acceptable. Each part is worth **[4] points**. A specific, relevant response is sufficient; no explanation is required. Positive and critical responses receive equal credit.
-
-### 4a) {#exam2026-4a}
-
-Name one specific feature of the online notes that helped you or needs improvement.
-
-### 4b) {#exam2026-4b}
-
-What is one specific way the instructor could improve classroom teaching?
-
-### 4c) {#exam2026-4c}
-
-Name one topic within the exam coverage for which you would like another worked example.
-
-### 4d) {#exam2026-4d}
-
-State one specific change you plan to make to your study routine.
-
-### 4e) {#exam2026-4e}
-
-Suggest one question for a future course-feedback survey.
-
-:::: {.content-visible when-meta="show-exam-solutions"}
-
-::: {.callout-tip collapse="true" title="Grading rubric"}
-
-Award **[4]** for a specific, relevant response, **[1]** for a relevant but vague response, and **[0]** for a blank or unrelated response. One short sentence, bullet, or phrase is sufficient; no explanation is required. Positive and critical responses receive equal credit.
-
-:::
-
-::::
 
 {{< pagebreak >}}
 
@@ -468,10 +430,5 @@ Accept equivalent concise reasoning, including equations. Apply the allocations 
 
 :::
 
-### Question 4: Feedback Bonus [20]
-
-Five course-feedback parts, **4 points each**. Award **4** for a specific, relevant response, **1** for a relevant but vague response, and **0** for a blank or unrelated response. One short sentence, bullet, or phrase is sufficient; no explanation is required. Positive and critical responses receive equal credit.
-
-**Recorded grade:** $\min\{100,\text{regular score}+\text{bonus}\}$.
 
 ::::
