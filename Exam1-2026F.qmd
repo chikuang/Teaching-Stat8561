@@ -9,7 +9,7 @@ show-exam-solutions: true
 **Date:** October 14, 2026  
 **Status:** Completed  
 **Time:** 75 minutes  
-**Total:** 100 points  
+**Total:** [100] points  
 **Coverage:** [Assignment 1](Assignment1.qmd)–[Assignment 2](Assignment2.qmd) and lecture notes through [Section 4.2: The Overall F Test](04.qmd#the-overall-f-test); Definition 4.4 and later material are excluded.  
 **Emphasis:** Model interpretation, least squares geometry, and statistical reasoning.  
 **Notation:** $p$ is the number of coefficients, including any intercept. Vectors are boldfaced; comma-separated tuples are column vectors.  
@@ -19,10 +19,10 @@ show-exam-solutions: true
 
 | Question | Format | Points |
 |:---:|:---|:---:|
-| 1 | Multiple Choice (10 parts, 5 points each) | 50 |
-| 2 | True or False (5 parts, 4 points each) | 20 |
-| 3 | Conceptual (3 parts, 10 points each) | 30 |
-| **Total** | | **100** |
+| 1 | Multiple Choice (10 parts, [5] points each) | [50] |
+| 2 | True or False (5 parts, [4] points each) | [20] |
+| 3 | Conceptual (3 parts, [10] points each) | [30] |
+| **Total** | | **[100]** |
 
 :::
 
@@ -405,7 +405,7 @@ From the same fitted normal linear model and data, compare the usual 95% confide
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Answer | B | D | A | D | A | C | C | D | C | B |
 
-Award **5 points** for each correct answer and **0 points** otherwise. No explanations are required.
+Award **[5] points** for each correct answer and **[0] points** otherwise. No explanations are required.
 
 ### Question 2: True or False [20]
 
@@ -413,7 +413,7 @@ Award **5 points** for each correct answer and **0 points** otherwise. No explan
 |:---|:---:|:---:|:---:|:---:|:---:|
 | Answer | False | False | True | False | False |
 
-Award **4 points** for each correct answer and **0 points** otherwise. No explanations are required.
+Award **[4] points** for each correct answer and **[0] points** otherwise. No explanations are required.
 
 ### Question 3: Conceptual [30]
 
@@ -423,10 +423,10 @@ Accept equivalent concise reasoning, including equations. Apply the allocations 
 
 | Part | Grading criteria | Points |
 |:---:|:---|:---:|
-| 3a(i) | Fitted/estimated mean (3); response units (2); per one-unit predictor increase (2); individual outcomes still have error variation (3). | 10 |
-| 3a(ii) | Identify the additional OLS requirement $\mathbf{x}^\top\mathbf{e}=0$ and show why the residual-sum check is insufficient (5); compute $\mathbf{x}^\top\mathbf{e}=-2$ (2); reject the proposed OLS fit (3). | 10 |
-| 3b(i) | Prediction interval is wider (3); it includes additional random error from the independent future response (4); that variation remains even if the true mean is known exactly (3). | 10 |
-| **Total** | | **30** |
+| 3a(i) | Fitted/estimated mean [3]; response units [2]; per one-unit predictor increase [2]; individual outcomes still have error variation [3]. | [10] |
+| 3a(ii) | Identify the additional OLS requirement $\mathbf{x}^\top\mathbf{e}=0$ and show why the residual-sum check is insufficient [5]; compute $\mathbf{x}^\top\mathbf{e}=-2$ [2]; reject the proposed OLS fit [3]. | [10] |
+| 3b(i) | Prediction interval is wider [3]; it includes additional random error from the independent future response [4]; that variation remains even if the true mean is known exactly [3]. | [10] |
+| **Total** | | **[30]** |
 
 :::
 
