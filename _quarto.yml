@@ -4,6 +4,9 @@ project:
 # Release assignment solutions in the combined PDF as well as HTML.
 show-solutions: true
 
+# Include released Exam 1 answers in both HTML and the combined course PDF.
+show-exam-solutions: true
+
 book:
   title: "STAT8561 - Linear Statistical Analysis I"
   subtitle: "2026 Fall Lecture Notes"
@@ -36,6 +39,10 @@ book:
         - Assignment1.qmd
         - Assignment2.qmd
         - Assignment3.qmd
+
+    - part: "Exam"
+      chapters:
+        - Exam1-2026F.qmd
 
     - part: "Project"
       chapters:

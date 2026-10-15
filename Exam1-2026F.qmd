@@ -1,0 +1,477 @@
+---
+show-exam-solutions: true
+---
+
+# Exam 1 {.unnumbered}
+
+<!-- Version A: transcribed from the Overleaf GSU_STAT8561 exam and its instructor key. -->
+
+**Term:** 2026F (Fall 2026)  
+**Version:** A  
+**Instructor:** [Chi-Kuang Yeh](https://chikuang.github.io/)  
+**Date:** October 14, 2026  
+**Status:** Completed  
+**Time:** 75 minutes  
+**Total:** 100 regular points + 20 bonus points; the recorded grade is capped at 100.  
+**Coverage:** [Assignment 1](Assignment1.qmd)–[Assignment 2](Assignment2.qmd) and lecture notes through [Section 4.2: The Overall F Test](04.qmd#the-overall-f-test); Definition 4.4 and later material are excluded.  
+**Emphasis:** Model interpretation, least squares geometry, and statistical reasoning.  
+**Notation:** $p$ is the number of coefficients, including any intercept. Vectors are boldfaced; comma-separated tuples are column vectors.  
+**Sums of squares:** SST = centered total; SSR = regression; SSE = residual.
+
+::: {tbl-colwidths="[16,72,12]"}
+
+| Question | Format | Points |
+|:---:|:---|:---:|
+| 1 | Multiple Choice (10 parts, 5 points each) | 50 |
+| 2 | True or False (5 parts, 4 points each) | 20 |
+| 3 | Conceptual (3 parts, 10 points each) | 30 |
+| **Regular total** | | **100** |
+| 4 | **Bonus** (5 parts, 4 points each) | **20** |
+| **Total** | | **120** |
+
+:::
+
+::: {.callout-note title="Exam instructions"}
+
+1. Work independently. Only a **non-programmable calculator** is permitted as an electronic device. No code execution is required.
+2. Record Questions 1–2 on the separate answer sheet: one letter A–D or T/F per part. Only the grid is graded; no explanations are required.
+3. For Question 3, use one or two sentences per numbered part on the separate answer sheet. Question 4 is the optional **bonus [20]**.
+4. Submit only the two-page answer sheet. You may keep the question paper. The recorded grade is capped at **[100] points**, including bonus.
+
+**Answer sheet:** Write all final answers on the separate two-page answer sheet: page 1 for Questions 1–3 and page 2 for Question 4.
+
+:::
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::::: {.content-visible when-format="html"}
+
+::: {.callout-important title="Solutions"}
+
+Expand the **Answer** below each question to view the solution and explanation. A compact answer key and grading rubric appear at the end.
+
+:::
+
+:::::
+
+::::
+
+{{< pagebreak >}}
+
+## Question 1: Multiple Choice [50] {#exam2026-q1}
+
+Each part is worth **[5] points**. Select the **single best answer**: the statement guaranteed by the stated conditions. Record it on the separate answer sheet. No explanation is required.
+
+### 1a) {#exam2026-1a}
+
+For fixed predictor values, the mean model is $\mathbb E(Y_i)=\beta_1x_i+\beta_2z_i$, with no intercept term. At $x_i=z_i=0$, which statement must hold?
+
+A. The observed response must equal zero.  
+B. The mean response equals zero, although an individual response may differ from zero.  
+C. Both regression coefficients must equal zero.  
+D. The residuals must sum to zero for every data set.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: B.**
+With no intercept, substituting $x_i=z_i=0$ gives a zero model mean. Random error still permits a nonzero observed response. A zero residual sum is not guaranteed without an intercept.
+
+:::
+
+::::
+
+### 1b) {#exam2026-1b}
+
+Each of two measurement errors has variance $\sigma^2>0$. Compare the variance of their arithmetic mean when their correlation is positive with the variance when it is zero. Keep the individual variances fixed. Which statement is correct?
+
+A. The average of the uncorrelated errors has greater variance.  
+B. The two averages have the same variance.  
+C. The average of the positively correlated errors has zero variance.  
+D. The average of the positively correlated errors has greater variance.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+For errors $\varepsilon_1,\varepsilon_2$, $\operatorname{Var}\{(\varepsilon_1+\varepsilon_2)/2\}=\sigma^2/2+\operatorname{Cov}(\varepsilon_1,\varepsilon_2)/2$. Positive covariance increases uncertainty in the average.
+
+:::
+
+::::
+
+### 1c) {#exam2026-1c}
+
+Fit a simple linear regression by OLS with an intercept and one nonconstant predictor $x_i$ measured in centimeters. Refit the same data using $x_i^*=x_i/100$, measured in meters. Which relationship must hold?
+
+A. The estimated slope is multiplied by 100; the fitted responses and residuals stay the same.  
+B. The estimated slope is divided by 100; the fitted responses stay the same.  
+C. The fitted responses are divided by 100 because the predictor is smaller.  
+D. The residual sum of squares must decrease because the predictor uses smaller numbers.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: A.**
+Since $x=100x^*$, $\hat\beta_0+\hat\beta_1x=\hat\beta_0+(100\hat\beta_1)x^*$. Changing predictor units reexpresses the same fitted line; it does not improve the fit.
+
+:::
+
+::::
+
+### 1d) {#exam2026-1d}
+
+Fit $\mathbf Y$ by OLS using a design matrix $X$ with full column rank. Replace the response by $\mathbf Y^*=\mathbf Y+X\mathbf a$, where $\mathbf a$ is a fixed vector, and refit by OLS using the same $X$. Which relationship must hold?
+
+A. The fitted vector is unchanged; the residual vector increases by $X\mathbf a$.  
+B. Both the fitted vector and residual vector increase by $X\mathbf a$.  
+C. The new residual vector must be zero.  
+D. The fitted vector increases by $X\mathbf a$; the residual vector is unchanged.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+The added vector already lies in the model space. Thus $H(\mathbf Y+X\mathbf a)=\hat{\mathbf Y}+X\mathbf a$ and $(I-H)X\mathbf a=\mathbf0$. The fit absorbs the entire change.
+
+:::
+
+::::
+
+### 1e) {#exam2026-1e}
+
+Let $\mathbf x$ be nonconstant. Compare OLS using $X=\begin{pmatrix}\mathbf1_n & \mathbf x\end{pmatrix}$ with OLS using $W=\begin{pmatrix}\mathbf1_n & \mathbf x & \mathbf x+\mathbf1_n\end{pmatrix}$ on the same response vector. Which statement must hold?
+
+A. The coefficients for $W$ are nonunique, but its fitted vector and SSE equal those from $X$.  
+B. The third column adds a new direction, so SSE must strictly decrease.  
+C. The fit using $W$ does not exist because $W^\top W$ is singular.  
+D. The coefficients and fitted vector for $W$ are both nonunique.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: A.**
+The added column is a linear combination of the first two. The column space and its unique projection are unchanged, even though different coefficient vectors represent that projection.
+
+:::
+
+::::
+
+### 1f) {#exam2026-1f}
+
+For a fixed design matrix $X$ with full column rank, which statement about computing the OLS coefficient estimate is correct?
+
+A. Normally distributed errors are required to define the sum of squared residuals.  
+B. Normally distributed errors are required to make $X^\top X$ invertible.  
+C. The OLS estimate can be computed from $X$ and $\mathbf Y$ without assuming normally distributed errors.  
+D. Without normally distributed errors, the OLS estimate can be computed only when all observed residuals are zero.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: C.**
+Full column rank makes $X^\top X$ invertible, so $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\mathbf Y$ can be computed from the observed data without assuming normal errors. Normality is not needed to define or minimize the sum of squared residuals.
+
+:::
+
+::::
+
+### 1g) {#exam2026-1g}
+
+In $\mathbf Y=X\boldsymbol\beta+\boldsymbol\varepsilon$, keep $X$ and $\boldsymbol\beta$ fixed, with $X$ of full column rank. Errors have mean zero in both models, but their covariance changes from $\sigma^2I$ to $4\sigma^2I$, where $\sigma^2>0$. How do the mean and standard deviation of each OLS coefficient estimator change?
+
+A. The mean and standard deviation of each coefficient estimator both double.  
+B. Each mean is unchanged, and each standard deviation is multiplied by 4.  
+C. Each mean is unchanged, and each standard deviation doubles.  
+D. Each mean and each standard deviation are unchanged.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: C.**
+Mean-zero errors preserve $\mathbb E(\hat{\boldsymbol\beta})=\boldsymbol\beta$. The covariance is multiplied by 4, so standard deviations are multiplied by 2. More noise reduces precision without creating bias.
+
+:::
+
+::::
+
+### 1h) {#exam2026-1h}
+
+The usual two-sided 95% $t$ confidence interval for a slope $\beta_1$ is $(-0.2,0.6)$. What is the conclusion of the corresponding two-sided $t$ test of $H_0:\beta_1=0.5$ at significance level $0.05$?
+
+A. Reject $H_0$ because the interval is not centered at $0.5$.  
+B. The interval proves that $\beta_1=0.5$.  
+C. No conclusion is possible because $t$ tests can only test a slope against zero.  
+D. Fail to reject $H_0$ because $0.5$ is inside the interval; this does not prove $H_0$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+A corresponding two-sided test rejects exactly the hypothesized values outside the confidence interval. Failure to reject is not proof of an exact parameter value.
+
+:::
+
+::::
+
+### 1i) {#exam2026-1i}
+
+For the same response data, an intercept-only OLS fit has residual sum of squares 80, while an OLS fit with an intercept and predictors has residual sum of squares 30. What does the reduction of 50 represent?
+
+A. The error variance $\sigma^2$ has decreased by 50.  
+B. The squared prediction error on every future data set will decrease by 50.  
+C. The reduction in unexplained variation in these observations relative to the constant-mean fit.  
+D. Each predictor is individually significant because the fit improved.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: C.**
+The intercept-only fit uses $\bar Y$, so its SSE is the centered SST of 80. Thus $\mathrm{SSR}=80-30=50$ is the sample variation explained beyond a constant mean. This improvement does not establish a change in $\sigma^2$, future predictive performance, or individual significance.
+
+:::
+
+::::
+
+### 1j) {#exam2026-1j}
+
+In a correctly specified normal linear model with an intercept and three slopes, a valid overall $F$ test rejects $H_0:\beta_1=\beta_2=\beta_3=0$ at significance level $0.05$. Which conclusion is justified?
+
+A. Each of the three slopes must be individually significant at level $0.05$.  
+B. There is evidence that at least one slope is nonzero, without identifying which one.  
+C. There is evidence that the intercept is nonzero.  
+D. The model must predict every future response accurately.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: B.**
+The overall test assesses the slopes jointly against an intercept-only model. Rejection provides evidence against all slopes being zero; it does not establish individual significance or accurate predictions.
+
+:::
+
+::::
+
+{{< pagebreak >}}
+
+## Question 2: True or False [20] {#exam2026-q2}
+
+Each part is worth **[4] points**. Record **T** or **F** in the answer grid on the separate answer sheet. No explanation is required.
+
+### 2a) {#exam2026-2a}
+
+The assumption $\mathbb E(\boldsymbol\varepsilon)=\mathbf0$ guarantees that the model errors satisfy $\sum_{i=1}^n\varepsilon_i=0$ in every realized sample.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+Mean zero is a statement about expectations across repeated samples. It does not impose a zero sum on a realized error vector. The zero sum of fitted OLS residuals with an intercept is a different, algebraic property.
+
+:::
+
+::::
+
+### 2b) {#exam2026-2b}
+
+If the OLS coefficient estimator and the residual vector have zero cross-covariance, they must be independent, regardless of the error distribution.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+Uncorrelated random vectors need not be independent. In the normal linear model, joint normality supplies the extra condition that makes the implication valid.
+
+:::
+
+::::
+
+### 2c) {#exam2026-2c}
+
+For an OLS fit with an intercept, the centered decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ holds even without normally distributed errors.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: True.**
+With an intercept, the centered fitted vector is orthogonal to the residual vector, giving the sum-of-squares identity. Normality is not needed for this algebraic decomposition.
+
+:::
+
+::::
+
+### 2d) {#exam2026-2d}
+
+In an OLS model with an intercept, the null hypothesis that all slopes are zero implies that the observed regression sum of squares $\mathrm{SSR}$ must equal zero in every sample.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+Even when the true mean is constant, random noise can align with predictor directions and produce a nonzero fitted slope and SSR. Under the normal-model null, MSR estimates $\sigma^2$; it is not forced to be zero.
+
+:::
+
+::::
+
+### 2e) {#exam2026-2e}
+
+For an OLS model whose design matrix has full column rank, with an intercept and $p$ coefficients in total, the regression degrees of freedom associated with $\mathrm{SSR}$ are $p$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+The intercept accounts for the constant-mean direction. The centered regression degrees of freedom are $p-1$; the total and residual degrees of freedom are $n-1$ and $n-p$, respectively.
+
+:::
+
+::::
+
+{{< pagebreak >}}
+
+## Question 3: Conceptual [30] {#exam2026-q3}
+
+For each part, write one or two sentences on the separate answer sheet; brief formulas may be used. Equivalent explanations are accepted, with partial credit for correct reasoning.
+
+### 3a) Matrix representation and least squares [20] {#exam2026-3a}
+
+#### 3a(i) [10] {#exam2026-3a-i}
+
+A regression of exam score (points) on study time (hours) gives the fitted line $\hat y=60+2x$. Interpret the slope. Does the model require a student who studies one hour more than another to score exactly 2 points higher? Explain briefly.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** A student who studies one hour more has a fitted mean exam score that is 2 points higher (mean [3], response units [2], one-unit change [2]). The two observed scores need not differ by exactly 2 points because each can deviate from its fitted mean [3]. Do not require or award a causal interpretation.
+
+:::
+
+::::
+
+#### 3a(ii) [10] {#exam2026-3a-ii}
+
+For simple linear regression with an intercept and $\mathbf{x}=(0,1,2,3)$, a student proposes residuals $\mathbf{e}=(1,-1,1,-1)$ because $\sum_i e_i=0$. Is zero sum sufficient? Evaluate the other normal equation and decide whether these can be OLS residuals.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** OLS also requires $\mathbf{x}^\top\mathbf{e}=0$, so a zero residual sum alone is insufficient [5]. Here $0(1)+1(-1)+2(1)+3(-1)=-2$ [2], so these cannot be the residuals of the claimed OLS fit [3].
+
+Full-credit short answer: “No: $\mathbf{x}^\top\mathbf{e}=-2\ne0$ violates the OLS normal equations.”
+
+:::
+
+::::
+
+### 3b) Interpreting uncertainty [10] {#exam2026-3b}
+
+#### 3b(i) [10] {#exam2026-3b-i}
+
+From the same fitted normal linear model and data, compare the usual 95% confidence interval for the mean with the 95% prediction interval for one independent future response at the same predictor value. Assume positive estimated error variance. Which is wider? Why would individual prediction remain uncertain even if the true mean were known exactly?
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** The prediction interval is wider [3] because it includes additional random error from the independent future response [4]. That individual variation remains even if the true mean response is known exactly [3]. This explanation earns full credit; no formula or separate statement about mean-estimation uncertainty is required.
+
+:::
+
+::::
+
+## Question 4: Bonus! [20] {#exam2026-q4}
+
+This question is optional. Write one short sentence or bullet per part on the separate answer sheet; phrases are acceptable. Each part is worth **[4] points**. A specific, relevant response is sufficient; no explanation is required. Positive and critical responses receive equal credit.
+
+### 4a) {#exam2026-4a}
+
+Name one specific feature of the online notes that helped you or needs improvement.
+
+### 4b) {#exam2026-4b}
+
+What is one specific way the instructor could improve classroom teaching?
+
+### 4c) {#exam2026-4c}
+
+Name one topic within the exam coverage for which you would like another worked example.
+
+### 4d) {#exam2026-4d}
+
+State one specific change you plan to make to your study routine.
+
+### 4e) {#exam2026-4e}
+
+Suggest one question for a future course-feedback survey.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Grading rubric"}
+
+Award **[4]** for a specific, relevant response, **[1]** for a relevant but vague response, and **[0]** for a blank or unrelated response. One short sentence, bullet, or phrase is sufficient; no explanation is required. Positive and critical responses receive equal credit.
+
+:::
+
+::::
+
+{{< pagebreak >}}
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+## Answer Key and Grading Rubric {#exam2026-answer-key}
+
+### Question 1: Multiple Choice [50]
+
+| Part | 1a | 1b | 1c | 1d | 1e | 1f | 1g | 1h | 1i | 1j |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Answer | B | D | A | D | A | C | C | D | C | B |
+
+Award **5 points** for each correct answer and **0 points** otherwise. No explanations are required.
+
+### Question 2: True or False [20]
+
+| Part | 2a | 2b | 2c | 2d | 2e |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Answer | False | False | True | False | False |
+
+Award **4 points** for each correct answer and **0 points** otherwise. No explanations are required.
+
+### Question 3: Conceptual [30]
+
+Accept equivalent concise reasoning, including equations. Apply the allocations below for partial credit; deduct an arithmetic error once and retain credit for otherwise correct reasoning.
+
+::: {tbl-colwidths="[14,74,12]"}
+
+| Part | Grading criteria | Points |
+|:---:|:---|:---:|
+| 3a(i) | Fitted/estimated mean (3); response units (2); per one-unit predictor increase (2); individual outcomes still have error variation (3). | 10 |
+| 3a(ii) | Identify the additional OLS requirement $\mathbf{x}^\top\mathbf{e}=0$ and show why the residual-sum check is insufficient (5); compute $\mathbf{x}^\top\mathbf{e}=-2$ (2); reject the proposed OLS fit (3). | 10 |
+| 3b(i) | Prediction interval is wider (3); it includes additional random error from the independent future response (4); that variation remains even if the true mean is known exactly (3). | 10 |
+| **Total** | | **30** |
+
+:::
+
+### Question 4: Feedback Bonus [20]
+
+Five course-feedback parts, **4 points each**. Award **4** for a specific, relevant response, **1** for a relevant but vague response, and **0** for a blank or unrelated response. One short sentence, bullet, or phrase is sufficient; no explanation is required. Positive and critical responses receive equal credit.
+
+**Recorded grade:** $\min\{100,\text{regular score}+\text{bonus}\}$.
+
+::::
