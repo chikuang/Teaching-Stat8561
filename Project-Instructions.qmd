@@ -4,7 +4,8 @@
 **Due on December 13, 2026**\
 **Total:** 100 points\
 **Course-grade weight:** 20% (see [Grade Distribution](index.qmd#grade-distribution))\
-**Group size:** 2-3 students\
+**MS students:** 1-4 students per group\
+**PhD students:** Complete the project individually\
 **Project:** Linear Regression Data Analysis and Machine Learning Comparison
 
 Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in context, and compare predictions with **one machine learning regression algorithm of your choice**.
