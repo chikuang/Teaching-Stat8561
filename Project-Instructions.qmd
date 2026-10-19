@@ -10,6 +10,18 @@
 
 Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in context, and compare predictions with **one machine learning regression algorithm of your choice**.
 
+## Group Members {#group-members}
+
+::: {tbl-colwidths="[12,63,25]"}
+
+| Group | Members | Topic |
+|:---:|:---|:---|
+| | | |
+
+:::
+
+## Project Overview
+
 ::: {tbl-colwidths="[16,72,12]"}
 
 | Criterion | Topic | Points |
