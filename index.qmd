@@ -44,6 +44,8 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 
 ## Project
 
+**Final assessment decision:** The final assessment will be a **Final Project**, selected by a class vote of **20 to 5**.
+
 See [Instruction](Project-Instructions.qmd) for the project description, requirements, and grading criteria.
 
 - [ ] [Report](Project-Report.qmd): Due on December 13, 2026 (20%)
