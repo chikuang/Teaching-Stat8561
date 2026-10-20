@@ -91,7 +91,15 @@ draw_nested_ss_geometry <- function() {
       gp = grid::gpar(fill = "#F7F9FB", col = "#E1E7ED"))
     text(c("A   GENERAL NESTED MODELS", "B   REDUCED MODEL: INTERCEPT ONLY")[k],
          .025, .935, 12, face = "bold", just = "left")
-    xr <- .18; xf <- .68; yr <- .30; yy <- .76
+    if (k == 1) {
+      text("Reduced fitted values can differ across observations.",
+           .5, .825, 10)
+    } else {
+      text(expression(hat(bold(Y))[R] == bgroup("(", list(bar(Y), ...,
+                                                        bar(Y)), ")")^T),
+           .5, .825, 13)
+    }
+    xr <- .18; xf <- .68; yr <- .30; yy <- .66
     edge(xr, yr, xf, yy, blue)
     edge(xr, yr, xf, yr, green)
     edge(xf, yr, xf, yy, orange)
@@ -102,13 +110,12 @@ draw_nested_ss_geometry <- function() {
     grid::grid.points(c(xr, xf, xf), c(yr, yr, yy), pch = 16,
       size = grid::unit(.045, "inches"), gp = grid::gpar(col = "#202A35"))
     text(expression(bold(Y)), xf, yy + .065, 14)
-    text(if (k == 1) expression(hat(bold(Y))[R]) else expression(bar(Y)*bold(1)),
-         xr, yr - .10, 14)
+    text(expression(hat(bold(Y))[R]), xr, yr - .10, 14)
     text(expression(hat(bold(Y))[F]), xf, yr - .10, 14)
     text(if (k == 1) expression(SSE[R]) else expression(SST),
-         .365, .65, 15, blue)
+         .365, .57, 15, blue)
     text(if (k == 1) expression(SSE[F]) else expression(SSE),
-         .81, .54, 15, orange)
+         .81, .48, 15, orange)
     text(if (k == 1) expression(SSE[R] - SSE[F]) else expression(SSR),
          .43, .37, 15, green)
     text(if (k == 1)

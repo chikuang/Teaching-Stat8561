@@ -684,6 +684,85 @@ $$
 
 The signed residuals sum to zero because the OLS model includes an intercept. Their squared values do not cancel. Here all three SS values are strictly positive; in general an SS can equal zero when every corresponding deviation is zero.
 
+::: {#anova-xy-companion}
+
+**The same deviations in the $x,y$ plane.** The companion plot below restores the geometric view of the same four observations. Each point represents **one observation**, and each colored segment is a **vertical difference on the response scale**. The three panels use identical axes, but compare different endpoints. Read this plot together with @fig-anova-variation: this plot shows where the signed differences come from; the arithmetic figure shows how their squares add to SS.
+
+```{r}
+#| label: anova-xy-companion
+#| cache: false
+#| echo: false
+#| fig-alt: "Three vertically stacked panels with identical axes. Panel A connects the mean 3 to observed values, with differences minus 2, 0, 0, and 2. Panel B connects the mean to fitted values, with differences minus 1.8, minus 0.6, 0.6, and 1.8. Panel C connects fitted to observed values, with residuals minus 0.2, 0.6, minus 0.6, and 0.2. Each endpoint type has a distinct shape, and every difference is labeled."
+#| fig-width: 7.2
+#| fig-height: 7.4
+#| out-width: "100%"
+#| fig-pos: "H"
+library(ggplot2)
+variation <- rbind(
+  data.frame(x, y, yhat, start = ybar, end = y, component = "Total"),
+  data.frame(x, y, yhat, start = ybar, end = yhat, component = "Explained"),
+  data.frame(x, y, yhat, start = yhat, end = y, component = "Residual"))
+variation$component <- factor(variation$component,
+                              levels = c("Total", "Explained", "Residual"))
+variation$difference <- variation$end - variation$start
+variation$label <- ifelse(abs(variation$difference) < 1e-10, "0.0",
+                         sprintf("%+.1f", variation$difference))
+endpoints <- rbind(
+  transform(variation, value = start,
+    kind = ifelse(component == "Residual", "Fitted", "Mean")),
+  transform(variation, value = end,
+    kind = ifelse(component == "Explained", "Fitted", "Observed")))
+endpoints$kind <- factor(endpoints$kind,
+                         levels = c("Observed", "Fitted", "Mean"))
+panel_labels <- c(
+  Total = sprintf("A  TOTAL: observed - mean     |     SST = %.1f", SST),
+  Explained = sprintf("B  EXPLAINED: fitted - mean     |     SSR = %.1f", SSR),
+  Residual = sprintf("C  RESIDUAL: observed - fitted     |     SSE = %.1f", SSE))
+
+ggplot(variation, aes(x)) +
+  geom_hline(data = subset(variation, component != "Residual"),
+             aes(yintercept = ybar), colour = "grey60", linetype = "dashed") +
+  geom_abline(data = subset(variation, component != "Total"),
+              aes(intercept = coef(fit)[1], slope = coef(fit)[2]),
+              colour = "grey70", linewidth = 0.5) +
+  geom_segment(aes(xend = x, y = start, yend = end, colour = component),
+               linewidth = 1.4, show.legend = FALSE) +
+  geom_point(data = endpoints, aes(y = value, shape = kind, fill = kind),
+             colour = "grey20", size = 2.8, stroke = 0.9) +
+  geom_label(aes(x = x + 0.14, y = (start + end) / 2,
+                label = label, colour = component),
+             hjust = 0, fontface = "bold", size = 3.8, fill = "white",
+             linewidth = 0, label.padding = grid::unit(0.07, "lines"),
+             show.legend = FALSE) +
+  scale_shape_manual(values = c(Observed = 16, Fitted = 21, Mean = 22)) +
+  scale_fill_manual(values = c(Observed = "black", Fitted = "white",
+                                Mean = "grey75")) +
+  scale_colour_manual(values = c(Total = "#0072B2", Explained = "#00805A",
+                                  Residual = "#C34700")) +
+  scale_x_continuous(breaks = x) +
+  scale_y_continuous(breaks = 1:5) +
+  facet_wrap(~ component, ncol = 1,
+              labeller = as_labeller(panel_labels)) +
+  coord_cartesian(xlim = c(-0.25, 3.7), ylim = c(0.5, 5.5)) +
+  labs(x = "Predictor x (same four observations in every panel)",
+        y = "Response value", shape = NULL, fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        strip.text = element_text(face = "bold", hjust = 0, size = 10.5),
+        strip.background = element_rect(fill = "grey95", colour = NA),
+        panel.spacing.y = grid::unit(0.8, "lines"))
+```
+
+::: {.figure-caption}
+
+Companion $x,y$ view for @fig-anova-variation. Filled circles are observed responses, open circles are fitted values, and squares mark the sample mean. The dashed line is the mean; the thin gray line is the fitted regression. Colored vertical segments show total (blue), explained (green), or residual (orange) deviations; their labels are signed differences, not sums of squares. Squaring and adding within each panel gives SST = 8.0, SSR = 7.2, and SSE = 0.8.
+
+:::
+
+:::
+
 For example, at $x=1$, the observed value equals the mean, so the **total deviation is zero**. Nevertheless, the explained deviation is $2.4-3=-0.6$ and the residual is $3-2.4=+0.6$. They cancel as signed differences: $0=-0.6+0.6$. Their squares do not cancel. Only after summing across all four observations do we obtain $8.0=7.2+0.8$.
 
 **Compute R squared manually**
@@ -875,14 +954,32 @@ The expression $\mathrm{SSE}_R-\mathrm{SSE}_F$ in @thm-partial-f measures the va
 
 ### A geometric picture of the extra sum of squares {.unnumbered}
 
-Each point in @fig-nested-ss-geometry represents an entire vector of $n$ observations or fitted values. The green segment joins $\hat{\mathbf Y}_R$ to $\hat{\mathbf Y}_F$. Its **length** is $\sqrt{\mathrm{SSE}_R-\mathrm{SSE}_F}$; its **squared length** is the extra sum of squares itself. The right angle expresses OLS orthogonality in observation space.
+Unlike the $x,y$ companion plot, each point in @fig-nested-ss-geometry represents an **entire vector of $n$ responses or fitted values**, not one observation. Both panels use the same labels: $\mathbf Y$ for the observed vector, $\hat{\mathbf Y}_R$ for the reduced fitted vector, and $\hat{\mathbf Y}_F$ for the full fitted vector. The green segment joins the two fitted vectors. Its length is $\sqrt{\mathrm{SSE}_R-\mathrm{SSE}_F}$, so its **squared length** is the extra sum of squares.
+
+::: {.callout-note title="The reduced fitted vector: same symbol, one special case"}
+
+$\hat{\mathbf Y}_R$ always means the fitted vector from the chosen reduced model. In panel A, this model may contain predictors, so its fitted values need not be equal. Panel B chooses the special reduced model $Y_i=\beta_0+\varepsilon_i$. OLS estimates $\beta_0$ by the sample mean $\bar Y$, giving
+
+$$
+\hat{\mathbf Y}_R=(\bar Y,\ldots,\bar Y)^\top
+=\bar Y\cdot\mathbf 1_n,
+\qquad \mathbf1_n=(1,\ldots,1)^\top.
+$$
+
+Here $\bar Y$ is **one scalar mean**, and $\mathbf1_n$ is the **all-ones vector with $n$ entries**. Their product is the constant fitted vector; it is not a new quantity $\bar Y_1$. Thus the two labels denote the **same vector in the intercept-only case**. For our four observations, $\bar Y=3$, so $\hat{\mathbf Y}_R=(3,3,3,3)^\top$, whereas the fitted line gives $\hat{\mathbf Y}_F=(1.2,2.4,3.6,4.8)^\top$.
+
+:::
+
+```{=latex}
+\newpage
+```
 
 ```{r}
 #| label: fig-nested-ss-geometry
 #| cache: false
 #| echo: false
-#| fig-cap: "Squared lengths in two orthogonal triangles. A: the green segment joins the reduced and full fitted vectors, so its squared length is SSE_R - SSE_F; the blue diagonal and orange side have squared lengths SSE_R and SSE_F. B: an intercept-only reduced fit makes these quantities SSR, SST, and SSE, respectively. The diagram is schematic, not to scale."
-#| fig-alt: "Two right triangles. In the general nested-model triangle, the vertices are the reduced fitted vector, the full fitted vector, and the observed vector. The green horizontal side is labeled SSE_R minus SSE_F, the orange vertical side SSE_F, and the blue diagonal SSE_R; all labels denote squared lengths. In the intercept-only reduced-model triangle, the left vertex becomes the sample-mean vector, and those squared-length labels become SSR, SSE, and SST respectively."
+#| fig-cap: 'Squared lengths in observation space. In both panels, $\hat{\mathbf Y}_R$ denotes the reduced fitted vector. In B, the reduced model is intercept only, so $\hat{\mathbf Y}_R=(\bar Y,\ldots,\bar Y)^\top$. The green squared length is $\mathrm{SSE}_R-\mathrm{SSE}_F$ in A and $\mathrm{SSR}$ in B; the blue and orange squared lengths in B are $\mathrm{SST}$ and $\mathrm{SSE}$. The right angle expresses OLS orthogonality. The diagram is schematic, not to scale.'
+#| fig-alt: "Two right triangles with the same vertex labels: reduced fitted vector, full fitted vector, and observed vector. In A, the reduced fit is general. In B, an explicit formula says the reduced fitted vector consists of the sample mean repeated n times. The green side has squared length equal to the SSE difference in A and SSR in B; the blue and orange squared lengths become SST and SSE in B."
 #| fig-width: 7.2
 #| fig-height: 5.6
 #| out-width: "100%"
@@ -891,11 +988,7 @@ source("illustrations/anova-sums-and-geometry.R")
 draw_nested_ss_geometry()
 ```
 
-```{=latex}
-\newpage
-```
-
-**How the green segment relates to SSR.** With an intercept in both models, its squared length is $\mathrm{SSR}_F-\mathrm{SSR}_R$, the extra explained variation. When the reduced model is intercept only, $\hat{\mathbf Y}_R=\bar Y\mathbf1$ and $\mathrm{SSR}_R=0$. The green segment is then $\hat{\mathbf Y}_F-\bar Y\mathbf1$, whose squared length is the full model's $\mathrm{SSR}$. The proofs below establish both connections.
+**How the green segment relates to SSR.** With an intercept in both models, its squared length is $\mathrm{SSR}_F-\mathrm{SSR}_R$, the extra explained variation. When the reduced model is intercept only, $\hat{\mathbf Y}_R=\bar Y\,\mathbf1_n$ and $\mathrm{SSR}_R=0$. The green segment is then $\hat{\mathbf Y}_F-\bar Y\,\mathbf1_n$, whose squared length is the full model's $\mathrm{SSR}$. The proofs below establish both connections.
 
 
 ### Why subtract the two residual sums of squares? {.unnumbered}
@@ -947,7 +1040,7 @@ Thus $\mathrm{SSE}_R\geq\mathrm{SSE}_F$, so **the subtraction $\mathrm{SSE}_R-\m
 Now choose the reduced model to be **intercept only**, with rank $p_R=1$. Its fitted value for every observation is $\bar Y$, so
 
 $$
-\hat{\mathbf Y}_R=\bar Y\mathbf 1,\qquad
+\hat{\mathbf Y}_R=\bar Y\,\mathbf1_n,\qquad
 \mathrm{SSE}_R=\sum_{i=1}^n(Y_i-\bar Y)^2=\mathrm{SST}.
 $$
 
