@@ -16,7 +16,10 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 
 | Group | Members | Topic |
 |:---:|:---|:---|
-| | | |
+| 1 | Xiaorui Bao (PhD; individual project) | TBD |
+| 2 | Tommy Stell (PhD; individual project) | TBD |
+| 3 | Xinning Wang (PhD; individual project) | TBD |
+| TBD | Other groups: to be determined | TBD |
 
 :::
 
