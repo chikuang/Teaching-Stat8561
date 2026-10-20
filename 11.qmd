@@ -1,3 +1,9 @@
+---
+execute:
+  cache: false
+  freeze: false
+---
+
 # Introduction to Generalized Linear Models {#sec-glm}
 
 The same design matrix can represent continuous predictors, groups, interactions, and experimental comparisons. What changes when the response is a binary outcome or an event count? A generalized linear model (GLM) retains the linear predictor and changes the response distribution and its connection to the conditional mean.
