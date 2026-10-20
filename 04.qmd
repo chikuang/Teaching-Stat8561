@@ -468,6 +468,8 @@ Large values give evidence against the reduced mean model. The numerator measure
 
 :::
 
+The [appendix at the end of this chapter](#sec-f-test-appendix) derives $\mathrm{SSE}_R-\mathrm{SSE}_F$ geometrically and shows how @thm-overall-f is the special case of @thm-partial-f in which the reduced model contains only an intercept.
+
 ::: {.callout-important title="Compare the models, not just the printed p-values"}
 
 Different missing-value patterns can cause two R fits to use different observations. Construct a common analysis dataset before comparing them. For one added coefficient, the partial F statistic equals the square of its two-sided t-test statistic from the full model.
@@ -642,34 +644,77 @@ c(SST = SST, SSR = SSR, SSE = SSE)
 SST - SSR - SSE
 ```
 
-**See the three sources of variation.** Each vertical segment below represents one deviation. Squaring and adding the four segment lengths gives the corresponding sum of squares.
+**See the three sources of variation.** Read the panels from top to bottom. Each panel highlights a different pair of endpoints: observed versus mean, fitted versus mean, or observed versus fitted. The axes have the same scale in all three panels. Labels give the **signed differences**; squaring and adding the four differences within a panel gives its sum of squares.
 
 ```{r}
 #| label: fig-anova-variation
-#| fig-cap: "Total deviations from the sample mean, explained deviations of fitted values from the mean, and residual deviations from the fitted line. SST = SSR + SSE holds after summing across observations; it is not a point-by-point identity between squared deviations."
-#| fig-width: 7
-#| fig-height: 3.2
+#| cache: false
+#| echo: false
+#| fig-cap: "Three different distances on the same response scale. Filled circles are observed responses, open circles are fitted values, and squares are the sample mean. Thick colored segments show the relevant deviations, with their signed values printed beside them. The dashed line marks the mean; the thin gray line shows the fitted regression where relevant. Squaring and summing within each panel gives SST = 8.0, SSR = 7.2, and SSE = 0.8. Their sum-of-squares identity holds across observations, not separately at each point."
+#| fig-alt: "Three vertically stacked panels with identical axes. Panel A connects the mean 3 to observed values, with differences minus 2, 0, 0, and 2. Panel B connects the mean to fitted values, with differences minus 1.8, minus 0.6, 0.6, and 1.8. Panel C connects fitted to observed values, with residuals minus 0.2, 0.6, minus 0.6, and 0.2. Each endpoint type has a distinct shape, and every difference is labeled."
+#| fig-width: 7.2
+#| fig-height: 7.4
+#| out-width: "100%"
+#| fig-pos: "H"
+library(ggplot2)
 variation <- rbind(
   data.frame(x, y, yhat, start = ybar, end = y, component = "Total"),
   data.frame(x, y, yhat, start = ybar, end = yhat, component = "Explained"),
   data.frame(x, y, yhat, start = yhat, end = y, component = "Residual"))
 variation$component <- factor(variation$component,
                               levels = c("Total", "Explained", "Residual"))
-ggplot(variation, aes(x, y)) +
-  geom_hline(yintercept = ybar, colour = "grey60", linetype = "dashed") +
-  geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2],
-              colour = "steelblue4", linewidth = 0.6) +
+variation$difference <- variation$end - variation$start
+variation$label <- ifelse(abs(variation$difference) < 1e-10, "0.0",
+                         sprintf("%+.1f", variation$difference))
+endpoints <- rbind(
+  transform(variation, value = start,
+    kind = ifelse(component == "Residual", "Fitted", "Mean")),
+  transform(variation, value = end,
+    kind = ifelse(component == "Explained", "Fitted", "Observed")))
+endpoints$kind <- factor(endpoints$kind,
+                         levels = c("Observed", "Fitted", "Mean"))
+panel_labels <- c(
+  Total = sprintf("A  TOTAL: observed - mean     |     SST = %.1f", SST),
+  Explained = sprintf("B  EXPLAINED: fitted - mean     |     SSR = %.1f", SSR),
+  Residual = sprintf("C  RESIDUAL: observed - fitted     |     SSE = %.1f", SSE))
+
+ggplot(variation, aes(x)) +
+  geom_hline(data = subset(variation, component != "Residual"),
+             aes(yintercept = ybar), colour = "grey60", linetype = "dashed") +
+  geom_abline(data = subset(variation, component != "Total"),
+              aes(intercept = coef(fit)[1], slope = coef(fit)[2]),
+              colour = "grey70", linewidth = 0.5) +
   geom_segment(aes(xend = x, y = start, yend = end, colour = component),
-               linewidth = 1, show.legend = FALSE) +
-  geom_point(size = 2) +
-  geom_point(data = subset(variation, component == "Explained"),
-             aes(y = yhat), shape = 1, colour = "steelblue4", size = 2) +
-  scale_colour_manual(values = c(Total = "grey35", Explained = "steelblue4",
-                                  Residual = "darkorange3")) +
-  facet_wrap(~ component, nrow = 1) +
-  coord_cartesian(ylim = c(0.5, 5.5)) +
-  labs(x = "x", y = "y")
+               linewidth = 1.4, show.legend = FALSE) +
+  geom_point(data = endpoints, aes(y = value, shape = kind, fill = kind),
+             colour = "grey20", size = 2.8, stroke = 0.9) +
+  geom_label(aes(x = x + 0.14, y = (start + end) / 2,
+                label = label, colour = component),
+             hjust = 0, fontface = "bold", size = 3.8, fill = "white",
+             linewidth = 0, label.padding = grid::unit(0.07, "lines"),
+             show.legend = FALSE) +
+  scale_shape_manual(values = c(Observed = 16, Fitted = 21, Mean = 22)) +
+  scale_fill_manual(values = c(Observed = "black", Fitted = "white",
+                                Mean = "grey75")) +
+  scale_colour_manual(values = c(Total = "#0072B2", Explained = "#00805A",
+                                  Residual = "#C34700")) +
+  scale_x_continuous(breaks = x) +
+  scale_y_continuous(breaks = 1:5) +
+  facet_wrap(~ component, ncol = 1,
+              labeller = as_labeller(panel_labels)) +
+  coord_cartesian(xlim = c(-0.25, 3.7), ylim = c(0.5, 5.5)) +
+  labs(x = "Predictor x (same four observations in every panel)",
+        y = "Response value", shape = NULL, fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        strip.text = element_text(face = "bold", hjust = 0, size = 10.5),
+        strip.background = element_rect(fill = "grey95", colour = NA),
+        panel.spacing.y = grid::unit(0.8, "lines"))
 ```
+
+For example, at $x=1$, the observed value equals the mean, so the **total deviation is zero**. Nevertheless, the explained deviation is $2.4-3=-0.6$ and the residual is $3-2.4=+0.6$. They cancel as signed differences: $0=-0.6+0.6$. Their squares do not cancel. Only after summing across all four observations do we obtain $8.0=7.2+0.8$.
 
 **Compute R squared manually**
 
@@ -838,3 +883,121 @@ Complete the following tasks:
 -   fit a regression model in R and reproduce the ANOVA table by hand;
 -   compare two nested models using an extra sum of squares test;
 -   interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
+
+## Appendix: From the SSE Difference to the Overall F Test {#sec-f-test-appendix .unnumbered}
+
+The expression $\mathrm{SSE}_R-\mathrm{SSE}_F$ in @thm-partial-f measures the variation explained by the **additional model directions**. The $\mathrm{SSR}$ in @thm-overall-f is this same quantity when the starting model is intercept only. The steps below connect the two formulas.
+
+### Why subtract the two residual sums of squares? {.unnumbered}
+
+Fit nested OLS models to the same response vector and observations. Write $\mathbf P_R$ and $\mathbf P_F$ for the orthogonal projections onto their mean spaces, so
+
+$$
+\hat{\mathbf Y}_R=\mathbf P_R\mathbf Y,\qquad
+\hat{\mathbf Y}_F=\mathbf P_F\mathbf Y,\qquad
+\mathbf e_R=\mathbf Y-\hat{\mathbf Y}_R,\qquad
+\mathbf e_F=\mathbf Y-\hat{\mathbf Y}_F.
+$$
+
+The reduced-model residual splits into two parts:
+
+$$
+\underbrace{\mathbf Y-\hat{\mathbf Y}_R}_{\mathbf e_R}
+=
+\underbrace{\hat{\mathbf Y}_F-\hat{\mathbf Y}_R}_{\text{change in fitted values}}
++
+\underbrace{\mathbf Y-\hat{\mathbf Y}_F}_{\mathbf e_F}.
+$$
+
+Both fitted vectors belong to the full-model space. Their difference therefore lies in that space and is orthogonal to $\mathbf e_F$. Taking squared lengths gives
+
+$$
+\mathrm{SSE}_R
+=\|\hat{\mathbf Y}_F-\hat{\mathbf Y}_R\|^2+\mathrm{SSE}_F,
+$$
+
+and hence
+
+$$
+\boxed{\mathrm{SSE}_R-\mathrm{SSE}_F
+=\|\hat{\mathbf Y}_F-\hat{\mathbf Y}_R\|^2
+=\mathbf Y^\top(\mathbf P_F-\mathbf P_R)\mathbf Y.}
+$$
+
+This proves that the difference is nonnegative. It is the part of the reduced-model residual that the larger model can fit. All coefficients are re-estimated in each fit; the improvement is not generally obtained by holding the old coefficients fixed and adding one fitted term. This identity requires nested OLS fits on common observations, but does **not** require normal errors or an intercept.
+
+### Recovering Theorem 4.2 from Theorem 4.3 {.unnumbered}
+
+Now choose the reduced model to be **intercept only**, with rank $p_R=1$. Its fitted value for every observation is $\bar Y$, so
+
+$$
+\hat{\mathbf Y}_R=\bar Y\mathbf 1,\qquad
+\mathrm{SSE}_R=\sum_{i=1}^n(Y_i-\bar Y)^2=\mathrm{SST}.
+$$
+
+Let the full model contain an intercept and have rank $p_F=p$. Then
+
+$$
+\mathrm{SSE}_F=\mathrm{SSE},\qquad
+\mathrm{SSE}_R-\mathrm{SSE}_F
+=\mathrm{SST}-\mathrm{SSE}
+=\mathrm{SSR},\qquad
+p_F-p_R=p-1.
+$$
+
+Substituting these quantities into @thm-partial-f gives exactly @thm-overall-f:
+
+$$
+\underbrace{\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}
+{\mathrm{SSE}_F/(n-p_F)}}_{\text{partial F statistic}}
+=
+\underbrace{\frac{\mathrm{SSR}/(p-1)}{\mathrm{SSE}/(n-p)}}_{\text{overall F statistic}}.
+$$
+
+The null hypothesis also becomes the overall null: the full-model mean is constant, or equivalently, all its non-intercept coefficients are zero.
+
+For the four observations in @fig-anova-variation, the intercept-only fit has $\mathrm{SSE}_R=8.0$, and the fitted line has $\mathrm{SSE}_F=0.8$. Thus
+
+$$
+F=\frac{(8.0-0.8)/(2-1)}{0.8/(4-2)}
+=\frac{7.2}{0.4}=18,
+$$
+
+which is the same calculation as $\mathrm{MSR}/\mathrm{MSE}$ in @exm-anova-by-hand.
+
+::: {.callout-note title="When the reduced model already has predictors"}
+
+If both models contain an intercept, they share the same centered $\mathrm{SST}$. Therefore
+
+$$
+\mathrm{SSE}_R-\mathrm{SSE}_F
+=(\mathrm{SST}-\mathrm{SSR}_R)-(\mathrm{SST}-\mathrm{SSR}_F)
+=\mathrm{SSR}_F-\mathrm{SSR}_R.
+$$
+
+The numerator uses the **additional** explained variation beyond the reduced model. It is generally not the full model's entire $\mathrm{SSR}_F$. For example, adding height to diameter explains about $524.30-421.92=102.38$ additional squared-volume units; the variation already explained by diameter is excluded.
+
+:::
+
+### Why does the ratio have an F distribution? {.unnumbered}
+
+Let $q=p_F-p_R$ and assume the normal, common-variance model in @thm-partial-f. Under $H_0$, the mean vector $\boldsymbol\mu$ lies in the reduced-model space. Nestedness implies
+
+$$
+\mathbf P_F\mathbf P_R=\mathbf P_R\mathbf P_F=\mathbf P_R.
+$$
+
+Consequently, $\mathbf A=\mathbf P_F-\mathbf P_R$ and $\mathbf B=\mathbf I-\mathbf P_F$ are symmetric idempotent matrices of ranks $q$ and $n-p_F$. Also, $\mathbf A\mathbf B=\mathbf0$, $\mathbf A\boldsymbol\mu=\mathbf0$, and $\mathbf B\boldsymbol\mu=\mathbf0$. The normal projection results from [Chapter 3](03_OLS_inference.qmd) therefore give
+
+$$
+\frac{\mathrm{SSE}_R-\mathrm{SSE}_F}{\sigma^2}
+=\frac{\mathbf Y^\top\mathbf A\mathbf Y}{\sigma^2}
+\sim\chi^2_q,\qquad
+\frac{\mathrm{SSE}_F}{\sigma^2}
+=\frac{\mathbf Y^\top\mathbf B\mathbf Y}{\sigma^2}
+\sim\chi^2_{n-p_F},
+$$
+
+independently. Their ratio, after dividing each by its degrees of freedom, has distribution $F_{q,n-p_F}$.
+
+Under $H_0$, both mean squares estimate $\sigma^2$. The full-model residual provides an independent noise estimate; $\mathrm{SSE}_R$ includes the improvement being tested. The geometric identity alone does not establish the F distribution: normal, common-variance errors are also required.
