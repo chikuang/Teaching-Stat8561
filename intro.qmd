@@ -2,9 +2,9 @@
 
 This course develops a common language for statistical modelling: specify the research question, construct a design matrix, estimate a mean structure, quantify uncertainty, and check whether the assumptions are credible.
 
-The core sequence covers matrix notation and least squares; normal distributions and quadratic forms; inference and model comparison; categorical predictors, contrasts, and experimental design; diagnostics, transformations, and weighting; and an introduction to generalized linear models for binary and count responses.
+The core sequence covers matrix notation and least squares; normal distributions and quadratic forms; inference and model comparison; categorical predictors and contrasts; selected design, diagnostic, transformation and validation applications; and one lesson each on logistic regression and ridge/lasso.
 
-One final lesson introduces logistic regression by retaining the linear predictor and changing the response distribution and mean link. A separate lesson introduces ridge and lasso through regularization and prediction validation. Poisson regression and fuller GLM theory remain supplementary reading. The **Optional topic** group contains supplementary material on rank-deficient models, automatic selection, correlated errors/GLS, GLM likelihood and computation, quantile regression, and mixed-effects models. Quantile regression and mixed-effects models are self-study readings for students who want to explore distributional features or grouped observations.
+The logistic lesson retains the linear predictor and changes the response distribution and mean link. The ridge/lasso lesson introduces regularization through prediction validation. Poisson regression and fuller GLM theory remain supplementary reading. The supplementary appendices cover rank-deficient models, automatic selection, correlated errors/GLS, and GLM likelihood and computation. The **Optional topic** group contains quantile regression and mixed-effects models as self-study readings for students who want to explore distributional features or grouped observations.
 
 Lectures, homework, two in-class exams, and a final assessment develop both mathematical reasoning and reproducible analysis in R. Core tasks include interpreting estimates and intervals, identifying the experimental unit, and explaining the limits of an analysis.
 
