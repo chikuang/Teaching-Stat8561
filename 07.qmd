@@ -73,6 +73,16 @@ ggplot(blocked, aes(treatment, y, group = block, colour = block)) +
 
 A randomized complete design without blocks uses treatment alone. The same regression machinery handles either design, but the design and scientific question decide which comparison is meaningful.
 
+## Summary / Recap {.unnumbered}
+
+- The experimental unit receives the treatment assignment. Repeated measurements on that unit are not independent treatment replications.
+- Random assignment supports treatment comparisons; random sampling concerns generalization to a population.
+- Blocking compares treatments within similar units or settings. Include the design structure when specifying the analysis.
+- ANOVA and ANCOVA use the regression and contrast tools from Chapters 5–6. An interaction makes a comparison conditional on another variable.
+- Further-reading factorial models require a clear distinction between a reference-level coefficient and a marginal comparison with specified averaging weights.
+
+Next, [Chapter 8](08.qmd) checks whether the fitted mean and error assumptions are adequate for the observations.
+
 ## Further reading: one-way ANOVA
 
 The remaining model-specific sections extend the core design discussion. They are reference material rather than an additional sequence of required class meetings.
@@ -571,13 +581,3 @@ Complete the following tasks:
 - fit a two-way ANOVA model with interaction and interpret the interaction term;
 - fit an ANCOVA model and explain the meaning of adjusted group comparison;
 - compare an ANCOVA model with and without interaction and explain which one you prefer.
-
-## Summary / Recap {.unnumbered}
-
-- The experimental unit receives the treatment assignment. Repeated measurements on that unit are not independent treatment replications.
-- Random assignment supports treatment comparisons; random sampling concerns generalization to a population.
-- Blocking compares treatments within similar units or settings. Include the design structure when specifying the analysis.
-- ANOVA and ANCOVA use the regression and contrast tools from Chapters 5–6. An interaction makes a comparison conditional on another variable.
-- Further-reading factorial models require a clear distinction between a reference-level coefficient and a marginal comparison with specified averaging weights.
-
-Next, [Chapter 8](08.qmd) checks whether the fitted mean and error assumptions are adequate for the observations.

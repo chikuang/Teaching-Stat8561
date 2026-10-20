@@ -925,6 +925,16 @@ Complete the following tasks:
 -   compare two nested models using an extra sum of squares test;
 -   interpret both $R^2$ and adjusted $R^2$ for a chosen dataset.
 
+## Summary / Recap {.unnumbered}
+
+- Sums of squares are nonnegative squared lengths. For an OLS model with an intercept, $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$.
+- For nested models fitted to the same observations, $\mathrm{SSE}_R-\mathrm{SSE}_F\geq0$ measures the extra fitted component. It equals $\mathrm{SSR}$ when the reduced model contains only an intercept.
+- The partial $F$ statistic divides the extra sum of squares per added parameter by the full-model MSE. Its exact null distribution requires the normal linear-model assumptions.
+- For one fixed restriction under the same fitted model, $F=t^2$. An overall rejection does not identify which individual coefficients differ from zero.
+- Adding predictors cannot decrease training $R^2$; adjusted $R^2$ can decrease. Neither alone measures prediction performance on new observations.
+
+Next, [Chapter 5](05.qmd) turns scientific comparisons into model columns, coefficients and restrictions.
+
 ## Appendix: From the SSE Difference to the Overall F Test {#sec-f-test-appendix .unnumbered}
 
 @thm-overall-f is the intercept-only special case of @thm-partial-f: the extra sum of squares $\mathrm{SSE}_R-\mathrm{SSE}_F$ then equals $\mathrm{SSR}$.
@@ -1074,13 +1084,3 @@ independently. Their ratio, after dividing each by its degrees of freedom, has d
 :::
 
 Under $H_0$, both mean squares estimate $\sigma^2$. The full-model residual provides an independent noise estimate; $\mathrm{SSE}_R$ includes the improvement being tested. The geometric identity alone does not establish the F distribution: normal, common-variance errors are also required.
-
-## Summary / Recap {.unnumbered}
-
-- Sums of squares are nonnegative squared lengths. For an OLS model with an intercept, $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$.
-- For nested models fitted to the same observations, $\mathrm{SSE}_R-\mathrm{SSE}_F\geq0$ measures the extra fitted component. It equals $\mathrm{SSR}$ when the reduced model contains only an intercept.
-- The partial $F$ statistic divides the extra sum of squares per added parameter by the full-model MSE. Its exact null distribution requires the normal linear-model assumptions.
-- For one fixed restriction under the same fitted model, $F=t^2$. An overall rejection does not identify which individual coefficients differ from zero.
-- Adding predictors cannot decrease training $R^2$; adjusted $R^2$ can decrease. Neither alone measures prediction performance on new observations.
-
-Next, [Chapter 5](05.qmd) turns scientific comparisons into model columns, coefficients and restrictions.

@@ -234,6 +234,16 @@ In $Y_{ij}=\mu+\tau_i+\varepsilon_{ij}$, adding a constant to every $\tau_i$ and
 
 The practical lesson is to state the target in terms of observable mean responses before reading coefficients. For the row-space criterion and generalized-inverse formulation, see [Linear-Model Extensions (Optional)](App_B-linear-model-extensions.qmd).
 
+## Summary / Recap {.unnumbered}
+
+- Start with the comparison of interest, then translate its mean weights into coefficient weights. A contrast of group means has weights summing to zero.
+- Estimate $c^\top\beta$ by $c^\top\hat\beta$, with squared SE $c^\top\widehat{\operatorname{Var}}(\hat\beta)c$. Include covariances.
+- With an interaction, compare groups at specified predictor values. In ToothGrowth, the OJ-minus-VC comparison is estimated separately at each dose.
+- A prespecified comparison and a family of comparisons have different error guarantees. State the family and distinguish individual from simultaneous intervals.
+- Coding can change coefficients without changing an estimable comparison. One fixed restriction gives $t^2=F$ under the same normal model.
+
+The design discussion in [Chapter 7](07.qmd) asks which observations supply independent information for these comparisons.
+
 ## Further practice: a three-group comparison {.unnumbered}
 
 This simulated example separates the known data-generating means from their noisy estimates. Changing the seed changes the sample, not the target comparison.
@@ -301,13 +311,3 @@ These intervals answer a different collection of questions from the single contr
 2. Verify that the estimate and standard error agree under the two codings.
 3. Explain why the coefficients can change after changing the reference group while the scientific comparison remains unchanged.
 4. Specify the comparison family before reporting all pairwise differences, and explain the role of multiplicity adjustment.
-
-## Summary / Recap {.unnumbered}
-
-- Start with the comparison of interest, then translate its mean weights into coefficient weights. A contrast of group means has weights summing to zero.
-- Estimate $c^\top\beta$ by $c^\top\hat\beta$, with squared SE $c^\top\widehat{\operatorname{Var}}(\hat\beta)c$. Include covariances.
-- With an interaction, compare groups at specified predictor values. In ToothGrowth, the OJ-minus-VC comparison is estimated separately at each dose.
-- A prespecified comparison and a family of comparisons have different error guarantees. State the family and distinguish individual from simultaneous intervals.
-- Coding can change coefficients without changing an estimable comparison. One fixed restriction gives $t^2=F$ under the same normal model.
-
-The design discussion in [Chapter 7](07.qmd) asks which observations supply independent information for these comparisons.

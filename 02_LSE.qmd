@@ -2773,9 +2773,17 @@ confidence intervals, and hypothesis testing.
 
    is symmetric and idempotent.
 
----
+## Summary / Recap {.unnumbered}
 
-Side Fact: Matrix Calculus Facts Used in this chapter
+- Least squares minimizes $\|Y-X\beta\|^2$ and satisfies the normal equations $X^\top X\hat\beta=X^\top Y$.
+- With full column rank, $\hat\beta=(X^\top X)^{-1}X^\top Y$. Without it, coefficients may be nonunique, but the fitted vector is unique.
+- The fitted vector $\hat Y=HY$ is the orthogonal projection onto $\mathcal C(X)$; the residual $e=(I-H)Y$ satisfies $X^\top e=0$.
+- $H$ and $I-H$ are symmetric, idempotent projection matrices. With an intercept, residuals sum to zero and fitted responses have the observed response mean.
+- These are algebraic properties of the fit. Statistical claims about bias, variance and tests require assumptions about the errors.
+
+Next, [Chapter 3](03_OLS_inference.qmd) supplies those assumptions and the sampling distributions used for inference.
+
+## Side Fact: Matrix Calculus Facts Used in This Chapter {.unnumbered}
 
 ::: {.callout-theorem title="Matrix Calculus Facts"}
 
@@ -2836,13 +2844,3 @@ These identities justify the derivative used in the least squares
 criterion.
 
 :::
-
-## Summary / Recap {.unnumbered}
-
-- Least squares minimizes $\|Y-X\beta\|^2$ and satisfies the normal equations $X^\top X\hat\beta=X^\top Y$.
-- With full column rank, $\hat\beta=(X^\top X)^{-1}X^\top Y$. Without it, coefficients may be nonunique, but the fitted vector is unique.
-- The fitted vector $\hat Y=HY$ is the orthogonal projection onto $\mathcal C(X)$; the residual $e=(I-H)Y$ satisfies $X^\top e=0$.
-- $H$ and $I-H$ are symmetric, idempotent projection matrices. With an intercept, residuals sum to zero and fitted responses have the observed response mean.
-- These are algebraic properties of the fit. Statistical claims about bias, variance and tests require assumptions about the errors.
-
-Next, [Chapter 3](03_OLS_inference.qmd) supplies those assumptions and the sampling distributions used for inference.

@@ -166,6 +166,16 @@ A single small split is noisy. Use it to understand the evaluation procedure, no
 
 The probability changes in question 1 are approximately 0.143 - 0.10 and 0.692 - 0.60. The same odds ratio produces different probability differences.
 
+## Summary / Recap {.unnumbered}
+
+- Logistic regression models a binary conditional mean: $\log\{p(x)/(1-p(x))\}=x^\top\beta$ and $p(x)=1/(1+e^{-x^\top\beta})$.
+- Without an interaction involving that predictor, exponentiating its slope gives an odds ratio for a one-unit comparison, holding other predictors fixed. The probability change depends on the baseline probability.
+- Read fitted probability curves in the observed predictor range. A band for the mean probability is not an interval for an individual binary outcome.
+- Logistic coefficient intervals rely on large-sample approximations. Inspect dependence, sparse patterns, convergence and separation.
+- Evaluate probability predictions with an appropriate held-out loss, such as the Brier score. The Poisson and likelihood-ratio sections are further reading.
+
+The next extension, [Chapter 12](12.qmd), returns to a continuous response and stabilizes prediction with ridge and lasso.
+
 ## Further reading: Poisson counts, rates, and exposure
 
 For a Poisson outcome, $\mathbb{E}(Y_i\mid x_i)=\operatorname{Var}(Y_i\mid x_i)=\mu_i$. With a log link, $\log\mu_i=x_i^\top\beta$, ensuring positive fitted means.
@@ -281,13 +291,3 @@ For the likelihood representation, the role of WLS in fitting, and further theor
 3. Explain why exposure belongs in the Poisson example as an offset rather than an ordinary predictor with an estimated coefficient under the proportional-exposure model.
 4. State the null hypothesis tested by each R model comparison. Explain why the reference distribution differs from the F test in [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd).
 5. Write a one-page analysis: define the observational unit, choose a response family/link, report a probability or rate comparison with uncertainty, and identify one model limitation. Separate uncertainty about a conditional mean from variation in a future observation.
-
-## Summary / Recap {.unnumbered}
-
-- Logistic regression models a binary conditional mean: $\log\{p(x)/(1-p(x))\}=x^\top\beta$ and $p(x)=1/(1+e^{-x^\top\beta})$.
-- Without an interaction involving that predictor, exponentiating its slope gives an odds ratio for a one-unit comparison, holding other predictors fixed. The probability change depends on the baseline probability.
-- Read fitted probability curves in the observed predictor range. A band for the mean probability is not an interval for an individual binary outcome.
-- Logistic coefficient intervals rely on large-sample approximations. Inspect dependence, sparse patterns, convergence and separation.
-- Evaluate probability predictions with an appropriate held-out loss, such as the Brier score. The Poisson and likelihood-ratio sections are further reading.
-
-The next extension, [Chapter 12](12.qmd), returns to a continuous response and stabilizes prediction with ridge and lasso.

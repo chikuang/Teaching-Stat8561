@@ -234,6 +234,16 @@ Read the magnitude of the differences and the test-set size, not just the rankin
 
 **Check your understanding.** Why is training SSE insufficient for choosing $\lambda$? What changes when a predictor is measured in different units? Can lasso prediction work well even when its selected variables vary between samples?
 
+## Summary / Recap {.unnumbered}
+
+- Many or strongly correlated predictors can make OLS unstable; insufficient design rank makes coefficients nonunique.
+- Ridge shrinks slopes; lasso can also set slopes to zero. The intercept is unpenalized, and predictor scale matters.
+- Select $\lambda$ using training-data validation, then evaluate the fixed procedure on the untouched test set.
+- A coefficient path describes fitted slopes. A CV curve estimates prediction error and guides tuning.
+- Prediction, variable selection and inference are different tasks. Good test predictions do not establish causal effects or valid post-selection $t$ tests.
+
+For the final project, report the candidate predictors, preprocessing, tuning rule, split, test loss and limitations. [The glmnet authors' introduction](https://github.com/cran/glmnet/blob/master/vignettes/glmnet.Rmd) provides further implementation details.
+
 ## Optional derivation: the ridge normal equations {.unnumbered}
 
 For centered predictors and response, the unpenalized intercept is handled by the sample means. With the ridge objective above and $X$ containing only the centered predictor columns,
@@ -255,13 +265,3 @@ Thus the matrix is invertible and the displayed solution is unique.
 :::
 
 Standardizing the predictors changes the scale on which the penalty is imposed. The formula describes that chosen coordinate system. Software uses numerical factorizations or optimization routines rather than explicitly forming an inverse.
-
-## Summary / Recap {.unnumbered}
-
-- Many or strongly correlated predictors can make OLS unstable; insufficient design rank makes coefficients nonunique.
-- Ridge shrinks slopes; lasso can also set slopes to zero. The intercept is unpenalized, and predictor scale matters.
-- Select $\lambda$ using training-data validation, then evaluate the fixed procedure on the untouched test set.
-- A coefficient path describes fitted slopes. A CV curve estimates prediction error and guides tuning.
-- Prediction, variable selection and inference are different tasks. Good test predictions do not establish causal effects or valid post-selection $t$ tests.
-
-For the final project, report the candidate predictors, preprocessing, tuning rule, split, test loss and limitations. [The glmnet authors' introduction](https://github.com/cran/glmnet/blob/master/vignettes/glmnet.Rmd) provides further implementation details.
