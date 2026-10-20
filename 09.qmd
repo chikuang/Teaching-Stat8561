@@ -8,7 +8,13 @@ execute:
 
 In this chapter, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from [Chapter 8 — Diagnostics and Model Adequacy](08.qmd), we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
 
-**Learning Objectives**
+::: {.callout-note title="Selected application and further reading"}
+
+The diagnostics lesson selects the log-response interpretation and the original-versus-log-scale plot in the R demonstration. The other transformations, WLS derivation and WLS examples remain further reading. Changing the response scale changes the target being estimated; WLS instead changes the precision weighting while retaining a specified mean model.
+
+:::
+
+**Learning Objectives for the full reading**
 
 By the end of this chapter, students should be able to:
 
@@ -628,14 +634,12 @@ Complete the following tasks:
 - compare OLS and WLS fits both numerically and graphically;
 - write a short discussion explaining which remedy you prefer and why.
 
-**Summary**
+## Summary / Recap {.unnumbered}
 
-In this chapter, we studied practical remedies for model inadequacy in linear regression. We focused on:
+- A response transformation changes the scale of the modeled mean. Interpret coefficients and predictions on that stated scale.
+- Exponentiating a fitted log response does not generally estimate the original-scale mean. Under a normal log-error model it gives the conditional median; the mean needs a variance correction.
+- A polynomial predictor term can model curvature while retaining a model linear in its coefficients.
+- In the further reading, WLS uses weights proportional to inverse error variances to address unequal precision; justify or estimate those weights.
+- Recheck residuals after a revision. Compare predictions on a common response scale, learning any retransformation correction from training data.
 
-- transforming the response or predictors;
-- using polynomial terms to address curvature;
-- stabilizing variance through transformation;
-- using weighted least squares when error variances differ across observations;
-- comparing alternative remedies using diagnostics and interpretation.
-
-These ideas help students move from model criticism to model improvement.
+Next, [Chapter 10](10.qmd) makes the training, tuning and final evaluation stages explicit.

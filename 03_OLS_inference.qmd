@@ -2614,79 +2614,6 @@ $$
    - the residual standard error;
    - the residual degrees of freedom.
 
-::: {.callout-note title="Summary"}
-
-This chapter moved from the **geometry of least squares** to the **probability of least squares**. Under the first two moment assumptions,
-
-$$
-\mathbb{E}
-\left(
-\hat{\boldsymbol{\beta}}
-\right)
-=
-\boldsymbol{\beta}
-$$
-
-and
-
-$$
-\operatorname{Var}
-\left(
-\hat{\boldsymbol{\beta}}
-\right)
-=
-\sigma^2
-(\mathbf{X}^\top\mathbf{X})^{-1}.
-$$
-
-Under the additional normality assumption,
-
-$$
-\boxed{
-\hat{\boldsymbol{\beta}}
-\sim
-N_p
-\left(
-\boldsymbol{\beta},
-\sigma^2
-(\mathbf{X}^\top\mathbf{X})^{-1}
-\right).
-}
-$$
-
-The residual sum of squares satisfies
-
-$$
-\boxed{
-\frac{\mathrm{SSE}}{\sigma^2}
-\sim
-\chi^2_{n-p}.
-}
-$$
-
-This leads to the unbiased estimator
-
-$$
-\boxed{
-\hat{\sigma}^2
-=
-\frac{\mathrm{SSE}}{n-p}.
-}
-$$
-
-The independence of $\hat{\boldsymbol{\beta}}$ and $\mathrm{SSE}$ allows us to replace the unknown $\sigma$ with $\hat{\sigma}$ and obtain exact $t$ inference. The same framework extends naturally to:
-
-- linear combinations of regression coefficients;
-- general linear hypotheses;
-- confidence intervals for the mean response;
-- prediction intervals for future observations.
-
-In [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd), we will use these results to develop the ANOVA
-decomposition, the overall $F$ test, and comparisons of nested
-regression models.
-
-:::
-
 ```{=latex}
 \clearpage
 ```
@@ -2702,3 +2629,13 @@ These three reference distributions are built from normal variables:
 For the general linear hypothesis, $r$ is the number of independent restrictions and $\nu=n-p$ is the residual degrees of freedom. The normal model gives the required independence between the numerator quadratic form and the residual sum of squares.
 
 The full explanations, density derivations, independence proof, regression applications, and reference books are in the [Basic Mathematical Statistics appendix](App_H-basic-mathematical-statistics.qmd).
+
+## Summary / Recap {.unnumbered}
+
+- For fixed full-rank $X$, $E(\varepsilon)=0$ and $\operatorname{Var}(\varepsilon)=\sigma^2I$ give $E(\hat\beta)=\beta$ and $\operatorname{Var}(\hat\beta)=\sigma^2(X^\top X)^{-1}$.
+- Adding normal errors gives $\mathrm{SSE}/\sigma^2\sim\chi^2_{n-p}$, independently of $\hat\beta$. Estimate $\sigma^2$ by $\mathrm{MSE}=\mathrm{SSE}/(n-p)$.
+- A fixed linear comparison uses its estimate and full covariance matrix to obtain an SE; normal-model standardization gives an exact $t$ test or interval.
+- A general linear hypothesis tests several linearly independent restrictions jointly with an $F$ statistic.
+- A confidence interval for a mean response and a prediction interval for a new response have different targets. The prediction variance includes an additional $\sigma^2$.
+
+Next, [Chapter 4](04.qmd) expresses joint tests through nested models and extra sums of squares.

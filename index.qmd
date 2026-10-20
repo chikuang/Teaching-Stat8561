@@ -6,7 +6,7 @@ engine: knitr
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. A short final unit extends the same design-matrix framework to logistic and Poisson regression. Advanced extensions are collected under **Optional topic**.
+The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. The final two teaching units introduce logistic regression and regularization with ridge and lasso. Poisson regression and fuller GLM theory remain supplementary reading. Advanced extensions are collected under **Optional topic**.
 
 **Prerequisites**
 

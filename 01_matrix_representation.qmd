@@ -676,10 +676,9 @@ Complete the following:
 -   residuals,
 -   and a scatterplot with the fitted line.
 
-## Summary
+## Summary / Recap {.unnumbered}
 
-This chapter introduced the notation and basic probabilistic tools needed for the rest of the course. We defined random vectors, mean vectors, covariance matrices, and the matrix form of the linear regression model. These ideas will support everything that follows.
-
-[Chapter 2 — Least Squares Estimation](02_LSE.qmd), we will study least squares estimation and the geometry of projection in more detail.
-
-For some optional review of the matrix algebra, see [Matrix Algebra Review](#sec-matrix).
+- Write the model as $Y=X\beta+\varepsilon$: $Y$ has $n$ entries, $X$ is $n\times p$, and $\beta$ has $p$ entries. Count columns, including the intercept.
+- For a fixed design, $E(Y)=X\beta$ specifies the mean; $\operatorname{Var}(Y)$ specifies the uncertainty around that mean.
+- Linear transformations obey $E(AY+b)=AE(Y)+b$ and $\operatorname{Var}(AY+b)=A\operatorname{Var}(Y)A^\top$.
+- The column space of $X$ contains the possible fitted mean vectors. Full column rank makes the coefficient representation unique.

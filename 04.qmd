@@ -684,7 +684,7 @@ $$
 
 The signed residuals sum to zero because the OLS model includes an intercept. Their squared values do not cancel. Here all three SS values are strictly positive; in general an SS can equal zero when every corresponding deviation is zero.
 
-:::: {#anova-xy-companion}
+[]{#anova-xy-companion}
 
 **The same deviations in the $x,y$ plane.** Each point represents one of the four observations. The three panels use identical axes to show total, explained, and residual deviations. Squaring and adding the colored vertical differences gives the SS values in @fig-anova-variation.
 
@@ -760,8 +760,6 @@ ggplot(variation, aes(x)) +
 Companion $x,y$ view for @fig-anova-variation. Filled circles are observed responses, open circles are fitted values, and squares mark the sample mean. The dashed line is the mean; the thin gray line is the fitted regression. Colored vertical segments show total (blue), explained (green), or residual (orange) deviations; their labels are signed differences, not sums of squares. Squaring and adding within each panel gives SST = 8.0, SSR = 7.2, and SSE = 0.8.
 
 :::
-
-::::
 
 For example, at $x=1$, the observed value equals the mean, so the **total deviation is zero**. Nevertheless, the explained deviation is $2.4-3=-0.6$ and the residual is $3-2.4=+0.6$. They cancel as signed differences: $0=-0.6+0.6$. Their squares do not cancel. Only after summing across all four observations do we obtain $8.0=7.2+0.8$.
 
@@ -886,27 +884,6 @@ ggplot(tree_comparison, aes(Diameter, Volume)) +
 **What this example does not settle.** These are observational measurements, so the comparison is not a causal effect of making a tree taller. A statistically significant height term also does not decide whether measuring height is worth its cost or how much it helps predict new trees. Those decisions require practical error tolerances and validation. Inspect residuals and the mean function before using the raw-scale linear model operationally; transformations and model assessment appear later in the course.
 
 :::
-
-## Summary
-
-In this chapter, we developed the ANOVA framework for linear regression. We defined:
-
-$$
-\mathrm{SST}, \qquad \mathrm{SSR}, \qquad \mathrm{SSE},
-$$
-
-and showed that, with an intercept,
-
-$$
-\mathrm{SST} = \mathrm{SSR} + \mathrm{SSE}.
-$$
-
-This decomposition led to:
-
--   the ANOVA table;
--   the overall $F$ test for regression;
--   the comparison of nested models through extra sums of squares;
--   the interpretation of $R^2$ and adjusted $R^2$.
 
 ## Practice Problems
 
@@ -1097,3 +1074,13 @@ independently. Their ratio, after dividing each by its degrees of freedom, has d
 :::
 
 Under $H_0$, both mean squares estimate $\sigma^2$. The full-model residual provides an independent noise estimate; $\mathrm{SSE}_R$ includes the improvement being tested. The geometric identity alone does not establish the F distribution: normal, common-variance errors are also required.
+
+## Summary / Recap {.unnumbered}
+
+- Sums of squares are nonnegative squared lengths. For an OLS model with an intercept, $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$.
+- For nested models fitted to the same observations, $\mathrm{SSE}_R-\mathrm{SSE}_F\geq0$ measures the extra fitted component. It equals $\mathrm{SSR}$ when the reduced model contains only an intercept.
+- The partial $F$ statistic divides the extra sum of squares per added parameter by the full-model MSE. Its exact null distribution requires the normal linear-model assumptions.
+- For one fixed restriction under the same fitted model, $F=t^2$. An overall rejection does not identify which individual coefficients differ from zero.
+- Adding predictors cannot decrease training $R^2$; adjusted $R^2$ can decrease. Neither alone measures prediction performance on new observations.
+
+Next, [Chapter 5](05.qmd) turns scientific comparisons into model columns, coefficients and restrictions.

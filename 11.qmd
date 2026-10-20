@@ -2,7 +2,13 @@
 
 The same design matrix can represent continuous predictors, groups, interactions, and experimental comparisons. What changes when the response is a binary outcome or an event count? A generalized linear model (GLM) retains the linear predictor and changes the response distribution and its connection to the conditional mean.
 
-**Learning objectives.** Choose a response family and link, interpret logistic and Poisson coefficients, obtain fitted probabilities or rates, compare nested models, and recognize when the basic model is inadequate. The core unit takes two lectures, followed by an integrated case in the final class.
+**Core learning objectives.** Specify a binary-response model, distinguish odds ratios from probability changes, fit logistic regression, and interpret fitted probabilities and approximate uncertainty.
+
+::: {.callout-note title="One logistic-regression lesson"}
+
+The core lesson consists of the GLM components, logistic interpretation, the probability plot, and the checks and practice immediately following it. Poisson regression and detailed likelihood-ratio comparisons are retained as further reading. Chapter 12 is a separate class on ridge and lasso.
+
+:::
 
 ## From the normal linear model to GLMs
 
@@ -98,17 +104,21 @@ new_binary$upper <- plogis(link_fit$fit + qnorm(0.975) * link_fit$se.fit)
 
 ```{r}
 #| label: fig-logistic-probabilities
-#| fig-cap: "Fitted completion probabilities with approximate pointwise 95% confidence bands. Group differences on the probability scale vary with the baseline score."
+#| fig-cap: "Simulated completion outcomes and fitted probabilities. Faint circles are slightly jittered binary outcomes; lines and ribbons show fitted probabilities and approximate pointwise 95% confidence intervals. Group differences on the probability scale vary with the baseline score."
+#| fig-alt: "Control and treatment probability curves with confidence ribbons, plotted over simulated zero-one outcomes. Colors and the legend identify each group."
 #| fig-width: 7
 #| fig-height: 4
 ggplot(new_binary, aes(score, probability, colour = group, fill = group)) +
+  geom_point(data = binary, aes(x = score, y = completed, colour = group),
+    inherit.aes = FALSE, alpha = 0.18, size = 1.4,
+    position = position_jitter(width = 0, height = 0.015, seed = 8561)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, colour = NA) +
   geom_line(linewidth = 0.9) +
   scale_colour_manual(values = c(Control = "steelblue4",
     Treatment = "darkorange3")) +
   scale_fill_manual(values = c(Control = "steelblue4",
     Treatment = "darkorange3")) +
-  coord_cartesian(ylim = c(0, 1)) +
+  coord_cartesian(ylim = c(-0.03, 1.03)) +
   labs(x = "Centered baseline score", y = "Completion probability",
        colour = "Group", fill = "Group")
 ```
@@ -119,7 +129,38 @@ These bands quantify uncertainty in the fitted conditional probability. An indiv
 
 :::
 
-## Poisson regression: counts, rates, and exposure
+## Logistic checks and practice {#sec-ch11-logistic-checks}
+
+Inspect the observational unit, the predictor range and the fitted probabilities. Check convergence warnings and unusually large coefficient estimates or standard errors: complete or quasi-complete separation can prevent a finite maximum-likelihood estimate. A new response family does not remove dependence among repeated observations.
+
+The coefficient intervals above use a large-sample normal approximation. They are not the exact t intervals from Gaussian OLS. The predicted-probability bands quantify uncertainty about the conditional mean, not the outcome of an individual future trial.
+
+**A simple held-out probability check.** The Brier score is the mean squared difference between a predicted probability and a binary outcome. The following split evaluates a prespecified logistic model and an intercept-only baseline. Both are fitted on the training set.
+
+```{r}
+set.seed(8561)
+train <- sample(seq_len(nrow(binary)), floor(0.7 * nrow(binary)))
+fit_train <- glm(completed ~ score + group,
+                 family = binomial(), data = binary[train, ])
+test <- binary[-train, ]
+p_hat <- predict(fit_train, newdata = test, type = "response")
+p_baseline <- mean(binary$completed[train])
+c(model_Brier = mean((test$completed - p_hat)^2),
+  baseline_Brier = mean((test$completed - p_baseline)^2))
+```
+
+A single small split is noisy. Use it to understand the evaluation procedure, not to assert that one model universally dominates another. A classification accuracy at one threshold does not summarize the quality of predicted probabilities.
+
+**Core practice.**
+
+1. Convert an odds ratio of 1.5 into the new probability when the baseline probability is 0.10, then when it is 0.60.
+2. Explain why a fitted probability of 0.70 does not predict a fractional individual outcome.
+3. State the reference group and score value for the intercept in the worked example.
+4. Identify one data pattern that would make the reported Wald interval questionable.
+
+The probability changes in question 1 are approximately 0.143 - 0.10 and 0.692 - 0.60. The same odds ratio produces different probability differences.
+
+## Further reading: Poisson counts, rates, and exposure
 
 For a Poisson outcome, $\mathbb{E}(Y_i\mid x_i)=\operatorname{Var}(Y_i\mid x_i)=\mu_i$. With a log link, $\log\mu_i=x_i^\top\beta$, ensuring positive fitted means.
 
@@ -175,7 +216,7 @@ ggplot(counts, aes(workload, events / exposure, colour = protocol)) +
   labs(x = "Centered workload", y = "Events per day", colour = "Protocol")
 ```
 
-## Inference and model checks
+## Further reading: likelihood comparison and model checks
 
 **From sums of squares to likelihood.** OLS compares residual sums of squares. In a GLM, the likelihood measures how well the fitted conditional distribution accounts for the observations. Deviance measures lack of fit relative to a saturated model; for the binomial and Poisson models here, a difference in deviances equals twice the difference in maximized log likelihoods.
 
@@ -225,28 +266,22 @@ pearson_dispersion
 
 A value substantially above one can signal overdispersion, missing mean structure, dependence, or other misspecification. It is not a stand-alone proof of a particular alternative model, especially with sparse counts. Recognizing when the basic model is inadequate is required; negative-binomial, quasi-likelihood, zero-inflated, and mixed-model remedies are beyond this introductory unit.
 
-**A simple held-out probability check.** The Brier score is the mean squared difference between a predicted probability and a binary outcome. The following split evaluates a prespecified logistic model and an intercept-only baseline. Both are fitted on the training set.
-
-```{r}
-set.seed(8561)
-train <- sample(seq_len(nrow(binary)), floor(0.7 * nrow(binary)))
-fit_train <- glm(completed ~ score + group,
-                 family = binomial(), data = binary[train, ])
-test <- binary[-train, ]
-p_hat <- predict(fit_train, newdata = test, type = "response")
-p_baseline <- mean(binary$completed[train])
-c(model_Brier = mean((test$completed - p_hat)^2),
-  baseline_Brier = mean((test$completed - p_baseline)^2))
-```
-
-A single small split is noisy. Use it to understand the evaluation procedure, not to assert that one model universally dominates another. A classification accuracy at one threshold does not summarize the quality of predicted probabilities.
-
 For the likelihood representation, the role of WLS in fitting, and further theory, see [GLM Likelihood and Computation (Optional)](App_E-glm-theory.qmd).
 
-## Practice and integrated analysis
+## Further practice: the wider GLM framework
 
 1. Explain which GLM component changes when moving from Gaussian OLS to logistic regression, and which parts of the design matrix can remain the same.
 2. Convert an odds ratio of 1.5 into a new probability for baseline probabilities 0.10 and 0.60. Explain why the probability differences differ.
 3. Explain why exposure belongs in the Poisson example as an offset rather than an ordinary predictor with an estimated coefficient under the proportional-exposure model.
 4. State the null hypothesis tested by each R model comparison. Explain why the reference distribution differs from the F test in [Chapter 4 — Model Comparison, Partial F Tests, and ANOVA](04.qmd).
 5. Write a one-page analysis: define the observational unit, choose a response family/link, report a probability or rate comparison with uncertainty, and identify one model limitation. Separate uncertainty about a conditional mean from variation in a future observation.
+
+## Summary / Recap {.unnumbered}
+
+- Logistic regression models a binary conditional mean: $\log\{p(x)/(1-p(x))\}=x^\top\beta$ and $p(x)=1/(1+e^{-x^\top\beta})$.
+- Without an interaction involving that predictor, exponentiating its slope gives an odds ratio for a one-unit comparison, holding other predictors fixed. The probability change depends on the baseline probability.
+- Read fitted probability curves in the observed predictor range. A band for the mean probability is not an interval for an individual binary outcome.
+- Logistic coefficient intervals rely on large-sample approximations. Inspect dependence, sparse patterns, convergence and separation.
+- Evaluate probability predictions with an appropriate held-out loss, such as the Brier score. The Poisson and likelihood-ratio sections are further reading.
+
+The next extension, [Chapter 12](12.qmd), returns to a continuous response and stabilizes prediction with ridge and lasso.

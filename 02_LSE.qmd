@@ -2678,113 +2678,6 @@ confidence intervals, and hypothesis testing.
 :::
 
 
-::: {.callout-note title = "Summary"}
-
-In this chapter, we introduced the least squares estimator through the
-optimization problem
-
-$$
-\hat{\boldsymbol{\beta}}
-=
-\arg\min_{\boldsymbol{\beta}}
-\left\|
-\mathbf{Y}
--
-\mathbf{X}\boldsymbol{\beta}
-\right\|_2^2.
-$$
-
-Differentiating the residual sum of squares leads to the normal
-equations
-
-$$
-\boxed{
-\mathbf{X}^\top\mathbf{X}
-\hat{\boldsymbol{\beta}}
-=
-\mathbf{X}^\top\mathbf{Y}.
-}
-$$
-
-When $\mathbf{X}$ has full column rank,
-
-$$
-\boxed{
-\hat{\boldsymbol{\beta}}
-=
-(\mathbf{X}^\top\mathbf{X})^{-1}
-\mathbf{X}^\top\mathbf{Y}.
-}
-$$
-
-The fitted response is
-
-$$
-\hat{\mathbf{Y}}
-=
-\mathbf{H}\mathbf{Y},
-$$
-
-where
-
-$$
-\mathbf{H}
-=
-\mathbf{X}
-(\mathbf{X}^\top\mathbf{X})^{-1}
-\mathbf{X}^\top
-$$
-
-is the hat matrix.
-
-Geometrically,
-
-$$
-\hat{\mathbf{Y}}
-$$
-
-is the orthogonal projection of $\mathbf{Y}$ onto
-$\mathcal{C}(\mathbf{X})$.
-
-The residual vector
-
-$$
-\mathbf{e}
-=
-\mathbf{Y}
--
-\hat{\mathbf{Y}}
-$$
-
-lies in the orthogonal complement of the model space, so
-
-$$
-\mathbf{X}^\top\mathbf{e}
-=
-\mathbf{0}.
-$$
-
-Therefore,
-
-$$
-\boxed{
-\mathbf{Y}
-=
-\hat{\mathbf{Y}}
-+
-\mathbf{e}
-}
-$$
-
-is an orthogonal decomposition.
-
-In [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), we will treat
-$\hat{\boldsymbol{\beta}}$ as a random vector and study its expectation,
-variance, sampling distribution, and the foundations of statistical
-inference for linear models.
-
-:::
-
 ## Practice at Home
 
 1. Explain why
@@ -2943,3 +2836,13 @@ These identities justify the derivative used in the least squares
 criterion.
 
 :::
+
+## Summary / Recap {.unnumbered}
+
+- Least squares minimizes $\|Y-X\beta\|^2$ and satisfies the normal equations $X^\top X\hat\beta=X^\top Y$.
+- With full column rank, $\hat\beta=(X^\top X)^{-1}X^\top Y$. Without it, coefficients may be nonunique, but the fitted vector is unique.
+- The fitted vector $\hat Y=HY$ is the orthogonal projection onto $\mathcal C(X)$; the residual $e=(I-H)Y$ satisfies $X^\top e=0$.
+- $H$ and $I-H$ are symmetric, idempotent projection matrices. With an intercept, residuals sum to zero and fitted responses have the observed response mean.
+- These are algebraic properties of the fit. Statistical claims about bias, variance and tests require assumptions about the errors.
+
+Next, [Chapter 3](03_OLS_inference.qmd) supplies those assumptions and the sampling distributions used for inference.

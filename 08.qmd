@@ -8,6 +8,38 @@ execute:
 
 In this chapter, we study how to assess whether a fitted linear regression model is adequate. After learning estimation, inference, ANOVA, and interpretation, we now turn to model checking. The main tools are residuals, diagnostic plots, and numerical measures that help identify nonlinearity, unequal variance, outliers, and influential observations.
 
+::: {.callout-note title="Two meetings: diagnose, then act"}
+
+The first meeting uses residual plots, Q-Q plots, leverage and influence to identify a problem. The second follows a problem through a justified revision and recheck, using the log-scale example in Chapter 9 and the prediction-evaluation workflow in Chapter 10. Additional simulated diagnostic panels are practice material.
+
+:::
+
+**Application: is a straight line enough for stopping distance?** R's historical `cars` data contain speed and stopping distance for 50 cars. An upward trend is visible, but it does not establish a linear mean with constant error variance. Read the fitted relationship and residual pattern together. [Dataset documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/cars.html).
+
+```{r}
+#| label: fig-ch8-motivation
+#| echo: false
+#| fig-cap: "Stopping distance and speed in the historical cars data. Left: observations and an OLS line. Right: residuals from that same fit, with a zero reference. The residual plot asks what the fitted line leaves unexplained; it is not a second dataset."
+#| fig-alt: "Two panels show stopping distance against speed with an OLS line, then residuals against fitted stopping distance. The same 50 cars appear in both panels."
+#| fig-width: 7
+#| fig-height: 3.6
+library(ggplot2)
+library(patchwork)
+ch8_cars_fit <- lm(dist ~ speed, data = datasets::cars)
+ch8_cars <- transform(datasets::cars,
+  Fitted = fitted(ch8_cars_fit), Residual = residuals(ch8_cars_fit))
+ch8_left <- ggplot(ch8_cars, aes(speed, dist)) +
+  geom_point(colour = "#0072B2", alpha = 0.7) +
+  geom_abline(intercept = coef(ch8_cars_fit)[1], slope = coef(ch8_cars_fit)[2],
+              colour = "#333333", linewidth = 0.8) +
+  labs(x = "Speed (mph)", y = "Stopping distance (ft)")
+ch8_right <- ggplot(ch8_cars, aes(Fitted, Residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "#333333") +
+  geom_point(colour = "#B84400", alpha = 0.7) +
+  labs(x = "Fitted stopping distance (ft)", y = "Residual (ft)")
+(ch8_left + ch8_right) & theme_minimal(base_size = 11)
+```
+
 **Learning Objectives**
 
 By the end of this chapter, students should be able to:
@@ -526,15 +558,12 @@ Complete the following tasks:
 - modify a model to address one detected issue, such as curvature or unequal variance;
 - compare the original and revised models.
 
-**Summary**
+## Summary / Recap {.unnumbered}
 
-In this chapter, we studied model diagnostics for linear regression. We focused on:
+- Residual patterns can reveal a missing mean pattern or changing spread; a normal Q-Q plot addresses a different question about the error distribution.
+- Leverage describes an unusual predictor configuration. A large residual describes an unusual response conditional on the fit.
+- Influence combines these ideas by asking how much the fitted analysis changes when an observation is perturbed or omitted.
+- Investigate influential observations and data quality; a diagnostic threshold is not an automatic deletion rule.
+- Make a scientifically defensible revision, refit and recheck. Good-looking diagnostics alone do not establish good prediction on new data.
 
-- residuals and standardized residuals;
-- fitted-versus-residual plots;
-- normal Q-Q plots;
-- leverage and influence;
-- Cook's distance and related ideas;
-- practical judgment in assessing model adequacy.
-
-These ideas are essential because regression analysis is not complete until the fitted model has been critically examined.
+The selected applications in [Chapter 9](09.qmd) and [Chapter 10](10.qmd) connect model revision with interpretation and validation.

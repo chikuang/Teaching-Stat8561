@@ -23,7 +23,7 @@ execute:
 
 ::: {.callout-note title="Two class meetings, one modelling workflow"}
 
-In the first meeting, focus on adjusted interpretation, indicator coding, and additive models. In the second, study interactions, centering, and the model comparisons that distinguish different scientific questions. Chapter 6 will develop contrasts and inference for selected comparisons in more detail.
+In the first meeting, focus on adjusted interpretation, indicator coding, and additive models. In the second, study interactions and the equal-slopes versus identical-lines comparisons. Use the code and additional coding checks for practice. Chapter 6 continues the same ToothGrowth application with estimates and confidence intervals for selected comparisons; an integration meeting provides time to consolidate these ideas.
 
 Our workflow is **question → mean function → design matrix → interpretation → comparison**. The least squares and inference tools remain those from Chapters 2–4.
 
@@ -105,6 +105,41 @@ $$
 \widehat{\mathrm{Volume}}
 =-57.988+0.339\,\mathrm{Height}+4.708\,\mathrm{Diameter}.
 $$
+
+**Which comparison does each slope describe?** In the plot, use the point colors to inspect how diameter varies with height, then compare the two fitted lines.
+
+```{r}
+#| label: fig-ch5-adjustment
+#| echo: false
+#| fig-pos: "H"
+#| fig-cap: "The same 31 trees, with color indicating diameter. The dashed height-only line follows the unadjusted association. The solid line is the multiple-regression mean at a fixed diameter of 13 inches. The points have different diameters, so their vertical distances from that fixed-diameter line are not the multiple-regression residuals."
+#| fig-alt: "Timber volume against height, with tree diameter encoded by color. A steep dashed unadjusted line has slope 1.543; a shallower solid line at diameter 13 inches has slope 0.339. Both line meanings appear in the legend."
+#| fig-width: 7
+#| fig-height: 4.8
+ch5_height_grid <- data.frame(
+  Height = seq(min(ch5_trees$Height), max(ch5_trees$Height), length.out = 100),
+  Diameter = 13)
+ch5_height_lines <- rbind(
+  transform(ch5_height_grid,
+    Volume = predict(ch5_tree_simple, ch5_height_grid),
+    Comparison = "Height alone (slope 1.543)"),
+  transform(ch5_height_grid,
+    Volume = predict(ch5_tree_adjusted, ch5_height_grid),
+    Comparison = "At diameter 13 in (slope 0.339)"))
+ggplot(ch5_trees, aes(Height, Volume)) +
+  geom_point(aes(colour = Diameter), size = 2.7, alpha = 0.9) +
+  geom_line(data = ch5_height_lines,
+    aes(linetype = Comparison), colour = "#333333", linewidth = 0.9) +
+  scale_colour_viridis_c(option = "D", end = 0.85) +
+  scale_linetype_manual(values = c(
+    "Height alone (slope 1.543)" = "dashed",
+    "At diameter 13 in (slope 0.339)" = "solid")) +
+  labs(x = "Height (ft)", y = "Timber volume (cubic ft)",
+       colour = "Diameter (in)", linetype = NULL) +
+  guides(colour = guide_colourbar(order = 1),
+         linetype = guide_legend(order = 2, ncol = 1)) +
+  theme(legend.box = "vertical")
+```
 
 These slopes answer different questions. The multiple-regression height coefficient is also the coefficient tested when Chapter 4 compared the diameter-only model with the diameter-plus-height model.
 
@@ -650,4 +685,12 @@ Consider $n=48$ observations, a binary group $z$, and a continuous predictor $x$
 
 :::
 
-**Summary.** The model's columns determine what its coefficients mean. An additive slope is an adjusted mean comparison; factor coefficients depend on a reference group; an interaction makes a comparison depend on another predictor. Centering and releveling preserve fitted values when they only reparameterize the same mean space. Changing the mean space, such as relaxing a straight-line restriction, is a substantive modelling decision that can be assessed with the nested-model tools from Chapter 4.
+## Summary / Recap {.unnumbered}
+
+- Interpret a coefficient through the mean function and the comparison it holds fixed; an adjusted association is not automatically causal.
+- A factor with $k$ levels contributes $k-1$ indicator columns alongside an intercept. Its coefficients depend on the reference level.
+- An interaction makes a group difference or slope depend on another predictor. State the predictor value for every conditional comparison.
+- Equal slopes and identical regression lines impose different restrictions. Compare the corresponding nested models on the same observations.
+- Centering or releveling can preserve the mean space and fitted values. Replacing dose-specific cell means with a straight-line model changes the mean space.
+
+Next, Chapter 6 estimates the dose-specific ToothGrowth comparisons and their uncertainty.

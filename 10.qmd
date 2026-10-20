@@ -2,6 +2,12 @@
 
 A useful model must answer a stated question. Estimating an adjusted association, comparing treatments, and predicting a future response can favor different choices. This chapter keeps the main principles of collinearity and validation; automatic selection algorithms are in an optional appendix.
 
+::: {.callout-note title="Project workflow"}
+
+Use this short unit with the diagnostic application and final project integration. The required workflow is to reserve test observations, learn preprocessing and tuning within training data, and report prediction errors in meaningful units. Chapter 12 uses this same workflow to choose ridge and lasso penalties.
+
+:::
+
 ## Stable estimates and scientific questions
 
 **Collinearity.** When columns of $X$ are nearly dependent, different coefficient combinations can produce very similar fitted values. The covariance $\sigma^2(X^\top X)^{-1}$ then explains why individual coefficients can be unstable even when fitted values are reasonably precise.
@@ -31,6 +37,26 @@ Random row-wise folds are appropriate only when they match the intended predicti
 :::
 
 **AIC and model comparison.** AIC balances likelihood fit and parameter count. It is useful when candidate likelihoods refer to the same response and comparable data, but it is not an effect estimate or a significance test. Comparing AIC values from a model for $Y$ and one for $\log Y$ requires accounting for the transformation of the likelihood; do not compare the raw software values mechanically. BIC, $C_p$, and automatic searches are in [Automatic Model Selection (Optional)](App_C-model-selection.qmd).
+
+## From validation to the project comparison
+
+| Stage | Data allowed | Result to carry forward |
+|---|---|---|
+| Initial split | Observation identifiers and a justified split rule | Saved training/test identifiers |
+| Model development | Training observations only | Candidate formulas, transformations and tuning values |
+| Cross-validation | Fit preprocessing and models within each training fold | A fixed tuning/model choice |
+| Final fit | All training observations | One fitted procedure for each stated candidate |
+| Final evaluation | The untouched test set | Baseline and model RMSE/MAE, plots and limitations |
+
+The baseline predicts the training-set mean. Both models must predict the same response for the same test observations. For a response transformation, bring predictions back to the evaluation scale using a correction learned from training data when one is needed.
+
+$$
+\mathrm{RMSE}=\sqrt{\frac{1}{m}\sum_i(y_i-\hat y_i)^2},
+\qquad
+\mathrm{MAE}=\frac{1}{m}\sum_i|y_i-\hat y_i|.
+$$
+
+The example below supplies a compact visual explanation of held-out prediction. Chapter 12 adds a tuning parameter to the same workflow; the project may use another suitable regression method.
 
 ## A small validation example
 
@@ -85,3 +111,11 @@ ggplot(validation, aes(observed, predicted)) +
 2. Explain why a confounder or design variable should not be removed solely because of its p-value or VIF.
 3. Adapt the example to grouped data by assigning folds at the group level.
 4. Write a short report distinguishing an inferential conclusion about a coefficient from a predictive conclusion about a fitted procedure.
+
+## Summary / Recap {.unnumbered}
+
+- Separate inference about a specified model from selection of a prediction procedure. Model search changes the interpretation of subsequent coefficient tests.
+- Reserve test observations before development. Fit preprocessing and tune candidate models within the training data or training folds.
+- Cross-validation guides tuning; the untouched test set evaluates the fixed procedure. Repeatedly choosing from test results turns that set into development data.
+- Compare models and a training-mean baseline on the same observations and response scale. RMSE and MAE retain the response's units.
+- Report the split, preprocessing, tuning rule and limitations, alongside an observed-versus-predicted plot.

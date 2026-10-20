@@ -1,0 +1,267 @@
+---
+execute:
+  cache: false
+  freeze: false
+---
+
+# Regularization: Ridge and Lasso {#sec-regularization}
+
+Least squares becomes difficult to use when many columns of the design matrix carry similar information, or when there are more coefficients than independent data directions. Regularization adds a penalty to stabilize a fitted prediction rule. This chapter connects the rank and least-squares ideas from Chapters 1–2 to the validation workflow in [Chapter 10](10.qmd).
+
+**Learning objectives.** Explain why OLS may be unstable or nonunique, distinguish ridge from lasso, choose a penalty using training-data cross-validation, and evaluate predictions on observations withheld from tuning.
+
+::: {.callout-note title="One class meeting"}
+
+Spend about 15 minutes on the OLS problem, 25 on the two penalties, 25 on the example and its plots, and 10 on interpretation and limitations. The matrix derivation at the end is optional. Use the existing `glmnet` implementation; deriving its optimization algorithm is outside this introduction.
+
+:::
+
+## From many predictors to regularization
+
+Let $d$ be the number of predictor columns excluding the intercept, so a full-rank model has $p=d+1$ parameters. Two issues should be distinguished:
+
+- **Near dependence:** OLS can be unique but individual coefficients are sensitive to small changes in the data. This is related to small eigenvalues of $X^\top X$ and large coefficient variances.
+- **Rank deficiency:** distinct coefficient vectors give the same fitted responses. If $p>n$, full column rank is impossible. If the design has row rank $n$, it can interpolate the training responses, leaving zero residual degrees of freedom.
+
+A perfect training fit does not show that future responses will be predicted well. Prediction requires evaluation on new observations.
+
+```{r}
+#| label: ch12-rank-example
+set.seed(8561)
+ch12_wide <- cbind(1, matrix(rnorm(30 * 60), nrow = 30))
+c(observations = nrow(ch12_wide), coefficients = ncol(ch12_wide),
+  rank = qr(ch12_wide)$rank)
+```
+
+Here 61 coefficients cannot be uniquely determined from 30 independent rows. Regularization can choose a fitted rule, but it does not create information that makes all 61 population coefficients identifiable.
+
+## Ridge and lasso
+
+Write $\beta_0$ for the intercept and $\beta=(\beta_1,\ldots,\beta_d)^\top$ for the slopes. For training data with $n_{\mathrm{tr}}$ rows, compare these criteria:
+
+$$
+\begin{aligned}
+\text{Ridge:}\quad&
+\min_{\beta_0,\beta}
+\frac{1}{2n_{\mathrm{tr}}}\sum_i(y_i-\beta_0-x_i^\top\beta)^2
++\frac{\lambda}{2}\sum_{j=1}^d\beta_j^2,\\
+\text{Lasso:}\quad&
+\min_{\beta_0,\beta}
+\frac{1}{2n_{\mathrm{tr}}}\sum_i(y_i-\beta_0-x_i^\top\beta)^2
++\lambda\sum_{j=1}^d|\beta_j|.
+\end{aligned}
+$$
+
+The intercept is not penalized. The tuning parameter $\lambda\geq0$ controls the strength of the penalty. At $\lambda=0$, the criterion is ordinary least squares; uniqueness still depends on the design rank.
+
+| Feature | Ridge | Lasso |
+|---|---|---|
+| Penalty | Squared coefficient magnitudes | Absolute coefficient magnitudes |
+| Typical effect | Shrinks slopes toward zero | Can set some slopes exactly to zero |
+| Correlated predictors | Can distribute a signal across correlated columns | Which correlated column is selected can be unstable |
+| Main use in this unit | Stabilize prediction | Combine shrinkage with a sparse fitted representation |
+
+For $\lambda>0$, the ridge penalty gives a unique slope solution even with redundant predictor columns. A lasso coefficient vector need not be unique for an arbitrary rank-deficient design. Neither method guarantees better test performance or correct recovery of the underlying predictors.
+
+**Scale matters.** A coefficient for meters and one for millimeters cannot be penalized on an equal numerical footing without accounting for scale. Standardize predictor columns using training data. In cross-validation, estimate scaling within each training fold. `glmnet` does this within each fit when `standardize = TRUE`; reported coefficients and predictions are returned on the original predictor scale.
+
+**Bias and variance.** Shrinking a coefficient introduces bias relative to its unpenalized estimate, but can reduce sensitivity to the training sample. The relevant tradeoff is assessed with prediction error, not by requiring the largest training $R^2$.
+
+## Choose the penalty using training data
+
+Use the same held-out test observations and the same training folds for the competing procedures:
+
+1. Reserve a test set before model development.
+2. Within the training data, use cross-validation to evaluate candidate penalties.
+3. Fix a tuning rule, refit on all training observations, and predict the test set once.
+
+`lambda.min` minimizes the mean CV error. `lambda.1se` is the **largest** penalty whose CV error is within one estimated standard error of the minimum; it favors a more strongly regularized fit. This is a tuning heuristic, not a confidence statement that two procedures are equivalent. A single `cv.glmnet()` call tunes $\lambda$ at a fixed `alpha`; below, `alpha = 0` fits ridge and `alpha = 1` fits lasso. [Official CV documentation](https://glmnet.stanford.edu/reference/cv.glmnet.html).
+
+## One reproducible prediction comparison
+
+The simulated data contain 120 correlated predictors and 180 observations. Only the first three predictors enter the data-generating mean. The simulation makes the truth known for teaching; the fitting procedures are given all 120 columns.
+
+```{r}
+#| label: ch12-data
+library(glmnet)
+library(ggplot2)
+set.seed(8561)
+ch12_n <- 180
+ch12_d <- 120
+ch12_Sigma <- outer(seq_len(ch12_d), seq_len(ch12_d),
+                    function(i, j) 0.6^abs(i - j))
+ch12_X <- matrix(rnorm(ch12_n * ch12_d), ch12_n, ch12_d) %*%
+  chol(ch12_Sigma)
+colnames(ch12_X) <- paste0("x", seq_len(ch12_d))
+ch12_beta <- c(3, -2, 1.5, rep(0, ch12_d - 3))
+ch12_y <- 2 + drop(ch12_X %*% ch12_beta) + rnorm(ch12_n, sd = 2)
+ch12_train <- sort(sample(seq_len(ch12_n), 135))
+ch12_test <- setdiff(seq_len(ch12_n), ch12_train)
+ch12_folds <- sample(rep(1:5, length.out = length(ch12_train)))
+ch12_xtr <- ch12_X[ch12_train, , drop = FALSE]
+ch12_ytr <- ch12_y[ch12_train]
+ch12_xte <- ch12_X[ch12_test, , drop = FALSE]
+```
+
+The OLS comparison has 135 training observations and 121 coefficients, leaving only 14 residual degrees of freedom when full rank. Penalized models are also computable inside the smaller CV training folds, even when those folds have fewer observations than coefficients.
+
+```{r}
+#| label: ch12-cv
+ch12_ridge <- cv.glmnet(ch12_xtr, ch12_ytr, alpha = 0,
+  family = "gaussian", foldid = ch12_folds, type.measure = "mse",
+  standardize = TRUE)
+ch12_lasso <- cv.glmnet(ch12_xtr, ch12_ytr, alpha = 1,
+  family = "gaussian", foldid = ch12_folds, type.measure = "mse",
+  standardize = TRUE)
+```
+
+**Read the coefficient path.** Each curve tracks one lasso slope as $\lambda$ changes. Larger penalties move more slopes to zero. The three true signal variables are colored for this simulated example; all other columns are gray.
+
+```{r}
+#| label: fig-ch12-lasso-path
+#| echo: false
+#| fig-cap: "Lasso coefficient paths on the training data. The colored curves correspond to x1, x2 and x3, the three predictors used in the simulated mean; gray curves represent the other 117 predictors. Larger lambda means a stronger penalty. The path describes fitted coefficients, not their confidence intervals."
+#| fig-alt: "Lasso coefficients plotted against lambda on a log scale. Most curves approach zero as lambda increases. Signal variables x1, x2 and x3 are distinguished by color and the legend; other variables are gray."
+#| fig-width: 7
+#| fig-height: 3.8
+ch12_b <- as.matrix(ch12_lasso$glmnet.fit$beta)
+ch12_path <- data.frame(
+  Lambda = rep(ch12_lasso$lambda, each = nrow(ch12_b)),
+  Coefficient = as.vector(ch12_b),
+  Predictor = rep(rownames(ch12_b), times = ncol(ch12_b)))
+ch12_path$Label <- ifelse(ch12_path$Predictor %in% c("x1", "x2", "x3"),
+                          ch12_path$Predictor, "Other predictors")
+ggplot(ch12_path, aes(Lambda, Coefficient, group = Predictor)) +
+  geom_line(data = subset(ch12_path, Label == "Other predictors"),
+            aes(colour = Label), linewidth = 0.35, alpha = 0.5) +
+  geom_line(data = subset(ch12_path, Label != "Other predictors"),
+            aes(colour = Label), linewidth = 0.9) +
+  scale_x_log10() +
+  scale_colour_manual(values = c("Other predictors" = "#AAAAAA",
+    x1 = "#0072B2", x2 = "#B84400", x3 = "#007A55")) +
+  labs(x = "Lambda (log scale)", y = "Fitted slope", colour = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+```
+
+**Read the validation curve.** The fitted path alone cannot select a penalty. Compare held-out errors within the training data.
+
+```{r}
+#| label: fig-ch12-cv
+#| echo: false
+#| fig-cap: "Five-fold CV error within the training set. Shading is plus or minus one estimated CV standard error, not a 95% confidence band. Dashed lines mark lambda.min; solid lines mark lambda.1se, the rule used for both test-set predictions. Each panel has its own lambda scale."
+#| fig-alt: "Separate ridge and lasso panels show cross-validation mean squared error against lambda on log scales, with standard-error shading. A dashed line identifies the minimum-error lambda and a solid line identifies the more regularized one-standard-error choice."
+#| fig-width: 7
+#| fig-height: 3.8
+ch12_cv_frame <- function(cv, method) data.frame(
+  Lambda = cv$lambda, MSE = cv$cvm, Lower = pmax(0, cv$cvm - cv$cvsd),
+  Upper = cv$cvm + cv$cvsd, Method = method)
+ch12_cvplot <- rbind(ch12_cv_frame(ch12_ridge, "Ridge"),
+                     ch12_cv_frame(ch12_lasso, "Lasso"))
+ch12_choices <- data.frame(
+  Method = rep(c("Ridge", "Lasso"), each = 2),
+  Rule = rep(c("Minimum CV error", "One-SE rule"), 2),
+  Lambda = c(ch12_ridge$lambda.min, ch12_ridge$lambda.1se,
+             ch12_lasso$lambda.min, ch12_lasso$lambda.1se))
+ggplot(ch12_cvplot, aes(Lambda, MSE)) +
+  geom_ribbon(aes(ymin = Lower, ymax = Upper), fill = "#0072B2", alpha = 0.15) +
+  geom_line(colour = "#0072B2", linewidth = 0.8) +
+  geom_vline(data = ch12_choices, aes(xintercept = Lambda, linetype = Rule),
+              colour = "#333333") +
+  scale_linetype_manual(values = c("Minimum CV error" = "dashed",
+                                  "One-SE rule" = "solid")) +
+  scale_x_log10() +
+  facet_wrap(~ Method, scales = "free_x") +
+  labs(x = "Lambda (log scale)", y = "Cross-validated MSE", linetype = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+```
+
+**Evaluate the fixed procedures.** We use the one-SE rule for both penalties, specified before looking at test outcomes. OLS uses the same candidate predictors. No procedure is retuned after this comparison.
+
+```{r}
+#| label: ch12-test
+ch12_ols <- lm.fit(cbind(Intercept = 1, ch12_xtr), ch12_ytr)
+stopifnot(ch12_ols$rank == ncol(ch12_xtr) + 1L)
+ch12_pred <- cbind(
+  `Training-mean baseline` = rep(mean(ch12_ytr), length(ch12_test)),
+  OLS = drop(cbind(1, ch12_xte) %*% ch12_ols$coefficients),
+  Ridge = drop(predict(ch12_ridge, newx = ch12_xte, s = "lambda.1se")),
+  Lasso = drop(predict(ch12_lasso, newx = ch12_xte, s = "lambda.1se")))
+ch12_errors <- sweep(ch12_pred, 1, ch12_y[ch12_test], "-")
+ch12_performance <- data.frame(
+  Model = colnames(ch12_pred),
+  Test_RMSE = sqrt(colMeans(ch12_errors^2)),
+  Test_MAE = colMeans(abs(ch12_errors)))
+knitr::kable(ch12_performance, digits = 3, row.names = FALSE)
+```
+
+Here the one-SE ridge fit is almost the training-mean baseline: its chosen penalty nearly removes the slopes. Lasso improves on that baseline in this split. The nearly horizontal ridge predictions below reflect the chosen tuning rule.
+
+**Can a smaller training error produce worse new predictions?** Compare the same 45 test observations across the three fitted procedures. A good prediction lies near the diagonal; no test observations were used to choose the penalties.
+
+```{r}
+#| label: fig-ch12-test-predictions
+#| echo: false
+#| fig-cap: "Observed and predicted responses for the same 45 held-out observations. Each panel uses identical axes; the dashed diagonal represents exact prediction. Ridge and lasso use the one-SE choices from training-only CV. The simulated response is in arbitrary units."
+#| fig-alt: "Three equally scaled panels compare OLS, ridge and lasso test predictions with observed outcomes and a diagonal reference line."
+#| fig-width: 7
+#| fig-height: 3.4
+ch12_predplot <- data.frame(
+  Observed = rep(ch12_y[ch12_test], 3),
+  Predicted = as.vector(ch12_pred[, c("OLS", "Ridge", "Lasso")]),
+  Method = factor(rep(c("OLS", "Ridge", "Lasso"), each = length(ch12_test)),
+                  levels = c("OLS", "Ridge", "Lasso")))
+ch12_limits <- range(ch12_predplot$Observed, ch12_predplot$Predicted)
+ggplot(ch12_predplot, aes(Observed, Predicted)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", colour = "#555555") +
+  geom_point(colour = "#0072B2", alpha = 0.7, size = 1.7) +
+  facet_wrap(~ Method, nrow = 1) +
+  coord_equal(xlim = ch12_limits, ylim = ch12_limits) +
+  labs(x = "Observed response", y = "Predicted response") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank())
+```
+
+Read the magnitude of the differences and the test-set size, not just the ranking. A different training sample, signal structure or noise level can change the result. If test results lead to another round of tuning, a new independent evaluation is needed for that revised procedure.
+
+## What the selected model does and does not establish
+
+- A zero lasso coefficient is a property of this penalized fit at its chosen $\lambda$; it is not a hypothesis test showing that the population effect is zero.
+- Correlated variables can substitute for one another. A selected list should not be presented as a definitive list of causal variables.
+- Ordinary OLS $t$ intervals do not automatically become valid after lasso selection and refitting. Prediction validation also does not repair post-selection coefficient inference.
+- For a factor or interaction, individual encoded columns need not correspond to an entire scientific term. Preserve the intended comparison and model hierarchy when interpreting results.
+
+**Check your understanding.** Why is training SSE insufficient for choosing $\lambda$? What changes when a predictor is measured in different units? Can lasso prediction work well even when its selected variables vary between samples?
+
+## Optional derivation: the ridge normal equations {.unnumbered}
+
+For centered predictors and response, the unpenalized intercept is handled by the sample means. With the ridge objective above and $X$ containing only the centered predictor columns,
+
+$$
+\hat\beta_\lambda=(X^\top X+n_{\mathrm{tr}}\lambda I_d)^{-1}X^\top y,
+\qquad \lambda>0.
+$$
+
+::: {.proof}
+
+Differentiating the objective gives
+$-X^\top(y-X\beta)/n_{\mathrm{tr}}+\lambda\beta=0$.
+For any nonzero $v$,
+$v^\top(X^\top X+n_{\mathrm{tr}}\lambda I_d)v
+=\|Xv\|^2+n_{\mathrm{tr}}\lambda\|v\|^2>0$.
+Thus the matrix is invertible and the displayed solution is unique.
+
+:::
+
+Standardizing the predictors changes the scale on which the penalty is imposed. The formula describes that chosen coordinate system. Software uses numerical factorizations or optimization routines rather than explicitly forming an inverse.
+
+## Summary / Recap {.unnumbered}
+
+- Many or strongly correlated predictors can make OLS unstable; insufficient design rank makes coefficients nonunique.
+- Ridge shrinks slopes; lasso can also set slopes to zero. The intercept is unpenalized, and predictor scale matters.
+- Select $\lambda$ using training-data validation, then evaluate the fixed procedure on the untouched test set.
+- A coefficient path describes fitted slopes. A CV curve estimates prediction error and guides tuning.
+- Prediction, variable selection and inference are different tasks. Good test predictions do not establish causal effects or valid post-selection $t$ tests.
+
+For the final project, report the candidate predictors, preprocessing, tuning rule, split, test loss and limitations. [The glmnet authors' introduction](https://github.com/cran/glmnet/blob/master/vignettes/glmnet.Rmd) provides further implementation details.

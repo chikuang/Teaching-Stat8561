@@ -1,8 +1,45 @@
+---
+execute:
+  cache: false
+  freeze: false
+---
+
 # Contrasts and Estimable Comparisons {#sec-contrasts}
 
 A scientific question often concerns a difference between means rather than one coefficient printed by software. This chapter uses the linear-combination inference from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) to express those questions. [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) connects these comparisons to experimental designs.
 
-**Learning objectives.** Express a comparison of group means as a linear function of regression coefficients, obtain its estimate and interval, and distinguish a meaningful comparison from a coding-dependent coefficient.
+**Learning objectives.** Express a comparison as a linear function of regression coefficients, obtain its estimate and interval, interpret a conditional comparison, and distinguish one comparison from a family of comparisons.
+
+::: {.callout-note title="Core lesson and further practice"}
+
+The core lesson connects mean weights, coefficient weights, uncertainty and dose-specific comparisons in the ToothGrowth data. Use the integration meeting for coding invariance and the comparison family. The three-group simulation and rank-deficient parameterization are further practice; full estimability theory is in Appendix B.
+
+:::
+
+**Application: does the method difference depend on dose?** The plot continues Chapter 5. Compare OJ with VC separately at each observed dose before deciding which quantity to estimate. The [ToothGrowth documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html) describes 60 guinea pigs, two delivery methods and three doses in mg/day; the response is recorded odontoblast length.
+
+```{r}
+#| label: fig-ch6-motivation
+#| echo: false
+#| fig-cap: "Individual responses and cell means in ToothGrowth. Circles show animals; diamonds show means. Panel headings give dose in mg/day. The OJ-minus-VC difference appears different across doses. Horizontal jitter separates points for display only."
+#| fig-alt: "Three dose panels show observed responses for VC and OJ, with diamonds marking cell means. The mean gaps are positive at doses 0.5 and 1 and nearly zero at dose 2."
+#| fig-width: 7
+#| fig-height: 3.6
+library(ggplot2)
+ch6_motivation <- transform(datasets::ToothGrowth,
+  supp = factor(supp, levels = c("VC", "OJ")),
+  dose = factor(dose, levels = c(0.5, 1, 2)))
+ggplot(ch6_motivation, aes(supp, len, colour = supp)) +
+  geom_point(position = position_jitter(width = 0.1, height = 0, seed = 8561),
+             alpha = 0.6, size = 1.7) +
+  stat_summary(fun = mean, geom = "point", shape = 18, size = 4) +
+  facet_wrap(~ dose, nrow = 1, labeller = label_both) +
+  scale_colour_manual(values = c(VC = "#0072B2", OJ = "#B84400")) +
+  labs(x = "Delivery method", y = "Length (recorded scale)", colour = "Method") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+```
+
 
 ## Comparisons of group means
 
@@ -38,9 +75,150 @@ $$
 \sqrt{\mathbf{a}^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{a}}.
 $$
 
-A confidence interval is $\hat\theta\pm t_{1-\alpha/2,n-p}\operatorname{SE}(\hat\theta)$. This is the same procedure as in [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), applied to a different target. Several independent restrictions can be collected into $C\beta=d$, with $\operatorname{rank}(C)=r$, and tested jointly using the general F test.
+A confidence interval is $\hat\theta\pm t_{1-\alpha/2,n-p}\operatorname{SE}(\hat\theta)$. This is the same procedure as in [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), applied to a different target. For one fixed restriction under the same fitted normal model, the corresponding F statistic equals the squared t statistic. Several linearly independent restrictions can be collected into $C\beta=d$, with $\operatorname{rank}(C)=r$, and tested jointly using the general F test.
 
 **Interpretation.** Report the contrast estimate in the units of the response, its interval, and which population means it compares. Equality of two slopes is only a meaningful scientific question when their units and scales make that comparison defensible.
+
+## Conditional comparisons in the ToothGrowth data {#sec-ch6-tooth}
+
+Chapter 5 compared two straight lines with a model for all six method-dose means. The straight-line restriction did not fit these data well. We therefore use the six-cell model for the comparisons below. The target at an observed dose $d$ is
+
+$$
+\Delta_d=\mu_{\mathrm{OJ},d}-\mu_{\mathrm{VC},d},
+\qquad d\in\{0.5,1,2\}.
+$$
+
+Each dose defines a different comparison. Combining all doses into one average would require specifying the averaging weights and would answer another question.
+
+```{r}
+#| label: ch6-tooth-contrasts
+ch6_dat <- datasets::ToothGrowth
+ch6_dat$supp <- factor(ch6_dat$supp, levels = c("VC", "OJ"))
+ch6_dat$dose_f <- factor(ch6_dat$dose, levels = c(0.5, 1, 2))
+ch6_fit <- lm(len ~ dose_f * supp, data = ch6_dat)
+ch6_profiles <- expand.grid(dose_f = levels(ch6_dat$dose_f),
+                            supp = levels(ch6_dat$supp))
+ch6_X <- model.matrix(delete.response(terms(ch6_fit)),
+                     data = ch6_profiles, contrasts.arg = ch6_fit$contrasts,
+                     xlev = ch6_fit$xlevels)
+# First three rows are VC; last three are OJ, in the same dose order.
+ch6_L <- ch6_X[4:6, , drop = FALSE] - ch6_X[1:3, , drop = FALSE]
+ch6_est <- drop(ch6_L %*% coef(ch6_fit))
+ch6_V <- ch6_L %*% vcov(ch6_fit) %*% t(ch6_L)
+ch6_se <- sqrt(diag(ch6_V))
+ch6_df <- df.residual(ch6_fit)
+ch6_crit <- qt(0.975, ch6_df)
+ch6_results <- data.frame(
+  Dose = levels(ch6_dat$dose_f), Estimate = ch6_est, SE = ch6_se,
+  Lower = ch6_est - ch6_crit * ch6_se,
+  Upper = ch6_est + ch6_crit * ch6_se,
+  p_value = 2 * pt(-abs(ch6_est / ch6_se), df = ch6_df))
+knitr::kable(ch6_results, digits = 3, row.names = FALSE,
+             caption = "OJ minus VC at each dose; individual 95% intervals.")
+stopifnot(ch6_df == 54, max(abs(ch6_est - c(5.25, 5.93, -0.08))) < 1e-10)
+```
+
+**Where do the weights come from?** A fitted mean at a predictor profile is a design row times $\hat\beta$. Subtract the VC row from the OJ row to obtain the weights for their difference:
+
+$$
+\hat\Delta_d=(x_{\mathrm{OJ},d}-x_{\mathrm{VC},d})^\top\hat\beta,
+\qquad
+\widehat{\operatorname{Var}}(\hat\Delta_d)
+=a_d^\top\widehat{\operatorname{Var}}(\hat\beta)a_d.
+$$
+
+The estimate is 5.25 at dose 0.5, 5.93 at dose 1, and $-0.08$ at dose 2. The small last estimate does not establish equivalence; its interval describes uncertainty under the independent, common-variance normal model.
+
+**Do the two differences differ?** Compare dose 1 with dose 2 using $\theta=\Delta_1-\Delta_2$, rather than comparing their separate significance labels. Its estimate is $5.93-(-0.08)=6.01$.
+
+```{r}
+#| label: ch6-difference-of-differences
+ch6_a <- ch6_L[2, ] - ch6_L[3, ]
+ch6_dd <- sum(ch6_a * coef(ch6_fit))
+ch6_dd_se <- sqrt(drop(t(ch6_a) %*% vcov(ch6_fit) %*% ch6_a))
+knitr::kable(data.frame(
+  Comparison = "Difference at dose 1 minus difference at dose 2",
+  Estimate = ch6_dd, SE = ch6_dd_se,
+  Lower = ch6_dd - ch6_crit * ch6_dd_se,
+  Upper = ch6_dd + ch6_crit * ch6_dd_se),
+  digits = 3, row.names = FALSE)
+```
+
+The same calculation works for a continuous-by-group model. For $\Delta(x_0)=\beta_g+(x_0-1)\beta_{xg}$, the estimated variance is
+
+$$
+\widehat{\operatorname{Var}}(\hat\beta_g)
++(x_0-1)^2\widehat{\operatorname{Var}}(\hat\beta_{xg})
++2(x_0-1)\widehat{\operatorname{Cov}}(\hat\beta_g,\hat\beta_{xg}).
+$$
+
+Do not add coefficient standard errors, or omit their covariance. A separate significant/non-significant label for each estimate is not a test of their difference.
+
+## One comparison and a family of comparisons {#sec-ch6-family}
+
+For one prespecified comparison, the individual $t$ interval answers the stated question. When reporting all three dose-specific OJ-minus-VC differences as a family, account for the three opportunities to make a false rejection. Prespecifying several tests does not remove this family-wise issue.
+
+For this **family of three tests**, Holm adjusts the p-values. Bonferroni simultaneous intervals use critical value $t_{1-\alpha/(2m),n-p}$ with $m=3$; their joint coverage is at least $1-\alpha$ under the model. These are two different adjustment procedures, so an adjusted p-value and an interval should be labeled with the procedure that produced it.
+
+```{r}
+#| label: ch6-family
+ch6_m <- nrow(ch6_results)
+ch6_bonf <- qt(1 - 0.05 / (2 * ch6_m), ch6_df)
+knitr::kable(data.frame(
+  Dose = ch6_results$Dose,
+  Holm_p = p.adjust(ch6_results$p_value, method = "holm"),
+  Bonferroni_lower = ch6_est - ch6_bonf * ch6_se,
+  Bonferroni_upper = ch6_est + ch6_bonf * ch6_se),
+  digits = 3, row.names = FALSE)
+```
+
+```{r}
+#| label: fig-ch6-comparison-intervals
+#| echo: false
+#| fig-cap: "The same three OJ-minus-VC estimates with individual 95% intervals (blue) and Bonferroni simultaneous 95% intervals for the three-comparison family (orange). The estimates do not change; joint coverage requires wider intervals. The vertical dashed line is zero."
+#| fig-alt: "Two panels compare individual and simultaneous confidence intervals for OJ minus VC at doses 0.5, 1 and 2. Orange simultaneous intervals are wider. Both panels use the same horizontal scale and a dashed zero line."
+#| fig-width: 7
+#| fig-height: 3.5
+library(ggplot2)
+ch6_plot <- rbind(
+  transform(ch6_results, Method = "Individual 95%"),
+  transform(ch6_results,
+    Lower = ch6_est - ch6_bonf * ch6_se,
+    Upper = ch6_est + ch6_bonf * ch6_se,
+    Method = "Simultaneous 95% (Bonferroni)"))
+ch6_plot$Method <- factor(ch6_plot$Method,
+  levels = c("Individual 95%", "Simultaneous 95% (Bonferroni)"))
+ggplot(ch6_plot, aes(Estimate, Dose, colour = Method)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey45") +
+  geom_segment(aes(x = Lower, xend = Upper, yend = Dose), linewidth = 0.8) +
+  geom_point(size = 2.5) +
+  facet_wrap(~ Method, nrow = 1) +
+  scale_colour_manual(values = c("#0072B2", "#B84400")) +
+  labs(x = "OJ minus VC mean length", y = "Dose (mg/day)") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none", panel.grid.minor = element_blank())
+```
+
+The difference-of-differences above is a separate teaching example. If it is also part of the reported inferential family, include it when defining that family and its adjustment. For all pairwise differences among levels of a simple one-way model, Tukey simultaneous intervals are another useful procedure. [R documentation: Holm adjustment](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html) and [Tukey intervals](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/TukeyHSD.html).
+
+::: {#exr-ch6-conditional}
+
+## Check the Comparison
+
+1. Write the mean weights for $\Delta_1-\Delta_2$ in the order $(\mu_{\mathrm{VC},1},\mu_{\mathrm{OJ},1},\mu_{\mathrm{VC},2},\mu_{\mathrm{OJ},2})$.
+2. Does changing the reference method change the OJ-minus-VC target?
+3. Why are simultaneous intervals wider than individual intervals in the plot?
+
+:::
+
+::: {#sol-ch6-conditional}
+
+1. The weights are $(-1,1,1,-1)$; they sum to zero.
+2. No. Re-express the same target using the new coefficient coding; its estimate and SE remain the same.
+3. The simultaneous procedure protects the coverage of the whole stated family, rather than each interval separately.
+
+:::
+
 
 ## Coding and estimability
 
@@ -56,13 +234,7 @@ In $Y_{ij}=\mu+\tau_i+\varepsilon_{ij}$, adding a constant to every $\tau_i$ and
 
 The practical lesson is to state the target in terms of observable mean responses before reading coefficients. For the row-space criterion and generalized-inverse formulation, see [Linear-Model Extensions (Optional)](App_B-linear-model-extensions.qmd).
 
-::: {.callout-note title="One comparison versus a family of comparisons"}
-
-A single prespecified contrast and a search through many contrasts are different inferential procedures. Define the family being reported. For all pairwise group comparisons, Tukey intervals are useful; for a specified family of tests, Holm adjustment is another option. An omnibus F test does not automatically justify every unadjusted pairwise test.
-
-:::
-
-## A complete contrast analysis in R
+## Further practice: a three-group comparison {.unnumbered}
 
 This simulated example separates the known data-generating means from their noisy estimates. Changing the seed changes the sample, not the target comparison.
 
@@ -129,3 +301,13 @@ These intervals answer a different collection of questions from the single contr
 2. Verify that the estimate and standard error agree under the two codings.
 3. Explain why the coefficients can change after changing the reference group while the scientific comparison remains unchanged.
 4. Specify the comparison family before reporting all pairwise differences, and explain the role of multiplicity adjustment.
+
+## Summary / Recap {.unnumbered}
+
+- Start with the comparison of interest, then translate its mean weights into coefficient weights. A contrast of group means has weights summing to zero.
+- Estimate $c^\top\beta$ by $c^\top\hat\beta$, with squared SE $c^\top\widehat{\operatorname{Var}}(\hat\beta)c$. Include covariances.
+- With an interaction, compare groups at specified predictor values. In ToothGrowth, the OJ-minus-VC comparison is estimated separately at each dose.
+- A prespecified comparison and a family of comparisons have different error guarantees. State the family and distinguish individual from simultaneous intervals.
+- Coding can change coefficients without changing an estimable comparison. One fixed restriction gives $t^2=F$ under the same normal model.
+
+The design discussion in [Chapter 7](07.qmd) asks which observations supply independent information for these comparisons.
