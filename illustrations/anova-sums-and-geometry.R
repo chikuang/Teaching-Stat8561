@@ -66,7 +66,12 @@ draw_anova_sums <- function(y, yhat) {
   invisible(list(differences = differences, sums_of_squares = totals))
 }
 
-draw_nested_ss_geometry <- function() {
+draw_nested_ss_geometry <- function(y, yhat) {
+  stopifnot(length(y) == 4L, length(yhat) == 4L)
+  ybar <- mean(y)
+  sst <- sum((y - ybar)^2)
+  ssr <- sum((yhat - ybar)^2)
+  sse <- sum((y - yhat)^2)
   blue <- "#0072B2"; green <- "#007A55"; orange <- "#B84400"
   text <- function(label, x, y, size = 11, col = "#202A35",
                    face = "plain", just = "centre") {
@@ -89,14 +94,15 @@ draw_nested_ss_geometry <- function() {
     grid::grid.roundrect(width = .99, height = .99,
       r = grid::unit(.08, "inches"),
       gp = grid::gpar(fill = "#F7F9FB", col = "#E1E7ED"))
-    text(c("A   GENERAL NESTED MODELS", "B   REDUCED MODEL: INTERCEPT ONLY")[k],
+    text(c("A   GENERAL NESTED MODELS",
+           "B   SAME FOUR OBSERVATIONS: INTERCEPT ONLY")[k],
          .025, .935, 12, face = "bold", just = "left")
     if (k == 1) {
       text("Reduced fitted values can differ across observations.",
            .5, .825, 10)
     } else {
-      text(expression(hat(bold(Y))[R] == bgroup("(", list(bar(Y), ...,
-                                                        bar(Y)), ")")^T),
+      text(bquote(hat(bold(Y))[R] ==
+                    bgroup("(", list(.(ybar), .(ybar), .(ybar), .(ybar)), ")")^T),
            .5, .825, 13)
     }
     xr <- .18; xf <- .68; yr <- .30; yy <- .66
@@ -112,18 +118,17 @@ draw_nested_ss_geometry <- function() {
     text(expression(bold(Y)), xf, yy + .065, 14)
     text(expression(hat(bold(Y))[R]), xr, yr - .10, 14)
     text(expression(hat(bold(Y))[F]), xf, yr - .10, 14)
-    text(if (k == 1) expression(SSE[R]) else expression(SST),
+    text(if (k == 1) expression(SSE[R]) else bquote(SST == .(round(sst, 2))),
          .365, .57, 15, blue)
-    text(if (k == 1) expression(SSE[F]) else expression(SSE),
+    text(if (k == 1) expression(SSE[F]) else bquote(SSE == .(round(sse, 2))),
          .81, .48, 15, orange)
-    text(if (k == 1) expression(SSE[R] - SSE[F]) else expression(SSR),
+    text(if (k == 1) expression(SSE[R] - SSE[F]) else bquote(SSR == .(round(ssr, 2))),
          .43, .37, 15, green)
     text(if (k == 1)
            expression(SSE[R] == (SSE[R] - SSE[F]) + SSE[F])
-         else expression(SST == SSR + SSE),
+         else bquote(.(round(sst, 2)) == .(round(ssr, 2)) + .(round(sse, 2))),
          .50, .065, 13)
     grid::popViewport()
   }
-  text("The GREEN side joins the two fitted vectors; its squared length is the extra SS.",
-       .5, .028, 10)
+  invisible(c(SST = sst, SSR = ssr, SSE = sse))
 }
