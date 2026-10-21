@@ -57,6 +57,10 @@ See [Report requirements and submission](Project-Report.qmd#submission) for the 
 
 :::
 
+## Report writing model
+
+Prepare the report in the style of **The American Statistician**: a clear research question, defensible statistical analysis, informative graphics, and a conclusion supported by the evidence. Use the [journal references and report structure](Project-Report.qmd#journal-style) and the [downloadable Quarto starter](Project-Report.qmd#report-template) to plan the 8-10 page report.
+
 ## Assessment criteria
 
 {{< include _project-grading.qmd >}}

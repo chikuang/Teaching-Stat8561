@@ -1,5 +1,7 @@
 project:
   type: book
+  resources:
+    - project-report-template.zip
 
 # Release assignment solutions in the combined PDF as well as HTML.
 show-solutions: true

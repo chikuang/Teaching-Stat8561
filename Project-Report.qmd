@@ -87,17 +87,46 @@ Your conclusion should answer the research question in ordinary language and add
 
 Write **8-10 pages of main text**, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections. For a Python or Jupyter Notebook workflow, follow the prior-discussion requirement in the [submission note](#submission).
 
-Organize the report as follows:
+### Writing model: The American Statistician {#journal-style}
 
-1. **Title and summary:** Names, course, project title, research question, and a short statement of the main finding.
-2. **Data and study design:** Source, definitions, cleaning, training-data exploration, and evaluation plan.
-3. **Linear regression analysis:** Model formulation, interpreted estimates and intervals, nested-model comparison, diagnostics, and limitations.
-4. **Machine learning method:** Main idea, preprocessing, tuning procedure, and final settings.
-5. **Prediction comparison:** Test-set results table, plots, and interpretation.
-6. **Discussion and conclusion:** Substantive findings, model recommendation, uncertainty, and limitations.
-7. **References and contributions:** Data, methods, software, and adapted code, plus a brief statement of each author's contribution.
+Write the report in the style of an applied article in **The American Statistician (TAS)**: introduce a statistical question, explain the analysis to a statistically literate reader, and use evidence to support a clear conclusion. Connect estimates, uncertainty, diagnostic plots, and prediction results to the application. Organize the main text as a coherent article; put lengthy software output and implementation details in supporting material.
 
-Label and caption every figure and table, and discuss it in the text. Place long code listings and supplementary output in an appendix or supporting files. Include all code needed to reproduce the reported numbers and figures.
+The structure below is a **course adaptation** of this publication style. Use it with this project's 8-10 page limit and existing rubric. A journal submission or an exact reproduction of the publisher's typesetting is not required. Keep the course's PDF, source-file, font-size, and margin requirements above.
+
+**Read these references before drafting:**
+
+- [The American Statistician: journal and recent articles](https://www.tandfonline.com/journals/utas20). Look at how articles introduce a problem and connect tables and figures to their argument.
+- [Publisher's instructions for authors](https://www.tandfonline.com/action/authorSubmission?show=instructions&journalCode=utas20), for the journal's own manuscript guidance.
+- [Denby and Pregibon (1987), “An Example of the Use of Graphics in Regression”](https://doi.org/10.1080/00031305.1987.10475437): an example of explaining regression through graphics and their statistical interpretation.
+- [Smith (2011), “Missteps in Multiple Regression Student Projects: Beyond Association-Not-Causation”](https://doi.org/10.1198/tast.2011.11075): a useful companion on pitfalls in student regression projects. Full articles may require access through the university library.
+
+### Suggested report structure {#report-structure}
+
+Use a specific title and list all authors and the course. A useful starting point is a **150-200 word abstract** followed by **3-5 keywords**. These are course writing suggestions. The abstract should state the question, data, methods, main quantitative finding, and conclusion; write it after completing the analysis.
+
+The following is an illustrative **9-page plan**, including the abstract. Adjust the balance within the 8-10 page main-text limit; references, the title page, and appendices are excluded.
+
+::: {tbl-colwidths="[27,60,13]"}
+
+| Section | What the reader should learn | Pages |
+|:---|:---|:---:|
+| Abstract | The question, approach, main result, and takeaway. | 0.5 |
+| 1. Introduction | Why the application matters; the association and prediction questions; relevant background. | 1 |
+| 2. Data and study design | Source, units, cleaning, training-data exploration, and the train/test design. Include a motivating plot. | 1.5 |
+| 3. Linear regression analysis | Model and assumptions; interpreted estimates and confidence intervals; nested-model comparison; diagnostics and limitations. | 2 |
+| 4. Machine learning method | One chosen method, its rationale, preprocessing, tuning design, and final settings. | 1 |
+| 5. Results and predictive comparison | Baseline, regression, and ML test RMSE/MAE; observed-versus-predicted plots; practical meaning of the differences. | 2 |
+| 6. Discussion and conclusion | Answer the research question, recommend a model for the stated purpose, and explain uncertainty and limitations. | 1 |
+
+:::
+
+After the main text, include **References**, an **Author contributions** statement, and any **Supplementary material**. Cite data, methods, software, and adapted code. Use consistent author-year citations and complete references, with DOI or source links where available.
+
+Number figures and tables, give informative captions with units and a legend where needed, and discuss each in the text. Present selected results as readable tables and plots. Keep full code, secondary diagnostics, and long output in the appendix or supporting files; include everything needed to reproduce the reported numbers.
+
+### Download and adapt the template {#report-template}
+
+[Download the STAT 8561 report starter (ZIP)](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.zip). Unzip it to obtain `Project_Report.qmd` and `README.md`. The Quarto file contains the section headings and writing prompts above. Replace every prompt with your own analysis, add executable code and citations, and render `Project_Report.pdf`. The starter follows the course's TAS-inspired structure and submission format.
 
 Set the seed to **8561** for randomized splitting, resampling, and model fitting; in Python, set the relevant `random_state` or generator seed to `8561`. Save the split identifiers and record the software environment. Prefer **ggplot2** for R figures. Use relative paths and provide instructions that work from a fresh session.
 
