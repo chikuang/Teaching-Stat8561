@@ -4,6 +4,8 @@ project:
     - project-report-template.zip
     - project-report-template.pdf
     - project-report-template-preview.png
+    - project-report-template.html
+    - pdf-reader/**
 
 # Release assignment solutions in the combined PDF as well as HTML.
 show-solutions: true
