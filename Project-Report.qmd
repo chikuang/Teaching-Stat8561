@@ -124,7 +124,18 @@ After the main text, include **References**, an **Author contributions** stateme
 
 Number figures and tables, give informative captions with units and a legend where needed, and discuss each in the text. Present selected results as readable tables and plots. Keep full code, secondary diagnostics, and long output in the appendix or supporting files; include everything needed to reproduce the reported numbers.
 
-### Download and adapt the template {#report-template}
+### Preview and download the template {#report-template}
+
+[Preview the STAT 8561 report template (PDF)](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.pdf). This PDF is rendered directly from the downloadable template below and shows the layout, section headings, and writing prompts. It is a short outline; your completed report should still contain **8-10 pages of main text**.
+
+You may refer to [published articles in **The American Statistician**](https://www.tandfonline.com/journals/utas20) and the [examples linked above](#journal-style) for statistical exposition, figures, tables, and interpretation. Use them as models for organizing and presenting your own work.
+
+::: {.content-visible when-format="html"}
+
+[![First-page preview of the STAT 8561 report template; open the PDF to view all pages.](project-report-template-preview.png){width=420px fig-alt="First page of the STAT 8561 report template"}](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.pdf)
+
+:::
+
 
 [Download the STAT 8561 report starter (ZIP)](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.zip). Unzip it to obtain `Project_Report.qmd` and `README.md`. The Quarto file contains the section headings and writing prompts above. Replace every prompt with your own analysis, add executable code and citations, and render `Project_Report.pdf`. The starter follows the course's TAS-inspired structure and submission format.
 
