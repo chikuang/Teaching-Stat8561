@@ -47,7 +47,7 @@ Use **Quarto** or **R Markdown**. Upload **both** files to the **project submiss
 1. Your rendered **PDF**, named `Project_Report.pdf`.
 2. Its matching source file, named `Project_Report.qmd` or `Project_Report.Rmd`.
 
-Write **8-10 pages of main text**, excluding the title page, references, and appendices. List all group members and their contributions.
+The report requires **8-10 pages of main text**, including the abstract and main-text figures, tables, and captions. A separate title-only cover page and the end sections are excluded; see the [complete page-count rule](Project-Report.qmd#page-count). List all group members and their contributions.
 
 The submitted source and supporting files must reproduce the PDF and results. **HTML alone does not satisfy the requirement.**
 

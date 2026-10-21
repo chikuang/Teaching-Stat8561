@@ -83,9 +83,23 @@ Your conclusion should answer the research question in ordinary language and add
 - **Interpretation:** What does the linear model make easy to explain? What additional patterns, if any, does the machine learning analysis suggest? Distinguish coefficient estimates from prediction-based importance measures.
 - **Recommendation and limitations:** Which model would you use for the stated purpose, and why? Discuss assumptions, data quality, the scope of generalization, and one useful next step.
 
+{{< pagebreak >}}
+
 ## Report format and reproducibility
 
-Write **8-10 pages of main text**, excluding the title page, references, and appendices. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections. For a Python or Jupyter Notebook workflow, follow the prior-discussion requirement in the [submission note](#submission).
+Write **8-10 pages of main text**, counted using the rule below. Use Quarto or R Markdown to produce a PDF with readable 11- or 12-point text, standard margins, and numbered sections. For a Python or Jupyter Notebook workflow, follow the prior-discussion requirement in the [submission note](#submission).
+
+::: {.callout-note title="Page count: 8-10 pages of main text" #page-count}
+
+The finished report must contain **at least 8 and at most 10 pages of main text**.
+
+- **Count:** the abstract, Sections 1-6 (Introduction through Discussion and conclusion), and all figures, tables, captions, equations, and code examples within those sections.
+- **Do not count:** a separate title-only cover page, References, Author contributions, and appendices or supplementary material. Put these end sections after the main text; start **References on a new page**.
+- A first page containing the title, author names, and abstract **counts as a main-text page**. Only a separate page containing the title and author information alone is excluded; a separate cover page is optional.
+
+The **9-page plan below is a suggested allocation**, not a different requirement. The short template PDF shows headings and prompts; its number of pages is **not** the required report length. The full submitted PDF may exceed 10 pages because the excluded material comes afterward.
+
+:::
 
 ### Writing model: The American Statistician {#journal-style}
 
@@ -104,7 +118,7 @@ The structure below is a **course adaptation** of this publication style. Use it
 
 Use a specific title and list all authors and the course. A useful starting point is a **150-200 word abstract** followed by **3-5 keywords**. These are course writing suggestions. The abstract should state the question, data, methods, main quantitative finding, and conclusion; write it after completing the analysis.
 
-The following is an illustrative **9-page plan**, including the abstract. Adjust the balance within the 8-10 page main-text limit; references, the title page, and appendices are excluded.
+The following is an illustrative **9-page plan**, including the abstract and main-text figures and tables. Adjust the allocation within the required **8-10 counted pages**; apply the [page-count rule](#page-count) above.
 
 ::: {tbl-colwidths="[27,60,13]"}
 
@@ -126,7 +140,7 @@ Number figures and tables, give informative captions with units and a legend whe
 
 ### Preview and download the template {#report-template}
 
-[Preview the STAT 8561 report template (PDF)](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.pdf). This PDF is rendered directly from the downloadable template below and shows the layout, section headings, and writing prompts. It is a short outline; your completed report should still contain **8-10 pages of main text**.
+[Preview the STAT 8561 report template (PDF)](https://chikuang.github.io/teaching/2026F_stat8561/project-report-template.pdf). This PDF is rendered directly from the downloadable template below and shows the layout, section headings, and writing prompts. It is a short outline, not an example of the required length; your completed report must contain **8-10 counted pages of main text** under the [page-count rule](#page-count).
 
 You may refer to [published articles in **The American Statistician**](https://www.tandfonline.com/journals/utas20) and the [examples linked above](#journal-style) for statistical exposition, figures, tables, and interpretation. Use them as models for organizing and presenting your own work.
 

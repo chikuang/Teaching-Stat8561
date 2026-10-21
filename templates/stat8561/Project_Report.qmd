@@ -22,8 +22,7 @@ execute:
 
 **Keywords:** Replace with 3-5 terms relevant to your application and methods.
 
-<!-- Replace all prompts. Write 8-10 pages of main text, including the abstract,
-     excluding a separate title page, references, and appendices. -->
+**Template note (remove before submission).** Write **8-10 pages of main text**, counting the abstract, Sections 1-6, and their figures, tables, captions, equations, and code examples. Exclude a separate title-only cover page, References, Author contributions, and appendices or supplementary material. The first page here includes the abstract and counts as a main-text page. References starts on a new page to mark the end of the counted text. This short template illustrates structure, not the required report length.
 
 # Introduction
 
@@ -60,6 +59,8 @@ Add observed-versus-predicted plots for both fitted models, interpret errors, an
 # Discussion and conclusion
 
 Answer the research question. Explain substantive findings, uncertainty, practical model choice, and limits to generalization. Discuss at least one limitation and one useful next step.
+
+{{< pagebreak >}}
 
 # References {.unnumbered}
 
