@@ -22,7 +22,7 @@ execute:
 :::
 
 **STAT 8561 | Fall 2026**\
-**Due date:** TBD\
+**Due date:** Friday, October 30, 2026\
 **Total:** 40 points\
 **Coverage:** [Chapter 4](04.qmd) and the introductory portions of [Chapter 5](05.qmd).
 
