@@ -31,13 +31,13 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |         +------------------------------------+             |
 |         | Airianna Jones                     |             |
 +---------+------------------------------------+-------------+
-| 5       | Prakash Karki                      | TBD         |
+| 5       | Shaswat Bhushan Jangam             | TBD         |
 |         +------------------------------------+             |
-|         | Shaswat Bhushan Jangam             |             |
+|         | Prakash Karki                      |             |
 |         +------------------------------------+             |
 |         | Mangsa Limbu Pheudin               |             |
 +---------+------------------------------------+-------------+
-| 6       | Seoyoung Kim (individual project)  | TBD         |
+| 6       | Seoyoung Kim                       | TBD         |
 +---------+------------------------------------+-------------+
 | 7       | Hovor Moses Kwame                  | TBD         |
 |         +------------------------------------+             |
