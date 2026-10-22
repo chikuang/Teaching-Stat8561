@@ -21,7 +21,7 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 | 3 | Xinning Wang | TBD |
 | 4 | Kimia Daliran Saravi; Jada Grant; Shravya Honne; Airianna Jones | TBD |
 | 5 | Prakash Karki; Shaswat Bhushan Jangam; Mangsa Limbu Pheudin | TBD |
-| TBD | TBD | TBD |
+| 6 | Seoyoung Kim (individual project) | TBD |
 
 :::
 
