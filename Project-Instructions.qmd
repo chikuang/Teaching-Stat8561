@@ -12,16 +12,39 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 
 ## Group Members {#group-members}
 
-::: {tbl-colwidths="[12,63,25]"}
+::: {.project-groups tbl-colwidths="[12,63,25]"}
 
-| Group | Members | Topic |
-|:---:|:---:|:---|
-| 1 | Xiaorui Bao | TBD |
-| 2 | Tommy Stell | TBD |
-| 3 | Xinning Wang | TBD |
-| 4 | Kimia Daliran Saravi; Jada Grant; Shravya Honne; Airianna Jones | TBD |
-| 5 | Prakash Karki; Shaswat Bhushan Jangam; Mangsa Limbu Pheudin | TBD |
-| 6 | Seoyoung Kim (individual project) | TBD |
++---------+------------------------------------+-------------+
+| Group   | Members                            | Topic       |
++=========+====================================+=============+
+| 1       | Xiaorui Bao                        | TBD         |
++---------+------------------------------------+-------------+
+| 2       | Tommy Stell                        | TBD         |
++---------+------------------------------------+-------------+
+| 3       | Xinning Wang                       | TBD         |
++---------+------------------------------------+-------------+
+| 4       | Kimia Daliran Saravi               | TBD         |
+|         +------------------------------------+             |
+|         | Jada Grant                         |             |
+|         +------------------------------------+             |
+|         | Shravya Honne                      |             |
+|         +------------------------------------+             |
+|         | Airianna Jones                     |             |
++---------+------------------------------------+-------------+
+| 5       | Prakash Karki                      | TBD         |
+|         +------------------------------------+             |
+|         | Shaswat Bhushan Jangam             |             |
+|         +------------------------------------+             |
+|         | Mangsa Limbu Pheudin               |             |
++---------+------------------------------------+-------------+
+| 6       | Seoyoung Kim (individual project)  | TBD         |
++---------+------------------------------------+-------------+
+| 7       | Hovor Moses Kwame                  | TBD         |
+|         +------------------------------------+             |
+|         | Shudeshna Nandy                    |             |
+|         +------------------------------------+             |
+|         | Juliet Seadey                      |             |
++---------+------------------------------------+-------------+
 
 :::
 
