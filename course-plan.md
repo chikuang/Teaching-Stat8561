@@ -1,6 +1,6 @@
 # STAT 8561 — 2026 Fall 課程安排
 
-更新：2026-10-20。教師已確認每堂課 **75 分鐘**，目前第 16 堂的實際進度為 **Chapter 4.3**，Chapter 4 尚未講完，預計下一堂（10/21）完成。以下依此安排後續教學；預定日期不代表已完成授課。
+更新：2026-10-21。教師已確認每堂課 **75 分鐘**。Chapter 4 已在第 17 堂（10/21）完成，Chapter 5 從第 18 堂開始。Exam 2 改為 11/11。以下依此安排後續教學；預定日期不代表已完成授課。
 
 ## 教學主線與取捨
 
@@ -17,7 +17,7 @@
 | Ch. 7 `07.qmd` | 整合課選講 experimental unit、randomization、replication；有餘裕示範 blocking | 完整 one-way／two-way ANOVA、ANCOVA 與額外 R 範例 |
 | Ch. 8 `08.qmd` | 兩堂合併診斷與應用：residual patterns、Q-Q、leverage、Cook's distance、修正與重檢 | 更多診斷圖與數值推導作課後練習 |
 | Ch. 9 `09.qmd` | 選讀 log transformation 與反轉換解讀，接入診斷案例 | 其他 power transformations、完整 WLS 推導與計算 |
-| Ch. 10 `10.qmd` | project 工作流程：train/test、CV、leakage、RMSE／MAE，穿插在 11/11 與 12/7 | 完整 CV 程式、AIC 與更細的評估議題 |
+| Ch. 10 `10.qmd` | project 工作流程：train/test、CV、leakage、RMSE／MAE，穿插在 11/18 與 12/7 | 完整 CV 程式、AIC 與更細的評估議題 |
 | Ch. 11 `11.qmd` | **11/30，一堂 logistic regression**：binary mean、logit、odds ratio、predicted probability、一個完整例子 | Poisson、offset、deviance／LRT 與較深入的 GLM 理論 |
 | Ch. 12 `12.qmd` | **12/2，一堂 regularization／high-dimensional regression 導論**：ridge、lasso、選擇 lambda、held-out prediction | 高維收斂率、selection consistency、post-selection／debiased inference |
 
@@ -25,7 +25,7 @@
 
 ## 從目前進度出發的課表
 
-依現有週一／週三課表，從 10/21 到 12/7 尚有 12 次見面，包含 1 次考試、1 次考前複習及 1 次期末整合。11/23、11/25 為 Thanksgiving break，不上課。Exam 2 沿用 11/18；Final Project 沿用 **12/13** 繳交。
+依現有週一／週三課表，從 10/21 到 12/7 尚有 12 次見面，包含 1 次考試、1 次考前複習及 1 次期末整合。11/23、11/25 為 Thanksgiving break，不上課。Exam 2 改為 11/11；Final Project 沿用 **12/13** 繳交。
 
 | 課次 | 日期 | 內容 | 預期學習成果 |
 |---|---|---|---|
@@ -34,10 +34,10 @@
 | 19 | Wed 10/28 | Ch. 5：interaction、centering、equal slopes／identical lines | 寫出 group-specific means／slopes，說清楚比較在哪個 predictor value 成立 |
 | 20 | Mon 11/2 | Ch. 6 核心：contrasts、estimate／SE／CI；ToothGrowth 條件比較 | 從研究問題建立權重，用完整 covariance matrix 計算不確定性 |
 | 21 | Wed 11/4 | Ch. 5–6 整合與補強；Ch. 7 設計核心 | 分辨單一與一組比較，辨認 experimental unit、randomization、replication；blocking 視進度示範 |
-| 22 | Mon 11/9 | Ch. 8：residual patterns、Q-Q、leverage、influence | 區分 mean misspecification、unequal variance、outlier 與 influential observation |
-| 23 | Wed 11/11 | Ch. 8 應用；選用 Ch. 9 log transformation、Ch. 10 project 評估 | 修正後重檢；區分反轉換的 mean／median；建立 train/test 與 training-only CV 工作流程 |
-| 24 | Mon 11/16 | Exam 2 review；整合題與分析解讀 | 連結模型、比較、推論條件、診斷與限制 |
-| 25 | Wed 11/18 | **Exam 2** | 依實際授課並事先公告的範圍；使用 Ch. 1–4 必要工具，不預設完整 Ch. 5–10 均已教完 |
+| 22 | Mon 11/9 | Exam 2 review（暫定）；整合題與分析解讀 | 連結模型、比較、推論條件、診斷與限制 |
+| 23 | Wed 11/11 | **Exam 2** | 依實際授課並事先公告的範圍；使用 Ch. 1–4 必要工具，不預設完整 Ch. 5–10 均已教完 |
+| 24 | Mon 11/16 | Ch. 8：residual patterns、Q-Q、leverage、influence | 區分 mean misspecification、unequal variance、outlier 與 influential observation |
+| 25 | Wed 11/18 | Ch. 8 應用；選用 Ch. 9 log transformation、Ch. 10 project 評估 | 修正後重檢；區分反轉換的 mean／median；建立 train/test 與 training-only CV 工作流程 |
 | — | Mon 11/23 / Wed 11/25 | **Thanksgiving break — no class** | 無額外 lecture |
 | 26 | Mon 11/30 | **Logistic regression：一堂** | 用 logit 連結 binary mean 與 linear predictor，區分 odds ratio 與 probability difference |
 | 27 | Wed 12/2 | **Ridge／lasso：一堂** | 說明 shrinkage／sparsity、閱讀 coefficient path 與 CV curve、比較 held-out error |
