@@ -12,11 +12,11 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 
 ## Group Members {#group-members}
 
-::: {.project-groups tbl-colwidths="[12,63,25]"}
+::: {.project-groups tbl-colwidths="[15,65,20]"}
 
 +---------+------------------------------------+-------------+
 | Group   | Members                            | Topic       |
-+=========+====================================+=============+
++:=======:+====================================+:===========:+
 | 1       | Xiaorui Bao                        | TBD         |
 +---------+------------------------------------+-------------+
 | 2       | Tommy Stell                        | TBD         |
@@ -45,8 +45,18 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |         +------------------------------------+             |
 |         | Juliet Seadey                      |             |
 +---------+------------------------------------+-------------+
+| 8       | Qiaoting Gao                       | TBD         |
+|         +------------------------------------+             |
+|         | Zidu Peng                          |             |
+|         +------------------------------------+             |
+|         | Zhe Zhong                          |             |
++---------+------------------------------------+-------------+
 
 :::
+
+```{=latex}
+\newpage
+```
 
 ## Project Overview
 
