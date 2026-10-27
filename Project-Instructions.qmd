@@ -10,6 +10,10 @@
 
 Analyze a **real dataset with a continuous response** using multiple linear regression. Explain the findings in context, and compare predictions with **one machine learning regression algorithm of your choice**.
 
+```{=latex}
+\newpage
+```
+
 ## Group Members {#group-members}
 
 ::: {.project-groups tbl-colwidths="[17,61,22]"}
@@ -58,6 +62,14 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 | 10    | Emmanuel Torzen           | TBD     |
 |       +---------------------------+         |
 |       | Enock Ackaah              |         |
++-------+---------------------------+---------+
+| 11    | Elton Kwashie             | TBD     |
+|       +---------------------------+         |
+|       | Seth Kwarteng             |         |
+|       +---------------------------+         |
+|       | Halimah Akinoso           |         |
++-------+---------------------------+---------+
+| 12    | Taiwo Ayeni               | TBD     |
 +-------+---------------------------+---------+
 
 :::
