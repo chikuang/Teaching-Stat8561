@@ -71,6 +71,8 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 +-------+---------------------------+---------+
 | 12    | Taiwo Ayeni               | TBD     |
 +-------+---------------------------+---------+
+| 13    | Nicholas White            | TBD     |
++-------+---------------------------+---------+
 
 :::
 
