@@ -68,8 +68,6 @@ $$
 
 The intercept is the mean response when $x_1=\cdots=x_k=0$. It may describe a useful baseline, or a point outside the range supported by the data.
 
-**Parameter versus estimate.** $\beta_j$ is an unknown parameter of the specified mean model; $\hat\beta_j$ is its estimate from the sample. Replacing $\beta_j$ by $\hat\beta_j$ describes a difference in **fitted means**, not an exact difference between two individual observations. The slope has units of response units per unit of $x_j$; a change of $h$ units corresponds to $h\beta_j$ in this additive model, with the other predictors fixed.
-
 A useful interpretation states the response, its units, the predictor change, and the variables held fixed. For example: "At the same diameter, a one-foot increase in height is associated with an estimated 0.339-cubic-foot increase in mean volume." The adjustment set is part of the statement.
 
 :::
@@ -292,6 +290,9 @@ There are $p=1+2+3=6$ parameters and $40-6=34$ residual degrees of freedom. **No
 We now follow one dataset through several models. R's `ToothGrowth` data record an odontoblast-length response from 60 guinea pigs. The predictors are vitamin C dose (0.5, 1, or 2 mg/day) and delivery method: orange juice (`OJ`) or ascorbic acid (`VC`). Each row is one animal. [Dataset documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html).
 
 **Question.** How does the mean response vary with dose, and is the OJ-minus-VC mean difference the same at every dose? We first describe fitted associations. The dataset documentation alone is not a complete account of randomization or of all conditions needed for a causal conclusion.
+
+![Each cell represents 10 animals receiving the indicated method and dose. Read across a row to compare doses within one method; compare OJ with VC within a column, then repeat across columns to ask whether the mean gap changes with dose. The guinea pigs are schematic, not observed responses.](illustrations/ch5-toothgrowth-overview.png){#fig-ch5-toothgrowth-overview width=100% fig-pos="H" fig-alt="A two-by-three grid of cute guinea pigs: orange juice (OJ) and ascorbic acid (VC) at vitamin C doses 0.5, 1, and 2 mg/day, with 10 animals in each cell. The recorded response is odontoblast length. Compare doses within a method and methods at each dose."}
+
 
 ```{r}
 #| label: ch5-tooth-data

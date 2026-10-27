@@ -1,0 +1,13 @@
+Generated with the built-in image_gen tool on 2026-10-26.
+
+Use case: scientific-educational.
+Create one polished, cute classroom infographic to insert immediately under the Question in Section 5.3 of a graduate statistics course, explaining the structure of R's ToothGrowth dataset. Landscape 3:2 layout, sharp legible English lettering, white background, gentle rounded panels, elegant plum-purple headings matching an academic course website, orange for OJ and blue for VC. Charming original hand-drawn guinea pigs with round bodies, little ears, dot eyes, blush cheeks; cute but visually restrained, no medical procedures. Accurate structure is more important than decoration.
+Title: "Vitamin C & tooth growth"
+Subtitle: "60 guinea pigs · 2 methods · 3 doses"
+Main layout is an unmistakable table with THREE dose columns and TWO delivery-method rows. Column headers exactly "0.5 mg/day", "1 mg/day", "2 mg/day". Left row labels exactly "OJ" with "Orange juice" underneath and a small orange juice glass icon; second row "VC" with "Ascorbic acid" underneath and a small bottle icon labelled "Vitamin C". Each of the SIX cells shows exactly ONE cute representative guinea pig plus a very readable badge "10 guinea pigs". All guinea pigs are the SAME SIZE, not depicting different observed responses, and not individually drinking from a container. Do NOT draw ten tiny animals per cell.
+Below table a small separate response strip with a tooth and ruler icon, exact text: "Response: odontoblast length (len)"; smaller text "(cells involved in tooth growth)". This must not imply the response is body size.
+At bottom use TWO side-by-side short question cards, with tiny arrow icons:
+"Within a method:" then "How does mean length change with dose?"
+"At the same dose:" then "Is the OJ - VC mean gap constant?"
+Small unobtrusive footer: "Schematic only - not observed outcomes"
+No plotted data or fitted lines, no invented units for length, no causal or randomized-assignment claims, no p-values, no answers to the two questions, no watermark. Make all labels comfortably readable in a 6.5-inch-wide PDF. Ensure both row labels and all three dose headers align cleanly with the six cells.
