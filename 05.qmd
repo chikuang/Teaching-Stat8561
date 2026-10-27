@@ -1,4 +1,5 @@
 ---
+body-classes: ch5-tables
 execute:
   cache: false
 ---
@@ -145,7 +146,7 @@ knitr::kable(data.frame(
   Height_coefficient = c(coef(ch5_tree_simple)["Height"],
                          coef(ch5_tree_adjusted)["Height"])),
   digits = 3, col.names = c("Model", "Height coefficient"),
-  row.names = FALSE)
+  row.names = FALSE, align = "c")
 ```
 
 The height-only slope is **1.543** cubic feet per foot. After adjustment, it is **0.339**: among trees of the same diameter, a one-foot height difference corresponds to 0.339 more cubic feet of fitted mean volume.
@@ -207,23 +208,29 @@ C. Every tree one foot taller has exactly 0.339 more cubic feet of observed volu
 
 :::
 
-::: {.callout-note title="Summary: adjusted versus unadjusted coefficients"}
-
-An **unadjusted** (or **non-adjusted**) coefficient comes from a model using the predictor of interest alone. An **adjusted** coefficient comes from a model that also includes specified other predictors. Always name what is being adjusted for.
-
-| | Unadjusted height coefficient | Height coefficient adjusted for diameter |
-|:---|:---|:---|
-| R model | `Volume ~ Height` | `Volume ~ Height + Diameter` |
-| Comparison | A one-foot height difference, without holding diameter fixed | A one-foot height difference at the same diameter |
-| Fitted slope | 1.543 cubic feet per foot | 0.339 cubic feet per foot |
-
-The first comparison allows diameter to vary along with height; the second holds diameter fixed in the fitted mean model. These coefficients answer **different questions**, so they need not agree. Neither coefficient by itself establishes a causal effect or predicts the exact difference between two individual trees. In an additive model the adjusted slope is constant; with interactions, its interpretation depends on the interacting predictors, as developed in [Section 5.4](#sec-ch5-interaction).
-
-:::
-
 ## Categorical predictors are columns of a design matrix {#sec-ch5-factor-coding}
 
-For **nominal (unordered) groups**, labels A, B, and C identify membership without specifying numerical distances. Treating scores 1, 2, and 3 as one linear predictor imposes $\mu_B-\mu_A=\mu_C-\mu_B$; indicator coding does not. Ordinal categories specify an order, but not necessarily equal spacing. Measured group levels such as doses can have meaningful distances; fitting them linearly remains a modeling assumption.
+**Start with three treatment methods named A, B, and C.** These are names for different methods, not amounts of a treatment. Calling a method B does not mean that it lies halfway between methods A and C.
+
+**Why not enter 1, 2, and 3 as one numeric predictor?** Suppose we store A as $s=1$, B as $s=2$, and C as $s=3$, then fit $\mathbb E(Y\mid s)=\alpha+\gamma s$. Writing $\mu_A,\mu_B,\mu_C$ for the group means, the model requires
+
+$$
+\mu_A=\alpha+\gamma,\qquad
+\mu_B=\alpha+2\gamma,\qquad
+\mu_C=\alpha+3\gamma.
+$$
+
+Both A-to-B and B-to-C increase the score by one, so **both changes in the mean must equal the same slope**:
+
+$$
+\mu_B-\mu_A=\gamma=\mu_C-\mu_B.
+$$
+
+For example, means of 18, 22, and 19 give successive differences of $+4$ and $-3$. The one-slope model cannot represent that mean pattern exactly. The equal-gap restriction comes from treating the arbitrary codes as a numeric predictor; it does not follow from having three groups.
+
+**Use a factor when each group should have its own mean.** In R, `y ~ factor(group)` treats group values as categories, even if they are stored as the numbers 1, 2, and 3. With an intercept and two indicators, the model can represent any three group means, including 18, 22, and 19. The indicator coefficients below show how.
+
+If the groups instead correspond to measured doses, such as 0.5, 1, and 2 mg/day, the numbers have a quantitative meaning. A numeric-dose model still assumes a particular response shape, such as a straight line; a factor-dose model allows separate means at those observed doses. See [Section 5.3](#sec-ch5-additive) and [Section 5.5](#sec-ch5-comparisons).
 
 ::: {#def-ch5-treatment-coding}
 
@@ -283,7 +290,7 @@ contrasts(ch5_groups$group) <- contr.treatment(levels(ch5_groups$group), base = 
 ch5_X_reference <- model.matrix(~ group, data = ch5_groups)
 knitr::kable(
   data.frame(Group = ch5_groups$group, ch5_X_reference,
-             check.names = FALSE), row.names = FALSE)
+             check.names = FALSE), row.names = FALSE, align = "c")
 ```
 
 ::: {.callout-important title="Why adding an A indicator would be redundant"}
@@ -329,7 +336,7 @@ Each coefficient now represents its group's mean directly. In R, `y ~ 0 + group`
 ch5_X_means <- model.matrix(~ 0 + group, data = ch5_groups)
 knitr::kable(
   data.frame(Group = ch5_groups$group, ch5_X_means,
-             check.names = FALSE), row.names = FALSE)
+             check.names = FALSE), row.names = FALSE, align = "c")
 ```
 
 Here `groupA`, `groupB`, and `groupC` are the three indicator columns. Both valid codings span the same mean vectors and give the same fitted values, residuals, and SSE. Removing the separate intercept here does **not** force the A mean to zero; it is estimated by the `groupA` coefficient.
@@ -344,7 +351,7 @@ knitr::kable(data.frame(
   Coding = c("Intercept + B + C", "Intercept + A + B + C", "A + B + C"),
   Columns = vapply(ch5_codings, ncol, integer(1)),
   Rank = vapply(ch5_codings, function(X) qr(X)$rank, integer(1))),
-  row.names = FALSE)
+  row.names = FALSE, align = "c")
 ```
 
 The two full-rank codings each estimate three group means; the four-column coding adds a redundant coefficient, not another identifiable mean.
@@ -434,30 +441,6 @@ There are $p=1+2+3=6$ parameters and $40-6=34$ residual degrees of freedom. **No
 
 :::
 
-```{=latex}
-\newpage
-```
-
-::: {#ch5-coding-summary .callout-note title="Summary: coding with and without an intercept"}
-
-For the **group-only model** with groups A, B, and C, the two valid codings differ in what their coefficients represent. Assume every group is observed; A is the reference in the intercept model.
-
-| Feature | With intercept (A as reference) | Without intercept (group means) |
-|:---|:---|:---|
-| R formula | `y ~ group` | `y ~ 0 + group` |
-| Design-matrix columns | $\mathbf 1,\mathbf D_B,\mathbf D_C$ | $\mathbf D_A,\mathbf D_B,\mathbf D_C$ |
-| A term | `(Intercept)`: $\beta_0=\mu_A$, the A mean | `groupA`: $\mu_A$, the A mean |
-| B term | `groupB`: $\beta_B=\mu_B-\mu_A$, the B-minus-A difference | `groupB`: $\mu_B$, the B mean |
-| C term | `groupC`: $\beta_C=\mu_C-\mu_A$, the C-minus-A difference | `groupC`: $\mu_C$, the C mean |
-| B-minus-C comparison | $\beta_B-\beta_C$ | $\mu_B-\mu_C$ |
-| Parameter count for $g$ groups | $1+(g-1)=g$ | $g$ |
-
-**How to read the coefficients.** With an intercept, the reference mean is the intercept and the other coefficients are differences from that mean. Without a separate intercept, each indicator coefficient is its group's mean. The same R coefficient name, such as `groupB`, therefore has different meanings in the two formulas.
-
-**What stays the same.** Both codings represent the same group means and produce the same fitted values, residuals, and SSE. Use either an intercept plus $g-1$ indicators, or all $g$ indicators without an intercept. An intercept plus all $g$ indicators is redundant. [Section 5.3](#sec-ch5-additive) extends the model by adding a continuous predictor.
-
-:::
-
 ## A continuous predictor and a group indicator {#sec-ch5-additive}
 
 R's [`ToothGrowth` data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html) record odontoblast length in 60 guinea pigs. Each animal received vitamin C at 0.5, 1, or 2 mg/day, delivered as orange juice (`OJ`) or ascorbic acid (`VC`).
@@ -489,7 +472,7 @@ ch5_summary_table <- data.frame(ch5_cell_summary[1:2],
 
 ```{r}
 #| label: ch5-tooth-summary
-knitr::kable(ch5_summary_table, digits = 2,
+knitr::kable(ch5_summary_table, digits = 2, align = "c",
   col.names = c("Method", "Dose (mg/day)", "n", "Mean length"))
 ```
 
@@ -572,7 +555,7 @@ ch5_additive_fitted$fitted <- predict(
   ch5_fit_add, newdata = ch5_additive_fitted)
 knitr::kable(
   ch5_additive_fitted[c("supp", "dose", "mean", "fitted")],
-  digits = 2, row.names = FALSE,
+  digits = 2, row.names = FALSE, align = "c",
   col.names = c("Method", "Dose (mg/day)", "Observed mean", "Fitted value"))
 ```
 
@@ -595,7 +578,7 @@ knitr::kable(data.frame(
   Term = c("Intercept", "VC dose slope", "OJ coefficient"),
   Using_dose = unname(coef(ch5_fit_add_raw)),
   Using_centered_dose = unname(coef(ch5_fit_add))),
-  digits = 4, row.names = FALSE,
+  digits = 4, row.names = FALSE, align = "c",
   col.names = c("Term", "Using dose", "Using dose - 1"))
 all.equal(fitted(ch5_fit_add_raw), fitted(ch5_fit_add))
 ```
@@ -620,10 +603,14 @@ $$
 \mu(x,z)=\beta_0+\beta_xx_c+\beta_gz+\beta_{xg}x_cz.
 $$
 
+::: {.compact-table tbl-colwidths="false"}
+
 | Method | Mean function | Slope in dose |
 |:---:|:---:|:---:|
 | VC | $\beta_0+\beta_x(x-1)$ | $\beta_x$ |
 | OJ | $(\beta_0+\beta_g)+(\beta_x+\beta_{xg})(x-1)$ | $\beta_x+\beta_{xg}$ |
+
+:::
 
 The OJ-minus-VC mean difference now depends on dose:
 
@@ -659,8 +646,20 @@ ch5_profiles <- expand.grid(dose_c = c(-0.5, 0, 1),
                             supp = c("VC", "OJ"))
 ch5_profiles$supp <- factor(ch5_profiles$supp, levels = c("VC", "OJ"))
 contrasts(ch5_profiles$supp) <- contr.treatment(levels(ch5_profiles$supp), base = 1)
+```
+
+```{=latex}
+\noindent\begin{minipage}{\linewidth}
+```
+
+```{r}
+#| label: ch5-interaction-matrix
 knitr::kable(model.matrix(~ dose_c * supp, data = ch5_profiles),
-             row.names = FALSE)
+             row.names = FALSE, align = "c")
+```
+
+```{=latex}
+\end{minipage}
 ```
 
 ```{r}
@@ -686,7 +685,7 @@ knitr::kable(data.frame(
            "Slope difference"),
   Using_dose = unname(coef(ch5_fit_int_raw)),
   Using_centered_dose = unname(coef(ch5_fit_int))),
-  digits = 4, row.names = FALSE,
+  digits = 4, row.names = FALSE, align = "c",
   col.names = c("Term", "Using dose", "Using dose - 1"))
 all.equal(fitted(ch5_fit_int_raw), fitted(ch5_fit_int))
 all.equal(deviance(ch5_fit_int_raw), deviance(ch5_fit_int))
@@ -756,11 +755,15 @@ The slope for $z=1$ is $2-1=1$. The group difference is 6 at $x=1$, where $x_c=0
 
 Apply the [partial F test from Chapter 4](04.qmd#thm-partial-f), using the same observations and the normal-model assumptions from the recap. The new task is to choose the restriction:
 
+::: {.balanced-table tbl-colwidths="[42,29,29]"}
+
 | Question | Reduced model | Full model |
-|:---------------------------|:------------------|:------------------|
+|:---------------------------:|:------------------:|:------------------:|
 | Equal slopes: $\beta_{xg}=0$? | `dose_c + supp` | `dose_c * supp` |
 | Identical lines: $\beta_g=\beta_{xg}=0$? | `dose_c` | `dose_c * supp` |
 | Straight-line means within each method? | `dose_c * supp` | `dose_f * supp` |
+
+:::
 
 The first test removes only the slope difference; the second removes both the slope and intercept differences. For the third, treating dose as a factor permits **six separate method-dose means** ($p=6$), rather than two straight lines ($p=4$).
 
@@ -779,7 +782,7 @@ ch5_test_results <- do.call(rbind, lapply(names(ch5_tests), function(name) {
     F = round(a$F[2], 3),
     p_value = format.pval(a$`Pr(>F)`[2], digits = 3, eps = 0.0001))
 }))
-knitr::kable(ch5_test_results, row.names = FALSE,
+knitr::kable(ch5_test_results, row.names = FALSE, align = "c",
              col.names = c("Comparison", "F degrees of freedom", "F", "p-value"))
 ```
 
@@ -807,32 +810,32 @@ ggplot(ch5_means, aes(dose, len, colour = supp)) +
        colour = "Method", shape = "Method")
 ```
 
+```{=latex}
+\newpage
+```
+
 ## Summary {.unnumbered}
 
-**Start with the question you want the model to answer.** Use the following guide; `x` is numeric, `w` denotes other predictors, `group` is a factor, and `dose_f` treats the three doses as categories.
+**Choose the model by the question you want to answer.**
 
-| When the question is ... | Use ... | What the model estimates or assumes |
-|:---|:---|:---|
-| How does the response vary with `x` overall? | `y ~ x` | An unadjusted association; other predictors are allowed to vary with `x`. See [Section 5.1](#sec-ch5-adjusted). |
-| How does the response vary with `x` at the same values of specified other predictors? | `y ~ x + w` | An adjusted slope, holding `w` fixed; this additive form assumes no interaction with `w`. See [Section 5.1](#sec-ch5-adjusted). |
-| What are the means of several groups, with no continuous predictor? | `y ~ group` | Group means; choose the coefficient coding as described below. See [Section 5.2](#sec-ch5-factor-coding). |
-| Can two groups share one straight-line dose slope, with a constant gap? | `len ~ dose_c + supp` | Parallel lines; the group coefficient is the same-dose OJ-minus-VC difference at every dose. See [Section 5.3](#sec-ch5-additive). |
-| Could the straight-line dose slope differ between groups? | `len ~ dose_c * supp` | Separate slopes; the group difference can change linearly with dose. See [Section 5.4](#sec-ch5-interaction). |
-| Do we want separate means at the observed doses, without imposing straight lines? | `len ~ dose_f * supp` | Six method-dose means; no rule for interpolation to unobserved doses. See [Section 5.5](#sec-ch5-comparisons). |
+::: {.balanced-table tbl-colwidths="[34,26,40]"}
 
-**Choose coding to make the desired quantities easy to read.** For the group-only model, use an intercept with reference-group coding when comparisons with a control or baseline are the focus: the intercept is the reference mean, and other coefficients are differences from it. Use no intercept with all group indicators when reporting each group's mean directly is the focus. These choices give the same fitted values and SSE; their individual coefficient tests concern different null hypotheses. An intercept plus all group indicators is redundant. See [Section 5.2](#sec-ch5-factor-coding).
+| Question | R model | Interpretation |
+|:---:|:---:|:---:|
+| Describe the overall association with `x`. | `y ~ x` | Unadjusted slope; see [Section 5.1](#sec-ch5-adjusted). |
+| Compare `x` at fixed values of other predictors. | `y ~ x + w` | Adjusted slope, holding `w` fixed; see [Section 5.1](#sec-ch5-adjusted). |
+| Estimate the means of several groups. | `y ~ group` | Reference mean plus group differences; see [Section 5.2](#sec-ch5-factor-coding). |
+| Assume a common dose slope for both methods. | `len ~ dose_c + supp` | Parallel lines and a constant group gap; see [Section 5.3](#sec-ch5-additive). |
+| Allow dose slopes to differ by method. | `len ~ dose_c * supp` | A group gap that changes linearly with dose; see [Section 5.4](#sec-ch5-interaction). |
+| Compare methods at each observed dose without assuming straight lines. | `len ~ dose_f * supp` | Six separate method-dose means; see [Section 5.5](#sec-ch5-comparisons). |
 
-**Center at the value where you want to interpret the intercept and group comparison.** Define $x_c=x-c$ when a scientifically meaningful reference $c$ is more useful than zero; here $c=1$ mg/day is observed in both groups. In the additive model, the intercept becomes the VC mean at $c$, while the constant group gap stays unchanged. With an interaction, the group coefficient becomes the OJ-minus-VC difference specifically at $c$; at another dose use $\Delta(x)=\beta_g+\beta_{xg}(x-c)$. Centering changes the reference point, not the fitted lines. See [Section 5.3](#sec-ch5-additive) and [Section 5.4](#sec-ch5-interaction).
+:::
 
-**Match the model comparison to the restriction.** The [partial F test in Chapter 4](04.qmd#thm-partial-f) compares nested models fitted to the same observations, under the stated linear-model assumptions:
+**Choose coding for the quantities you want to read.** For a group-only model, an intercept makes the coefficients a reference mean and differences from it; `y ~ 0 + group` makes them the group means themselves. Both give the same fitted values, but their individual coefficient tests ask different questions. Use one intercept with $g-1$ indicators, or no intercept with all $g$ indicators.
 
-| To assess ... | Compare reduced versus full models | Null hypothesis |
-|:---|:---|:---|
-| A common slope for both methods | `dose_c + supp` versus `dose_c * supp` | $\beta_{xg}=0$: remove the slope difference only. |
-| One identical line for both methods | `dose_c` versus `dose_c * supp` | $\beta_g=\beta_{xg}=0$: remove both group differences. |
-| Straight-line mean functions at the three observed doses | `dose_c * supp` versus `dose_f * supp` | The six cell means lie on two straight lines. |
+**Choose a meaningful reference dose.** With $x_c=x-1$, the intercept is the VC mean at 1 mg/day. In the interaction model, the group coefficient is the OJ-minus-VC difference at that dose; elsewhere use $\Delta(x)=\beta_g+\beta_{xg}(x-1)$. Centering preserves fitted values.
 
-Rejecting equal slopes does not establish that straight lines fit well. For these `ToothGrowth` data, [Section 5.5](#sec-ch5-comparisons) finds evidence against both equal slopes and straight-line shape. Use the six-cell model as the starting point for comparisons at the three observed doses, then form the desired [contrasts](App_I-contrasts.qmd#sec-ch6-tooth). The additive and interaction fits remain useful for understanding how coefficients encode assumptions; adjusted associations alone do not establish causation.
+**For these data, use the six-cell model for dose-specific comparisons.** [Section 5.5](#sec-ch5-comparisons) finds evidence against both equal slopes and straight-line shape. Its comparison table distinguishes the tests for equal slopes, identical lines, and straight-line means; choose the test that matches the question.
 
 ## Practice Problems {#sec-ch5-practice}
 
