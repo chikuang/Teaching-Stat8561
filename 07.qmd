@@ -6,14 +6,15 @@ execute:
 
 # Transformations and Variable Selection {#sec-transform-selection}
 
-[Chapter 6](06.qmd) examined how individual observations affect a fitted model. We now ask **which functions of the predictors to use, and which terms to retain**. First choose and check a plausible functional form, then compare variable-selection and shrinkage procedures, and finally assess predictions on observations kept out of model development.
+[Chapter 6](06.qmd) asked whether individual observations change a fitted model. A different problem arises when **many observations follow a pattern that the model misses**. We begin with pictures and numbers: when should we change the predictor scale, and when should we change the response scale? After choosing and checking a plausible model form, we introduce variable selection: which candidate terms should remain in the model?
 
 > **Learning Objectives**
 >
 > By the end of this chapter, students should be able to:
 >
 > - distinguish a curved relationship from a model nonlinear in its parameters;
-> - choose, fit, and check a suitable transformation;
+> - use curvature and changing residual spread to motivate a transformation;
+> - distinguish transforming a predictor from transforming the response;
 > - interpret predictions after transforming the response;
 > - carry out forward selection, backward elimination, and stepwise selection;
 > - explain ridge and lasso, and choose a penalty using cross-validation;
@@ -28,6 +29,185 @@ execute:
 - [Chapter 6](06.qmd#sec-ch6-summary): distinguish response outliers, leverage, and influence; investigate flags and recheck sensitivity when the model changes.
 
 :::
+
+## When does a transformation help? {#sec-ch7-transform-motivation}
+
+Start with a fitted straight line and ask two questions: **does it follow the center of the responses, and is the spread around that center roughly constant?** A systematic curve points to a mean-shape problem. A widening spread points to a variance problem. A transformation may help with one or both, but the choice must match the pattern and the meaning of the variables. [NIST's transformation examples](https://www.itl.nist.gov/div898/handbook/pmd/section6/pmd624.htm) illustrate these two goals.
+
+The following datasets are deliberately constructed to make the differences easy to see. Each has 15 observations, three at each of five predictor values; they illustrate model behavior, rather than provide evidence about a population.
+
+::: {#exm-ch7-transform-x}
+
+## A Curved Mean with Similar Spread: Transform the Predictor
+
+Suppose we measure a response at input levels $x=1,2,4,8,16$. In the top-left panel, the response increases quickly at first and then more slowly. The straight line misses the center of several groups. In the top-right panel, doubling $x$ becomes a one-unit step on the $\log_2 x$ axis, and the same observations follow a straight line.
+
+```{r}
+#| label: ch7-transform-x-data
+library(ggplot2)
+ch7_curve <- data.frame(x = rep(c(1, 2, 4, 8, 16), each = 3))
+ch7_curve$y <- 10 + 4 * log2(ch7_curve$x) + rep(c(-0.6, 0, 0.6), 5)
+ch7_curve_raw <- lm(y ~ x, data = ch7_curve)
+ch7_curve_logx <- lm(y ~ log2(x), data = ch7_curve)
+```
+
+```{r}
+#| label: fig-ch7-transform-x
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 4.8
+#| fig-cap: "The same 15 observations before and after transforming x. Top: data and fitted lines. Bottom: residuals in the same response units, with matching vertical limits. The curved residual pattern disappears after using log2(x); the response units stay unchanged."
+#| fig-alt: "Four panels show y and residuals against x on the left and against log2(x) on the right. The original line misses a concave pattern, while the transformed predictor gives a straight relationship with residuals minus 0.6, zero, and 0.6 at every input level."
+ch7_curve_panels <- c("A. Response y versus x", "B. Response y versus log2(x)",
+  "C. Residual versus x", "D. Residual versus log2(x)")
+ch7_curve_points <- rbind(
+  data.frame(u = ch7_curve$x, v = ch7_curve$y, Panel = ch7_curve_panels[1]),
+  data.frame(u = log2(ch7_curve$x), v = ch7_curve$y, Panel = ch7_curve_panels[2]),
+  data.frame(u = ch7_curve$x, v = resid(ch7_curve_raw), Panel = ch7_curve_panels[3]),
+  data.frame(u = log2(ch7_curve$x), v = resid(ch7_curve_logx), Panel = ch7_curve_panels[4]))
+ch7_curve_grid <- data.frame(x = seq(1, 16, length.out = 150))
+ch7_curve_lines <- rbind(
+  data.frame(u = ch7_curve_grid$x, v = predict(ch7_curve_raw, ch7_curve_grid),
+    Panel = ch7_curve_panels[1]),
+  data.frame(u = log2(ch7_curve_grid$x), v = predict(ch7_curve_logx, ch7_curve_grid),
+    Panel = ch7_curve_panels[2]))
+ch7_curve_points$Panel <- factor(ch7_curve_points$Panel, levels = ch7_curve_panels)
+ch7_curve_lines$Panel <- factor(ch7_curve_lines$Panel, levels = ch7_curve_panels)
+# Match the vertical limits within each row so residual sizes are comparable.
+ch7_curve_bounds <- data.frame(
+  Panel = rep(ch7_curve_panels, each = 2), u = c(1, 16, 0, 4, 1, 16, 0, 4),
+  v = c(rep(range(c(ch7_curve$y, ch7_curve_lines$v)), 2),
+    rep(range(c(resid(ch7_curve_raw), resid(ch7_curve_logx))), 2)))
+ggplot(ch7_curve_points, aes(u, v)) +
+  geom_blank(data = ch7_curve_bounds) +
+  geom_hline(data = data.frame(Panel = ch7_curve_panels[3:4]),
+    aes(yintercept = 0), colour = "grey60", linetype = "dashed") +
+  geom_line(data = ch7_curve_lines, colour = "#593196", linewidth = 0.9) +
+  geom_point(colour = "#247A6B", size = 2) +
+  facet_wrap(~ Panel, scales = "free", ncol = 2) +
+  scale_x_continuous(breaks = function(limits)
+    if (max(limits) > 8) c(1, 2, 4, 8, 16) else 0:4) +
+  labs(x = NULL, y = NULL) + theme_minimal(base_size = 11)
+```
+
+**Read the residuals.** With the original line, low-$x$ responses lie below the line, middle responses tend to lie above it, and high-$x$ responses fall below it again. That shared pattern is not an isolated outlier. After transforming $x$, every group has residuals $-0.6,0,0.6$; no curved mean pattern remains in this constructed example.
+
+**Put numbers on the change.** The group means increase by **4 whenever $x$ doubles**. The sample SD within each group is **0.6**, so the motivation here is the mean shape, not increasing spread.
+
+```{r}
+#| label: ch7-transform-x-table
+#| echo: false
+ch7_curve_levels <- data.frame(x = c(1, 2, 4, 8, 16))
+knitr::kable(data.frame(
+  x = ch7_curve_levels$x,
+  Responses = vapply(split(ch7_curve$y, factor(ch7_curve$x,
+    levels = ch7_curve_levels$x)), function(v) paste(v, collapse = ", "), character(1)),
+  `Mean response` = as.numeric(tapply(ch7_curve$y,
+    factor(ch7_curve$x, levels = ch7_curve_levels$x), mean)),
+  `Fitted: x` = predict(ch7_curve_raw, ch7_curve_levels),
+  `Fitted: log2(x)` = predict(ch7_curve_logx, ch7_curve_levels),
+  check.names = FALSE), digits = 2, align = "c", row.names = FALSE)
+```
+
+The estimated equations are
+
+$$
+\begin{aligned}
+\text{Original predictor:}\quad &\hat y=12.000+0.968x,\\
+\text{Transformed predictor:}\quad &\hat y=10.000+4.000\log_2 x.
+\end{aligned}
+$$
+
+At $x=4$, the original line predicts **15.87** and the transformed model predicts **18.00**, matching the observed group mean. The fitted slope 4 means **a doubling of $x$ adds 4 response units**, since $\log_2(2x)-\log_2(x)=1$.
+
+The training RMSE, $\sqrt{\mathrm{SSE}/15}$, falls from **2.090 to 0.490**. This comparison is meaningful because both fits use the same observations and response scale, and both have two coefficients. It describes training fit, not held-out prediction accuracy. Only the predictor changed; the response and its units did not.
+
+:::
+
+::: {#exm-ch7-transform-y}
+
+## Increasing Level and Spread: Transform the Response
+
+Now suppose a positive amount $y$ is measured at times $x=0,1,2,3,4$. The middle response doubles at each step, and the three observations spread farther apart in the original units. A straight line with constant error variance is missing **both** features. Taking logs compresses large values: the top-right panel becomes straight, and the bottom-right residuals have the same spread at every time.
+
+```{r}
+#| label: ch7-transform-y-data
+ch7_growth <- data.frame(x = rep(0:4, each = 3))
+ch7_growth$y <- 10 * 2^ch7_growth$x * rep(c(0.8, 1, 1.25), 5)
+ch7_growth_raw <- lm(y ~ x, data = ch7_growth)
+ch7_growth_logy <- lm(log(y) ~ x, data = ch7_growth)
+```
+
+```{r}
+#| label: fig-ch7-transform-y
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 4.8
+#| fig-cap: "The same 15 positive responses on original and natural-log scales. On the original scale, the center curves upward and the within-time spread grows. On the log scale, a straight line describes the center and the residual spread is constant in this constructed example. Residual magnitudes across the two scales have different units."
+#| fig-alt: "Four panels show y and original-scale residuals against time on the left, and log y and log-scale residuals against time on the right. Original observations range from 8 to 12.5 at time zero and from 128 to 200 at time four. Log residuals are approximately minus 0.223, zero, and 0.223 at every time."
+ch7_growth_panels <- c("A. Response y versus time x", "B. Response log(y) versus time x",
+  "C. Residual in y units versus x", "D. Residual in log(y) units versus x")
+ch7_growth_points <- rbind(
+  data.frame(x = ch7_growth$x, v = ch7_growth$y, Panel = ch7_growth_panels[1]),
+  data.frame(x = ch7_growth$x, v = log(ch7_growth$y), Panel = ch7_growth_panels[2]),
+  data.frame(x = ch7_growth$x, v = resid(ch7_growth_raw), Panel = ch7_growth_panels[3]),
+  data.frame(x = ch7_growth$x, v = resid(ch7_growth_logy), Panel = ch7_growth_panels[4]))
+ch7_growth_grid <- data.frame(x = seq(0, 4, length.out = 100))
+ch7_growth_lines <- rbind(
+  data.frame(x = ch7_growth_grid$x, v = predict(ch7_growth_raw, ch7_growth_grid),
+    Panel = ch7_growth_panels[1]),
+  data.frame(x = ch7_growth_grid$x, v = predict(ch7_growth_logy, ch7_growth_grid),
+    Panel = ch7_growth_panels[2]))
+ch7_growth_points$Panel <- factor(ch7_growth_points$Panel, levels = ch7_growth_panels)
+ch7_growth_lines$Panel <- factor(ch7_growth_lines$Panel, levels = ch7_growth_panels)
+ggplot(ch7_growth_points, aes(x, v)) +
+  geom_hline(data = data.frame(Panel = ch7_growth_panels[3:4]),
+    aes(yintercept = 0), colour = "grey60", linetype = "dashed") +
+  geom_line(data = ch7_growth_lines, colour = "#593196", linewidth = 0.9) +
+  geom_point(colour = "#247A6B", size = 2) +
+  facet_wrap(~ Panel, scales = "free_y", ncol = 2) +
+  scale_x_continuous(breaks = 0:4) + labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 10.5)
+```
+
+**Put numbers on the spread.** At $x=0$, the observations are $8,10,12.5$; at $x=4$, they are $128,160,200$. Both triples use the same multipliers, $0.8,1,1.25$, around their middle value. The absolute spread grows, but the proportional spread stays the same.
+
+```{r}
+#| label: ch7-transform-y-table
+#| echo: false
+ch7_growth_groups <- split(ch7_growth$y, ch7_growth$x)
+knitr::kable(data.frame(
+  x = 0:4,
+  Responses = vapply(ch7_growth_groups, function(v)
+    paste(v, collapse = ", "), character(1)),
+  `Mean response` = vapply(ch7_growth_groups, mean, numeric(1)),
+  `SD of y` = vapply(ch7_growth_groups, sd, numeric(1)),
+  `SD of log(y)` = vapply(ch7_growth_groups, function(v) sd(log(v)), numeric(1)),
+  check.names = FALSE), digits = c(0, 0, 2, 2, 3), align = "c", row.names = FALSE)
+```
+
+Each SD is computed from the **three observations at that time**, not from all 15 pooled together. The original-scale SD rises from **2.25 to 36.07**, while the log-scale SD stays at **0.223**. A nonlinear mean alone would follow the upward curve but would not remove this increasing original-scale variation.
+
+R gives the fitted equations
+
+$$
+\begin{aligned}
+\text{Original response:}\quad &\hat y=-10.167+36.600x,\\
+\text{Log response:}\quad &\widehat{\log y}=2.303+0.693x.
+\end{aligned}
+$$
+
+The original line even predicts a negative amount at $x=0$. The log fit has a different interpretation: one time step adds approximately $0.693=\log 2$ on the log scale, so exponentiating the fitted value gives the curve $10\times2^x$. At $x=2$, that curve gives **40**, whereas the observed arithmetic mean is **40.67**. Exponentiating an estimated log mean is not the same as estimating an arithmetic mean; [Section 7.3](#sec-ch7-transform-procedure) explains the required back-transformation and its assumptions.
+
+Here `log()` means the natural logarithm; `log2()` in the previous example made the doubling interpretation especially direct. **Do not compare the raw SSE or RMSE of $y$ with that of $\log y$**: the residuals have different units. Compare model adequacy on each fitted scale and, for prediction, evaluate the same target in common original units.
+
+:::
+
+**When should we keep the original scale?** If the fitted mean is plausible and residuals show roughly constant spread without a systematic pattern, there may be no reason to transform. A skewed histogram of $Y$ alone is not enough: regression assumptions concern errors conditional on the predictors. An isolated unusual point calls for the investigation in [Chapter 6](06.qmd#sec-ch6-summary), not an automatic transformation of all observations.
+
+Transformations are candidates, not mandatory fixes. Curvature may instead be represented by polynomial terms or splines; nonconstant variance may be modeled with weighted least squares. If both shape and spread need attention, choose a meaningful response scale and then recheck which predictor functions are needed. [NIST discusses transformation and weighting](https://www.itl.nist.gov/div898/handbook/pmd/section4/pmd452.htm). In real data, always refit and recheck: these tidy constructed examples do not establish normality, independence, or performance on new observations.
 
 ## A curved relationship can still be a linear model {#sec-ch7-linearity}
 
@@ -76,7 +256,7 @@ Models 1 and 3 are linear in their coefficients. Model 2 has an unknown exponent
 
 **Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from [Chapter 5](05.qmd#exm-ch5-tree-adjustment) suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
 
-**A practical procedure.**
+**Apply what the two examples showed.**
 
 1. **State the goal and inspect the data.** Identify the response units, positive/zero values, measurement process, and a scientifically plausible shape. For prediction, reserve test observations before exploring relationships.
 2. **Fit a baseline and inspect residuals.** Curvature suggests a mean-shape problem; a fan-shaped spread suggests nonconstant variance. A skewed marginal response alone is not a reason to transform it: regression assumptions concern conditional errors.
@@ -272,7 +452,9 @@ Tree **18** has $D_i\approx0.224$. Omitting it changes the diameter exponent fro
 
 ## From candidate terms to variable selection {#sec-ch7-selection}
 
-After checking functional form and influential observations, return to the candidate terms. Transformations, indicators, polynomials, and interactions all create candidate columns. Adding all of them improves training fit but can make a model unstable and hard to interpret. Selection asks which **terms** to retain within a scientifically defensible candidate set.
+**Transformation asks how a variable should enter the model; variable selection asks which candidate terms to retain.** In [Section 7.1](#sec-ch7-transform-motivation), replacing $x$ by $\log_2 x$ kept the same predictor but changed its relationship with the response. A selection method choosing among only untransformed straight-line terms could not discover that relationship.
+
+Now suppose several predictors are available. Adding columns cannot increase training SSE, even when they represent noise, but estimating more coefficients can make predictions less stable. Selection balances fit against complexity within a scientifically defensible candidate set. Specify plausible transformations and required terms first; if their choice is data-driven, include it in the validation procedure in [Section 7.6](#sec-ch7-validation).
 
 ::: {#def-ch7-selection}
 
@@ -321,10 +503,30 @@ ch7_folds <- sample(rep(1:5, length.out = nrow(ch7_train)))
 
 We reserve 40 observations now and fit all searches on the other 120. The candidate set contains only main effects, so no polynomial or interaction hierarchy needs to be imposed in this example.
 
+**See the first forward step.** Start with an intercept-only model. Fit each of the eight one-predictor alternatives on the same 120 training observations; the table shows the starting model and the three best additions. Use `AIC()` consistently, and choose the lowest score only if it improves on the starting score.
+
 ```{r}
-#| label: ch7-subset-search
+#| label: ch7-first-forward-step
 ch7_null <- lm(y ~ 1, data = ch7_train, na.action = na.fail)
 ch7_full <- lm(y ~ ., data = ch7_train, na.action = na.fail)
+ch7_one_term <- lapply(paste0("x", 1:8), function(term)
+  lm(reformulate(term, response = "y"), data = ch7_train, na.action = na.fail))
+ch7_first_scores <- data.frame(
+  Model = c("Intercept only", paste("Add", paste0("x", 1:8))),
+  AIC = c(AIC(ch7_null), vapply(ch7_one_term, AIC, numeric(1))))
+ch7_first_scores$Change <- ch7_first_scores$AIC - AIC(ch7_null)
+ch7_best_additions <- order(ch7_first_scores$AIC[-1]) + 1
+knitr::kable(ch7_first_scores[c(1, head(ch7_best_additions, 3)), ],
+  digits = 2, row.names = FALSE, align = "c",
+  col.names = c("Candidate model", "AIC", "Change from starting AIC"))
+```
+
+The first move adds **`r sub("Add ", "", ch7_first_scores$Model[ch7_best_additions[1]])`**. AIC falls from **`r sprintf("%.2f", AIC(ch7_null))`** to **`r sprintf("%.2f", ch7_first_scores$AIC[ch7_best_additions[1]])`**. The next step must compare additions **conditional on that retained term**; it cannot simply reuse the remaining one-predictor rankings.
+
+**Continue the searches.**
+
+```{r}
+#| label: ch7-subset-search
 ch7_scope <- list(lower = formula(ch7_null), upper = formula(ch7_full))
 ch7_forward <- step(ch7_null, scope = ch7_scope,
   direction = "forward", trace = 0)
@@ -502,11 +704,19 @@ Only the second keeps test outcomes out of model development, provided the test 
 
 ## Summary {#sec-ch7-summary}
 
-- A linear model is linear in its coefficients; transformed predictors can describe curved relationships.
-- Choose a transformation for a stated reason, refit, inspect residuals, and interpret the new response scale.
-- Forward, backward, and stepwise searches use a candidate set and a stopping rule; they need not find the globally best subset.
-- Ridge shrinks; lasso can also select. Scale predictors and tune penalties within training data.
-- Compare predictions on the same observations and response scale. Keep the entire development procedure out of final test outcomes.
+::: {.balanced-table tbl-colwidths="[32,36,32]"}
+
+| What do you see or need? | What should you try? | What must you check? |
+|:---:|:---:|:---:|
+| Curved mean, roughly constant spread | A predictor transformation or suitable polynomial terms; keep $Y$ in its units when appropriate. | Does the residual mean pattern disappear? Interpret the new predictor scale. |
+| Positive responses with proportional variation | A log response, possibly together with transformed predictors. | Recheck shape and spread; distinguish the original-scale mean from an exponentiated log prediction. |
+| Many plausible candidate terms | Forward, backward, or stepwise selection with a stated score and required terms. | Preserve factors and hierarchy; selected terms and ordinary p-values are not automatic discoveries. |
+| Unstable estimates or many correlated columns | Ridge for shrinkage; lasso when sparsity is also useful; consider elastic net. | Scale within training data and tune penalties by CV. |
+| A final claim about prediction | Evaluate the entire fixed procedure on untouched observations. | Use the same target and units; learn transformations and selection within training folds. |
+
+:::
+
+A transformation is unnecessary when the existing model is adequate for the purpose. A curved relationship can still be linear in its coefficients. Whatever the chosen form, recheck the [Chapter 6 diagnostics](06.qmd#sec-ch6-summary).
 
 The next design unit asks which terms must be retained because of randomization, blocking, and the scientific question. That provides a useful boundary for automatic selection. Dose-specific comparisons from [Chapter 5](05.qmd) are retained in [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
 
