@@ -31,9 +31,44 @@ We reuse the [design-matrix notation](01_matrix_representation.qmd), [least squa
 
 ## Adjusted Regression Coefficient
 
-For the additive mean model $\mu(\mathbf x)=\beta_0+\sum_{j=1}^k\beta_jx_j$, $\beta_j$ is the mean-response difference for a one-unit increase in $x_j$, **holding the other predictors fixed**. The intercept is the mean at $\mathbf x=\mathbf 0$; see [Chapter 4's coefficient interpretation](04.qmd#def-regression-parameter-meaning).
+For the additive mean model $\mu(\mathbf x)=\mathbb E(Y\mid\mathbf x)=\beta_0+\sum_{j=1}^k\beta_jx_j$, $\beta_j$ is the mean-response difference for a one-unit increase in $x_j$, **holding the other predictors fixed**:
+
+$$
+\mu(x_1,\ldots,x_j+1,\ldots,x_k)
+-\mu(x_1,\ldots,x_j,\ldots,x_k)=\beta_j.
+$$
+
+**Why does the difference equal the coefficient?** Choose any predictor $x_a$, where $a\in\{1,\ldots,k\}$. With the other predictors fixed, $C_a=\beta_0+\sum_{\ell\ne a}\beta_\ell x_\ell$ is the same in both means. Thus the one-unit mean difference is
+
+$$
+\Delta_a
+=\bigl[C_a+\beta_a(x_a+1)\bigr]
+ -\bigl[C_a+\beta_ax_a\bigr]
+=\beta_a.
+$$
+
+The intercept and all unchanged predictor contributions cancel, leaving $\beta_a[(x_a+1)-x_a]=\beta_a$. Taking $a=j$ gives the formula above; a change of $h$ units gives the mean difference $h\beta_a$ in this additive model.
+
+The intercept is the mean at $\mathbf x=\mathbf 0$; see [Chapter 4's coefficient interpretation](04.qmd#def-regression-parameter-meaning).
 
 :::
+
+**Design matrix and parameter count.** For $n$ observations and $k$ predictor columns, the model has one intercept column and $k$ predictor columns:
+
+$$
+\mathbf X=
+\begin{pmatrix}
+1&x_{11}&\cdots&x_{1k}\\
+\vdots&\vdots&&\vdots\\
+1&x_{n1}&\cdots&x_{nk}
+\end{pmatrix}
+\in\mathbb R^{n\times(k+1)},
+\qquad
+\boldsymbol\beta=(\beta_0,\beta_1,\ldots,\beta_k),
+\qquad p=k+1.
+$$
+
+We assume full column rank, so $\operatorname{rank}(\mathbf X)=p$. Here $k$ counts **predictor columns**, not necessarily named variables: a factor or interaction can contribute several columns. In the tree model below, height and diameter give $k=2$ and $p=3$.
 
 ::: {#exm-ch5-tree-adjustment}
 
