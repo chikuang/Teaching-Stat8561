@@ -2,7 +2,7 @@
 
 ::: {.callout-note title="Self-study topic"}
 
-This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd), [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), and [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) supply the useful prerequisites: covariance, inference, and the experimental unit. The R examples use `lme4` and `patchwork`; install them once with `install.packages(c("lme4", "patchwork"))` if needed. The covariance connection to GLS is developed here, so the [Generalized Least Squares and Correlated Errors topic](App_D-gls.qmd) is not a prerequisite.
+This reading extends linear models to grouped and repeated observations. It is supplementary to the main lecture sequence. [Chapter 1 — Matrix Representation and Notation](01_matrix_representation.qmd) and [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) supply the covariance and inference prerequisites. Also distinguish the experimental unit from repeated measurements: several measurements on one unit do not create several independently randomized units. The R examples use `lme4` and `patchwork`; install them once with `install.packages(c("lme4", "patchwork"))` if needed. The covariance connection to GLS is developed here, so the [Generalized Least Squares and Correlated Errors notes](https://github.com/chikuang/Teaching-Stat8561/blob/master/App_D-gls.qmd) is not a prerequisite.
 
 :::
 

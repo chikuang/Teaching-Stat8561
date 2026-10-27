@@ -6,7 +6,7 @@ engine: knitr
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. Chapter 6 connects transformations with variable selection, including ridge and lasso. Later units develop experimental design, diagnostics, prediction assessment, and logistic regression. Poisson regression and fuller GLM theory remain supplementary reading. Advanced extensions are collected under **Optional topic**.
+The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. [Chapter 6](06.qmd) distinguishes outliers, leverage, and influence. [Chapter 7](07.qmd) develops transformations and variable selection, including ridge and lasso. Later units develop experimental design, broader model checks, prediction assessment, and logistic regression. Poisson regression and fuller GLM theory remain supplementary reading. Advanced extensions are collected under **Optional topic**.
 
 **Prerequisites**
 
@@ -64,7 +64,8 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | 11--17 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 1](Exam1-2026F.qmd) | 15 |
 | `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | 18-- |
-| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 6 | [Transformations and Variable Selection](06.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 6 | [Outliers, Leverage, and Influence](06.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 7 | [Transformations and Variable Selection](07.qmd) | TBA |
 | `r if (knitr::is_latex_output()) "Exam" else "📝"` |  | Exam 2 | 23 |
 <!-- Future lecture coverage will be updated after class. -->
 

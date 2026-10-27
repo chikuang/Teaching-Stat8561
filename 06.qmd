@@ -4,58 +4,32 @@ execute:
   freeze: false
 ---
 
-# Transformations and Variable Selection {#sec-transform-selection}
+# Outliers, Leverage, and Influence {#sec-regression-diagnostics}
 
-[Chapter 5](05.qmd) built models from predictors, groups, and interactions. Its final example also showed that straight lines can miss the pattern. We now ask **which functions of the predictors to use, and which terms to retain**. We begin by distinguishing outliers, leverage, and influence, and use Cook's distance to assess whether individual observations drive a fit. We then study transformations and recheck the revised model before selecting terms. Diagnostics assess model adequacy and sensitivity; transformations change the model representation; selection decides which terms remain.
+A fitted regression line summarizes the observations, but some observations may matter much more than others. We ask three different questions: **is the response unusual given the predictors, are the predictor values unusual, and does the observation substantially change the fit?** These lead to outliers, leverage, and influence. We use the same small dataset throughout so that every diagnostic can be connected to a visible change in the estimates.
 
 > **Learning Objectives**
 >
 > By the end of this chapter, students should be able to:
 >
-> - distinguish outliers, high leverage, and influence, and use Cook's distance for a sensitivity check;
-> - distinguish a curved relationship from a model nonlinear in its parameters;
-> - choose, fit, and check a suitable transformation;
-> - interpret predictions after transforming the response;
-> - carry out forward selection, backward elimination, and stepwise selection;
-> - explain ridge and lasso, and choose a penalty using cross-validation;
-> - separate model development from final prediction assessment.
+> - distinguish a response outlier, a high-leverage observation, and an influential observation;
+> - compare coefficient estimates and predictions with and without one observation;
+> - interpret leverage, standardized residuals, and externally studentized residuals;
+> - explain how Cook's distance combines response discrepancy and predictor position;
+> - investigate a flagged observation and report a sensitivity analysis.
 
 ::: {#ch6-prerequisite-recap .callout-note title="Quick Recap: What We Will Use"}
 
-Let $n$ be the number of observations and $p$ the number of coefficient columns, **including the intercept when present**. For the formulas below, assume $\mathbf X$ has full column rank and $n>p$.
-
-- **Model and design matrix — [Chapter 1](01_matrix_representation.qmd#the-linear-regression-model).** Write $\mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon$, with mean $\boldsymbol\mu=\mathbf X\boldsymbol\beta$ and $\mathbb E(\boldsymbol\varepsilon\mid\mathbf X)=\mathbf0$. Each row describes one observation; each column multiplies one coefficient. Count columns, not variable names. Changing the columns changes the set of mean patterns the model can represent.
-
-- **OLS, fitted values, and residuals — [Chapter 2](02_LSE.qmd#sec-lse).** OLS minimizes $\mathrm{SSE}=\mathbf e^\top\mathbf e$:
-
-  $$
-  \hat{\boldsymbol\beta}=(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf Y,
-  \qquad
-  \hat{\mathbf Y}=\mathbf H\mathbf Y,
-  \qquad
-  \mathbf e=(\mathbf I-\mathbf H)\mathbf Y.
-  $$
-
-  The [hat matrix](02_LSE.qmd#the-hat-matrix) is $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$, and $\mathbf X^\top\mathbf e=\mathbf0$. Residuals are observed deviations from the fitted mean; they are not the unobserved errors $\boldsymbol\varepsilon$.
-
-- **Assumptions and uncertainty — [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model).** The normal model assumes $\boldsymbol\varepsilon\mid\mathbf X\sim N(\mathbf0,\sigma^2\mathbf I)$: a correct mean, independent normal errors, and constant variance. OLS itself does not require normality, but our exact $t$ and $F$ inference uses it. Estimate $\sigma^2$ by $s^2=\mathrm{SSE}/(n-p)$; estimated coefficient covariance is $s^2(\mathbf X^\top\mathbf X)^{-1}$. Nearly dependent columns can make coefficient estimates unstable. These inference results concern a specified model.
-
-- **Model comparison and fit — [Chapter 4](04.qmd#thm-partial-f).** For nested reduced and full models fitted to the **same observations and response**, test the added terms jointly using
-
-  $$
-  F=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}{\mathrm{SSE}_F/(n-p_F)}
-  \quad\text{with null degrees of freedom }(p_F-p_R,\ n-p_F).
-  $$
-
-  Adding columns cannot increase SSE; with an intercept, training $R^2$ cannot decrease. [Adjusted $R^2$](04.qmd#def-adjusted-r-squared) penalizes model size and can decrease. Neither fit summary alone measures prediction performance on new observations.
-
-- **Coefficient meanings and model structure — [Chapter 5](05.qmd#summary).** An additive slope compares means while holding other predictors fixed. A $g$-level factor uses an intercept plus $g-1$ indicators, or all $g$ indicators without an intercept. An interaction makes a predictor's contribution depend on another predictor; retain its lower-order terms. Centering or changing the reference group changes coefficient meanings but preserves fitted values when the equivalent model is retained.
+- **Mean model and design — [Chapter 1](01_matrix_representation.qmd#the-linear-regression-model).** Write $\mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon$, with $\mathbb E(\boldsymbol\varepsilon\mid\mathbf X)=\mathbf0$. A row describes an observation; a column multiplies a coefficient. Let $p$ count the columns, including the intercept. We assume full column rank and $n>p$.
+- **Fitted values and residuals — [Chapter 2](02_LSE.qmd#the-hat-matrix).** OLS gives $\hat{\mathbf Y}=\mathbf H\mathbf Y$ and $\mathbf e=(\mathbf I-\mathbf H)\mathbf Y$, where $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$. A residual is an observed deviation from the fitted mean, not the unobserved error.
+- **Noise and uncertainty — [Chapter 3](03_OLS_inference.qmd#def-mse).** Under $\operatorname{Var}(\boldsymbol\varepsilon\mid\mathbf X)=\sigma^2\mathbf I$, estimate $\sigma^2$ by $s^2=\mathrm{SSE}/(n-p)$. Here $\mathrm{SSE}=\sum_i e_i^2$ is the unexplained variation from [Chapter 4](04.qmd#def-regression-sums-of-squares). Estimated coefficient covariance is $s^2(\mathbf X^\top\mathbf X)^{-1}$.
+- **Interpret the quantity that changes — [Chapter 5](05.qmd#sec-ch5-adjusted).** An additive slope describes a mean-response difference holding other predictors fixed. To assess influence, compare the coefficients and predictions relevant to that question, using the same model specification.
 
 :::
 
-## Outliers, leverage, and influential observations {#sec-ch6-influence}
+## See how one observation changes the fit {#sec-ch6-influence}
 
-Start with a fitted model and ask: **does an unusual observation substantially change what we conclude?** A response far from its fitted mean, an unusual predictor value, and a point that moves the fitted line describe different features. Distinguishing them helps us decide what to inspect before changing the model or selecting variables. A pattern shared by many observations and a fit pulled by one unusual point call for different investigations.
+First look at the data and the fitted lines. We will name the three concepts after seeing how they differ, then introduce their numerical measures.
 
 ::: {#exm-ch6-three-points}
 
@@ -159,28 +133,91 @@ knitr::kable(data.frame(
 
 :::
 
-The plots and coefficient comparisons motivate the following definitions. We then quantify the movement of the fitted line with Cook's distance.
+These pictures motivate three distinct definitions.
 
 ::: {#def-ch6-outlier-leverage-influence}
 
 ## Outlier, Leverage, and Influence
 
 - A **response outlier** has an unusual response *given its predictor values and the specified model*. A large volume alone does not make a large tree an outlier.
-- A **high-leverage observation** has an unusual configuration of predictor values. Its leverage is $h_{ii}$, diagonal entry $i$ of the [hat matrix from Chapter 2](02_LSE.qmd#the-hat-matrix), $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$. Leverage depends on $\mathbf X$, not on the observed responses.
+- A **high-leverage observation** has an unusual configuration of predictor values. Leverage concerns the predictors jointly and does not depend on the observed responses. It measures the potential to pull the fit.
 - An **influential observation** changes the fitted coefficients or predictions substantially when omitted. Influence concerns the sensitivity of the analysis, rather than unusualness alone.
 
 :::
 
-**Put residuals on a comparable scale.** Use $p$ for the number of coefficients **including the intercept**, and $s^2=\mathrm{SSE}/(n-p)$. Under the model with $\operatorname{Var}(\boldsymbol\varepsilon\mid\mathbf X)=\sigma^2\mathbf I$, the residual geometry from [Chapter 2](02_LSE.qmd#def-residual-maker-matrix) gives
+## High leverage: unusual predictor values {#sec-ch6-leverage}
+
+Leverage asks **where the observation sits among the predictor rows**. It does not use its response. From the [hat matrix](02_LSE.qmd#the-hat-matrix), define $h_{ii}$ as diagonal entry $i$. With an intercept and one predictor,
+
+$$
+h_{ii}=\frac1n+\frac{(x_i-\bar x)^2}{\sum_j(x_j-\bar x)^2}.
+$$
+
+The first term is shared by all observations; the second grows as $x_i$ moves away from the predictor center. The mean and sum in this formula use **all observations in the fit being diagnosed**, including the point of interest. With several predictors, leverage measures unusualness of the whole predictor combination, not just one variable at a time.
+
+```{r}
+#| label: ch6-story-diagnostics
+#| echo: false
+ch6_story_diagnostics <- t(vapply(ch6_story_fits, function(m) {
+  c(Leverage = unname(tail(hatvalues(m), 1)),
+    Standardized_residual = unname(tail(rstandard(m), 1)),
+    Cooks_distance = unname(tail(cooks.distance(m), 1)))
+}, numeric(3)))
+knitr::kable(data.frame(Point = c("A", "B", "C"),
+  Added_x = ch6_added$x, Leverage = ch6_story_diagnostics[, "Leverage"]),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
+  col.names = c("Point", "Added x", "Leverage"))
+```
+
+For A, $x=3.5$ remains the predictor mean, so its leverage is $1/7=0.143$. B and C have the **same predictor rows**, so both have leverage 0.721 even though their responses are different. B leaves the estimated line unchanged; C changes it substantially. Thus high leverage indicates **potential influence**, not a conclusion that the fit has changed.
+
+Because $\sum_i h_{ii}=p$, average leverage is $p/n$. In this example, $p=2$ and $n=7$, so the average is $2/7=0.286$. Comparing a value with $2p/n$ is a rough screening rule, not a test or a reason to delete an observation. R returns leverages with `hatvalues(fit)`.
+
+A well-measured high-leverage observation can be useful: under an appropriate model it can provide information about the slope. In B, the slope estimate stays at 1.000 while its estimated standard error falls from 0.048 to 0.024. Whether the model is credible at that distant predictor value still needs scientific judgment.
+
+## Outliers: unusual responses given the predictors {#sec-ch6-outliers}
+
+An outlier is unusual **relative to the mean predicted by the specified model**. B has the largest response in the example, 12, yet it lies on the fitted line and has zero residual. A's response is smaller, 10.5, but is far above the expected response near $x=3.5$. Looking only at the distribution of $Y$ would miss this distinction.
+
+**Put residuals on a comparable scale.** From the [residual geometry in Chapter 2](02_LSE.qmd#def-residual-maker-matrix),
 
 $$
 \operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}),
-\qquad r_i=\frac{e_i}{s\sqrt{1-h_{ii}}}.
+\qquad
+r_i=\frac{e_i}{s\sqrt{1-h_{ii}}}.
 $$
 
-The **standardized residual** $r_i$ accounts for unequal residual variances; it does not make residuals independent. A high-leverage point can pull the fit toward itself, leaving a deceptively small raw residual. For outlier assessment, the **externally studentized residual** $t_i=e_i/\{s_{(-i)}\sqrt{1-h_{ii}}\}$ instead uses the residual standard deviation estimated *without* observation $i$, so that observation does not inflate its own variance estimate. The deleted variance estimate requires $n-p-1>0$. R provides `rstandard(fit)` and `rstudent(fit)`, respectively. [R diagnostic documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html).
+The standardized residual $r_i$ accounts for unequal residual variances; it does not make residuals independent. A high-leverage point can pull the fitted line toward itself and leave a small raw residual, so raw residual size alone can be misleading.
 
-Since $\sum_i h_{ii}=p$, average leverage is $p/n$. This gives context for judging an unusually large $h_{ii}$; leverage measures the **potential** to influence a fit, not the realized change.
+**Keep the point from inflating its own noise estimate.** The externally studentized residual uses the residual standard deviation from the fit without observation $i$:
+
+$$
+t_i=\frac{e_i}{s_{(-i)}\sqrt{1-h_{ii}}}.
+$$
+
+The numerator and leverage come from the full fit; only the noise estimate is replaced by $s_{(-i)}$. The deleted fit must be estimable and have positive residual degrees of freedom, $n-p-1>0$. R provides `rstandard(fit)` and `rstudent(fit)`. [R diagnostic documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html).
+
+```{r}
+#| label: ch6-story-residuals
+#| echo: false
+ch6_residual_comparison <- t(vapply(ch6_story_fits, function(m) {
+  c(Residual = unname(tail(residuals(m), 1)),
+    Standardized = unname(tail(rstandard(m), 1)),
+    Studentized = unname(tail(rstudent(m), 1)))
+}, numeric(3)))
+knitr::kable(data.frame(Point = c("A", "B", "C"),
+  ch6_residual_comparison, row.names = NULL),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
+  col.names = c("Point", "Residual", "Standardized", "Externally studentized"))
+```
+
+For A and C, the full fit's residual SD is much larger than the baseline value 0.200, as the coefficient table in [Section 6.1](#sec-ch6-influence) showed. Removing either added point returns those six baseline observations and their small noise estimate. This explains the much larger externally studentized residuals. These values flag a response discrepancy under the model; they do not establish a recording error.
+
+A and C have similar absolute standardized residuals, yet C changes the slope much more. **Outlyingness and influence answer different questions.**
+
+## Influence: changes in estimates and Cook's distance {#sec-ch6-cook}
+
+Influence asks **how much the fitted result changes when an observation is omitted**. Compare the same model on the remaining observations: changes in the slope, intercept, or scientifically relevant prediction describe what that observation was doing. Cook's distance summarizes movement of the fitted mean vector using both the residual and leverage.
 
 ::: {#def-ch6-cook}
 
@@ -205,11 +242,6 @@ Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted 
 ```{r}
 #| label: ch6-influence-diagnostic-values
 #| echo: false
-ch6_story_diagnostics <- t(vapply(ch6_story_fits, function(m) {
-  c(Leverage = unname(tail(hatvalues(m), 1)),
-    Standardized_residual = unname(tail(rstandard(m), 1)),
-    Cooks_distance = unname(tail(cooks.distance(m), 1)))
-}, numeric(3)))
 knitr::kable(data.frame(Point = c("A", "B", "C"),
   ch6_story_diagnostics, row.names = NULL),
   digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
@@ -232,517 +264,54 @@ $D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has gre
 
 :::
 
+## Investigate a flag and report the sensitivity {#sec-ch6-investigate}
+
+A diagnostic flag starts an investigation. It is not an instruction to remove a row.
+
+1. **Check the observation.** Verify units, transcription, measurement conditions, and whether it belongs to the population being studied. Correct a confirmed error from the original record when possible.
+2. **Read the three measures together.** Use the residual to assess the response discrepancy, leverage to assess predictor position, and Cook's distance to assess the change in fit.
+3. **Refit the same model with and without the point.** Compare the coefficients, uncertainty, and predictions that answer the scientific question. Keep both results available.
+4. **Investigate the model as well as the data.** A valid observation may reveal an omitted group, an inadequate mean function, or a different error pattern. Several unusual points can also mask one another in single-case diagnostics.
+5. **Report what changes and why.** Explain any exclusion using evidence. If a valid point materially changes the conclusion, report that sensitivity rather than silently choosing the more convenient fit.
+
 ::: {.callout-important title="Investigate a flag; do not delete by a cutoff"}
 
 Values such as $|t_i|>2$, $h_{ii}>2p/n$, or $D_i>4/n$ are rough **screening guides**, not universal tests or deletion rules. Check units, transcription, measurement conditions, and omitted structure; a valid unusual observation may be scientifically valuable. Compare fits and relevant predictions with and without a flagged case, and explain any exclusion. Inspect related groups of observations too: several unusual cases can mask one another in single-case diagnostics.
 
 :::
 
-Next, ask whether the mean pattern needs a different functional form. Investigating individual observations and checking the overall shape are complementary steps.
+For the small example, a concrete report is: “Adding C changes the estimated slope from 1.000 to 0.170 and the fitted mean at $x=6$ from 8.000 to 5.553. C has high leverage and Cook's distance 6.395. This fit is sensitive to C; whether C should be corrected or excluded requires information about how it was observed.”
 
-## A curved relationship can still be a linear model {#sec-ch6-linearity}
+## Summary {#sec-ch6-summary}
 
-::: {#def-ch6-linear-parameters}
+| Concept | Question | Useful measure | What it does not establish |
+|:---:|:---:|:---:|:---:|
+| Response outlier | Is the response unusual given the predictors and model? | Standardized or externally studentized residual | That the observation has high leverage or must be deleted. |
+| High leverage | Is the predictor configuration unusual? | Hat-matrix diagonal $h_{ii}$ | That the observation actually changes the estimated line. |
+| Influence | Does omitting the observation change the fitted result? | Coefficient/prediction comparison and Cook's distance | That the observation is a data error. |
 
-## Linear in the Parameters
-
-A regression model is linear in its parameters when it can be written as $Y_i=\beta_0+\sum_{j=1}^d\beta_j h_j(\mathbf x_i)+\varepsilon_i$, where the functions $h_j$ are specified independently of the unknown coefficients. The design row is $(1\;h_1(\mathbf x_i)\;\cdots\;h_d(\mathbf x_i))$; the response need not be a straight-line function of the original predictors.
-
-:::
-
-| Relationship | Model fitted by least squares | What changes? |
-|---|---|---|
-| Curvature in $x$ | $Y=\beta_0+\beta_1x+\beta_2x^2+\varepsilon$ | Add a polynomial column; retain the response scale. |
-| Diminishing change, $x>0$ | $Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform a predictor. |
-| Exponential growth, $Y>0$ | $\log Y=\beta_0+\beta_1x+\varepsilon$ | Transform the response; specify errors on the log scale. |
-| Power relationship, $Y,x>0$ | $\log Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform both variables. |
-
-In R, write a quadratic as `lm(y ~ x + I(x^2), data = dat)`; `I()` makes the square arithmetic. For a log-log model, use `lm(log(y) ~ log(x), data = dat)`. An interaction from [Chapter 5](05.qmd#sec-ch5-interaction) is another constructed column, $x_1x_2$.
-
-::: {.callout-important title="Transform the statistical model, including its errors"}
-
-$Y=a\exp(bx)\exp(\varepsilon)$ becomes $\log Y=\log a+bx+\varepsilon$. In contrast, taking logs of $Y=a\exp(bx)+\varepsilon$ does **not** produce that same additive-error model. Likewise, a saturation model such as $Y=ax/(b+x)+\varepsilon$ is nonlinear in $a,b$; reciprocating it changes the errors and may be inappropriate. Some problems need nonlinear least squares or another response model, not forced linearization.
-
-:::
-
-::: {#exr-ch6-linear}
-
-## Linear in Which Sense?
-
-Which can be fitted by `lm()` using known predictor columns?
-
-1. $Y=\beta_0+\beta_1\sqrt{x}+\varepsilon$, with $x\geq0$.
-2. $Y=\beta_0+\beta_1x^{\beta_2}+\varepsilon$, with unknown $\beta_2$.
-3. $\log Y=\beta_0+\beta_1x+\varepsilon$, with $Y>0$.
-
-:::
-
-::: {#sol-ch6-linear}
-
-Models 1 and 3 are linear in their coefficients. Model 2 has an unknown exponent inside the predictor function; ordinary `lm()` cannot estimate all three coefficients as written. Model 3 models the conditional mean of $\log Y$, not directly the conditional mean of $Y$.
-
-:::
-
-## Choose a transformation, fit, and check again {#sec-ch6-transform-procedure}
-
-**Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from [Chapter 5](05.qmd#exm-ch5-tree-adjustment) suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
-
-**A practical procedure.**
-
-1. **State the goal and inspect the data.** Identify the response units, positive/zero values, measurement process, and a scientifically plausible shape. For prediction, reserve test observations before exploring relationships.
-2. **Fit a baseline and inspect residuals.** Curvature suggests a mean-shape problem; a fan-shaped spread suggests nonconstant variance. A skewed marginal response alone is not a reason to transform it: regression assumptions concern conditional errors.
-3. **Choose a small candidate set.** A predictor transformation can address shape while keeping response units. A response transformation changes the target and error model; log responses are natural for positive multiplicative variation.
-4. **Refit and recheck.** Examine residuals versus fitted values and predictors, a normal Q-Q plot when using normal-model inference, and [influential observations](#sec-ch6-influence). A transformation does not fix dependence or a poor study design.
-5. **Interpret and validate.** Explain the new coefficients, back-transform appropriately, and compare predictions on a common scale. If choices are learned from data, repeat that learning within training folds.
-
-::: {#exm-ch6-tree-power}
-
-## From Tree Geometry to a Log-Linear Model
-
-For the 31 trees, consider
-
-$$
-V_i=aD_i^{b}H_i^{c}\exp(\varepsilon_i)
-\quad\Longrightarrow\quad
-\log V_i=\beta_0+b\log D_i+c\log H_i+\varepsilon_i,
-\qquad \beta_0=\log a.
-$$
-
-Here $D$ is diameter in inches, $H$ is height in feet, and $V$ is volume in cubic feet. We use all 31 trees to illustrate specification and diagnostics; this is not a held-out performance claim.
-
-```{r}
-#| label: ch6-tree-models
-ch6_trees <- transform(datasets::trees, Diameter = Girth)
-ch6_raw <- lm(Volume ~ Diameter + Height, data = ch6_trees)
-ch6_log <- lm(log(Volume) ~ log(Diameter) + log(Height), data = ch6_trees)
-knitr::kable(data.frame(Term = names(coef(ch6_log)),
-  Estimate = unname(coef(ch6_log))), digits = 3, row.names = FALSE)
-```
-
-```{r}
-#| label: fig-ch6-tree-scales
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 7
-#| fig-height: 3.3
-#| fig-cap: "The same 31 trees on two scales, each with a simple least-squares line using diameter alone. The log-log view motivates a power relationship; the fitted multiple regression above also adjusts for height. This plot does not establish that the transformed model is adequate."
-#| fig-alt: "Side-by-side plots show volume versus diameter on the original scale and log volume versus log diameter. A purple straight line is fitted separately in each panel."
-ch6_scale <- rbind(
-  data.frame(x = ch6_trees$Diameter, y = ch6_trees$Volume,
-    Scale = "Original: diameter (in), volume (ft^3)"),
-  data.frame(x = log(ch6_trees$Diameter), y = log(ch6_trees$Volume),
-    Scale = "Transformed: log diameter, log volume"))
-ggplot(ch6_scale, aes(x, y)) +
-  geom_point(colour = "#3D7975", size = 2) +
-  geom_smooth(method = "lm", formula = y ~ x, se = FALSE,
-    colour = "#593196", linewidth = 0.9) +
-  facet_wrap(~ Scale, scales = "free", nrow = 1) +
-  labs(x = NULL, y = NULL) + theme_minimal(base_size = 11)
-```
-
-The estimated diameter and height exponents are about **1.983** and **1.117**, close to the geometric motivation but not constrained to it. Holding height fixed, multiplying diameter by $r$ changes the fitted log-volume by $\hat b\log r$. Under the lognormal model below, the fitted median volume is multiplied by $r^{\hat b}$. Thus a 1% diameter increase corresponds approximately to a $\hat b$% change in that median; the exact percentage is $100(1.01^{\hat b}-1)$.
-
-```{r}
-#| label: fig-ch6-tree-residuals
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 7
-#| fig-height: 3.3
-#| fig-cap: "Standardized residuals from the additive original-scale model and the log-log model, both using diameter and height. The smooth orange line helps reveal remaining mean structure. Inspect each pattern; their fitted-value scales differ, so raw SSE or R-squared values across response scales would not be a fair comparison."
-#| fig-alt: "Two panels compare standardized residuals versus fitted values for the original and log-response tree models, with zero reference lines and smooth trend lines."
-ch6_res <- rbind(
-  data.frame(Fitted = fitted(ch6_raw), Residual = rstandard(ch6_raw),
-    Model = "Original response: fitted volume (ft^3)"),
-  data.frame(Fitted = fitted(ch6_log), Residual = rstandard(ch6_log),
-    Model = "Log response: fitted log volume"))
-ggplot(ch6_res, aes(Fitted, Residual)) +
-  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey55") +
-  geom_point(colour = "#593196", size = 2) +
-  geom_smooth(method = "loess", formula = y ~ x, span = 1,
-    se = FALSE, colour = "#B45F06", linewidth = 0.7) +
-  facet_wrap(~ Model, scales = "free_x", nrow = 1) +
-  labs(x = NULL, y = "Standardized residual") + theme_minimal(base_size = 11)
-```
-
-The log model is a candidate to examine, not a guaranteed cure. Both panels still deserve scrutiny. With only 31 observations, a large search over powers and interactions would be hard to justify.
-
-:::
-
-::: {#def-ch6-lognormal}
-
-## Back-Transformation Under Lognormal Errors
-
-If $\log Y=\eta(\mathbf x)+\varepsilon$ with $\varepsilon\mid\mathbf x\sim N(0,\sigma^2)$, then
-
-$$
-\operatorname{Median}(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)\},
-\qquad
-\mathbb E(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)+\sigma^2/2\}.
-$$
-
-Exponentiating a fitted log mean therefore estimates a conditional median, not the original-scale mean. A plug-in mean prediction uses an estimate of $\sigma^2$; it is not an exactly unbiased estimator.
-
-:::
-
-```{r}
-#| label: ch6-back-transform
-ch6_newtree <- data.frame(Diameter = 15, Height = 80)
-ch6_eta <- as.numeric(predict(ch6_log, newdata = ch6_newtree))
-knitr::kable(data.frame(
-  `Median volume` = exp(ch6_eta),
-  `Mean volume, lognormal correction` = exp(ch6_eta + sigma(ch6_log)^2 / 2),
-  check.names = FALSE), digits = 2,
-  caption = "Predicted cubic feet for diameter 15 inches and height 80 feet.")
-```
-
-With homoscedastic errors independent of the predictors, a less distribution-specific alternative is the smearing estimate $\exp(\hat\eta)\,n^{-1}\sum_i\exp(e_i)$, where $e_i$ are training log residuals. A single correction can fail if the error distribution changes with the predictors. Estimate any correction within each training fold when validating.
-
-**Other powers.** For positive responses, Box-Cox considers $g_\kappa(y)=(y^\kappa-1)/\kappa$ for $\kappa\ne0$ and $g_0(y)=\log y$. Thus $\kappa=1$ leaves the response shape unchanged, $\kappa=1/2$ gives a square-root scale, and $\kappa=0$ gives logs. `MASS::boxcox(ch6_raw)` profiles the transformation parameter for the specified mean model. Treat it as guidance, then refit and inspect; choosing the power is itself model selection. [Box-Cox documentation](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/boxcox.html).
-
-::: {.callout-warning title="Keep scales and data comparable"}
-
-Do not rank an `lm(y ~ ...)` fit against an `lm(log(y) ~ ...)` fit using their raw SSE, $R^2$, or unadjusted software AIC. Their responses differ. Compare held-out predictions of the **same target in the same units**, or use likelihoods expressed on a common response scale with the transformation Jacobian. Logs require positive values; adding an arbitrary constant changes the model. Binary or count responses may instead call for a GLM.
-
-:::
-
-::: {#exr-ch6-back-transform}
-
-## What Does Exponentiating Predict?
-
-Suppose $\log Y=2+0.4x+\varepsilon$, with $\varepsilon\sim N(0,0.25)$. At $x=0$, give the conditional median and mean of $Y$. Does increasing $x$ by one add 0.4 units to the original-scale mean?
-
-:::
-
-::: {#sol-ch6-back-transform}
-
-The median is $e^2\approx7.39$ and the mean is $e^{2+0.25/2}\approx8.37$. A one-unit increase in $x$ multiplies both by $e^{0.4}\approx1.49$ because the log-error variance is constant. It does not add 0.4 response units.
-
-:::
-
-**Recheck influence after transforming.** A new response scale changes residuals, and new predictor columns can change leverage. Apply the diagnostics from [Section 6.1](#sec-ch6-influence) to the fitted log model as well.
-
-::: {#exm-ch6-tree-influence}
-
-## Does One Tree Drive the Power Relationship?
-
-Return to the log-volume model. A wrongly recorded diameter could distort a timber prediction rule, but an accurately measured unusual tree may reveal where the rule needs improvement. First identify observations worth inspecting:
-
-```{r}
-#| label: ch6-tree-influence
-ch6_diag <- data.frame(Tree = seq_len(nrow(ch6_trees)),
-  Studentized = rstudent(ch6_log), Leverage = hatvalues(ch6_log),
-  Cook = cooks.distance(ch6_log))
-ch6_top <- head(order(ch6_diag$Cook, decreasing = TRUE), 3)
-```
-
-```{r}
-#| label: fig-ch6-tree-cook
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 6.5
-#| fig-height: 2.2
-#| fig-cap: "Cook's distances for the log-volume model. Labels mark the three largest values; the dashed 4/n line is only a screening guide. Tree 18 deserves a sensitivity check, not automatic deletion."
-#| fig-alt: "A stem plot of Cook's distance by tree index. Tree 18 is highest at about 0.224, above a dashed 4/31 screening line; trees 17 and 11 are also labeled."
-ggplot(ch6_diag, aes(Tree, Cook)) +
-  geom_hline(yintercept = 4 / nrow(ch6_diag), linetype = "dashed",
-    colour = "#B45F06") +
-  geom_segment(aes(xend = Tree, y = 0, yend = Cook), colour = "#B8A4D4") +
-  geom_point(colour = "#593196", size = 2) +
-  geom_text(data = ch6_diag[ch6_top, ], aes(label = Tree),
-    vjust = -0.7, size = 3.3) +
-  scale_y_continuous(expand = expansion(mult = c(0.03, 0.18))) +
-  labs(x = "Tree index", y = "Cook's distance") + theme_minimal(base_size = 11)
-```
-
-```{r}
-#| label: ch6-tree-influence-table
-#| echo: false
-knitr::kable(ch6_diag[ch6_top, ], digits = 3, row.names = FALSE)
-```
-
-**Refit to understand sensitivity.** Temporarily omit the largest-$D_i$ tree and compare the same coefficients; keep the original fit as the reference.
-
-```{r}
-#| label: ch6-tree-sensitivity
-ch6_flag <- which.max(ch6_diag$Cook)
-ch6_log_without <- update(ch6_log, data = ch6_trees[-ch6_flag, ])
-knitr::kable(data.frame(Term = names(coef(ch6_log)),
-  All_trees = unname(coef(ch6_log)),
-  Omit_flagged_tree = unname(coef(ch6_log_without))),
-  digits = 3, row.names = FALSE,
-  col.names = c("Term", "All trees", "Omit flagged tree"))
-```
-
-Tree **18** has $D_i\approx0.224$. Omitting it changes the diameter exponent from **1.983 to 1.958**, and the height exponent from **1.117 to 1.261**. The estimated height contribution is more sensitive here; influence can matter differently for different scientific questions. This calculation supplies no evidence of a recording error. Report the sensitivity and investigate the measurement before deciding how to handle it.
-
-:::
-
-**Why recheck before selection?** One influential observation can make a predictor appear useful or change which term a search retains. Resolve data-quality questions and inspect model form first, then assess whether the selection is stable. Recheck the final selected model as well. Ridge and lasso still use squared-error loss here; shrinkage is not an automatic remedy for outliers. For prediction assessment, all outcome-driven diagnostic and model-development decisions belong within training data, not the held-out test set.
-
-
-## From candidate terms to variable selection {#sec-ch6-selection}
-
-After checking functional form and influential observations, return to the candidate terms. Transformations, indicators, polynomials, and interactions all create candidate columns. Adding all of them improves training fit but can make a model unstable and hard to interpret. Selection asks which **terms** to retain within a scientifically defensible candidate set.
-
-::: {#def-ch6-selection}
-
-## Variable Selection
-
-Variable selection chooses a subset of candidate predictors or model terms using a specified rule. A term may contain several columns, such as a factor. The candidate set, terms that must remain, comparison criterion, and stopping rule are part of the procedure.
-
-:::
-
-**Choose the rule before the search.** For Gaussian models fitted to the same observations and response, $\mathrm{AIC}=-2\hat\ell+2k$ and $\mathrm{BIC}=-2\hat\ell+k\log n$, where $k=p+1$ includes $p$ regression coefficients and the variance parameter. Smaller values are preferred. Ordinary $R^2$ alone cannot stop a search because it never decreases when columns are added. These criteria are scores, not significance levels. [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/AIC.html).
-
-| Method | Start | One step | Stop |
-|---|---|---|---|
-| Forward selection | Required terms, often just the intercept | Try each admissible addition; take the greatest score improvement. | No addition improves the score. |
-| Backward elimination | Full candidate model | Try each admissible removal; take the greatest improvement. | No removal improves the score. |
-| Stepwise selection | A specified starting model | Reconsider additions and removals as the fit changes. | Neither move improves the score. |
-
-These are greedy searches; different starting points or directions can yield different models. **Best subset selection** evaluates every allowed subset and finds the best score within that finite set, but $d$ optional terms can require $2^d$ fits. Backward elimination requires an estimable starting model with positive residual degrees of freedom for the usual Gaussian criterion.
-
-::: {.callout-important title="Protect model structure"}
-
-Keep treatment assignments, blocking variables, and scientifically required adjustment terms when the question requires them. Retain parent terms with interactions and lower powers with polynomial terms. Search a multi-level factor as a whole term. R's formula-based `step()` respects interaction hierarchy, but it will not infer every scientific constraint, such as retaining `x` whenever `I(x^2)` is present.
-
-:::
-
-::: {#exm-ch6-sensor-selection}
-
-## Which Sensor Measurements Help Predict an Outcome?
-
-Imagine a manufacturing outcome and eight candidate sensor readings. We simulate data so the useful predictors are known: $Y=5+3x_1-2x_2+1.5x_3+\varepsilon$, with independent $N(0,4)$ errors. Predictors $x_1,x_2$ are correlated; $x_4,\ldots,x_8$ have no additional mean contribution. All methods receive the same eight candidates. This is a teaching simulation, not an industrial dataset.
-
-```{r}
-#| label: ch6-selection-data
-set.seed(8561)
-ch6_n <- 160
-ch6_X <- matrix(rnorm(ch6_n * 8), nrow = ch6_n)
-ch6_X[, 2] <- 0.7 * ch6_X[, 1] + sqrt(1 - 0.7^2) * ch6_X[, 2]
-colnames(ch6_X) <- paste0("x", 1:8)
-ch6_dat <- data.frame(y = 5 + 3 * ch6_X[, 1] - 2 * ch6_X[, 2] +
-  1.5 * ch6_X[, 3] + rnorm(ch6_n, sd = 2), ch6_X)
-ch6_id <- sample(seq_len(ch6_n), 120)
-ch6_train <- ch6_dat[ch6_id, ]
-ch6_test <- ch6_dat[-ch6_id, ]
-ch6_folds <- sample(rep(1:5, length.out = nrow(ch6_train)))
-```
-
-We reserve 40 observations now and fit all searches on the other 120. The candidate set contains only main effects, so no polynomial or interaction hierarchy needs to be imposed in this example.
-
-```{r}
-#| label: ch6-subset-search
-ch6_null <- lm(y ~ 1, data = ch6_train, na.action = na.fail)
-ch6_full <- lm(y ~ ., data = ch6_train, na.action = na.fail)
-ch6_scope <- list(lower = formula(ch6_null), upper = formula(ch6_full))
-ch6_forward <- step(ch6_null, scope = ch6_scope,
-  direction = "forward", trace = 0)
-ch6_backward <- step(ch6_full, scope = ch6_scope,
-  direction = "backward", trace = 0)
-ch6_both <- step(ch6_null, scope = ch6_scope,
-  direction = "both", trace = 0)
-ch6_searches <- list(Forward = ch6_forward, Backward = ch6_backward,
-  Stepwise = ch6_both)
-knitr::kable(data.frame(
-  Search = names(ch6_searches),
-  Selected = vapply(ch6_searches, function(m)
-    paste(attr(terms(m), "term.labels"), collapse = ", "), character(1)),
-  AIC = vapply(ch6_searches, AIC, numeric(1))), digits = 2, row.names = FALSE)
-```
-
-Here all three searches retain $x_1,x_2,x_3,x_4$. The first three generate the mean, but $x_4$ is noise: selection can retain a chance association.
-
-`step()` uses AIC by default; `k = log(nrow(ch6_train))` changes the penalty to the BIC-style rule. Fix the analysis rows across all candidates, especially when missing values occur. The trace uses `extractAIC()`, whose additive constant differs from `AIC()` for `lm`; compare scores computed with the same function. [Selection documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/step.html).
-
-:::
-
-::: {#exr-ch6-forward}
-
-## Take One Forward Step
-
-The current AIC is 210. Adding $x_2$, $x_3$, or $x_4$ gives 207, 209, or 212. Which move is made? At the next step, the best available AIC is 207.4. Continue or stop? Would a different answer prove that one variable has no scientific role?
-
-:::
-
-::: {#sol-ch6-forward}
-
-Add $x_2$, producing the largest AIC decrease. Stop at the next step because 207.4 is worse than 207. This is a conditional search result under the chosen candidates and score, not proof that an excluded variable has no scientific role.
-
-:::
-
-## Shrinkage: ridge, lasso, and elastic net {#sec-ch6-regularization}
-
-Subset selection makes discrete include-or-exclude decisions. **Regularization** instead penalizes coefficient size: it accepts some bias to reduce sensitivity to the sample. Lasso can also produce exact zeros.
-
-::: {#def-ch6-penalized}
-
-## Penalized Least Squares
-
-Let $\mathbf x_i$ contain $d$ candidate predictor columns, excluding the intercept, and let $\boldsymbol\beta=(\beta_1,\ldots,\beta_d)$. On $n_{\mathrm{tr}}$ training observations, estimate the intercept and slopes by minimizing
-
-$$
-\frac{1}{2n_{\mathrm{tr}}}\sum_i(y_i-\beta_0-\mathbf x_i^\top\boldsymbol\beta)^2
-+\lambda\left\{\frac{1-\alpha}{2}\sum_j\beta_j^2
-+\alpha\sum_j|\beta_j|\right\}.
-$$
-
-The intercept is not penalized. Ridge uses $\alpha=0$, lasso uses $\alpha=1$, and elastic net uses $0<\alpha<1$. Larger $\lambda$ puts more weight on shrinkage. At $\lambda=0$ the objective is OLS; uniqueness still depends on the design rank.
-
-:::
-
-**Why can lasso give zeros?** Near zero, a squared penalty becomes nearly flat, while an absolute-value penalty keeps a nonzero slope on each side of its corner. A small improvement in fit may therefore fail to move a lasso coefficient away from zero. Ridge usually reduces its magnitude continuously instead.
-
-| Method | Main behavior | Interpretation |
-|---|---|---|
-| Ridge | Shrinks slopes, usually without exact zeros. | Useful when many correlated columns carry information. |
-| Lasso | Can set slopes exactly to zero. | A sparse prediction rule; correlated predictors can compete for selection. |
-| Elastic net | Combines both penalties. | Can retain correlated predictors together; both $\alpha$ and $\lambda$ need a selection rule. |
-
-**Why scaling matters.** Converting a predictor from meters to millimeters changes its coefficient by a factor of 1,000. Standardize predictor columns using training data so the penalty does not favor a unit convention. In `glmnet`, `standardize = TRUE` performs this within each fit, including CV training folds, while predictions use the original input units. An ordinary lasso selects columns; it does not automatically preserve an entire factor or interaction hierarchy. [Package documentation](https://glmnet.stanford.edu/reference/glmnet.html).
-
-**Choose the penalty on training data.** Divide the 120 training observations into five folds. Fit on four and score predictions on the fifth, repeating for all folds. `lambda.min` minimizes average CV error; `lambda.1se` is the largest penalty within one estimated standard error of the minimum. The latter is a simplicity rule, not a hypothesis test. A single `cv.glmnet()` call tunes $\lambda$ at a fixed $\alpha$. [CV documentation](https://glmnet.stanford.edu/reference/cv.glmnet.html).
-
-Install `glmnet` once with `install.packages("glmnet")` if needed. Continue the same sensor example:
-
-```{r}
-#| label: ch6-penalty-cv
-library(glmnet)
-ch6_xtrain <- as.matrix(ch6_train[paste0("x", 1:8)])
-ch6_xtest <- as.matrix(ch6_test[paste0("x", 1:8)])
-ch6_ridge <- cv.glmnet(ch6_xtrain, ch6_train$y,
-  alpha = 0, foldid = ch6_folds, standardize = TRUE, type.measure = "mse")
-ch6_lasso <- cv.glmnet(ch6_xtrain, ch6_train$y,
-  alpha = 1, foldid = ch6_folds, standardize = TRUE, type.measure = "mse")
-```
-
-```{r}
-#| label: fig-ch6-lasso-path
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 7
-#| fig-height: 3.5
-#| fig-cap: "Lasso coefficient paths from the sensor training data. Larger penalties move slopes toward zero. The three true signal predictors are colored; the other five are gray. A path displays fitted coefficients, not confidence intervals."
-#| fig-alt: "Lasso coefficient paths against lambda on a log scale; x1, x2, and x3 are colored and the other five predictors are gray. More paths become zero at larger penalties."
-ch6_b <- as.matrix(ch6_lasso$glmnet.fit$beta)
-ch6_path <- data.frame(Lambda = rep(ch6_lasso$lambda, each = nrow(ch6_b)),
-  Coefficient = as.vector(ch6_b),
-  Predictor = rep(rownames(ch6_b), times = ncol(ch6_b)))
-ch6_path$Label <- ifelse(ch6_path$Predictor %in% c("x1", "x2", "x3"),
-  ch6_path$Predictor, "Other predictors")
-ggplot(ch6_path, aes(Lambda, Coefficient, group = Predictor, colour = Label)) +
-  geom_hline(yintercept = 0, colour = "grey80") +
-  geom_line(linewidth = 0.8) + scale_x_log10() +
-  scale_colour_manual(values = c(x1 = "#593196", x2 = "#B45F06",
-    x3 = "#247A6B", `Other predictors` = "#AAAAAA")) +
-  labs(x = "Lambda (log scale)", y = "Fitted coefficient", colour = NULL) +
-  theme_minimal(base_size = 11) + theme(legend.position = "bottom")
-```
-
-```{r}
-#| label: fig-ch6-lasso-cv
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 6.5
-#| fig-height: 3.3
-#| fig-cap: "Five-fold CV within the sensor training set. Bars show plus or minus one estimated CV standard error, not confidence intervals for individual responses. Dashed: minimum-error lambda. Solid: the more regularized one-SE choice used below."
-#| fig-alt: "Cross-validation mean squared error for lasso versus lambda, with standard-error bars and vertical lines for lambda.min and lambda.1se."
-ch6_cvplot <- data.frame(Lambda = ch6_lasso$lambda, MSE = ch6_lasso$cvm,
-  SE = ch6_lasso$cvsd)
-ch6_cvlines <- data.frame(Lambda = c(ch6_lasso$lambda.min, ch6_lasso$lambda.1se),
-  Rule = c("Minimum CV error", "One-SE rule"))
-ggplot(ch6_cvplot, aes(Lambda, MSE)) +
-  geom_errorbar(aes(ymin = pmax(0, MSE - SE), ymax = MSE + SE),
-    colour = "#C5B4DE", width = 0) +
-  geom_line(colour = "#593196", linewidth = 0.8) +
-  geom_vline(data = ch6_cvlines, aes(xintercept = Lambda, linetype = Rule)) +
-  scale_linetype_manual(values = c(`Minimum CV error` = "dashed", `One-SE rule` = "solid")) +
-  scale_x_log10() + labs(x = "Lambda (log scale)", y = "CV mean squared error",
-    linetype = NULL) + theme_minimal(base_size = 11) +
-  theme(legend.position = "bottom")
-```
-
-**From one column to many.** Ridge remains computable with more columns than observations; ordinary full-model OLS then cannot have full column rank. Lasso can give sparse fits in that setting, but it does not guarantee recovery of the true variables. Here we focus on a modest candidate set so the classical searches and penalized fits are directly comparable.
-
-## Evaluate the complete procedure {#sec-ch6-validation}
-
-Our choices are now fixed: AIC for the three subset searches and the one-SE rule for ridge and lasso. Evaluate all five on the **same untouched 40 observations**. Add full-model OLS and a training-mean baseline for context. For $m$ test observations, $\mathrm{RMSE}=\{m^{-1}\sum_i(y_i-\hat y_i)^2\}^{1/2}$, in response units.
-
-```{r}
-#| label: ch6-final-evaluation
-ch6_predictions <- cbind(
-  Baseline = rep(mean(ch6_train$y), nrow(ch6_test)),
-  Full_OLS = predict(ch6_full, newdata = ch6_test),
-  Forward = predict(ch6_forward, newdata = ch6_test),
-  Backward = predict(ch6_backward, newdata = ch6_test),
-  Stepwise = predict(ch6_both, newdata = ch6_test),
-  Ridge = as.numeric(predict(ch6_ridge, newx = ch6_xtest, s = "lambda.1se")),
-  Lasso = as.numeric(predict(ch6_lasso, newx = ch6_xtest, s = "lambda.1se")))
-knitr::kable(data.frame(Method = colnames(ch6_predictions),
-  Test_RMSE = sqrt(colMeans((ch6_predictions - ch6_test$y)^2))),
-  digits = 3, row.names = FALSE)
-ch6_lasso_coef <- as.matrix(coef(ch6_lasso, s = "lambda.1se"))[-1, 1]
-knitr::kable(data.frame(Predictor = names(ch6_lasso_coef),
-  Lasso_coefficient = unname(ch6_lasso_coef)), digits = 3, row.names = FALSE)
-```
-
-Ridge and lasso have slightly smaller test RMSE than full OLS on this split. Lasso keeps a small coefficient for the noise predictor $x_4$, while setting $x_5,\ldots,x_8$ to zero. Equal search results are possible, and no method must win on every split. Report the comparison without revising the methods after looking at test outcomes. If choosing a winning method from this table, its same test error is no longer an independent final assessment of that choice.
-
-::: {.callout-important title="Validate the search, not just its final formula"}
-
-If CV is used to evaluate a selection procedure, rerun the entire variable search inside each training fold. Selecting on all observations first and then cross-validating only the selected formula leaks information. Learned transformations, imputation, scaling, and tuning follow the same rule. Final performance claims require an untouched test set or appropriately nested resampling.
-
-:::
-
-Prediction and inference answer different questions. A selected coefficient is not automatically a scientific discovery; ordinary fixed-model $t$ tests and confidence intervals do not automatically remain valid after selection or lasso followed by OLS refitting. Likewise, a good predictive score does not establish a causal effect.
-
-::: {#exr-ch6-leakage}
-
-## Find the Leakage
-
-A student selects predictors using all 160 outcomes, then splits the observations and reports test RMSE. Another student reserves 40 observations first and runs selection only on the other 120. Which analysis gives an honest held-out assessment of its fitted procedure? Does that make its selected-coefficient p-values valid?
-
-:::
-
-::: {#sol-ch6-leakage}
-
-Only the second keeps test outcomes out of model development, provided the test results are not used to revise the procedure. That separation assesses prediction; it does not repair ordinary post-selection coefficient inference.
-
-:::
-
-## Summary {.unnumbered}
-
-- Outliers concern the response given predictors; leverage concerns predictor configuration; Cook's distance measures the change in the fit after deleting one observation. Investigate flags and report sensitivity.
-- A linear model is linear in its coefficients; transformed predictors can describe curved relationships.
-- Choose a transformation for a stated reason, refit, inspect residuals, and interpret the new response scale.
-- Forward, backward, and stepwise searches use a candidate set and a stopping rule; they need not find the globally best subset.
-- Ridge shrinks; lasso can also select. Scale predictors and tune penalties within training data.
-- Compare predictions on the same observations and response scale. Keep the entire development procedure out of final test outcomes.
-
-The next design unit asks which terms must be retained because of randomization, blocking, and the scientific question. That provides a useful boundary for automatic selection. Dose-specific comparisons from [Chapter 5](05.qmd) are retained in [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
+Use **all three questions**, then investigate the data and report sensitivity. [Chapter 7](07.qmd) considers how to change the functional form and select model terms when developing a regression model.
 
 ## Practice Problems {#sec-ch6-practice}
 
 ::: {#exr-ch6-practice}
 
-## Practice: Specify, Select, and Assess
+## Practice: Diagnose and Explain
 
-1. A positive outcome grows approximately exponentially with time. Write a multiplicative-error model and its log-linear form. Explain why an additive original-scale error would change the argument.
-2. A quadratic mean fits better than a straight line. Does it cease to be a linear regression model? State the columns of its design matrix.
-3. A backward search considers removing a three-level factor. How many coefficient restrictions are imposed when there is an intercept and no interaction? Why should its indicators be treated together?
-4. Explain why ridge is not generally a variable-selection method and why lasso selections can vary among correlated predictors.
-5. Compare `lambda.min` with `lambda.1se`. Where should the folds, transformation choices, and final test observations enter the procedure?
-6. A tree exceeds the $4/n$ Cook's-distance guide. A student deletes it and runs forward selection. Explain what is missing from this procedure and propose a sensitivity analysis.
+1. B has a larger response than A but a zero residual. Why is the response value alone insufficient to identify an outlier?
+2. Why do B and C have the same leverage but different Cook's distances?
+3. In A, the slope is unchanged but the intercept and residual SD increase. Is it correct to say the point has no effect on estimation?
+4. A high-leverage point has a small raw residual. Explain why this alone does not establish that it is harmless.
+5. A student deletes every point with $D_i>4/n$. State what information and analysis are missing.
 
 :::
 
 ::: {#sol-ch6-practice}
 
-1. $Y=a\exp(bt)\exp(\varepsilon)$ gives $\log Y=\log a+bt+\varepsilon$. Logging $a\exp(bt)+\varepsilon$ does not yield this additive log-error structure.
-2. It remains linear in the coefficients; the columns are $\mathbf 1$, $\mathbf x$, and the vector of squared predictor values.
-3. Two restrictions. The two columns represent one factor; selecting them separately makes the search depend on the chosen reference coding.
-4. Ridge usually leaves all slopes nonzero. Correlated predictors offer similar information, so small sample changes can alter which one lasso retains.
-5. `lambda.min` minimizes CV error; `lambda.1se` prefers the largest penalty within one estimated SE of that minimum. Choose transformations and tune models within training data/folds, then evaluate the fixed procedure on an untouched test set.
-6. A screening flag does not establish an error. Check the measurement and model specification, compare scientifically relevant estimates and predictions with and without the tree, and examine whether the selected terms change. Explain any exclusion and retain an honest test set.
+1. Outlyingness concerns the response relative to the fitted conditional mean. B lies on the original line; A lies well above it at an ordinary predictor value.
+2. Their predictor rows are identical, so leverage is identical. Their responses differ: B leaves the line unchanged, while C moves it substantially.
+3. No. A affects the intercept, predictions, and estimated noise even though its position at the predictor mean leaves the slope unchanged.
+4. A high-leverage observation can pull the fit toward itself. Examine a scaled residual and compare the fitted result with and without that observation.
+5. The cutoff is only a screening guide. Verify the observation, examine the model, compare scientifically relevant estimates and predictions with and without the point, and justify any exclusion using evidence.
 
 :::

@@ -1,583 +1,537 @@
-# Experimental Design Models: ANOVA and ANCOVA {#sec-design-models}
+---
+execute:
+  cache: false
+  freeze: false
+---
 
-In this chapter, we study one-way ANOVA, two-way ANOVA, and analysis of covariance as special cases of the general linear model. The main goal is to show that these topics are not separate from regression, but are natural modelling frameworks within the same matrix-based system. This helps students unify mean comparisons, factor effects, covariate adjustment, and interaction analysis under one common language.
+# Transformations and Variable Selection {#sec-transform-selection}
 
-**Core objectives.** Identify the experimental unit, distinguish random assignment from random sampling, and count independent replication. Use the models from Chapters 4–5 within the design that generated the observations. After Chapter 6, distinguish optional predictive terms from terms required by the design.
+[Chapter 6](06.qmd) examined how individual observations affect a fitted model. We now ask **which functions of the predictors to use, and which terms to retain**. First choose and check a plausible functional form, then compare variable-selection and shrinkage procedures, and finally assess predictions on observations kept out of model development.
 
-::: {.callout-note title="Reading route"}
+> **Learning Objectives**
+>
+> By the end of this chapter, students should be able to:
+>
+> - distinguish a curved relationship from a model nonlinear in its parameters;
+> - choose, fit, and check a suitable transformation;
+> - interpret predictions after transforming the response;
+> - carry out forward selection, backward elimination, and stepwise selection;
+> - explain ridge and lasso, and choose a penalty using cross-validation;
+> - separate model development from final prediction assessment.
 
-The integration lesson uses the design section below. The blocked experiment is a visual application if time permits. The detailed one-way, two-way and ANCOVA sections are retained as further reading: regression coding is developed in Chapter 5, and detailed contrasts are in the optional reading.
+::: {#ch7-prerequisite-recap .callout-note title="Quick Recap: Tools for Model Development"}
+
+- [Chapter 2](02_LSE.qmd#sec-lse): OLS fits the mean patterns represented by the design columns.
+- [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model): coefficient tests and intervals rely on assumptions for a specified model.
+- [Chapter 4](04.qmd#thm-partial-f): compare nested models on the same observations and response; a lower training SSE alone does not establish better prediction.
+- [Chapter 5](05.qmd#summary): interpret coefficients conditionally, code factors as whole terms, and retain the lower-order terms needed for interactions.
+- [Chapter 6](06.qmd#sec-ch6-summary): distinguish response outliers, leverage, and influence; investigate flags and recheck sensitivity when the model changes.
 
 :::
 
-## Design, randomization, and the experimental unit
+## A curved relationship can still be a linear model {#sec-ch7-linearity}
 
-The **experimental unit** is the smallest unit independently assigned a treatment. Replication means independently treated units; repeated measurements or multiple subsamples from one unit do not create additional treatment replicates. Identify the unit before constructing the data table or choosing error degrees of freedom.
+::: {#def-ch7-linear-parameters}
 
-**Randomization** allocates treatments by a random mechanism, helping separate treatment assignment from potential outcomes. **Blocking** groups similar units using information available before treatment and randomizes within those groups. Random sampling supports generalization to a population; random treatment assignment supports a causal comparison in the experiment. Neither alone guarantees both claims.
+## Linear in the Parameters
 
-::: {.callout-important title="Avoid pseudoreplication"}
-
-If one classroom receives A and another receives B, measuring 30 students per classroom does not produce 30 independently randomized classrooms per treatment. A model that treats all 60 measurements as independent treatment replicates can severely understate uncertainty. The design determines the relevant replication.
+A regression model is linear in its parameters when it can be written as $Y_i=\beta_0+\sum_{j=1}^d\beta_j h_j(\mathbf x_i)+\varepsilon_i$, where the functions $h_j$ are specified independently of the unknown coefficients. The design row is $(1\;h_1(\mathbf x_i)\;\cdots\;h_d(\mathbf x_i))$; the response need not be a straight-line function of the original predictors.
 
 :::
 
-::: {#exm-blocked-experiment}
+| Relationship | Model fitted by least squares | What changes? |
+|---|---|---|
+| Curvature in $x$ | $Y=\beta_0+\beta_1x+\beta_2x^2+\varepsilon$ | Add a polynomial column; retain the response scale. |
+| Diminishing change, $x>0$ | $Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform a predictor. |
+| Exponential growth, $Y>0$ | $\log Y=\beta_0+\beta_1x+\varepsilon$ | Transform the response; specify errors on the log scale. |
+| Power relationship, $Y,x>0$ | $\log Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform both variables. |
 
-## A Randomized Complete Block Design
+In R, write a quadratic as `lm(y ~ x + I(x^2), data = dat)`; `I()` makes the square arithmetic. For a log-log model, use `lm(log(y) ~ log(x), data = dat)`. An interaction from [Chapter 5](05.qmd#sec-ch5-interaction) is another constructed column, $x_1x_2$.
 
-Suppose five production batches each provide three comparable units. Within every batch, randomly assign one unit to each of three treatments. There are 15 experimental units and five replications per treatment. An additive fixed-block model is
+::: {.callout-important title="Transform the statistical model, including its errors"}
+
+$Y=a\exp(bx)\exp(\varepsilon)$ becomes $\log Y=\log a+bx+\varepsilon$. In contrast, taking logs of $Y=a\exp(bx)+\varepsilon$ does **not** produce that same additive-error model. Likewise, a saturation model such as $Y=ax/(b+x)+\varepsilon$ is nonlinear in $a,b$; reciprocating it changes the errors and may be inappropriate. Some problems need nonlinear least squares or another response model, not forced linearization.
+
+:::
+
+::: {#exr-ch7-linear}
+
+## Linear in Which Sense?
+
+Which can be fitted by `lm()` using known predictor columns?
+
+1. $Y=\beta_0+\beta_1\sqrt{x}+\varepsilon$, with $x\geq0$.
+2. $Y=\beta_0+\beta_1x^{\beta_2}+\varepsilon$, with unknown $\beta_2$.
+3. $\log Y=\beta_0+\beta_1x+\varepsilon$, with $Y>0$.
+
+:::
+
+::: {#sol-ch7-linear}
+
+Models 1 and 3 are linear in their coefficients. Model 2 has an unknown exponent inside the predictor function; ordinary `lm()` cannot estimate all three coefficients as written. Model 3 models the conditional mean of $\log Y$, not directly the conditional mean of $Y$.
+
+:::
+
+## Choose a transformation, fit, and check again {#sec-ch7-transform-procedure}
+
+**Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from [Chapter 5](05.qmd#exm-ch5-tree-adjustment) suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
+
+**A practical procedure.**
+
+1. **State the goal and inspect the data.** Identify the response units, positive/zero values, measurement process, and a scientifically plausible shape. For prediction, reserve test observations before exploring relationships.
+2. **Fit a baseline and inspect residuals.** Curvature suggests a mean-shape problem; a fan-shaped spread suggests nonconstant variance. A skewed marginal response alone is not a reason to transform it: regression assumptions concern conditional errors.
+3. **Choose a small candidate set.** A predictor transformation can address shape while keeping response units. A response transformation changes the target and error model; log responses are natural for positive multiplicative variation.
+4. **Refit and recheck.** Examine residuals versus fitted values and predictors, a normal Q-Q plot when using normal-model inference, and [influential observations](06.qmd#sec-ch6-cook). A transformation does not fix dependence or a poor study design.
+5. **Interpret and validate.** Explain the new coefficients, back-transform appropriately, and compare predictions on a common scale. If choices are learned from data, repeat that learning within training folds.
+
+::: {#exm-ch7-tree-power}
+
+## From Tree Geometry to a Log-Linear Model
+
+For the 31 trees, consider
 
 $$
-Y_{bj}=\mu+\gamma_b+\tau_j+\varepsilon_{bj},\qquad
-\varepsilon_{bj}\overset{\mathrm{iid}}{\sim}N(0,\sigma^2).
+V_i=aD_i^{b}H_i^{c}\exp(\varepsilon_i)
+\quad\Longrightarrow\quad
+\log V_i=\beta_0+b\log D_i+c\log H_i+\varepsilon_i,
+\qquad \beta_0=\log a.
 $$
 
-Comparing $Y\sim\text{block}$ with $Y\sim\text{block}+\text{treatment}$ tests treatment differences after accounting for batch variation. There are $15-(1+4+2)=8$ residual degrees of freedom. With one unit in each block-by-treatment cell, treatment-by-block interaction cannot be separated from error; the additive interpretation is an assumption.
-
-:::
+Here $D$ is diameter in inches, $H$ is height in feet, and $V$ is volume in cubic feet. We use all 31 trees to illustrate specification and diagnostics; this is not a held-out performance claim.
 
 ```{r}
+#| label: ch7-tree-models
 library(ggplot2)
-theme_set(theme_minimal(base_size = 11) +
-            theme(legend.position = "bottom",
-              panel.grid.minor = element_blank()))
-
-set.seed(8561)
-blocked <- data.frame(block = factor(rep(1:5, each = 3)),
-                      unit = rep(1:3, 5))
-# Randomize treatment labels among the three units in each block.
-blocked$treatment <- factor(
-  unlist(lapply(1:5, function(b) sample(c("A", "B", "C")))),
-  levels = c("A", "B", "C"))
-block_effect <- c(-3, -1, 0, 2, 4)
-treatment_effect <- c(A = 0, B = 1.5, C = 3)
-blocked$y <- 10 + block_effect[as.integer(blocked$block)] +
-  treatment_effect[blocked$treatment] + rnorm(nrow(blocked), sd = 0.8)
-fit_block_only <- lm(y ~ block, data = blocked)
-fit_block_treatment <- lm(y ~ block + treatment, data = blocked)
-anova(fit_block_only, fit_block_treatment)
+ch7_trees <- transform(datasets::trees, Diameter = Girth)
+ch7_raw <- lm(Volume ~ Diameter + Height, data = ch7_trees)
+ch7_log <- lm(log(Volume) ~ log(Diameter) + log(Height), data = ch7_trees)
+knitr::kable(data.frame(Term = names(coef(ch7_log)),
+  Estimate = unname(coef(ch7_log))), digits = 3, row.names = FALSE)
 ```
 
 ```{r}
-#| label: fig-blocked-comparison
-#| fig-cap: "Simulated responses within five blocks. Comparing treatments within the same block avoids attributing the large between-batch shifts to treatment. The connecting lines guide comparisons; the model does not assert a linear treatment scale."
-#| fig-width: 6
-#| fig-height: 4
-ggplot(blocked, aes(treatment, y, group = block, colour = block)) +
-  geom_line(linewidth = 0.7) +
-  geom_point(size = 2) +
-  scale_colour_brewer(palette = "Dark2") +
-  labs(x = "Treatment", y = "Response", colour = "Block")
+#| label: fig-ch7-tree-scales
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.3
+#| fig-cap: "The same 31 trees on two scales, each with a simple least-squares line using diameter alone. The log-log view motivates a power relationship; the fitted multiple regression above also adjusts for height. This plot does not establish that the transformed model is adequate."
+#| fig-alt: "Side-by-side plots show volume versus diameter on the original scale and log volume versus log diameter. A purple straight line is fitted separately in each panel."
+ch7_scale <- rbind(
+  data.frame(x = ch7_trees$Diameter, y = ch7_trees$Volume,
+    Scale = "Original: diameter (in), volume (ft^3)"),
+  data.frame(x = log(ch7_trees$Diameter), y = log(ch7_trees$Volume),
+    Scale = "Transformed: log diameter, log volume"))
+ggplot(ch7_scale, aes(x, y)) +
+  geom_point(colour = "#3D7975", size = 2) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE,
+    colour = "#593196", linewidth = 0.9) +
+  facet_wrap(~ Scale, scales = "free", nrow = 1) +
+  labs(x = NULL, y = NULL) + theme_minimal(base_size = 11)
 ```
 
-A randomized complete design without blocks uses treatment alone. The same regression machinery handles either design, but the design and scientific question decide which comparison is meaningful.
+The estimated diameter and height exponents are about **1.983** and **1.117**, close to the geometric motivation but not constrained to it. Holding height fixed, multiplying diameter by $r$ changes the fitted log-volume by $\hat b\log r$. Under the lognormal model below, the fitted median volume is multiplied by $r^{\hat b}$. Thus a 1% diameter increase corresponds approximately to a $\hat b$% change in that median; the exact percentage is $100(1.01^{\hat b}-1)$.
 
-## Summary / Recap {.unnumbered}
+```{r}
+#| label: fig-ch7-tree-residuals
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.3
+#| fig-cap: "Standardized residuals from the additive original-scale model and the log-log model, both using diameter and height. The smooth orange line helps reveal remaining mean structure. Inspect each pattern; their fitted-value scales differ, so raw SSE or R-squared values across response scales would not be a fair comparison."
+#| fig-alt: "Two panels compare standardized residuals versus fitted values for the original and log-response tree models, with zero reference lines and smooth trend lines."
+ch7_res <- rbind(
+  data.frame(Fitted = fitted(ch7_raw), Residual = rstandard(ch7_raw),
+    Model = "Original response: fitted volume (ft^3)"),
+  data.frame(Fitted = fitted(ch7_log), Residual = rstandard(ch7_log),
+    Model = "Log response: fitted log volume"))
+ggplot(ch7_res, aes(Fitted, Residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey55") +
+  geom_point(colour = "#593196", size = 2) +
+  geom_smooth(method = "loess", formula = y ~ x, span = 1,
+    se = FALSE, colour = "#B45F06", linewidth = 0.7) +
+  facet_wrap(~ Model, scales = "free_x", nrow = 1) +
+  labs(x = NULL, y = "Standardized residual") + theme_minimal(base_size = 11)
+```
 
-- The experimental unit receives the treatment assignment. Repeated measurements on that unit are not independent treatment replications.
-- Random assignment supports treatment comparisons; random sampling concerns generalization to a population.
-- Blocking compares treatments within similar units or settings. Include the design structure when specifying the analysis.
-- ANOVA and ANCOVA use the regression tools from Chapters 3–5 and the optional contrast reading. An interaction makes a comparison conditional on another variable.
-- Further-reading factorial models require a clear distinction between a reference-level coefficient and a marginal comparison with specified averaging weights.
+The log model is a candidate to examine, not a guaranteed cure. Both panels still deserve scrutiny. With only 31 observations, a large search over powers and interactions would be hard to justify.
 
-Next, [Chapter 8](08.qmd) checks whether the fitted mean and error assumptions are adequate for the observations.
+:::
 
-## Further reading: one-way ANOVA
+::: {#def-ch7-lognormal}
 
-The remaining model-specific sections extend the core design discussion. They are reference material rather than an additional sequence of required class meetings.
+## Back-Transformation Under Lognormal Errors
 
-
-Suppose observations are divided into $g$ groups, and we want to compare their means. One-way ANOVA can be written as
+If $\log Y=\eta(\mathbf x)+\varepsilon$ with $\varepsilon\mid\mathbf x\sim N(0,\sigma^2)$, then
 
 $$
-Y_{ij} = \mu_i + \varepsilon_{ij},
+\operatorname{Median}(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)\},
 \qquad
-i = 1,\dots,g,
+\mathbb E(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)+\sigma^2/2\}.
 $$
 
-where:
+Exponentiating a fitted log mean therefore estimates a conditional median, not the original-scale mean. A plug-in mean prediction uses an estimate of $\sigma^2$; it is not an exactly unbiased estimator.
 
-- $\mu_i$ is the mean of group $i$;
-- $\varepsilon_{ij}$ are independent errors with mean zero and common variance $\sigma^2$.
-
-This is sometimes called the cell-means model.
-
-**Alternative Parameterization of One-Way ANOVA**
-
-Another common parameterization is
-
-$$
-Y_{ij} = \mu + \tau_i + \varepsilon_{ij},
-\qquad
-i = 1,\dots,g,
-$$
-
-where:
-
-- $\mu$ is an overall baseline level;
-- $\tau_i$ is the effect of group $i$.
-
-To identify the model, we usually impose a constraint such as
-
-$$
-\sum_{i=1}^g \tau_i = 0.
-$$
-
-Different coding schemes lead to different coefficient interpretations, but the fitted group means are the same.
-
-**Null Hypothesis in One-Way ANOVA**
-
-The usual one-way ANOVA null hypothesis is
-
-$$
-H_0: \mu_1 = \mu_2 = \cdots = \mu_g.
-$$
-
-Equivalently, in the effect parameterization, this is
-
-$$
-H_0: \tau_1 = \tau_2 = \cdots = \tau_g = 0
-$$
-
-subject to the model constraints. This is a general linear hypothesis and can be tested by an $F$ test.
-
-**One-Way ANOVA as Regression With Indicators**
-
-Suppose there are three groups: A, B, and C. Using treatment coding with group A as the reference group, we may write
-
-$$
-Y_i = \beta_0 + \beta_1 z_{1i} + \beta_2 z_{2i} + \varepsilon_i,
-$$
-
-where:
-
-- $z_{1i}=1$ if observation $i$ is in group B and 0 otherwise;
-- $z_{2i}=1$ if observation $i$ is in group C and 0 otherwise.
-
-Then:
-
-- mean of group A: $\beta_0$;
-- mean of group B: $\beta_0 + \beta_1$;
-- mean of group C: $\beta_0 + \beta_2$.
-
-Thus one-way ANOVA is simply a regression model with categorical predictors.
-
-**ANOVA Table Interpretation**
-
-For one-way ANOVA, the total variation is decomposed into:
-
-- variation between groups;
-- variation within groups.
-
-The standard ANOVA table compares the mean square for groups to the mean square for error. This is an $F$ test for whether the group means are all equal. Within the linear model framework, this is just a comparison of a reduced intercept-only model and a fuller model that includes group indicators.
-
-## Further reading: two-way ANOVA
-
-Now suppose there are two factors:
-
-- factor A with levels $i=1,\dots,a$;
-- factor B with levels $j=1,\dots,b$.
-
-A general two-way ANOVA model with interaction is
-
-$$
-Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}.
-$$
-
-Here:
-
-- $\alpha_i$ is the effect of level $i$ of factor A;
-- $\beta_j$ is the effect of level $j$ of factor B;
-- $(\alpha\beta)_{ij}$ is the interaction effect for the combination of levels $(i,j)$.
-
-**Main Effects in Two-Way ANOVA**
-
-A **marginal main-effect comparison** averages over specified levels of the other factor using stated weights. A treatment-coded main-effect coefficient in an interaction model instead describes a comparison at the reference level of the other factor. For example:
-
-- factor A main effect asks whether changing the level of A shifts the mean response;
-- factor B main effect asks the analogous question for B.
-
-However, if interaction is strong, main effects must be interpreted with care.
-
-**Interaction in Two-Way ANOVA**
-
-Interaction means that the effect of one factor depends on the level of the other factor. If there is no interaction, the mean structure is additive:
-
-$$
-Y_{ijk} = \mu + \alpha_i + \beta_j + \varepsilon_{ijk}.
-$$
-
-If interaction is present, the difference among levels of factor A changes across levels of factor B, or vice versa. Graphically, in an interaction plot, no interaction corresponds roughly to parallel profiles.
-
-**Null Hypotheses in Two-Way ANOVA**
-
-Common hypotheses include:
-
-- no main effect of factor A;
-- no main effect of factor B;
-- no interaction between A and B.
-
-Each of these is a general linear hypothesis and can be tested with an $F$ statistic by comparing appropriate reduced and full models.
-
-**Interpret interactions before averaging.** State the comparison and inspect the group profiles. With an interaction, a marginal average can conceal important conditional differences. A large interaction p-value does not prove additivity; assess the scientific model and uncertainty as well.
-
-**Balanced and Unbalanced Designs**
-
-A design is **balanced** if each factor combination has the same number of observations. Balanced designs have many nice algebraic properties:
-
-- sums of squares decompose cleanly;
-- effects are more orthogonal;
-- interpretations are often simpler.
-
-In unbalanced designs, sequential sums of squares can depend on term order, and software defaults may test different hypotheses. A fixed estimable hypothesis has the same inference under equivalent full-rank recodings. State the comparison of means first, then choose the model comparison that tests it. Students should be aware that real data are often unbalanced.
-
-**Two-Way ANOVA as Regression**
-
-Just as in one-way ANOVA, two-way ANOVA can be represented using indicator variables. The design matrix can include:
-
-- indicators for levels of factor A;
-- indicators for levels of factor B;
-- products of indicators for interaction terms.
-
-So two-way ANOVA is also just a regression model with categorical predictors and possible interactions.
-
-## Further reading: ANCOVA
-
-Analysis of covariance, or **ANCOVA**, combines:
-
-- one or more categorical predictors;
-- one or more continuous covariates.
-
-A simple ANCOVA model is
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
-$$
-
-where:
-
-- $x_i$ is a continuous covariate;
-- $z_i$ is a group indicator.
-
-This model compares groups while adjusting for the covariate.
-
-**Why ANCOVA Is Useful**
-
-Suppose two groups differ in an outcome, but also differ in a background variable related to the outcome. If we compare the raw group means, the comparison may be confounded by the background variable. ANCOVA adjusts for the covariate so that the group comparison is made at a common covariate level. This often improves both fairness of comparison and precision of inference.
-
-**Interpreting an ANCOVA Model**
-
-Suppose
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
-$$
-
-with $z_i \in \{0,1\}$. Then:
-
-- $\beta_1$ is the change in the mean response associated with a one-unit increase in $x$, holding group fixed;
-- $\beta_2$ is the difference between groups, holding the covariate fixed.
-
-Thus ANCOVA is a regression model in which one of the predictors is a factor.
-
-**Parallel Slopes Assumption**
-
-A standard ANCOVA model without interaction assumes the relationship between the response and the covariate has the same slope in all groups. That is, if
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \varepsilon_i,
-$$
-
-then both groups share the same slope $\beta_1$. This is often called the **parallel slopes assumption**.
-
-**ANCOVA With Interaction**
-
-If we want to allow the covariate effect to differ by group, we add an interaction:
-
-$$
-Y_i = \beta_0 + \beta_1 x_i + \beta_2 z_i + \beta_3 x_i z_i + \varepsilon_i.
-$$
-
-Now the slope in $x$ depends on the group. This model should be considered when the relationship between the response and the covariate appears different across groups.
-
-**Why the Parallel Slopes Assumption Matters**
-
-If the slopes are not truly parallel but we fit a common-slope ANCOVA model, then the adjusted group comparison may be misleading. Specify whether a common-slope comparison is scientifically defensible, examine the fitted group profiles and their uncertainty, and report conditional comparisons when slopes differ. An interaction test can inform this assessment, but a non-significant result alone does not establish parallel population slopes.
-
-**Adjusted Means**
-
-A major idea in ANCOVA is the comparison of **adjusted means**. These are group means adjusted to a common covariate value, often the overall mean of the covariate. Adjusted means are useful because they allow group comparison after accounting for systematic covariate differences.
-
-**One-Way ANOVA, Two-Way ANOVA, and ANCOVA as Nested Models**
-
-These topics can all be understood through model comparison. Examples:
-
-- one-way ANOVA compares the intercept-only model to a model with group effects;
-- two-way ANOVA compares models with and without main effects or interaction;
-- ANCOVA compares models with and without the covariate, group effect, or interaction.
-
-This nested-model view links directly back to the general linear hypothesis framework.
-
-**Post Hoc Comparisons**
-
-Plan scientifically meaningful comparisons before inspecting the results when possible. An omnibus F test and a comparison of particular groups answer different questions; omnibus significance does not justify an arbitrary family of unadjusted pairwise tests. Examples include:
-
-- all pairwise comparisons;
-- treatment versus control;
-- preplanned contrasts.
-
-These are again linear functions of model parameters. Use a stated comparison family: for example, Tukey intervals for all pairwise mean differences, or Holm-adjusted p-values for a specified family of tests. Planned comparisons also require multiplicity control when the inferential claim concerns a family. These comparisons use the contrast framework from [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
-
-**Interpretation and Caution**
-
-In factor models, coefficient interpretation depends on coding. For example, treatment coding, sum-to-zero coding, and cell-means coding all yield different raw coefficients. Therefore students should focus on:
-
-- fitted means;
-- differences among means;
-- interactions;
-- clearly defined hypotheses.
-
-These are more stable and meaningful than memorizing one coding-specific coefficient interpretation.
-
-**Worked Example With One-Way ANOVA**
-
-Suppose three teaching methods are compared. A one-way ANOVA model asks whether the mean outcome differs across the three methods. This can be written either as a group-means model or as a regression with two indicators and an intercept. The overall $F$ test asks whether all three group means are equal. A prespecified contrast directly tests a particular method comparison; define its comparison family rather than requiring omnibus significance as an automatic first step.
-
-**Worked Example With Two-Way ANOVA**
-
-Suppose yield is measured under:
-
-- three fertilizer types;
-- two irrigation levels.
-
-A two-way ANOVA model can assess:
-
-- whether fertilizer matters;
-- whether irrigation matters;
-- whether the effect of fertilizer depends on irrigation.
-
-This is a direct example of main effects and interaction in a factorial design.
-
-**Worked Example With ANCOVA**
-
-Suppose two treatment groups are compared on a final score, and baseline score is available as a covariate. A simple ANCOVA model adjusts the treatment comparison for baseline. This often provides a more precise and fairer comparison than comparing final means alone.
-
-## Further practice in R
-
-**Simulate one-way ANOVA data**
+:::
 
 ```{r}
+#| label: ch7-back-transform
+ch7_newtree <- data.frame(Diameter = 15, Height = 80)
+ch7_eta <- as.numeric(predict(ch7_log, newdata = ch7_newtree))
+knitr::kable(data.frame(
+  `Median volume` = exp(ch7_eta),
+  `Mean volume, lognormal correction` = exp(ch7_eta + sigma(ch7_log)^2 / 2),
+  check.names = FALSE), digits = 2,
+  caption = "Predicted cubic feet for diameter 15 inches and height 80 feet.")
+```
+
+With homoscedastic errors independent of the predictors, a less distribution-specific alternative is the smearing estimate $\exp(\hat\eta)\,n^{-1}\sum_i\exp(e_i)$, where $e_i$ are training log residuals. A single correction can fail if the error distribution changes with the predictors. Estimate any correction within each training fold when validating.
+
+**Other powers.** For positive responses, Box-Cox considers $g_\kappa(y)=(y^\kappa-1)/\kappa$ for $\kappa\ne0$ and $g_0(y)=\log y$. Thus $\kappa=1$ leaves the response shape unchanged, $\kappa=1/2$ gives a square-root scale, and $\kappa=0$ gives logs. `MASS::boxcox(ch7_raw)` profiles the transformation parameter for the specified mean model. Treat it as guidance, then refit and inspect; choosing the power is itself model selection. [Box-Cox documentation](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/boxcox.html).
+
+::: {.callout-warning title="Keep scales and data comparable"}
+
+Do not rank an `lm(y ~ ...)` fit against an `lm(log(y) ~ ...)` fit using their raw SSE, $R^2$, or unadjusted software AIC. Their responses differ. Compare held-out predictions of the **same target in the same units**, or use likelihoods expressed on a common response scale with the transformation Jacobian. Logs require positive values; adding an arbitrary constant changes the model. Binary or count responses may instead call for a GLM.
+
+:::
+
+::: {#exr-ch7-back-transform}
+
+## What Does Exponentiating Predict?
+
+Suppose $\log Y=2+0.4x+\varepsilon$, with $\varepsilon\sim N(0,0.25)$. At $x=0$, give the conditional median and mean of $Y$. Does increasing $x$ by one add 0.4 units to the original-scale mean?
+
+:::
+
+::: {#sol-ch7-back-transform}
+
+The median is $e^2\approx7.39$ and the mean is $e^{2+0.25/2}\approx8.37$. A one-unit increase in $x$ multiplies both by $e^{0.4}\approx1.49$ because the log-error variance is constant. It does not add 0.4 response units.
+
+:::
+
+**Recheck influence after transforming.** A new response scale changes residuals, and new predictor columns can change leverage. Apply the diagnostics from [Chapter 6](06.qmd) to the fitted log model as well.
+
+::: {#exm-ch7-tree-influence}
+
+## Does One Tree Drive the Power Relationship?
+
+Return to the log-volume model. A wrongly recorded diameter could distort a timber prediction rule, but an accurately measured unusual tree may reveal where the rule needs improvement. First identify observations worth inspecting:
+
+```{r}
+#| label: ch7-tree-influence
+ch7_diag <- data.frame(Tree = seq_len(nrow(ch7_trees)),
+  Studentized = rstudent(ch7_log), Leverage = hatvalues(ch7_log),
+  Cook = cooks.distance(ch7_log))
+ch7_top <- head(order(ch7_diag$Cook, decreasing = TRUE), 3)
+```
+
+```{r}
+#| label: fig-ch7-tree-cook
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 6.5
+#| fig-height: 2.2
+#| fig-cap: "Cook's distances for the log-volume model. Labels mark the three largest values; the dashed 4/n line is only a screening guide. Tree 18 deserves a sensitivity check, not automatic deletion."
+#| fig-alt: "A stem plot of Cook's distance by tree index. Tree 18 is highest at about 0.224, above a dashed 4/31 screening line; trees 17 and 11 are also labeled."
+ggplot(ch7_diag, aes(Tree, Cook)) +
+  geom_hline(yintercept = 4 / nrow(ch7_diag), linetype = "dashed",
+    colour = "#B45F06") +
+  geom_segment(aes(xend = Tree, y = 0, yend = Cook), colour = "#B8A4D4") +
+  geom_point(colour = "#593196", size = 2) +
+  geom_text(data = ch7_diag[ch7_top, ], aes(label = Tree),
+    vjust = -0.7, size = 3.3) +
+  scale_y_continuous(expand = expansion(mult = c(0.03, 0.18))) +
+  labs(x = "Tree index", y = "Cook's distance") + theme_minimal(base_size = 11)
+```
+
+```{r}
+#| label: ch7-tree-influence-table
+#| echo: false
+knitr::kable(ch7_diag[ch7_top, ], digits = 3, row.names = FALSE)
+```
+
+**Refit to understand sensitivity.** Temporarily omit the largest-$D_i$ tree and compare the same coefficients; keep the original fit as the reference.
+
+```{r}
+#| label: ch7-tree-sensitivity
+ch7_flag <- which.max(ch7_diag$Cook)
+ch7_log_without <- update(ch7_log, data = ch7_trees[-ch7_flag, ])
+knitr::kable(data.frame(Term = names(coef(ch7_log)),
+  All_trees = unname(coef(ch7_log)),
+  Omit_flagged_tree = unname(coef(ch7_log_without))),
+  digits = 3, row.names = FALSE,
+  col.names = c("Term", "All trees", "Omit flagged tree"))
+```
+
+Tree **18** has $D_i\approx0.224$. Omitting it changes the diameter exponent from **1.983 to 1.958**, and the height exponent from **1.117 to 1.261**. The estimated height contribution is more sensitive here; influence can matter differently for different scientific questions. This calculation supplies no evidence of a recording error. Report the sensitivity and investigate the measurement before deciding how to handle it.
+
+:::
+
+**Why recheck before selection?** One influential observation can make a predictor appear useful or change which term a search retains. Resolve data-quality questions and inspect model form first, then assess whether the selection is stable. Recheck the final selected model as well. Ridge and lasso still use squared-error loss here; shrinkage is not an automatic remedy for outliers. For prediction assessment, all outcome-driven diagnostic and model-development decisions belong within training data, not the held-out test set.
+
+
+## From candidate terms to variable selection {#sec-ch7-selection}
+
+After checking functional form and influential observations, return to the candidate terms. Transformations, indicators, polynomials, and interactions all create candidate columns. Adding all of them improves training fit but can make a model unstable and hard to interpret. Selection asks which **terms** to retain within a scientifically defensible candidate set.
+
+::: {#def-ch7-selection}
+
+## Variable Selection
+
+Variable selection chooses a subset of candidate predictors or model terms using a specified rule. A term may contain several columns, such as a factor. The candidate set, terms that must remain, comparison criterion, and stopping rule are part of the procedure.
+
+:::
+
+**Choose the rule before the search.** For Gaussian models fitted to the same observations and response, $\mathrm{AIC}=-2\hat\ell+2k$ and $\mathrm{BIC}=-2\hat\ell+k\log n$, where $k=p+1$ includes $p$ regression coefficients and the variance parameter. Smaller values are preferred. Ordinary $R^2$ alone cannot stop a search because it never decreases when columns are added. These criteria are scores, not significance levels. [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/AIC.html).
+
+| Method | Start | One step | Stop |
+|---|---|---|---|
+| Forward selection | Required terms, often just the intercept | Try each admissible addition; take the greatest score improvement. | No addition improves the score. |
+| Backward elimination | Full candidate model | Try each admissible removal; take the greatest improvement. | No removal improves the score. |
+| Stepwise selection | A specified starting model | Reconsider additions and removals as the fit changes. | Neither move improves the score. |
+
+These are greedy searches; different starting points or directions can yield different models. **Best subset selection** evaluates every allowed subset and finds the best score within that finite set, but $d$ optional terms can require $2^d$ fits. Backward elimination requires an estimable starting model with positive residual degrees of freedom for the usual Gaussian criterion.
+
+::: {.callout-important title="Protect model structure"}
+
+Keep treatment assignments, blocking variables, and scientifically required adjustment terms when the question requires them. Retain parent terms with interactions and lower powers with polynomial terms. Search a multi-level factor as a whole term. R's formula-based `step()` respects interaction hierarchy, but it will not infer every scientific constraint, such as retaining `x` whenever `I(x^2)` is present.
+
+:::
+
+::: {#exm-ch7-sensor-selection}
+
+## Which Sensor Measurements Help Predict an Outcome?
+
+Imagine a manufacturing outcome and eight candidate sensor readings. We simulate data so the useful predictors are known: $Y=5+3x_1-2x_2+1.5x_3+\varepsilon$, with independent $N(0,4)$ errors. Predictors $x_1,x_2$ are correlated; $x_4,\ldots,x_8$ have no additional mean contribution. All methods receive the same eight candidates. This is a teaching simulation, not an industrial dataset.
+
+```{r}
+#| label: ch7-selection-data
 set.seed(8561)
-group <- factor(rep(c("A", "B", "C"), each = 12))
-mu <- c(A = 10, B = 13, C = 15)
-y <- mu[group] + rnorm(length(group), sd = 2)
-
-dat1 <- data.frame(y = y, group = group)
-fit1 <- lm(y ~ group, data = dat1)
-
-summary(fit1)
-anova(fit1)
+ch7_n <- 160
+ch7_X <- matrix(rnorm(ch7_n * 8), nrow = ch7_n)
+ch7_X[, 2] <- 0.7 * ch7_X[, 1] + sqrt(1 - 0.7^2) * ch7_X[, 2]
+colnames(ch7_X) <- paste0("x", 1:8)
+ch7_dat <- data.frame(y = 5 + 3 * ch7_X[, 1] - 2 * ch7_X[, 2] +
+  1.5 * ch7_X[, 3] + rnorm(ch7_n, sd = 2), ch7_X)
+ch7_id <- sample(seq_len(ch7_n), 120)
+ch7_train <- ch7_dat[ch7_id, ]
+ch7_test <- ch7_dat[-ch7_id, ]
+ch7_folds <- sample(rep(1:5, length.out = nrow(ch7_train)))
 ```
 
-**Group means and model matrix**
+We reserve 40 observations now and fit all searches on the other 120. The candidate set contains only main effects, so no polynomial or interaction hierarchy needs to be imposed in this example.
 
 ```{r}
-tapply(dat1$y, dat1$group, mean)
-model.matrix(fit1)[1:10, ]
+#| label: ch7-subset-search
+ch7_null <- lm(y ~ 1, data = ch7_train, na.action = na.fail)
+ch7_full <- lm(y ~ ., data = ch7_train, na.action = na.fail)
+ch7_scope <- list(lower = formula(ch7_null), upper = formula(ch7_full))
+ch7_forward <- step(ch7_null, scope = ch7_scope,
+  direction = "forward", trace = 0)
+ch7_backward <- step(ch7_full, scope = ch7_scope,
+  direction = "backward", trace = 0)
+ch7_both <- step(ch7_null, scope = ch7_scope,
+  direction = "both", trace = 0)
+ch7_searches <- list(Forward = ch7_forward, Backward = ch7_backward,
+  Stepwise = ch7_both)
+knitr::kable(data.frame(
+  Search = names(ch7_searches),
+  Selected = vapply(ch7_searches, function(m)
+    paste(attr(terms(m), "term.labels"), collapse = ", "), character(1)),
+  AIC = vapply(ch7_searches, AIC, numeric(1))), digits = 2, row.names = FALSE)
 ```
 
-**Pairwise comparisons through linear contrasts**
+Here all three searches retain $x_1,x_2,x_3,x_4$. The first three generate the mean, but $x_4$ is noise: selection can retain a chance association.
 
-```{r}
-b <- coef(fit1)
-V <- vcov(fit1)
+`step()` uses AIC by default; `k = log(nrow(ch7_train))` changes the penalty to the BIC-style rule. Fix the analysis rows across all candidates, especially when missing values occur. The trace uses `extractAIC()`, whose additive constant differs from `AIC()` for `lm`; compare scores computed with the same function. [Selection documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/step.html).
 
-# Under treatment coding with A as reference:
-# mean_A = beta0
-# mean_B = beta0 + beta_groupB
-# mean_C = beta0 + beta_groupC
+:::
 
-# Compare B and C
-a <- c(0, 1, -1)
-est <- sum(a * b)
-se <- sqrt(t(a) %*% V %*% a)
-t_stat <- est / se
-df <- df.residual(fit1)
-p_val <- 2 * pt(abs(t_stat), df = df, lower.tail = FALSE)
+::: {#exr-ch7-forward}
 
-c(estimate = est, se = se, t = t_stat, p_value = p_val)
-```
+## Take One Forward Step
 
-**R Demonstration With Two-Way ANOVA**
+The current AIC is 210. Adding $x_2$, $x_3$, or $x_4$ gives 207, 209, or 212. Which move is made? At the next step, the best available AIC is 207.4. Continue or stop? Would a different answer prove that one variable has no scientific role?
 
-**Simulate factorial data**
+:::
 
-```{r}
-set.seed(8561)
-A <- factor(rep(c("Low", "Medium", "High"), each = 16),
-            levels = c("Low", "Medium", "High"))
-B <- factor(rep(rep(c("I1", "I2"), each = 8), times = 3))
+::: {#sol-ch7-forward}
 
-mean_table <- matrix(c(
-  10, 12,
-  13, 15,
-  16, 20
-), nrow = 3, byrow = TRUE)
+Add $x_2$, producing the largest AIC decrease. Stop at the next step because 207.4 is worse than 207. This is a conditional search result under the chosen candidates and score, not proof that an excluded variable has no scientific role.
 
-mu2 <- numeric(length(A))
-for (i in seq_along(mu2)) {
-  mu2[i] <- mean_table[which(levels(A) == A[i]), which(levels(B) == B[i])]
-}
+:::
 
-y2 <- mu2 + rnorm(length(mu2), sd = 1.8)
-dat2 <- data.frame(y = y2, A = A, B = B)
-```
+## Shrinkage: ridge, lasso, and elastic net {#sec-ch7-regularization}
 
-**Fit additive and interaction models**
+Subset selection makes discrete include-or-exclude decisions. **Regularization** instead penalizes coefficient size: it accepts some bias to reduce sensitivity to the sample. Lasso can also produce exact zeros.
 
-```{r}
-fit2_add <- lm(y ~ A + B, data = dat2)
-fit2_int <- lm(y ~ A * B, data = dat2)
+::: {#def-ch7-penalized}
 
-summary(fit2_add)
-summary(fit2_int)
-anova(fit2_add, fit2_int)
-anova(fit2_int)
-```
+## Penalized Least Squares
 
-**Interaction plot**
-
-```{r}
-#| label: fig-factor-interaction
-#| fig-cap: "Observed cell means by factors A and B. Nonparallel lines suggest that the difference between B levels varies across A levels."
-cell_means <- aggregate(y ~ A + B, data = dat2, mean)
-ggplot(cell_means, aes(B, y, group = A, colour = A, shape = A)) +
-  geom_line(linewidth = 0.8) +
-  geom_point(size = 2.5) +
-  scale_colour_brewer(palette = "Dark2") +
-  labs(x = "Factor B", y = "Mean response", colour = "Factor A",
-    shape = "Factor A")
-```
-
-**R Demonstration With ANCOVA**
-
-**Simulate ANCOVA-style data**
-
-```{r}
-set.seed(8561)
-n <- 80
-group3 <- factor(rep(c("Control", "Treatment"), each = n / 2))
-x <- rnorm(n, mean = 50, sd = 10)
-y3 <- 20 + 0.7 * x + ifelse(group3 == "Treatment", 4, 0) + rnorm(n, sd = 4)
-
-dat3 <- data.frame(y = y3, x = x, group = group3)
-fit3 <- lm(y ~ x + group, data = dat3)
-fit3_int <- lm(y ~ x * group, data = dat3)
-
-summary(fit3)
-summary(fit3_int)
-anova(fit3, fit3_int)
-```
-
-**Plot ANCOVA fit**
-
-```{r}
-#| label: fig-ancova-fitted-lines
-#| fig-cap: "Observed responses and fitted parallel ANCOVA lines after adjusting for the continuous covariate."
-ancova_grid <- expand.grid(x = seq(min(dat3$x), max(dat3$x),
-  length.out = 100),
-                           group = levels(dat3$group))
-ancova_grid$fitted <- predict(fit3, newdata = ancova_grid)
-ggplot(dat3, aes(x, y, colour = group)) +
-  geom_point(aes(shape = group), alpha = 0.7, size = 2) +
-  geom_line(data = ancova_grid, aes(y = fitted, linetype = group),
-    linewidth = 0.8) +
-  scale_colour_manual(values = c(Control = "steelblue4",
-    Treatment = "darkorange3")) +
-  labs(x = "Covariate x", y = "Response y", colour = "Group", shape = "Group",
-       linetype = "Group")
-```
-
-**Interpreting Software Output**
-
-In R:
-
-- `lm(y ~ group)` fits a one-way ANOVA model;
-- `lm(y ~ A * B)` fits a two-way ANOVA model with interaction;
-- `lm(y ~ x + group)` fits a common-slope ANCOVA model;
-- `lm(y ~ x * group)` fits an ANCOVA model with group-specific slopes.
-
-Students should recognize that these are all regression models differing only in the structure of the design matrix.
-
-**A Practical Workflow**
-
-A useful modelling workflow is:
-
-- identify whether predictors are factors, covariates, or both;
-- decide whether interactions are scientifically plausible;
-- fit the more complete model when appropriate;
-- test whether interaction is needed;
-- interpret fitted means or adjusted means rather than raw coding-specific coefficients;
-- use contrasts for focused follow-up questions.
-
-**In-Class Discussion Questions**
-
-1. Why is one-way ANOVA just a regression model with indicator variables?
-2. Why should interaction be considered before interpreting main effects in two-way ANOVA?
-3. What does ANCOVA adjust for that ordinary group-mean comparison does not?
-4. Why can coefficient interpretation depend on coding while fitted means do not?
-
-## Practice Problems
-
-**Conceptual**
-
-1. Explain the difference between a one-way ANOVA model and an ANCOVA model.
-2. Explain what interaction means in a two-way ANOVA setting.
-3. Explain why adjusted means are useful in ANCOVA.
-
-**Computational**
-
-Suppose there are three groups A, B, and C, and treatment coding is used with A as the reference group. The fitted model is
+Let $\mathbf x_i$ contain $d$ candidate predictor columns, excluding the intercept, and let $\boldsymbol\beta=(\beta_1,\ldots,\beta_d)$. On $n_{\mathrm{tr}}$ training observations, estimate the intercept and slopes by minimizing
 
 $$
-\hat{Y} = 8 + 2z_1 + 5z_2.
+\frac{1}{2n_{\mathrm{tr}}}\sum_i(y_i-\beta_0-\mathbf x_i^\top\boldsymbol\beta)^2
++\lambda\left\{\frac{1-\alpha}{2}\sum_j\beta_j^2
++\alpha\sum_j|\beta_j|\right\}.
 $$
 
-1. What is the fitted mean for group A?
-2. What is the fitted mean for group B?
-3. What is the fitted mean for group C?
-4. What is the estimated difference between groups B and C?
+The intercept is not penalized. Ridge uses $\alpha=0$, lasso uses $\alpha=1$, and elastic net uses $0<\alpha<1$. Larger $\lambda$ puts more weight on shrinkage. At $\lambda=0$ the objective is OLS; uniqueness still depends on the design rank.
 
-Now consider the ANCOVA model
+:::
 
-$$
-\hat{Y} = 12 + 0.6x + 3z,
-$$
+**Why can lasso give zeros?** Near zero, a squared penalty becomes nearly flat, while an absolute-value penalty keeps a nonzero slope on each side of its corner. A small improvement in fit may therefore fail to move a lasso coefficient away from zero. Ridge usually reduces its magnitude continuously instead.
 
-where $z=1$ for treatment and $z=0$ for control.
+| Method | Main behavior | Interpretation |
+|---|---|---|
+| Ridge | Shrinks slopes, usually without exact zeros. | Useful when many correlated columns carry information. |
+| Lasso | Can set slopes exactly to zero. | A sparse prediction rule; correlated predictors can compete for selection. |
+| Elastic net | Combines both penalties. | Can retain correlated predictors together; both $\alpha$ and $\lambda$ need a selection rule. |
 
-1. Interpret the coefficient of $x$.
-2. Interpret the coefficient of $z$.
-3. Compute the fitted mean when $x=10$ for control and treatment.
+**Why scaling matters.** Converting a predictor from meters to millimeters changes its coefficient by a factor of 1,000. Standardize predictor columns using training data so the penalty does not favor a unit convention. In `glmnet`, `standardize = TRUE` performs this within each fit, including CV training folds, while predictions use the original input units. An ordinary lasso selects columns; it does not automatically preserve an entire factor or interaction hierarchy. [Package documentation](https://glmnet.stanford.edu/reference/glmnet.html).
 
-**Model-Comparison Problem**
+**Choose the penalty on training data.** Divide the 120 training observations into five folds. Fit on four and score predictions on the fifth, repeating for all folds. `lambda.min` minimizes average CV error; `lambda.1se` is the largest penalty within one estimated standard error of the minimum. The latter is a simplicity rule, not a hypothesis test. A single `cv.glmnet()` call tunes $\lambda$ at a fixed $\alpha$. [CV documentation](https://glmnet.stanford.edu/reference/cv.glmnet.html).
 
-You fit the following two models:
+Install `glmnet` once with `install.packages("glmnet")` if needed. Continue the same sensor example:
 
-- Model 1: `y ~ x + group`
-- Model 2: `y ~ x * group`
+```{r}
+#| label: ch7-penalty-cv
+library(glmnet)
+ch7_xtrain <- as.matrix(ch7_train[paste0("x", 1:8)])
+ch7_xtest <- as.matrix(ch7_test[paste0("x", 1:8)])
+ch7_ridge <- cv.glmnet(ch7_xtrain, ch7_train$y,
+  alpha = 0, foldid = ch7_folds, standardize = TRUE, type.measure = "mse")
+ch7_lasso <- cv.glmnet(ch7_xtrain, ch7_train$y,
+  alpha = 1, foldid = ch7_folds, standardize = TRUE, type.measure = "mse")
+```
 
-1. What extra term is in Model 2?
-2. What scientific question does the comparison test?
-3. Why would a significant interaction affect the interpretation of the group effect?
+```{r}
+#| label: fig-ch7-lasso-path
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.5
+#| fig-cap: "Lasso coefficient paths from the sensor training data. Larger penalties move slopes toward zero. The three true signal predictors are colored; the other five are gray. A path displays fitted coefficients, not confidence intervals."
+#| fig-alt: "Lasso coefficient paths against lambda on a log scale; x1, x2, and x3 are colored and the other five predictors are gray. More paths become zero at larger penalties."
+ch7_b <- as.matrix(ch7_lasso$glmnet.fit$beta)
+ch7_path <- data.frame(Lambda = rep(ch7_lasso$lambda, each = nrow(ch7_b)),
+  Coefficient = as.vector(ch7_b),
+  Predictor = rep(rownames(ch7_b), times = ncol(ch7_b)))
+ch7_path$Label <- ifelse(ch7_path$Predictor %in% c("x1", "x2", "x3"),
+  ch7_path$Predictor, "Other predictors")
+ggplot(ch7_path, aes(Lambda, Coefficient, group = Predictor, colour = Label)) +
+  geom_hline(yintercept = 0, colour = "grey80") +
+  geom_line(linewidth = 0.8) + scale_x_log10() +
+  scale_colour_manual(values = c(x1 = "#593196", x2 = "#B45F06",
+    x3 = "#247A6B", `Other predictors` = "#AAAAAA")) +
+  labs(x = "Lambda (log scale)", y = "Fitted coefficient", colour = NULL) +
+  theme_minimal(base_size = 11) + theme(legend.position = "bottom")
+```
 
-**Suggested Take home exercise**
+```{r}
+#| label: fig-ch7-lasso-cv
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 6.5
+#| fig-height: 3.3
+#| fig-cap: "Five-fold CV within the sensor training set. Bars show plus or minus one estimated CV standard error, not confidence intervals for individual responses. Dashed: minimum-error lambda. Solid: the more regularized one-SE choice used below."
+#| fig-alt: "Cross-validation mean squared error for lasso versus lambda, with standard-error bars and vertical lines for lambda.min and lambda.1se."
+ch7_cvplot <- data.frame(Lambda = ch7_lasso$lambda, MSE = ch7_lasso$cvm,
+  SE = ch7_lasso$cvsd)
+ch7_cvlines <- data.frame(Lambda = c(ch7_lasso$lambda.min, ch7_lasso$lambda.1se),
+  Rule = c("Minimum CV error", "One-SE rule"))
+ggplot(ch7_cvplot, aes(Lambda, MSE)) +
+  geom_errorbar(aes(ymin = pmax(0, MSE - SE), ymax = MSE + SE),
+    colour = "#C5B4DE", width = 0) +
+  geom_line(colour = "#593196", linewidth = 0.8) +
+  geom_vline(data = ch7_cvlines, aes(xintercept = Lambda, linetype = Rule)) +
+  scale_linetype_manual(values = c(`Minimum CV error` = "dashed", `One-SE rule` = "solid")) +
+  scale_x_log10() + labs(x = "Lambda (log scale)", y = "CV mean squared error",
+    linetype = NULL) + theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom")
+```
 
-Complete the following tasks:
+**From one column to many.** Ridge remains computable with more columns than observations; ordinary full-model OLS then cannot have full column rank. Lasso can give sparse fits in that setting, but it does not guarantee recovery of the true variables. Here we focus on a modest candidate set so the classical searches and penalized fits are directly comparable.
 
-- fit a one-way ANOVA model and interpret the overall $F$ test;
-- carry out at least two follow-up contrasts among group means;
-- fit a two-way ANOVA model with interaction and interpret the interaction term;
-- fit an ANCOVA model and explain the meaning of adjusted group comparison;
-- compare an ANCOVA model with and without interaction and explain which one you prefer.
+## Evaluate the complete procedure {#sec-ch7-validation}
+
+Our choices are now fixed: AIC for the three subset searches and the one-SE rule for ridge and lasso. Evaluate all five on the **same untouched 40 observations**. Add full-model OLS and a training-mean baseline for context. For $m$ test observations, $\mathrm{RMSE}=\{m^{-1}\sum_i(y_i-\hat y_i)^2\}^{1/2}$, in response units.
+
+```{r}
+#| label: ch7-final-evaluation
+ch7_predictions <- cbind(
+  Baseline = rep(mean(ch7_train$y), nrow(ch7_test)),
+  Full_OLS = predict(ch7_full, newdata = ch7_test),
+  Forward = predict(ch7_forward, newdata = ch7_test),
+  Backward = predict(ch7_backward, newdata = ch7_test),
+  Stepwise = predict(ch7_both, newdata = ch7_test),
+  Ridge = as.numeric(predict(ch7_ridge, newx = ch7_xtest, s = "lambda.1se")),
+  Lasso = as.numeric(predict(ch7_lasso, newx = ch7_xtest, s = "lambda.1se")))
+knitr::kable(data.frame(Method = colnames(ch7_predictions),
+  Test_RMSE = sqrt(colMeans((ch7_predictions - ch7_test$y)^2))),
+  digits = 3, row.names = FALSE)
+ch7_lasso_coef <- as.matrix(coef(ch7_lasso, s = "lambda.1se"))[-1, 1]
+knitr::kable(data.frame(Predictor = names(ch7_lasso_coef),
+  Lasso_coefficient = unname(ch7_lasso_coef)), digits = 3, row.names = FALSE)
+```
+
+Ridge and lasso have slightly smaller test RMSE than full OLS on this split. Lasso keeps a small coefficient for the noise predictor $x_4$, while setting $x_5,\ldots,x_8$ to zero. Equal search results are possible, and no method must win on every split. Report the comparison without revising the methods after looking at test outcomes. If choosing a winning method from this table, its same test error is no longer an independent final assessment of that choice.
+
+::: {.callout-important title="Validate the search, not just its final formula"}
+
+If CV is used to evaluate a selection procedure, rerun the entire variable search inside each training fold. Selecting on all observations first and then cross-validating only the selected formula leaks information. Learned transformations, imputation, scaling, and tuning follow the same rule. Final performance claims require an untouched test set or appropriately nested resampling.
+
+:::
+
+Prediction and inference answer different questions. A selected coefficient is not automatically a scientific discovery; ordinary fixed-model $t$ tests and confidence intervals do not automatically remain valid after selection or lasso followed by OLS refitting. Likewise, a good predictive score does not establish a causal effect.
+
+::: {#exr-ch7-leakage}
+
+## Find the Leakage
+
+A student selects predictors using all 160 outcomes, then splits the observations and reports test RMSE. Another student reserves 40 observations first and runs selection only on the other 120. Which analysis gives an honest held-out assessment of its fitted procedure? Does that make its selected-coefficient p-values valid?
+
+:::
+
+::: {#sol-ch7-leakage}
+
+Only the second keeps test outcomes out of model development, provided the test results are not used to revise the procedure. That separation assesses prediction; it does not repair ordinary post-selection coefficient inference.
+
+:::
+
+## Summary {#sec-ch7-summary}
+
+- A linear model is linear in its coefficients; transformed predictors can describe curved relationships.
+- Choose a transformation for a stated reason, refit, inspect residuals, and interpret the new response scale.
+- Forward, backward, and stepwise searches use a candidate set and a stopping rule; they need not find the globally best subset.
+- Ridge shrinks; lasso can also select. Scale predictors and tune penalties within training data.
+- Compare predictions on the same observations and response scale. Keep the entire development procedure out of final test outcomes.
+
+The next design unit asks which terms must be retained because of randomization, blocking, and the scientific question. That provides a useful boundary for automatic selection. Dose-specific comparisons from [Chapter 5](05.qmd) are retained in [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
+
+## Practice Problems {#sec-ch7-practice}
+
+::: {#exr-ch7-practice}
+
+## Practice: Specify, Select, and Assess
+
+1. A positive outcome grows approximately exponentially with time. Write a multiplicative-error model and its log-linear form. Explain why an additive original-scale error would change the argument.
+2. A quadratic mean fits better than a straight line. Does it cease to be a linear regression model? State the columns of its design matrix.
+3. A backward search considers removing a three-level factor. How many coefficient restrictions are imposed when there is an intercept and no interaction? Why should its indicators be treated together?
+4. Explain why ridge is not generally a variable-selection method and why lasso selections can vary among correlated predictors.
+5. Compare `lambda.min` with `lambda.1se`. Where should the folds, transformation choices, and final test observations enter the procedure?
+6. A tree exceeds the $4/n$ Cook's-distance guide. A student deletes it and runs forward selection. Explain what is missing from this procedure and propose a sensitivity analysis.
+
+:::
+
+::: {#sol-ch7-practice}
+
+1. $Y=a\exp(bt)\exp(\varepsilon)$ gives $\log Y=\log a+bt+\varepsilon$. Logging $a\exp(bt)+\varepsilon$ does not yield this additive log-error structure.
+2. It remains linear in the coefficients; the columns are $\mathbf 1$, $\mathbf x$, and the vector of squared predictor values.
+3. Two restrictions. The two columns represent one factor; selecting them separately makes the search depend on the chosen reference coding.
+4. Ridge usually leaves all slopes nonzero. Correlated predictors offer similar information, so small sample changes can alter which one lasso retains.
+5. `lambda.min` minimizes CV error; `lambda.1se` prefers the largest penalty within one estimated SE of that minimum. Choose transformations and tune models within training data/folds, then evaluate the fixed procedure on an untouched test set.
+6. A screening flag does not establish an error. Check the measurement and model specification, compare scientifically relevant estimates and predictions with and without the tree, and examine whether the selected terms change. Explain any exclusion and retain an honest test set.
+
+:::

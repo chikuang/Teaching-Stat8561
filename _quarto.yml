@@ -30,6 +30,7 @@ book:
     - 04.qmd
     - 05.qmd
     - 06.qmd
+    - 07.qmd
     - part: "Optional topic"
       chapters:
         - App_F-quantile-regression.qmd

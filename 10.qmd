@@ -1,10 +1,10 @@
 # Model Assessment and Prediction {#sec-model-assessment}
 
-A useful model must answer a stated question. Estimating an adjusted association, comparing treatments, and predicting a future response can favor different choices. This chapter keeps the main principles of collinearity and validation; selection algorithms and ridge/lasso are introduced in [Chapter 6](06.qmd).
+A useful model must answer a stated question. Estimating an adjusted association, comparing treatments, and predicting a future response can favor different choices. This chapter keeps the main principles of collinearity and validation; selection algorithms and ridge/lasso are introduced in [Chapter 7](07.qmd).
 
 ::: {.callout-note title="Project workflow"}
 
-Use this short unit with the diagnostic application and final project integration. The required workflow is to reserve test observations, learn preprocessing and tuning within training data, and report prediction errors in meaningful units. Extend the training-only selection and tuning workflow from Chapter 6; the high-dimensional practice in Chapter 12 is optional.
+Use this short unit with the diagnostic application and final project integration. The required workflow is to reserve test observations, learn preprocessing and tuning within training data, and report prediction errors in meaningful units. Extend the training-only selection and tuning workflow from [Chapter 7](07.qmd#sec-ch7-validation); the high-dimensional practice in Chapter 12 is optional.
 
 :::
 
@@ -36,7 +36,7 @@ Random row-wise folds are appropriate only when they match the intended predicti
 
 :::
 
-**AIC and model comparison.** AIC balances likelihood fit and parameter count. It is useful when candidate likelihoods refer to the same response and comparable data, but it is not an effect estimate or a significance test. Comparing AIC values from a model for $Y$ and one for $\log Y$ requires accounting for the transformation of the likelihood; do not compare the raw software values mechanically. Chapter 6 covers AIC/BIC and automatic searches; additional criteria and practice remain in the optional model-selection notes.
+**AIC and model comparison.** AIC balances likelihood fit and parameter count. It is useful when candidate likelihoods refer to the same response and comparable data, but it is not an effect estimate or a significance test. Comparing AIC values from a model for $Y$ and one for $\log Y$ requires accounting for the transformation of the likelihood; do not compare the raw software values mechanically. [Chapter 7](07.qmd#sec-ch7-selection) covers AIC/BIC and automatic searches; additional criteria and practice remain in the optional model-selection notes.
 
 ## From validation to the project comparison
 
@@ -56,7 +56,7 @@ $$
 \mathrm{MAE}=\frac{1}{m}\sum_i|y_i-\hat y_i|.
 $$
 
-The example below supplies a compact visual explanation of held-out prediction. Chapter 6 applies this workflow to penalty tuning; the project may use another suitable regression method.
+The example below supplies a compact visual explanation of held-out prediction. [Chapter 7](07.qmd#sec-ch7-regularization) applies this workflow to penalty tuning; the project may use another suitable regression method.
 
 ## A small validation example
 

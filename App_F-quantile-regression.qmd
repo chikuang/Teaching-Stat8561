@@ -2,7 +2,7 @@
 
 ::: {.callout-note title="Self-study topic"}
 
-This reading extends the regression framework to conditional quantiles. It is supplementary to the main lecture sequence. Read [Chapter 2 — Least Squares Estimation](02_LSE.qmd), [Chapter 5 — Multiple Regression and Categorical Predictors](05.qmd), and [Chapter 8 — Diagnostics and Model Adequacy](08.qmd) first: least squares, coefficient interpretation, and diagnostics are the useful prerequisites. The R examples use the `quantreg` package; install it once with `install.packages("quantreg")` if needed.
+This reading extends the regression framework to conditional quantiles. It is supplementary to the main lecture sequence. Read [Chapter 2 — Least Squares Estimation](02_LSE.qmd), [Chapter 5 — Multiple Regression and Categorical Predictors](05.qmd), and [Chapter 6 — Outliers, Leverage, and Influence](06.qmd) first: least squares, coefficient interpretation, and diagnostics are the useful prerequisites. The R examples use the `quantreg` package; install it once with `install.packages("quantreg")` if needed.
 
 :::
 
@@ -159,7 +159,7 @@ If one slope is significant at $\tau=0.1$ and another is not significant at $\ta
 
 **Before interpreting a fit:** check the functional form, influential predictor values, the amount of information in the tails, and whether separately fitted quantiles cross. Linear loss is less sensitive to very large response residuals than squared loss, but it does not eliminate leverage problems. Crossing fitted quantiles cannot describe a valid ordered distribution at that $x$; investigate misspecification or use methods that enforce ordering rather than silently relabeling the curves.
 
-**Evaluate the stated target.** For held-out data, compare candidate predictions at the same $\tau$ using mean check loss. A coverage diagnostic compares the fraction of responses below the predicted quantile with $\tau$, including checks across meaningful predictor ranges. Good overall coverage can hide poor conditional coverage. Use splits that match future prediction, as in [Chapter 10 — Model Assessment and Prediction](10.qmd).
+**Evaluate the stated target.** For held-out data, compare candidate predictions at the same $\tau$ using mean check loss. A coverage diagnostic compares the fraction of responses below the predicted quantile with $\tau$, including checks across meaningful predictor ranges. Good overall coverage can hide poor conditional coverage. Use splits that match future prediction, as in [Section 7.5 — Evaluate the Complete Procedure](07.qmd#sec-ch7-validation).
 
 ## Application and self-study {.unnumbered}
 

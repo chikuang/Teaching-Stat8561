@@ -12,7 +12,7 @@ A scientific question often concerns a difference between means rather than one 
 
 ::: {.callout-note title="Optional reading after Chapter 5"}
 
-The main sequence now develops transformations and variable selection in [Chapter 6](06.qmd). This reading preserves the dose-specific ToothGrowth comparisons, individual and simultaneous intervals, and additional contrast practice. Use it when a scientific question requires a specified difference between means.
+The main sequence now develops transformations and variable selection in [Chapter 7](07.qmd). This reading preserves the dose-specific ToothGrowth comparisons, individual and simultaneous intervals, and additional contrast practice. Use it when a scientific question requires a specified difference between means.
 
 :::
 

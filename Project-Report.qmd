@@ -28,7 +28,7 @@ Use the ideas from [least squares estimation](02_LSE.qmd), [OLS inference](03_OL
 2. **Explain the coefficients.** Interpret at least two scientifically relevant coefficients or contrasts in context, stating the predictor change, response units, and other variables held fixed. Explain the intercept's baseline and whether it is meaningful for the observed data. With an interaction, make clear which coefficient interpretation depends on the other variable's value.
 3. **Report uncertainty.** Give estimates and 95% confidence intervals for the coefficients or contrasts you interpret. State the assumptions supporting the inference. Distinguish an interval for a model parameter from a prediction interval for an individual outcome. Do not equate a small p-value with a large practical effect.
 4. **Compare nested models.** Compare one reduced and one full linear model on the same training observations and response scale. State the restriction, such as an added coefficient or group of coefficients being zero. Use an appropriate partial F test when its assumptions are defensible; otherwise explain the limitation of that test. Explain whether a retained coefficient's meaning or estimate changes when the adjustment set changes.
-5. **Check the model.** Use residual-versus-fitted and normal Q-Q plots, and examine influential observations. Discuss nonlinearity, unequal variance, unusual observations, and the plausibility of independence. Justify any remedial action; do not remove an observation solely to improve a result. See [diagnostics and model adequacy](08.qmd).
+5. **Check the model.** Use residual-versus-fitted and normal Q-Q plots, and examine influential observations. Discuss nonlinearity, unequal variance, unusual observations, and the plausibility of independence. Justify any remedial action; do not remove an observation solely to improve a result. See [observation diagnostics](06.qmd) and [checking the fitted functional form](07.qmd#sec-ch7-transform-procedure).
 
 Use the training data for these modeling decisions. If you select terms or transformations after examining the data, report that process and treat ordinary confidence intervals and p-values as exploratory: standard fixed-model formulas do not account for data-driven selection. Treat findings from observational data as associations unless the study design justifies a causal interpretation.
 
@@ -54,7 +54,7 @@ $$
 \operatorname{MAE}=\frac{1}{m}\sum_{i=1}^{m}|y_i-\hat y_i|.
 $$
 
-The baseline predicts the **training-set mean** for every test observation. Smaller RMSE and MAE indicate smaller prediction errors. Training $R^2$ alone does not establish which model predicts new observations better. See [model assessment and prediction](10.qmd) and the [tidymodels resampling guide](https://www.tidymodels.org/start/resampling/).
+The baseline predicts the **training-set mean** for every test observation. Smaller RMSE and MAE indicate smaller prediction errors. Training $R^2$ alone does not establish which model predicts new observations better. See [model assessment and prediction](07.qmd#sec-ch7-validation) and the [tidymodels resampling guide](https://www.tidymodels.org/start/resampling/).
 
 {{< pagebreak >}}
 
