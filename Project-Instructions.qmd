@@ -55,6 +55,10 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+         |
 |       | Yasmeen Babagana          |         |
 +-------+---------------------------+---------+
+| 10    | Emmanuel Torzen           | TBD     |
+|       +---------------------------+         |
+|       | Enock Ackaah              |         |
++-------+---------------------------+---------+
 
 :::
 
