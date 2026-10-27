@@ -29,10 +29,12 @@ book:
     - 03_OLS_inference.qmd
     - 04.qmd
     - 05.qmd
+    - 06.qmd
     - part: "Optional topic"
       chapters:
         - App_F-quantile-regression.qmd
         - App_G-mixed-effects.qmd
+        - App_I-contrasts.qmd
     - references.qmd
 
     - part: "Appendix"

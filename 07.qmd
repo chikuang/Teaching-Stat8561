@@ -2,11 +2,11 @@
 
 In this chapter, we study one-way ANOVA, two-way ANOVA, and analysis of covariance as special cases of the general linear model. The main goal is to show that these topics are not separate from regression, but are natural modelling frameworks within the same matrix-based system. This helps students unify mean comparisons, factor effects, covariate adjustment, and interaction analysis under one common language.
 
-**Core objectives.** Identify the experimental unit, distinguish random assignment from random sampling, and count independent replication. Use the comparisons from Chapters 5–6 within the design that generated the observations.
+**Core objectives.** Identify the experimental unit, distinguish random assignment from random sampling, and count independent replication. Use the models from Chapters 4–5 within the design that generated the observations. After Chapter 6, distinguish optional predictive terms from terms required by the design.
 
 ::: {.callout-note title="Reading route"}
 
-The integration lesson uses the design section below. The blocked experiment is a visual application if time permits. The detailed one-way, two-way and ANCOVA sections are retained as further reading: the regression coding and contrast machinery are already developed in Chapters 5–6.
+The integration lesson uses the design section below. The blocked experiment is a visual application if time permits. The detailed one-way, two-way and ANCOVA sections are retained as further reading: regression coding is developed in Chapter 5, and detailed contrasts are in the optional reading.
 
 :::
 
@@ -78,7 +78,7 @@ A randomized complete design without blocks uses treatment alone. The same regre
 - The experimental unit receives the treatment assignment. Repeated measurements on that unit are not independent treatment replications.
 - Random assignment supports treatment comparisons; random sampling concerns generalization to a population.
 - Blocking compares treatments within similar units or settings. Include the design structure when specifying the analysis.
-- ANOVA and ANCOVA use the regression and contrast tools from Chapters 5–6. An interaction makes a comparison conditional on another variable.
+- ANOVA and ANCOVA use the regression tools from Chapters 3–5 and the optional contrast reading. An interaction makes a comparison conditional on another variable.
 - Further-reading factorial models require a clear distinction between a reference-level coefficient and a marginal comparison with specified averaging weights.
 
 Next, [Chapter 8](08.qmd) checks whether the fitted mean and error assumptions are adequate for the observations.
@@ -327,7 +327,7 @@ Plan scientifically meaningful comparisons before inspecting the results when po
 - treatment versus control;
 - preplanned contrasts.
 
-These are again linear functions of model parameters. Use a stated comparison family: for example, Tukey intervals for all pairwise mean differences, or Holm-adjusted p-values for a specified family of tests. Planned comparisons also require multiplicity control when the inferential claim concerns a family. These comparisons use the contrast framework from [Chapter 6 — Contrasts and Estimable Comparisons](06.qmd).
+These are again linear functions of model parameters. Use a stated comparison family: for example, Tukey intervals for all pairwise mean differences, or Holm-adjusted p-values for a specified family of tests. Planned comparisons also require multiplicity control when the inferential claim concerns a family. These comparisons use the contrast framework from [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
 
 **Interpretation and Caution**
 

@@ -6,13 +6,13 @@ execute:
 
 # Regularization: Ridge and Lasso {#sec-regularization}
 
-Least squares becomes difficult to use when many columns of the design matrix carry similar information, or when there are more coefficients than independent data directions. Regularization adds a penalty to stabilize a fitted prediction rule. This chapter connects the rank and least-squares ideas from Chapters 1–2 to the validation workflow in [Chapter 10](10.qmd).
+Building on [Chapter 6](06.qmd#sec-ch6-regularization), this optional laboratory studies a wider candidate set. Least squares becomes difficult to use when many columns of the design matrix carry similar information, or when there are more coefficients than independent data directions. Regularization adds a penalty to stabilize a fitted prediction rule. This chapter connects the rank and least-squares ideas from Chapters 1–2 to the validation workflow in [Chapter 10](10.qmd).
 
 **Learning objectives.** Explain why OLS may be unstable or nonunique, distinguish ridge from lasso, choose a penalty using training-data cross-validation, and evaluate predictions on observations withheld from tuning.
 
-::: {.callout-note title="One class meeting"}
+::: {.callout-note title="Further practice after Chapter 6"}
 
-Spend about 15 minutes on the OLS problem, 25 on the two penalties, 25 on the example and its plots, and 10 on interpretation and limitations. The matrix derivation at the end is optional. Use the existing `glmnet` implementation; deriving its optimization algorithm is outside this introduction.
+Ridge/lasso definitions and the basic tuning procedure are already in Chapter 6. Use this laboratory for additional practice with more predictors than observations, coefficient paths, and prediction assessment; do not reteach the introductory sections. The matrix derivation and optimization details remain optional.
 
 :::
 

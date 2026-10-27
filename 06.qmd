@@ -4,310 +4,467 @@ execute:
   freeze: false
 ---
 
-# Contrasts and Estimable Comparisons {#sec-contrasts}
+# Transformations and Variable Selection {#sec-transform-selection}
 
-A scientific question often concerns a difference between means rather than one coefficient printed by software. This chapter uses the linear-combination inference from [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd) to express those questions. [Chapter 7 — Experimental Design Models: ANOVA and ANCOVA](07.qmd) connects these comparisons to experimental designs.
+[Chapter 5](05.qmd) built models from predictors, groups, and interactions. Its final example also showed that straight lines can miss the pattern. We now ask **which functions of the predictors to use, and which terms to retain**. These are connected decisions: a transformation creates a new design column, while selection decides which columns or terms enter the model.
 
-**Learning objectives.** Express a comparison as a linear function of regression coefficients, obtain its estimate and interval, interpret a conditional comparison, and distinguish one comparison from a family of comparisons.
+> **Learning Objectives**
+>
+> By the end of this chapter, students should be able to:
+>
+> - distinguish a curved relationship from a model nonlinear in its parameters;
+> - choose, fit, and check a suitable transformation;
+> - interpret predictions after transforming the response;
+> - carry out forward selection, backward elimination, and stepwise selection;
+> - explain ridge and lasso, and choose a penalty using cross-validation;
+> - separate model development from final prediction assessment.
 
-::: {.callout-note title="Core lesson and further practice"}
+::: {.callout-note title="Recall from Chapters 2–5"}
 
-The core lesson connects mean weights, coefficient weights, uncertainty and dose-specific comparisons in the ToothGrowth data. Use the integration meeting for coding invariance and the comparison family. The three-group simulation and rank-deficient parameterization are further practice; full estimability theory is in Appendix B.
+We keep the same [least-squares machinery](02_LSE.qmd#sec-lse), [inference for a specified model](03_OLS_inference.qmd), and [nested-model comparisons](04.qmd#thm-partial-f). Chapter 5 supplies the rules for [factor coding and interactions](05.qmd#sec-ch5-factor-coding). Here we change the model specification; we do not rederive OLS or the F test.
 
 :::
 
-**Application: does the method difference depend on dose?** The plot continues Chapter 5. Compare OJ with VC separately at each observed dose before deciding which quantity to estimate. The [ToothGrowth documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html) describes 60 guinea pigs, two delivery methods and three doses in mg/day; the response is recorded odontoblast length.
+**Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from Chapter 5 suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
+
+## A curved relationship can still be a linear model {#sec-ch6-linearity}
+
+::: {#def-ch6-linear-parameters}
+
+## Linear in the Parameters
+
+A regression model is linear in its parameters when it can be written as $Y_i=\beta_0+\sum_{j=1}^d\beta_j h_j(\mathbf x_i)+\varepsilon_i$, where the functions $h_j$ are specified independently of the unknown coefficients. The design row is $(1\;h_1(\mathbf x_i)\;\cdots\;h_d(\mathbf x_i))$; the response need not be a straight-line function of the original predictors.
+
+:::
+
+| Relationship | Model fitted by least squares | What changes? |
+|---|---|---|
+| Curvature in $x$ | $Y=\beta_0+\beta_1x+\beta_2x^2+\varepsilon$ | Add a polynomial column; retain the response scale. |
+| Diminishing change, $x>0$ | $Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform a predictor. |
+| Exponential growth, $Y>0$ | $\log Y=\beta_0+\beta_1x+\varepsilon$ | Transform the response; specify errors on the log scale. |
+| Power relationship, $Y,x>0$ | $\log Y=\beta_0+\beta_1\log x+\varepsilon$ | Transform both variables. |
+
+In R, write a quadratic as `lm(y ~ x + I(x^2), data = dat)`; `I()` makes the square arithmetic. For a log-log model, use `lm(log(y) ~ log(x), data = dat)`. An interaction from Chapter 5 is another constructed column, $x_1x_2$.
+
+::: {.callout-important title="Transform the statistical model, including its errors"}
+
+$Y=a\exp(bx)\exp(\varepsilon)$ becomes $\log Y=\log a+bx+\varepsilon$. In contrast, taking logs of $Y=a\exp(bx)+\varepsilon$ does **not** produce that same additive-error model. Likewise, a saturation model such as $Y=ax/(b+x)+\varepsilon$ is nonlinear in $a,b$; reciprocating it changes the errors and may be inappropriate. Some problems need nonlinear least squares or another response model, not forced linearization.
+
+:::
+
+::: {#exr-ch6-linear}
+
+## In Class: Linear in Which Sense?
+
+Which can be fitted by `lm()` using known predictor columns?
+
+1. $Y=\beta_0+\beta_1\sqrt{x}+\varepsilon$, with $x\geq0$.
+2. $Y=\beta_0+\beta_1x^{\beta_2}+\varepsilon$, with unknown $\beta_2$.
+3. $\log Y=\beta_0+\beta_1x+\varepsilon$, with $Y>0$.
+
+:::
+
+::: {#sol-ch6-linear}
+
+Models 1 and 3 are linear in their coefficients. Model 2 has an unknown exponent inside the predictor function; ordinary `lm()` cannot estimate all three coefficients as written. Model 3 models the conditional mean of $\log Y$, not directly the conditional mean of $Y$.
+
+:::
+
+## Choose a transformation, fit, and check again {#sec-ch6-transform-procedure}
+
+**A practical procedure.**
+
+1. **State the goal and inspect the data.** Identify the response units, positive/zero values, measurement process, and a scientifically plausible shape. For prediction, reserve test observations before exploring relationships.
+2. **Fit a baseline and inspect residuals.** Curvature suggests a mean-shape problem; a fan-shaped spread suggests nonconstant variance. A skewed marginal response alone is not a reason to transform it: regression assumptions concern conditional errors.
+3. **Choose a small candidate set.** A predictor transformation can address shape while keeping response units. A response transformation changes the target and error model; log responses are natural for positive multiplicative variation.
+4. **Refit and recheck.** Examine residuals versus fitted values and predictors, a normal Q-Q plot when using normal-model inference, and influential observations. A transformation does not fix dependence or a poor study design.
+5. **Interpret and validate.** Explain the new coefficients, back-transform appropriately, and compare predictions on a common scale. If choices are learned from data, repeat that learning within training folds.
+
+::: {#exm-ch6-tree-power}
+
+## From Tree Geometry to a Log-Linear Model
+
+For the 31 trees, consider
+
+$$
+V_i=aD_i^{b}H_i^{c}\exp(\varepsilon_i)
+\quad\Longrightarrow\quad
+\log V_i=\beta_0+b\log D_i+c\log H_i+\varepsilon_i,
+\qquad \beta_0=\log a.
+$$
+
+Here $D$ is diameter in inches, $H$ is height in feet, and $V$ is volume in cubic feet. We use all 31 trees to illustrate specification and diagnostics; this is not a held-out performance claim.
 
 ```{r}
-#| label: fig-ch6-motivation
-#| echo: false
-#| fig-cap: "Individual responses and cell means in ToothGrowth. Circles show animals; diamonds show means. Panel headings give dose in mg/day. The OJ-minus-VC difference appears different across doses. Horizontal jitter separates points for display only."
-#| fig-alt: "Three dose panels show observed responses for VC and OJ, with diamonds marking cell means. The mean gaps are positive at doses 0.5 and 1 and nearly zero at dose 2."
-#| fig-width: 7
-#| fig-height: 3.6
+#| label: ch6-tree-models
 library(ggplot2)
-ch6_motivation <- transform(datasets::ToothGrowth,
-  supp = factor(supp, levels = c("VC", "OJ")),
-  dose = factor(dose, levels = c(0.5, 1, 2)))
-ggplot(ch6_motivation, aes(supp, len, colour = supp)) +
-  geom_point(position = position_jitter(width = 0.1, height = 0, seed = 8561),
-             alpha = 0.6, size = 1.7) +
-  stat_summary(fun = mean, geom = "point", shape = 18, size = 4) +
-  facet_wrap(~ dose, nrow = 1, labeller = label_both) +
-  scale_colour_manual(values = c(VC = "#0072B2", OJ = "#B84400")) +
-  labs(x = "Delivery method", y = "Length (recorded scale)", colour = "Method") +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "bottom", panel.grid.minor = element_blank())
-```
-
-
-## Comparisons of group means
-
-Suppose the conditional means of three groups are $\mu_A$, $\mu_B$, and $\mu_C$. A question such as “Does A differ from the average of B and C?” concerns $\theta=\mu_A-(\mu_B+\mu_C)/2$.
-
-::: {#def-mean-contrast}
-
-## Contrast of Group Means
-
-A contrast is a linear combination $\theta=\sum_{j=1}^g c_j\mu_j$ whose weights satisfy $\sum_{j=1}^g c_j=0$. The zero-sum condition makes the comparison unchanged when the same constant is added to every group mean.
-
-:::
-
-**From means to coefficients.** With A as the reference group, write $\boldsymbol{\beta}=(\beta_0,\beta_B,\beta_C)^\top$. Then $\mu_A=\beta_0$, $\mu_B=\beta_0+\beta_B$, and $\mu_C=\beta_0+\beta_C$, so
-
-$$
-\theta=-\tfrac12\beta_B-\tfrac12\beta_C
-=\mathbf{a}^\top\boldsymbol{\beta},\qquad
-\mathbf{a}=(0,-\tfrac12,-\tfrac12)^\top.
-$$
-
-::: {.callout-important title="The zero-sum condition applies to mean weights"}
-
-The weights on $(\mu_A,\mu_B,\mu_C)$ sum to zero. The equivalent weights on treatment-coded regression coefficients need not sum to zero. Always translate the scientific comparison through the chosen parameterization.
-
-:::
-
-Under the full-rank normal linear model, use
-
-$$
-\hat\theta=\mathbf{a}^\top\hat{\boldsymbol{\beta}},\qquad
-\operatorname{SE}(\hat\theta)=\hat\sigma
-\sqrt{\mathbf{a}^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{a}}.
-$$
-
-A confidence interval is $\hat\theta\pm t_{1-\alpha/2,n-p}\operatorname{SE}(\hat\theta)$. This is the same procedure as in [Chapter 3 — Distribution Theory of OLS and Inference](03_OLS_inference.qmd), applied to a different target. For one fixed restriction under the same fitted normal model, the corresponding F statistic equals the squared t statistic. Several linearly independent restrictions can be collected into $C\beta=d$, with $\operatorname{rank}(C)=r$, and tested jointly using the general F test.
-
-**Interpretation.** Report the contrast estimate in the units of the response, its interval, and which population means it compares. Equality of two slopes is only a meaningful scientific question when their units and scales make that comparison defensible.
-
-## Conditional comparisons in the ToothGrowth data {#sec-ch6-tooth}
-
-Chapter 5 compared two straight lines with a model for all six method-dose means. The straight-line restriction did not fit these data well. We therefore use the six-cell model for the comparisons below. The target at an observed dose $d$ is
-
-$$
-\Delta_d=\mu_{\mathrm{OJ},d}-\mu_{\mathrm{VC},d},
-\qquad d\in\{0.5,1,2\}.
-$$
-
-Each dose defines a different comparison. Combining all doses into one average would require specifying the averaging weights and would answer another question.
-
-```{r}
-#| label: ch6-tooth-contrasts
-ch6_dat <- datasets::ToothGrowth
-ch6_dat$supp <- factor(ch6_dat$supp, levels = c("VC", "OJ"))
-ch6_dat$dose_f <- factor(ch6_dat$dose, levels = c(0.5, 1, 2))
-ch6_fit <- lm(len ~ dose_f * supp, data = ch6_dat)
-ch6_profiles <- expand.grid(dose_f = levels(ch6_dat$dose_f),
-                            supp = levels(ch6_dat$supp))
-ch6_X <- model.matrix(delete.response(terms(ch6_fit)),
-                     data = ch6_profiles, contrasts.arg = ch6_fit$contrasts,
-                     xlev = ch6_fit$xlevels)
-# First three rows are VC; last three are OJ, in the same dose order.
-ch6_L <- ch6_X[4:6, , drop = FALSE] - ch6_X[1:3, , drop = FALSE]
-ch6_est <- drop(ch6_L %*% coef(ch6_fit))
-ch6_V <- ch6_L %*% vcov(ch6_fit) %*% t(ch6_L)
-ch6_se <- sqrt(diag(ch6_V))
-ch6_df <- df.residual(ch6_fit)
-ch6_crit <- qt(0.975, ch6_df)
-ch6_results <- data.frame(
-  Dose = levels(ch6_dat$dose_f), Estimate = ch6_est, SE = ch6_se,
-  Lower = ch6_est - ch6_crit * ch6_se,
-  Upper = ch6_est + ch6_crit * ch6_se,
-  p_value = 2 * pt(-abs(ch6_est / ch6_se), df = ch6_df))
-knitr::kable(ch6_results, digits = 3, row.names = FALSE,
-             caption = "OJ minus VC at each dose; individual 95% intervals.")
-stopifnot(ch6_df == 54, max(abs(ch6_est - c(5.25, 5.93, -0.08))) < 1e-10)
-```
-
-**Where do the weights come from?** A fitted mean at a predictor profile is a design row times $\hat\beta$. Subtract the VC row from the OJ row to obtain the weights for their difference:
-
-$$
-\hat\Delta_d=(x_{\mathrm{OJ},d}-x_{\mathrm{VC},d})^\top\hat\beta,
-\qquad
-\widehat{\operatorname{Var}}(\hat\Delta_d)
-=a_d^\top\widehat{\operatorname{Var}}(\hat\beta)a_d.
-$$
-
-The estimate is 5.25 at dose 0.5, 5.93 at dose 1, and $-0.08$ at dose 2. The small last estimate does not establish equivalence; its interval describes uncertainty under the independent, common-variance normal model.
-
-**Do the two differences differ?** Compare dose 1 with dose 2 using $\theta=\Delta_1-\Delta_2$, rather than comparing their separate significance labels. Its estimate is $5.93-(-0.08)=6.01$.
-
-```{r}
-#| label: ch6-difference-of-differences
-ch6_a <- ch6_L[2, ] - ch6_L[3, ]
-ch6_dd <- sum(ch6_a * coef(ch6_fit))
-ch6_dd_se <- sqrt(drop(t(ch6_a) %*% vcov(ch6_fit) %*% ch6_a))
-knitr::kable(data.frame(
-  Comparison = "Difference at dose 1 minus difference at dose 2",
-  Estimate = ch6_dd, SE = ch6_dd_se,
-  Lower = ch6_dd - ch6_crit * ch6_dd_se,
-  Upper = ch6_dd + ch6_crit * ch6_dd_se),
-  digits = 3, row.names = FALSE)
-```
-
-The same calculation works for a continuous-by-group model. For $\Delta(x_0)=\beta_g+(x_0-1)\beta_{xg}$, the estimated variance is
-
-$$
-\widehat{\operatorname{Var}}(\hat\beta_g)
-+(x_0-1)^2\widehat{\operatorname{Var}}(\hat\beta_{xg})
-+2(x_0-1)\widehat{\operatorname{Cov}}(\hat\beta_g,\hat\beta_{xg}).
-$$
-
-Do not add coefficient standard errors, or omit their covariance. A separate significant/non-significant label for each estimate is not a test of their difference.
-
-## One comparison and a family of comparisons {#sec-ch6-family}
-
-For one prespecified comparison, the individual $t$ interval answers the stated question. When reporting all three dose-specific OJ-minus-VC differences as a family, account for the three opportunities to make a false rejection. Prespecifying several tests does not remove this family-wise issue.
-
-For this **family of three tests**, Holm adjusts the p-values. Bonferroni simultaneous intervals use critical value $t_{1-\alpha/(2m),n-p}$ with $m=3$; their joint coverage is at least $1-\alpha$ under the model. These are two different adjustment procedures, so an adjusted p-value and an interval should be labeled with the procedure that produced it.
-
-```{r}
-#| label: ch6-family
-ch6_m <- nrow(ch6_results)
-ch6_bonf <- qt(1 - 0.05 / (2 * ch6_m), ch6_df)
-knitr::kable(data.frame(
-  Dose = ch6_results$Dose,
-  Holm_p = p.adjust(ch6_results$p_value, method = "holm"),
-  Bonferroni_lower = ch6_est - ch6_bonf * ch6_se,
-  Bonferroni_upper = ch6_est + ch6_bonf * ch6_se),
-  digits = 3, row.names = FALSE)
+ch6_trees <- transform(datasets::trees, Diameter = Girth)
+ch6_raw <- lm(Volume ~ Diameter + Height, data = ch6_trees)
+ch6_log <- lm(log(Volume) ~ log(Diameter) + log(Height), data = ch6_trees)
+knitr::kable(data.frame(Term = names(coef(ch6_log)),
+  Estimate = unname(coef(ch6_log))), digits = 3, row.names = FALSE)
 ```
 
 ```{r}
-#| label: fig-ch6-comparison-intervals
+#| label: fig-ch6-tree-scales
 #| echo: false
-#| fig-cap: "The same three OJ-minus-VC estimates with individual 95% intervals (blue) and Bonferroni simultaneous 95% intervals for the three-comparison family (orange). The estimates do not change; joint coverage requires wider intervals. The vertical dashed line is zero."
-#| fig-alt: "Two panels compare individual and simultaneous confidence intervals for OJ minus VC at doses 0.5, 1 and 2. Orange simultaneous intervals are wider. Both panels use the same horizontal scale and a dashed zero line."
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.3
+#| fig-cap: "The same 31 trees on two scales, each with a simple least-squares line using diameter alone. The log-log view motivates a power relationship; the fitted multiple regression above also adjusts for height. This plot does not establish that the transformed model is adequate."
+#| fig-alt: "Side-by-side plots show volume versus diameter on the original scale and log volume versus log diameter. A purple straight line is fitted separately in each panel."
+ch6_scale <- rbind(
+  data.frame(x = ch6_trees$Diameter, y = ch6_trees$Volume,
+    Scale = "Original: diameter (in), volume (ft^3)"),
+  data.frame(x = log(ch6_trees$Diameter), y = log(ch6_trees$Volume),
+    Scale = "Transformed: log diameter, log volume"))
+ggplot(ch6_scale, aes(x, y)) +
+  geom_point(colour = "#3D7975", size = 2) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE,
+    colour = "#593196", linewidth = 0.9) +
+  facet_wrap(~ Scale, scales = "free", nrow = 1) +
+  labs(x = NULL, y = NULL) + theme_minimal(base_size = 11)
+```
+
+The estimated diameter and height exponents are about **1.983** and **1.117**, close to the geometric motivation but not constrained to it. Holding height fixed, multiplying diameter by $r$ changes the fitted log-volume by $\hat b\log r$. Under the lognormal model below, the fitted median volume is multiplied by $r^{\hat b}$. Thus a 1% diameter increase corresponds approximately to a $\hat b$% change in that median; the exact percentage is $100(1.01^{\hat b}-1)$.
+
+```{r}
+#| label: fig-ch6-tree-residuals
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.3
+#| fig-cap: "Standardized residuals from the additive original-scale model and the log-log model, both using diameter and height. The smooth orange line helps reveal remaining mean structure. Inspect each pattern; their fitted-value scales differ, so raw SSE or R-squared values across response scales would not be a fair comparison."
+#| fig-alt: "Two panels compare standardized residuals versus fitted values for the original and log-response tree models, with zero reference lines and smooth trend lines."
+ch6_res <- rbind(
+  data.frame(Fitted = fitted(ch6_raw), Residual = rstandard(ch6_raw),
+    Model = "Original response: fitted volume (ft^3)"),
+  data.frame(Fitted = fitted(ch6_log), Residual = rstandard(ch6_log),
+    Model = "Log response: fitted log volume"))
+ggplot(ch6_res, aes(Fitted, Residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey55") +
+  geom_point(colour = "#593196", size = 2) +
+  geom_smooth(method = "loess", formula = y ~ x, span = 1,
+    se = FALSE, colour = "#B45F06", linewidth = 0.7) +
+  facet_wrap(~ Model, scales = "free_x", nrow = 1) +
+  labs(x = NULL, y = "Standardized residual") + theme_minimal(base_size = 11)
+```
+
+The log model is a candidate to examine, not a guaranteed cure. Both panels still deserve scrutiny. With only 31 observations, a large search over powers and interactions would be hard to justify.
+
+:::
+
+::: {#def-ch6-lognormal}
+
+## Back-Transformation Under Lognormal Errors
+
+If $\log Y=\eta(\mathbf x)+\varepsilon$ with $\varepsilon\mid\mathbf x\sim N(0,\sigma^2)$, then
+
+$$
+\operatorname{Median}(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)\},
+\qquad
+\mathbb E(Y\mid\mathbf x)=\exp\{\eta(\mathbf x)+\sigma^2/2\}.
+$$
+
+Exponentiating a fitted log mean therefore estimates a conditional median, not the original-scale mean. A plug-in mean prediction uses an estimate of $\sigma^2$; it is not an exactly unbiased estimator.
+
+:::
+
+```{r}
+#| label: ch6-back-transform
+ch6_newtree <- data.frame(Diameter = 15, Height = 80)
+ch6_eta <- as.numeric(predict(ch6_log, newdata = ch6_newtree))
+knitr::kable(data.frame(
+  `Median volume` = exp(ch6_eta),
+  `Mean volume, lognormal correction` = exp(ch6_eta + sigma(ch6_log)^2 / 2),
+  check.names = FALSE), digits = 2,
+  caption = "Predicted cubic feet for diameter 15 inches and height 80 feet.")
+```
+
+With homoscedastic errors independent of the predictors, a less distribution-specific alternative is the smearing estimate $\exp(\hat\eta)\,n^{-1}\sum_i\exp(e_i)$, where $e_i$ are training log residuals. A single correction can fail if the error distribution changes with the predictors. Estimate any correction within each training fold when validating.
+
+**Other powers.** For positive responses, Box-Cox considers $g_\kappa(y)=(y^\kappa-1)/\kappa$ for $\kappa\ne0$ and $g_0(y)=\log y$. Thus $\kappa=1$ leaves the response shape unchanged, $\kappa=1/2$ gives a square-root scale, and $\kappa=0$ gives logs. `MASS::boxcox(ch6_raw)` profiles the transformation parameter for the specified mean model. Treat it as guidance, then refit and inspect; choosing the power is itself model selection. [Box-Cox documentation](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/boxcox.html).
+
+::: {.callout-warning title="Keep scales and data comparable"}
+
+Do not rank an `lm(y ~ ...)` fit against an `lm(log(y) ~ ...)` fit using their raw SSE, $R^2$, or unadjusted software AIC. Their responses differ. Compare held-out predictions of the **same target in the same units**, or use likelihoods expressed on a common response scale with the transformation Jacobian. Logs require positive values; adding an arbitrary constant changes the model. Binary or count responses may instead call for a GLM.
+
+:::
+
+::: {#exr-ch6-back-transform}
+
+## In Class: What Does Exponentiating Predict?
+
+Suppose $\log Y=2+0.4x+\varepsilon$, with $\varepsilon\sim N(0,0.25)$. At $x=0$, give the conditional median and mean of $Y$. Does increasing $x$ by one add 0.4 units to the original-scale mean?
+
+:::
+
+::: {#sol-ch6-back-transform}
+
+The median is $e^2\approx7.39$ and the mean is $e^{2+0.25/2}\approx8.37$. A one-unit increase in $x$ multiplies both by $e^{0.4}\approx1.49$ because the log-error variance is constant. It does not add 0.4 response units.
+
+:::
+
+## From candidate terms to variable selection {#sec-ch6-selection}
+
+Transformations, indicators, polynomials, and interactions all create candidate columns. Adding all of them improves training fit but can make a model unstable and hard to interpret. Selection asks which **terms** to retain within a scientifically defensible candidate set.
+
+::: {#def-ch6-selection}
+
+## Variable Selection
+
+Variable selection chooses a subset of candidate predictors or model terms using a specified rule. A term may contain several columns, such as a factor. The candidate set, terms that must remain, comparison criterion, and stopping rule are part of the procedure.
+
+:::
+
+**Choose the rule before the search.** For Gaussian models fitted to the same observations and response, $\mathrm{AIC}=-2\hat\ell+2k$ and $\mathrm{BIC}=-2\hat\ell+k\log n$, where $k=p+1$ includes $p$ regression coefficients and the variance parameter. Smaller values are preferred. Ordinary $R^2$ alone cannot stop a search because it never decreases when columns are added. These criteria are scores, not significance levels. [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/AIC.html).
+
+| Method | Start | One step | Stop |
+|---|---|---|---|
+| Forward selection | Required terms, often just the intercept | Try each admissible addition; take the greatest score improvement. | No addition improves the score. |
+| Backward elimination | Full candidate model | Try each admissible removal; take the greatest improvement. | No removal improves the score. |
+| Stepwise selection | A specified starting model | Reconsider additions and removals as the fit changes. | Neither move improves the score. |
+
+These are greedy searches; different starting points or directions can yield different models. **Best subset selection** evaluates every allowed subset and finds the best score within that finite set, but $d$ optional terms can require $2^d$ fits. Backward elimination requires an estimable starting model with positive residual degrees of freedom for the usual Gaussian criterion.
+
+::: {.callout-important title="Protect model structure"}
+
+Keep treatment assignments, blocking variables, and scientifically required adjustment terms when the question requires them. Retain parent terms with interactions and lower powers with polynomial terms. Search a multi-level factor as a whole term. R's formula-based `step()` respects interaction hierarchy, but it will not infer every scientific constraint, such as retaining `x` whenever `I(x^2)` is present.
+
+:::
+
+::: {#exm-ch6-sensor-selection}
+
+## Which Sensor Measurements Help Predict an Outcome?
+
+Imagine a manufacturing outcome and eight candidate sensor readings. We simulate data so the useful predictors are known: $Y=5+3x_1-2x_2+1.5x_3+\varepsilon$, with independent $N(0,4)$ errors. Predictors $x_1,x_2$ are correlated; $x_4,\ldots,x_8$ have no additional mean contribution. All methods receive the same eight candidates. This is a teaching simulation, not an industrial dataset.
+
+```{r}
+#| label: ch6-selection-data
+set.seed(8561)
+ch6_n <- 160
+ch6_X <- matrix(rnorm(ch6_n * 8), nrow = ch6_n)
+ch6_X[, 2] <- 0.7 * ch6_X[, 1] + sqrt(1 - 0.7^2) * ch6_X[, 2]
+colnames(ch6_X) <- paste0("x", 1:8)
+ch6_dat <- data.frame(y = 5 + 3 * ch6_X[, 1] - 2 * ch6_X[, 2] +
+  1.5 * ch6_X[, 3] + rnorm(ch6_n, sd = 2), ch6_X)
+ch6_id <- sample(seq_len(ch6_n), 120)
+ch6_train <- ch6_dat[ch6_id, ]
+ch6_test <- ch6_dat[-ch6_id, ]
+ch6_folds <- sample(rep(1:5, length.out = nrow(ch6_train)))
+```
+
+We reserve 40 observations now and fit all searches on the other 120. The candidate set contains only main effects, so no polynomial or interaction hierarchy needs to be imposed in this example.
+
+```{r}
+#| label: ch6-subset-search
+ch6_null <- lm(y ~ 1, data = ch6_train, na.action = na.fail)
+ch6_full <- lm(y ~ ., data = ch6_train, na.action = na.fail)
+ch6_scope <- list(lower = formula(ch6_null), upper = formula(ch6_full))
+ch6_forward <- step(ch6_null, scope = ch6_scope,
+  direction = "forward", trace = 0)
+ch6_backward <- step(ch6_full, scope = ch6_scope,
+  direction = "backward", trace = 0)
+ch6_both <- step(ch6_null, scope = ch6_scope,
+  direction = "both", trace = 0)
+ch6_searches <- list(Forward = ch6_forward, Backward = ch6_backward,
+  Stepwise = ch6_both)
+knitr::kable(data.frame(
+  Search = names(ch6_searches),
+  Selected = vapply(ch6_searches, function(m)
+    paste(attr(terms(m), "term.labels"), collapse = ", "), character(1)),
+  AIC = vapply(ch6_searches, AIC, numeric(1))), digits = 2, row.names = FALSE)
+```
+
+Here all three searches retain $x_1,x_2,x_3,x_4$. The first three generate the mean, but $x_4$ is noise: selection can retain a chance association.
+
+`step()` uses AIC by default; `k = log(nrow(ch6_train))` changes the penalty to the BIC-style rule. Fix the analysis rows across all candidates, especially when missing values occur. The trace uses `extractAIC()`, whose additive constant differs from `AIC()` for `lm`; compare scores computed with the same function. [Selection documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/step.html).
+
+:::
+
+::: {#exr-ch6-forward}
+
+## In Class: Take One Forward Step
+
+The current AIC is 210. Adding $x_2$, $x_3$, or $x_4$ gives 207, 209, or 212. Which move is made? At the next step, the best available AIC is 207.4. Continue or stop? Would a different answer prove that one variable has no scientific role?
+
+:::
+
+::: {#sol-ch6-forward}
+
+Add $x_2$, producing the largest AIC decrease. Stop at the next step because 207.4 is worse than 207. This is a conditional search result under the chosen candidates and score, not proof that an excluded variable has no scientific role.
+
+:::
+
+## Shrinkage: ridge, lasso, and elastic net {#sec-ch6-regularization}
+
+Subset selection makes discrete include-or-exclude decisions. **Regularization** instead penalizes coefficient size: it accepts some bias to reduce sensitivity to the sample. Lasso can also produce exact zeros.
+
+::: {#def-ch6-penalized}
+
+## Penalized Least Squares
+
+Let $\mathbf x_i$ contain $d$ candidate predictor columns, excluding the intercept, and let $\boldsymbol\beta=(\beta_1,\ldots,\beta_d)$. On $n_{\mathrm{tr}}$ training observations, estimate the intercept and slopes by minimizing
+
+$$
+\frac{1}{2n_{\mathrm{tr}}}\sum_i(y_i-\beta_0-\mathbf x_i^\top\boldsymbol\beta)^2
++\lambda\left\{\frac{1-\alpha}{2}\sum_j\beta_j^2
++\alpha\sum_j|\beta_j|\right\}.
+$$
+
+The intercept is not penalized. Ridge uses $\alpha=0$, lasso uses $\alpha=1$, and elastic net uses $0<\alpha<1$. Larger $\lambda$ puts more weight on shrinkage. At $\lambda=0$ the objective is OLS; uniqueness still depends on the design rank.
+
+:::
+
+**Why can lasso give zeros?** Near zero, a squared penalty becomes nearly flat, while an absolute-value penalty keeps a nonzero slope on each side of its corner. A small improvement in fit may therefore fail to move a lasso coefficient away from zero. Ridge usually reduces its magnitude continuously instead.
+
+| Method | Main behavior | Interpretation |
+|---|---|---|
+| Ridge | Shrinks slopes, usually without exact zeros. | Useful when many correlated columns carry information. |
+| Lasso | Can set slopes exactly to zero. | A sparse prediction rule; correlated predictors can compete for selection. |
+| Elastic net | Combines both penalties. | Can retain correlated predictors together; both $\alpha$ and $\lambda$ need a selection rule. |
+
+**Why scaling matters.** Converting a predictor from meters to millimeters changes its coefficient by a factor of 1,000. Standardize predictor columns using training data so the penalty does not favor a unit convention. In `glmnet`, `standardize = TRUE` performs this within each fit, including CV training folds, while predictions use the original input units. An ordinary lasso selects columns; it does not automatically preserve an entire factor or interaction hierarchy. [Package documentation](https://glmnet.stanford.edu/reference/glmnet.html).
+
+**Choose the penalty on training data.** Divide the 120 training observations into five folds. Fit on four and score predictions on the fifth, repeating for all folds. `lambda.min` minimizes average CV error; `lambda.1se` is the largest penalty within one estimated standard error of the minimum. The latter is a simplicity rule, not a hypothesis test. A single `cv.glmnet()` call tunes $\lambda$ at a fixed $\alpha$. [CV documentation](https://glmnet.stanford.edu/reference/cv.glmnet.html).
+
+Install `glmnet` once with `install.packages("glmnet")` if needed. Continue the same sensor example:
+
+```{r}
+#| label: ch6-penalty-cv
+library(glmnet)
+ch6_xtrain <- as.matrix(ch6_train[paste0("x", 1:8)])
+ch6_xtest <- as.matrix(ch6_test[paste0("x", 1:8)])
+ch6_ridge <- cv.glmnet(ch6_xtrain, ch6_train$y,
+  alpha = 0, foldid = ch6_folds, standardize = TRUE, type.measure = "mse")
+ch6_lasso <- cv.glmnet(ch6_xtrain, ch6_train$y,
+  alpha = 1, foldid = ch6_folds, standardize = TRUE, type.measure = "mse")
+```
+
+```{r}
+#| label: fig-ch6-lasso-path
+#| echo: false
+#| fig-pos: "H"
 #| fig-width: 7
 #| fig-height: 3.5
-library(ggplot2)
-ch6_plot <- rbind(
-  transform(ch6_results, Method = "Individual 95%"),
-  transform(ch6_results,
-    Lower = ch6_est - ch6_bonf * ch6_se,
-    Upper = ch6_est + ch6_bonf * ch6_se,
-    Method = "Simultaneous 95% (Bonferroni)"))
-ch6_plot$Method <- factor(ch6_plot$Method,
-  levels = c("Individual 95%", "Simultaneous 95% (Bonferroni)"))
-ggplot(ch6_plot, aes(Estimate, Dose, colour = Method)) +
-  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey45") +
-  geom_segment(aes(x = Lower, xend = Upper, yend = Dose), linewidth = 0.8) +
-  geom_point(size = 2.5) +
-  facet_wrap(~ Method, nrow = 1) +
-  scale_colour_manual(values = c("#0072B2", "#B84400")) +
-  labs(x = "OJ minus VC mean length", y = "Dose (mg/day)") +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "none", panel.grid.minor = element_blank())
+#| fig-cap: "Lasso coefficient paths from the sensor training data. Larger penalties move slopes toward zero. The three true signal predictors are colored; the other five are gray. A path displays fitted coefficients, not confidence intervals."
+#| fig-alt: "Lasso coefficient paths against lambda on a log scale; x1, x2, and x3 are colored and the other five predictors are gray. More paths become zero at larger penalties."
+ch6_b <- as.matrix(ch6_lasso$glmnet.fit$beta)
+ch6_path <- data.frame(Lambda = rep(ch6_lasso$lambda, each = nrow(ch6_b)),
+  Coefficient = as.vector(ch6_b),
+  Predictor = rep(rownames(ch6_b), times = ncol(ch6_b)))
+ch6_path$Label <- ifelse(ch6_path$Predictor %in% c("x1", "x2", "x3"),
+  ch6_path$Predictor, "Other predictors")
+ggplot(ch6_path, aes(Lambda, Coefficient, group = Predictor, colour = Label)) +
+  geom_hline(yintercept = 0, colour = "grey80") +
+  geom_line(linewidth = 0.8) + scale_x_log10() +
+  scale_colour_manual(values = c(x1 = "#593196", x2 = "#B45F06",
+    x3 = "#247A6B", `Other predictors` = "#AAAAAA")) +
+  labs(x = "Lambda (log scale)", y = "Fitted coefficient", colour = NULL) +
+  theme_minimal(base_size = 11) + theme(legend.position = "bottom")
 ```
 
-The difference-of-differences above is a separate teaching example. If it is also part of the reported inferential family, include it when defining that family and its adjustment. For all pairwise differences among levels of a simple one-way model, Tukey simultaneous intervals are another useful procedure. [R documentation: Holm adjustment](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html) and [Tukey intervals](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/TukeyHSD.html).
+```{r}
+#| label: fig-ch6-lasso-cv
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 6.5
+#| fig-height: 3.3
+#| fig-cap: "Five-fold CV within the sensor training set. Bars show plus or minus one estimated CV standard error, not confidence intervals for individual responses. Dashed: minimum-error lambda. Solid: the more regularized one-SE choice used below."
+#| fig-alt: "Cross-validation mean squared error for lasso versus lambda, with standard-error bars and vertical lines for lambda.min and lambda.1se."
+ch6_cvplot <- data.frame(Lambda = ch6_lasso$lambda, MSE = ch6_lasso$cvm,
+  SE = ch6_lasso$cvsd)
+ch6_cvlines <- data.frame(Lambda = c(ch6_lasso$lambda.min, ch6_lasso$lambda.1se),
+  Rule = c("Minimum CV error", "One-SE rule"))
+ggplot(ch6_cvplot, aes(Lambda, MSE)) +
+  geom_errorbar(aes(ymin = pmax(0, MSE - SE), ymax = MSE + SE),
+    colour = "#C5B4DE", width = 0) +
+  geom_line(colour = "#593196", linewidth = 0.8) +
+  geom_vline(data = ch6_cvlines, aes(xintercept = Lambda, linetype = Rule)) +
+  scale_linetype_manual(values = c(`Minimum CV error` = "dashed", `One-SE rule` = "solid")) +
+  scale_x_log10() + labs(x = "Lambda (log scale)", y = "CV mean squared error",
+    linetype = NULL) + theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom")
+```
 
-::: {#exr-ch6-conditional}
+**From one column to many.** Ridge remains computable with more columns than observations; ordinary full-model OLS then cannot have full column rank. Lasso can give sparse fits in that setting, but it does not guarantee recovery of the true variables. Here we focus on a modest candidate set so the classical searches and penalized fits are directly comparable.
 
-## Check the Comparison
+## Evaluate the complete procedure {#sec-ch6-validation}
 
-1. Write the mean weights for $\Delta_1-\Delta_2$ in the order $(\mu_{\mathrm{VC},1},\mu_{\mathrm{OJ},1},\mu_{\mathrm{VC},2},\mu_{\mathrm{OJ},2})$.
-2. Does changing the reference method change the OJ-minus-VC target?
-3. Why are simultaneous intervals wider than individual intervals in the plot?
+Our choices are now fixed: AIC for the three subset searches and the one-SE rule for ridge and lasso. Evaluate all five on the **same untouched 40 observations**. Add full-model OLS and a training-mean baseline for context. For $m$ test observations, $\mathrm{RMSE}=\{m^{-1}\sum_i(y_i-\hat y_i)^2\}^{1/2}$, in response units.
+
+```{r}
+#| label: ch6-final-evaluation
+ch6_predictions <- cbind(
+  Baseline = rep(mean(ch6_train$y), nrow(ch6_test)),
+  Full_OLS = predict(ch6_full, newdata = ch6_test),
+  Forward = predict(ch6_forward, newdata = ch6_test),
+  Backward = predict(ch6_backward, newdata = ch6_test),
+  Stepwise = predict(ch6_both, newdata = ch6_test),
+  Ridge = as.numeric(predict(ch6_ridge, newx = ch6_xtest, s = "lambda.1se")),
+  Lasso = as.numeric(predict(ch6_lasso, newx = ch6_xtest, s = "lambda.1se")))
+knitr::kable(data.frame(Method = colnames(ch6_predictions),
+  Test_RMSE = sqrt(colMeans((ch6_predictions - ch6_test$y)^2))),
+  digits = 3, row.names = FALSE)
+ch6_lasso_coef <- as.matrix(coef(ch6_lasso, s = "lambda.1se"))[-1, 1]
+knitr::kable(data.frame(Predictor = names(ch6_lasso_coef),
+  Lasso_coefficient = unname(ch6_lasso_coef)), digits = 3, row.names = FALSE)
+```
+
+Ridge and lasso have slightly smaller test RMSE than full OLS on this split. Lasso keeps a small coefficient for the noise predictor $x_4$, while setting $x_5,\ldots,x_8$ to zero. Equal search results are possible, and no method must win on every split. Report the comparison without revising the methods after looking at test outcomes. If choosing a winning method from this table, its same test error is no longer an independent final assessment of that choice.
+
+::: {.callout-important title="Validate the search, not just its final formula"}
+
+If CV is used to evaluate a selection procedure, rerun the entire variable search inside each training fold. Selecting on all observations first and then cross-validating only the selected formula leaks information. Learned transformations, imputation, scaling, and tuning follow the same rule. Final performance claims require an untouched test set or appropriately nested resampling.
 
 :::
 
-::: {#sol-ch6-conditional}
+Prediction and inference answer different questions. A selected coefficient is not automatically a scientific discovery; ordinary fixed-model $t$ tests and confidence intervals do not automatically remain valid after selection or lasso followed by OLS refitting. Likewise, a good predictive score does not establish a causal effect.
 
-1. The weights are $(-1,1,1,-1)$; they sum to zero.
-2. No. Re-express the same target using the new coefficient coding; its estimate and SE remain the same.
-3. The simultaneous procedure protects the coverage of the whole stated family, rather than each interval separately.
+::: {#exr-ch6-leakage}
 
-:::
+## In Class: Find the Leakage
 
-
-## Coding and estimability
-
-Changing the reference group changes the coefficient labels and values, but not the fitted group means or a fixed comparison of those means. The vector $\mathbf{a}$ must change with the coding so that it represents the same target.
-
-::: {#exm-aliased-group-model}
-
-## An Intercept and All Group Indicators
-
-In $Y_{ij}=\mu+\tau_i+\varepsilon_{ij}$, adding a constant to every $\tau_i$ and subtracting it from $\mu$ leaves every group mean unchanged. The separate parameters are not identified without a constraint, but $\tau_A-\tau_B$ is unchanged and is estimable.
+A student selects predictors using all 160 outcomes, then splits the observations and reports test RMSE. Another student reserves 40 observations first and runs selection only on the other 120. Which analysis gives an honest held-out assessment of its fitted procedure? Does that make its selected-coefficient p-values valid?
 
 :::
 
-The practical lesson is to state the target in terms of observable mean responses before reading coefficients. For the row-space criterion and generalized-inverse formulation, see [Linear-Model Extensions (Optional)](App_B-linear-model-extensions.qmd).
+::: {#sol-ch6-leakage}
 
-## Summary / Recap {.unnumbered}
+Only the second keeps test outcomes out of model development, provided the test results are not used to revise the procedure. That separation assesses prediction; it does not repair ordinary post-selection coefficient inference.
 
-- Start with the comparison of interest, then translate its mean weights into coefficient weights. A contrast of group means has weights summing to zero.
-- Estimate $c^\top\beta$ by $c^\top\hat\beta$, with squared SE $c^\top\widehat{\operatorname{Var}}(\hat\beta)c$. Include covariances.
-- With an interaction, compare groups at specified predictor values. In ToothGrowth, the OJ-minus-VC comparison is estimated separately at each dose.
-- A prespecified comparison and a family of comparisons have different error guarantees. State the family and distinguish individual from simultaneous intervals.
-- Coding can change coefficients without changing an estimable comparison. One fixed restriction gives $t^2=F$ under the same normal model.
+:::
 
-The design discussion in [Chapter 7](07.qmd) asks which observations supply independent information for these comparisons.
+## Summary {.unnumbered}
 
-## Further practice: a three-group comparison {.unnumbered}
+- A linear model is linear in its coefficients; transformed predictors can describe curved relationships.
+- Choose a transformation for a stated reason, refit, inspect residuals, and interpret the new response scale.
+- Forward, backward, and stepwise searches use a candidate set and a stopping rule; they need not find the globally best subset.
+- Ridge shrinks; lasso can also select. Scale predictors and tune penalties within training data.
+- Compare predictions on the same observations and response scale. Keep the entire development procedure out of final test outcomes.
 
-This simulated example separates the known data-generating means from their noisy estimates. Changing the seed changes the sample, not the target comparison.
+The next design unit asks which terms must be retained because of randomization, blocking, and the scientific question. That provides a useful boundary for automatic selection. Dose-specific comparisons from Chapter 5 are retained in [Contrasts and Estimable Comparisons (Optional)](App_I-contrasts.qmd).
 
-```{r}
-library(ggplot2)
-theme_set(theme_minimal(base_size = 11) +
-            theme(legend.position = "bottom",
-              panel.grid.minor = element_blank()))
+## Practice Problems {#sec-ch6-practice}
 
-set.seed(8561)
-group <- factor(rep(c("A", "B", "C"), each = 12))
-mu <- c(A = 10, B = 13, C = 15)
-dat <- data.frame(group,
-                  y = unname(mu[group]) + rnorm(length(group), sd = 2))
-fit <- lm(y ~ group, data = dat)
+::: {#exr-ch6-practice}
 
-# A minus the average of B and C, under treatment coding.
-a <- c(0, -1/2, -1/2)
-estimate <- sum(a * coef(fit))
-se <- sqrt(drop(t(a) %*% vcov(fit) %*% a))
-df <- df.residual(fit)
-ci <- estimate + c(-1, 1) * qt(0.975, df) * se
-c(estimate = estimate, SE = se, lower = ci[1], upper = ci[2],
-  p_value = 2 * pt(-abs(estimate / se), df))
-```
+## Practice: Specify, Select, and Assess
 
-**Verify the same question under another coding.** A cell-means model directly estimates $(\mu_A,\mu_B,\mu_C)$, so its contrast weights are $(1,-1/2,-1/2)$.
+1. A positive outcome grows approximately exponentially with time. Write a multiplicative-error model and its log-linear form. Explain why an additive original-scale error would change the argument.
+2. A quadratic mean fits better than a straight line. Does it cease to be a linear regression model? State the columns of its design matrix.
+3. A backward search considers removing a three-level factor. How many coefficient restrictions are imposed when there is an intercept and no interaction? Why should its indicators be treated together?
+4. Explain why ridge is not generally a variable-selection method and why lasso selections can vary among correlated predictors.
+5. Compare `lambda.min` with `lambda.1se`. Where should the folds, transformation choices, and final test observations enter the procedure?
 
-```{r}
-fit_means <- lm(y ~ 0 + group, data = dat)
-c_mean <- c(1, -1/2, -1/2)
-estimate_means <- sum(c_mean * coef(fit_means))
-se_means <- sqrt(drop(t(c_mean) %*% vcov(fit_means) %*% c_mean))
-rbind(treatment_coding = c(estimate, se),
-      cell_means_coding = c(estimate_means, se_means))
-```
+:::
 
-```{r}
-#| label: fig-contrast-interval
-#| fig-cap: "The estimated A-minus-average-of-B-and-C contrast and its 95% confidence interval. Zero represents no difference for this particular comparison."
-#| fig-height: 2.8
-contrast_result <- data.frame(estimate, lower = ci[1], upper = ci[2],
-                               comparison = "A - (B + C) / 2")
-ggplot(contrast_result, aes(estimate, comparison)) +
-  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey50") +
-  geom_segment(aes(x = lower, xend = upper, yend = comparison),
-               linewidth = 1, colour = "steelblue4") +
-  geom_point(size = 3, colour = "steelblue4") +
-  expand_limits(x = 0) +
-  labs(x = "Estimated contrast and 95% confidence interval", y = NULL)
-```
+::: {#sol-ch6-practice}
 
-**A family of comparisons.** For all three pairwise group differences, fit the one-way ANOVA and request simultaneous Tukey intervals:
+1. $Y=a\exp(bt)\exp(\varepsilon)$ gives $\log Y=\log a+bt+\varepsilon$. Logging $a\exp(bt)+\varepsilon$ does not yield this additive log-error structure.
+2. It remains linear in the coefficients; the columns are $\mathbf 1$, $\mathbf x$, and the vector of squared predictor values.
+3. Two restrictions. The two columns represent one factor; selecting them separately makes the search depend on the chosen reference coding.
+4. Ridge usually leaves all slopes nonzero. Correlated predictors offer similar information, so small sample changes can alter which one lasso retains.
+5. `lambda.min` minimizes CV error; `lambda.1se` prefers the largest penalty within one estimated SE of that minimum. Choose transformations and tune models within training data/folds, then evaluate the fixed procedure on an untouched test set.
 
-```{r}
-TukeyHSD(aov(y ~ group, data = dat))
-```
-
-These intervals answer a different collection of questions from the single contrast above. Do not infer a difference between group means by inspecting whether two separate mean-response intervals overlap.
-
-## Practice
-
-1. Express $\mu_B-\mu_C$ under treatment coding with A as reference, then under cell-means coding.
-2. Verify that the estimate and standard error agree under the two codings.
-3. Explain why the coefficients can change after changing the reference group while the scientific comparison remains unchanged.
-4. Specify the comparison family before reporting all pairwise differences, and explain the role of multiplicity adjustment.
+:::

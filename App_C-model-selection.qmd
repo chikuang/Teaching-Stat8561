@@ -2,7 +2,7 @@
 
 ::: {.callout-note title="Optional topic"}
 
-The main course compares a small set of scientifically justified models and checks predictive performance. Automatic searches and additional selection criteria are supplementary. A search-selected model does not inherit the usual fixed-model interpretation of its p-values and confidence intervals.
+Chapter 6 now teaches forward, backward, and stepwise selection alongside ridge/lasso and validation. This older collection is retained only for additional criteria and practice. A search-selected model does not inherit the usual fixed-model interpretation of its p-values and confidence intervals.
 
 :::
 

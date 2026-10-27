@@ -6,7 +6,7 @@ engine: knitr
 
 The topic of this course includes statistical inference, Multivariate normal distribution, distribution of quadratic forms, linear models, regression models and experimental design models.
 
-The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. The final two teaching units introduce logistic regression and regularization with ridge and lasso. Poisson regression and fuller GLM theory remain supplementary reading. Advanced extensions are collected under **Optional topic**.
+The course moves from Gaussian linear-model theory to regression, experimental comparisons, and model checking. Chapter 6 connects transformations with variable selection, including ridge and lasso. Later units develop experimental design, diagnostics, prediction assessment, and logistic regression. Poisson regression and fuller GLM theory remain supplementary reading. Advanced extensions are collected under **Optional topic**.
 
 **Prerequisites**
 
@@ -64,12 +64,13 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | 11--17 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 1](Exam1-2026F.qmd) | 15 |
 | `r if (knitr::is_latex_output()) "Next" else "⏳"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | 18-- |
+| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 6 | [Transformations and Variable Selection](06.qmd) | TBA |
 | `r if (knitr::is_latex_output()) "Exam" else "📝"` |  | Exam 2 | 23 |
 <!-- Future lecture coverage will be updated after class. -->
 
 **Optional topic**
 
-Students interested in extensions can read [Quantile Regression](App_F-quantile-regression.qmd) and [Mixed-Effects Models](App_G-mixed-effects.qmd). These readings include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.
+Students interested in extensions can read [Quantile Regression](App_F-quantile-regression.qmd), [Mixed-Effects Models](App_G-mixed-effects.qmd), and [Contrasts and Estimable Comparisons](App_I-contrasts.qmd). These readings include explanations, graphical examples, R code, and further reading; they are supplementary to the scheduled chapters.
 
 ## Recommended Textbooks
 

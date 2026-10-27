@@ -6,11 +6,11 @@ execute:
 
 # Transformations and Weighted Least Squares {#sec-remedies}
 
-In this chapter, we study what to do when the assumptions of the ordinary linear model are not adequate. Building on residual analysis and diagnostics from [Chapter 8 — Diagnostics and Model Adequacy](08.qmd), we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
+Chapter 6 develops the core transformation procedure, log-response interpretation, and validation. This reference unit extends those ideas to weighted least squares when precision differs across observations. Building on residual analysis and diagnostics from [Chapter 8 — Diagnostics and Model Adequacy](08.qmd), we now consider practical remedies for nonlinearity, nonconstant variance, and other violations of model assumptions. The emphasis is on understanding when transformations help, how weighted least squares works, and how to think systematically about model improvement.
 
 ::: {.callout-note title="Selected application and further reading"}
 
-The diagnostics lesson selects the log-response interpretation and the original-versus-log-scale plot in the R demonstration. The other transformations, WLS derivation and WLS examples remain further reading. Changing the response scale changes the target being estimated; WLS instead changes the precision weighting while retaining a specified mean model.
+Use the transformation examples below only for extra practice; do not repeat the Chapter 6 lesson. The WLS derivation and examples are further reading for the diagnostics unit. Changing the response scale changes the target being estimated; WLS instead changes the precision weighting while retaining a specified mean model.
 
 :::
 

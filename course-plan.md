@@ -1,112 +1,61 @@
 # STAT 8561 — 2026 Fall 課程安排
 
-更新：2026-10-21。教師已確認每堂課 **75 分鐘**。Chapter 4 已在第 17 堂（10/21）完成，Chapter 5 從第 18 堂開始。Exam 2 改為 11/11。以下依此安排後續教學；預定日期不代表已完成授課。
+更新：2026-10-26。每堂課 75 分鐘、週一／週三授課。Chapter 4 已於第 17 堂（10/21）完成；Chapter 5 從第 18 堂開始。以下為備課安排，預定日期不代表已完成授課。網站 Chapter 6 的 Lecture 維持 TBA。
 
-## 教學主線與取捨
+## 教學主線
 
-主線為「模型比較 → 係數與條件比較 → 設計與診斷 → 實際分析 → 模型延伸」。已有的 matrix、OLS、multivariate normal、quadratic forms 與 exact t/F 基礎，繼續用於後續案例。
+**模型比較 → 係數與交互作用 → 函數形式與變數選擇 → 實驗設計與診斷 → 預測評估與 GLM。** 已有的 matrix、OLS、multivariate normal、quadratic forms 與 exact t/F 基礎按問題引用，不重新推導。
 
-後續以 Chapter 5、Chapter 6 的核心比較及 Chapter 8 的診斷為主。Chapter 7、9、10 選用必要段落，配合案例與 final project；既有完整課件保留供選讀，不要求逐章全部講完。期末明確預留 **一堂 logistic regression** 與 **一堂 ridge／lasso**，最後一堂留給 project 整合與緩衝。
+Chapter 6 改為 **Transformations and Variable Selection**。先回答如何表示曲線，再回答哪些 terms 要保留；forward／backward／stepwise、ridge／lasso 和 validation 放在同一條主線。章節內容可分次授課，不把 transformation、selection 和 penalty tuning 全塞進一堂。原 Chapter 6 的 contrasts 保存為 `App_I-contrasts.qmd` 選讀；實驗設計課仍須交代研究比較、experimental unit、randomization 與 replication，不能用自動選模取代設計。
 
-| 課件 | 本學期課堂安排 | 保留的延伸閱讀 |
+| 課件 | 課堂核心 | 選讀或補充 |
 |---|---|---|
-| Ch. 1–3 | 已有理論工具；後續按問題引用 | 較長的重複推導不再逐次重講 |
-| Ch. 4 `04.qmd` | 10/21 完成 nested models、partial F 與 R 比較 | SSE 幾何與分布證明可作課後複習 |
-| Ch. 5 `05.qmd` | 約兩堂：adjusted interpretation、factor coding、additive／interaction models | 完整程式輸出、額外 coding checks 作練習 |
-| Ch. 6 `06.qmd` | 一堂核心，另用整合課鞏固：contrast、estimate／SE／CI、條件比較、比較 family | 完整 estimability 理論與更多多重比較方法 |
-| Ch. 7 `07.qmd` | 整合課選講 experimental unit、randomization、replication；有餘裕示範 blocking | 完整 one-way／two-way ANOVA、ANCOVA 與額外 R 範例 |
-| Ch. 8 `08.qmd` | 兩堂合併診斷與應用：residual patterns、Q-Q、leverage、Cook's distance、修正與重檢 | 更多診斷圖與數值推導作課後練習 |
-| Ch. 9 `09.qmd` | 選讀 log transformation 與反轉換解讀，接入診斷案例 | 其他 power transformations、完整 WLS 推導與計算 |
-| Ch. 10 `10.qmd` | project 工作流程：train/test、CV、leakage、RMSE／MAE，穿插在 11/18 與 12/7 | 完整 CV 程式、AIC 與更細的評估議題 |
-| Ch. 11 `11.qmd` | **11/30，一堂 logistic regression**：binary mean、logit、odds ratio、predicted probability、一個完整例子 | Poisson、offset、deviance／LRT 與較深入的 GLM 理論 |
-| Ch. 12 `12.qmd` | **12/2，一堂 regularization／high-dimensional regression 導論**：ridge、lasso、選擇 lambda、held-out prediction | 高維收斂率、selection consistency、post-selection／debiased inference |
+| Ch. 1–4 | 已有理論、nested models、partial F | 重複證明按需要回看 |
+| Ch. 5 | Adjusted interpretation、factor coding、interaction、模型形狀的限制 | 較長 coding checks |
+| Ch. 6 | 參數線性與曲線的區別；轉換程序與反轉換；forward／backward／stepwise；ridge／lasso；CV 與 held-out prediction | Box-Cox 概念、elastic net 概覽；不推導優化演算法 |
+| Ch. 7 | Experimental unit、randomization、replication、blocking；保留設計所需 terms | 完整 factorial ANOVA／ANCOVA 與更多 contrasts |
+| Ch. 8 | Residual patterns、Q-Q、leverage、Cook's distance；修正後重檢 | 額外診斷模擬 |
+| Ch. 9 | 必要時作異質變異的延伸 | Transformation 已由 Ch. 6 主講；WLS 推導與例子選讀 |
+| Ch. 10 | Project 的完整評估與解讀；grouped／time-aware splits | 不重複 Ch. 6 的 CV 定義 |
+| Ch. 11 | 一堂 logistic regression：binary mean、logit、odds ratio、prediction | Poisson、offset、likelihood／IRLS |
+| Ch. 12 | 不另開重複的 ridge／lasso 導論 | 高維 laboratory；已於 Ch. 6 學過基本 penalty 與 tuning |
 
-章節號是教材索引，不等於上課堂數。Chapter 12 是新增的單堂教材；Chapter 10 保留作預測評估的先備內容。學生應能解釋 assumptions、比較目標與限制，並完成可重現分析；更深入的證明及計算使用原有附錄。
+## 後續課次（暫定）
 
-## 從目前進度出發的課表
-
-依現有週一／週三課表，從 10/21 到 12/7 尚有 12 次見面，包含 1 次考試、1 次考前複習及 1 次期末整合。11/23、11/25 為 Thanksgiving break，不上課。Exam 2 改為 11/11；Final Project 沿用 **12/13** 繳交。
-
-| 課次 | 日期 | 內容 | 預期學習成果 |
+| 課次 | 日期 | 內容 | 預期成果 |
 |---|---|---|---|
-| 17 | Wed 10/21 | 從 Ch. 4.3 接續並完成 Chapter 4；nested／partial F、R 示範與整理 | 在同一批 observations 上寫出限制、比較模型、判讀分子與分母 df |
-| 18 | Mon 10/26 | Ch. 5：adjusted interpretation、factor coding、additive model | 解釋 reference group，將問題寫成 mean function 與 design matrix |
-| 19 | Wed 10/28 | Ch. 5：interaction、centering、equal slopes／identical lines | 寫出 group-specific means／slopes，說清楚比較在哪個 predictor value 成立 |
-| 20 | Mon 11/2 | Ch. 6 核心：contrasts、estimate／SE／CI；ToothGrowth 條件比較 | 從研究問題建立權重，用完整 covariance matrix 計算不確定性 |
-| 21 | Wed 11/4 | Ch. 5–6 整合與補強；Ch. 7 設計核心 | 分辨單一與一組比較，辨認 experimental unit、randomization、replication；blocking 視進度示範 |
-| 22 | Mon 11/9 | Exam 2 review（暫定）；整合題與分析解讀 | 連結模型、比較、推論條件、診斷與限制 |
-| 23 | Wed 11/11 | **Exam 2** | 依實際授課並事先公告的範圍；使用 Ch. 1–4 必要工具，不預設完整 Ch. 5–10 均已教完 |
-| 24 | Mon 11/16 | Ch. 8：residual patterns、Q-Q、leverage、influence | 區分 mean misspecification、unequal variance、outlier 與 influential observation |
-| 25 | Wed 11/18 | Ch. 8 應用；選用 Ch. 9 log transformation、Ch. 10 project 評估 | 修正後重檢；區分反轉換的 mean／median；建立 train/test 與 training-only CV 工作流程 |
+| 18 | Mon 10/26 | Ch. 5：adjustment、factor coding、additive model | 從問題寫出 mean function 與 design columns |
+| 19 | Wed 10/28 | Ch. 5：interaction、centering、模型比較 | 解釋 conditional difference，辨認 straight-line restriction |
+| 20 | Mon 11/2 | Ch. 6.1–6.2：transformation 與 tree-volume 案例 | 分辨 linear in parameters；完成 diagnose → transform → refit → recheck；解釋 mean／median |
+| 21 | Wed 11/4 | Ch. 6.3：forward／backward／stepwise；簡介 shrinkage | 設定候選集、AIC/BIC、停止規則與 hierarchy；辨認 selection 與 inference 的差別 |
+| 22 | Mon 11/9 | Exam 2 review（暫定） | 依實際已教內容整合模型、比較與推論 |
+| 23 | Wed 11/11 | **Exam 2** | 範圍依授課進度事先公告；不因整章發布就自動納入所有內容 |
+| 24 | Mon 11/16 | Ch. 7 設計核心；接 Ch. 8 diagnostics | Experimental unit、randomization／replication、blocking；保留必要 terms，開始 residual checks |
+| 25 | Wed 11/18 | Ch. 8 應用；Ch. 10 project workflow | Q-Q、leverage／influence、修正與重檢；訓練／測試的分工 |
 | — | Mon 11/23 / Wed 11/25 | **Thanksgiving break — no class** | 無額外 lecture |
-| 26 | Mon 11/30 | **Logistic regression：一堂** | 用 logit 連結 binary mean 與 linear predictor，區分 odds ratio 與 probability difference |
-| 27 | Wed 12/2 | **Ridge／lasso：一堂** | 說明 shrinkage／sparsity、閱讀 coefficient path 與 CV curve、比較 held-out error |
-| 28 | Mon 12/7 | Project 整合、問題討論與緩衝 | 檢查分析敘述、診斷、可重現性與公平預測比較；不另開新模型家族 |
-| — | Sun 12/13 | **Final Project due** | 沿用現有 project instructions、評分與提交要求 |
+| 26 | Mon 11/30 | **Logistic regression** | 區分 transforming Y 與 linking E(Y|x)；解釋 odds ratio 和機率預測 |
+| 27 | Wed 12/2 | **Ch. 6.4–6.5：ridge／lasso 與完整評估** | 讀 path／CV curve、選 lambda、評估固定方法；Ch. 12 僅作加深練習 |
+| 28 | Mon 12/7 | Project 整合、討論與緩衝 | 檢查模型敘述、diagnostics、leakage、可重現性與比較公平性 |
+| — | Sun 12/13 | **Final Project due** | 沿用現有 project instructions 與評分 |
 
-11/4 保留作概念與練習的緩衝，避免把 Chapter 6 排成過於密集的公式課。若 Chapter 4 完成時間延後，先減少重複手算、逐行程式講解與 Chapter 7 的擴充例子，再調整後續練習；保護 11/30、12/2 的兩個延伸單元及必要診斷內容。12/7 優先處理 project 和未解決的核心問題。
+11/16 至少保留約半堂給 experimental design，不因新增 selection 而略過 course description 的設計內容。若進度不足，先減少逐行程式解說、Box-Cox 計算與高維 laboratory，保留 diagnostics、logistic 與核心 validation。11/30 的 GLM 課說明：`log(Y)` 的 Gaussian regression 與 `log(E(Y|x))` 的 link 是不同模型。
 
-日曆依據：[GSU Thanksgiving break（11/23–11/28）](https://calendar.gsu.edu/event/thanksgiving-break-full-semester-mmii)、[GSU full-semester classes end（12/7）](https://calendar.gsu.edu/event/classes-end-full-semester-3855)。Project 日期以 `Project-Instructions.qmd` 與 `Project-Report.qmd` 為準。
+日期沿用已確認課表；日曆依據：[GSU Thanksgiving break](https://calendar.gsu.edu/event/thanksgiving-break-full-semester-mmii)、[GSU classes end](https://calendar.gsu.edu/event/classes-end-full-semester-3855)。Exam 1 為 10/14、Exam 2 為 11/11；不另加考試課次。
 
-## 單堂延伸課的範圍
+## 閱讀銜接與排版
 
-### 11/30：Logistic regression（75 分鐘）
+- Ch. 5 結尾的曲線問題 → Ch. 6 的 functional form。Tree-volume 例子沿用熟悉資料；選模另用八個 sensors 的模擬，明確標示是模擬而非真實資料。
+- 原 contrasts、ToothGrowth dose-specific CI 與 multiplicity → Optional topic 的 `App_I-contrasts.qmd`。Ch. 7 若需比較權重可選用，不重講 Chapter 3 的一般線性組合推論。
+- Ch. 6 → Ch. 7：能搜尋的 predictive terms 與設計／研究問題必須保留的 terms 不同。
+- Ch. 8／9／10：引用 Ch. 6 的 transformation 與 tuning 程序，集中講更完整的診斷與 project 決策。
+- Ch. 12 保留高維額外練習；Appendix C 保留額外準則與例子，兩者均不再是核心方法的第一次介紹。
 
-| 時間 | 重點 |
-|---|---|
-| 15 分鐘 | Binary outcome、conditional probability；沿用 X，改變 response family 與 link |
-| 20 分鐘 | Logit／inverse logit；odds ratio 不等於 risk ratio 或固定的 probability difference |
-| 25 分鐘 | 一個 `glm(..., family = binomial())` 範例：係數、預測機率及圖形解讀 |
-| 15 分鐘 | 檢查資料與 convergence／separation，概略說明近似推論及機率預測評估 |
+使用 Definition、Example、Exercise／折疊 Solution 與 callout；小段落用粗體，避免過多 subsection。Summary 獨立成 section，置於 Practice Problems 之前。長程式折疊、表格僅顯示必要結果；圖提供座標單位、資料來源和可支持的解讀。
 
-Poisson／offset 保留在 `11.qmd` 的延伸閱讀；exponential-family likelihood、IRLS 與完整漸近推導仍在 Appendix E。這些不占用 ridge／lasso 的預留課次。
+## 評量與發布
 
-### 12/2：Regularization and high-dimensional regression（75 分鐘）
+沿用 Final Project：continuous response 的 multiple linear regression 加另一個合適的 regression 方法，使用同一 test set。Ridge／lasso 是可用選項，不強迫所有 project 採用。Logistic 以課內 binary-response 範例練習，不改動 project response、評分或繳交要求。
 
-| 時間 | 重點 |
-|---|---|
-| 15 分鐘 | 近共線性與 predictors 過多：OLS 的不穩定、rank deficiency，以及 training fit 的限制 |
-| 25 分鐘 | Ridge／lasso 的目標函數、shrinkage／sparsity；intercept 與 predictor scaling |
-| 25 分鐘 | 用固定 training folds 比較 ridge／lasso，閱讀 coefficient path 和 CV curve，選 lambda 後評估 untouched test set |
-| 10 分鐘 | Prediction、variable selection 與 coefficient inference 的差別；結果的限制 |
+所有隨機例子使用 seed 8561。Learned transformations、preprocessing、variable selection 和 tuning 都留在 training data／training folds；final test set 不參與方法選擇。Prediction validation 不等於 post-selection inference 有效。
 
-採用一個可重現的 Gaussian regression 例子，讓學生先掌握 loss 加 penalty 的概念。高維估計的收斂率、oracle properties、selection consistency 與 debiased lasso 留作進階選讀。Ridge／lasso 的課堂例子不要求每組 project 改用相同方法。
-
-## 課件整合與閱讀路線
-
-- `05.qmd` → `06.qmd`：沿用 ToothGrowth。Chapter 5 建立 mean model、coding 與 interaction；Chapter 6 用六個 cell means 估計各 dose 的 OJ−VC 差及其 CI。不要把已在 Chapter 5 發現不合適的兩條直線當成最終分析模型。
-- `06.qmd` → `07.qmd`：把比較問題接到 experimental unit 與 randomization；one-way regression coding、interaction、ANCOVA 的重複介紹改為延伸閱讀。
-- `08.qmd` → `09.qmd`／`10.qmd`：先辨認診斷問題，再選一個合理修正，最後評估新資料的預測。Log transformation 與 CV 使用短案例；完整 WLS、其他 transformations 及較長程式保留供選讀。
-- `11.qmd`：以 logistic 為課堂主線，Poisson／offset 與詳細 GLM model comparison 分開標示為延伸閱讀。
-- `12.qmd`：使用 Chapter 10 的 validation 工作流程，補齊 ridge／lasso；與 Chapter 11 分別是一堂可獨立完成的延伸課。
-
-課堂顯示 estimate、SE／CI、圖形與解讀；長程式與額外軟體輸出可折疊。必要定義、例子與練習保留；附錄的證明使用正式 Proof environment。
-
-每個主章（Ch. 1–12）的核心內容結束後安排簡短 **Summary / Recap**，置於 Appendix、supplementary／延伸閱讀或補充推導之前；沒有補充段落的章節則置於章末。摘要整理核心概念、必要公式與下一步，取代重複的長摘要。Application 盡量搭配一張先提出問題的圖，再接模型與推論。圖中交代資料來源或模擬設定、座標與單位、顏色／線型、區間意義；避免用一張圖堆放多個難以辨認的比較。
-
-## 核心與選讀的邊界
-
-- **課堂核心：** Chapter 4 收尾、Chapter 5、Chapter 6 的基本比較、設計的 experimental unit／randomization／replication、diagnostics、log-scale interpretation、基本 validation、單堂 logistic 與單堂 ridge／lasso。
-- **選讀：** 完整 factorial ANOVA／ANCOVA、更多 multiplicity 方法、WLS 推導、Poisson／offset、GLM likelihood／IRLS、完整高維理論。
-- Appendix A／H：矩陣與基本數理統計 reference。
-- Appendix B：Gauss–Markov、estimability／generalized inverse、額外影響度與 partial-regression diagnostics。
-- Appendix C：forward／backward／stepwise 與額外選模準則；課堂保留 selection changes inference 的觀念。
-- Appendix D：GLS、correlated errors 與 feasible weighting；不與 GLM 混用。
-- Appendix E：exponential family、IRLS、GLM 漸近理論。
-- Appendix F／G：Quantile Regression／Mixed-Effects Models，維持 Optional Self-Study。
-
-## 實作與評量
-
-沿用現有 Final Project：continuous response 的 multiple linear regression 加上一個 machine learning regression 方法，使用同一 test set 比較。Ridge／lasso 課提供 regularization 與 tuning 的實作基礎；logistic 課以課內 binary-response 小例子練習，不改變既有 project 的 response、評分或提交要求。
-
-每次分析先交代 outcome、observational／experimental unit、target comparison，再交代 assumptions、estimate／interval 和 limitation。所有可重現範例 seed 使用 **8561**。Learned preprocessing 和 tuning 留在 training data／training folds；保留 test set 到最後評估。
-
-Exam 2 不因教材保留較多章節而自動擴大考試範圍，依實際授課內容事先公告。Logistic 與 ridge／lasso 安排在 Exam 2 之後，使用課內練習與期末整合鞏固。Final assessment 已確定為 **Final Project（12/13，20%）**，不再安排未確認的 final exam。
-
-## 檔案沿革與發布
-
-既有重整：舊09的核心比較為新06；舊10為新07；舊06為新08；舊07為新09；舊08的評估內容為新10；舊11 GLS 移 Appendix D；新11為 GLM。舊09較深估計理論在 Appendix B，舊08的自動選模在 Appendix C。
-
-本次依實際進度調整課堂閱讀路線，新增 `12.qmd` 作 ridge／lasso 單堂教材，保留原有延伸內容。教師規劃、課件內容與學生已授課的 coverage 分別維護；未授課章節不標為已完成。
-
-學生網站維持目前 Ch. 1–5 的發布範圍，後續課件依進度逐章發布。完整教師預覽包含 Ch. 1–12 與延伸附錄，供備課檢閱。
+學生網站與合併 PDF 同步發布 Ch. 1–6 和列出的 optional readings；Ch. 6 Lecture 為 TBA。其餘教師草稿仍保留在 repository，依實際進度逐章發布。原 `06.qmd` 移至 `App_I-contrasts.qmd`，不刪除原 contrasts 教材。

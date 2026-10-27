@@ -393,7 +393,7 @@ knitr::kable(ch5_test_results, row.names = FALSE,
              col.names = c("Comparison", "F degrees of freedom", "F", "p-value"))
 ```
 
-At the 5% level, the two-line analysis rejects both equal slopes and identical lines. However, the last comparison also rejects the straight-line restriction. The plot shows the departure: the means at 1 mg/day lie above the fitted lines. Thus the lines illustrate coefficient interpretation, but the **six-cell model** is a better starting point for the dose-specific comparisons in Chapter 6.
+At the 5% level, the two-line analysis rejects both equal slopes and identical lines. However, the last comparison also rejects the straight-line restriction. The plot shows the departure: the means at 1 mg/day lie above the fitted lines. Thus the lines illustrate coefficient interpretation, but the **six-cell model** is a better starting point for [dose-specific comparisons](App_I-contrasts.qmd#sec-ch6-tooth). Chapter 6 takes up the broader question: [how can we revise the functional form and choose model terms?](06.qmd)
 
 ```{r}
 #| label: fig-ch5-dose-shape
