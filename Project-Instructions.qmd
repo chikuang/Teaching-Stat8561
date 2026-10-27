@@ -51,6 +51,10 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+         |
 |       | Zhe Zhong                 |         |
 +-------+---------------------------+---------+
+| 9     | Silas Bambil              | TBD     |
+|       +---------------------------+         |
+|       | Yasmeen Babagana          |         |
++-------+---------------------------+---------+
 
 :::
 
