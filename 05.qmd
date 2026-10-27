@@ -63,7 +63,7 @@ $$
 
 ::: {.callout-note title="Additivity concerns the mean function"}
 
-Predictors may be correlated; additivity does **not** require their independence. More generally, a mean of the form $\beta_0+\sum_j f_j(x_j)$ is additive even when the separate functions are curved. Here we use $f_j(x_j)=\beta_jx_j$. An interaction term couples predictors and changes this additive structure; Section 5.4 develops that extension.
+Predictors may be correlated; additivity does **not** require their independence. More generally, a mean of the form $\beta_0+\sum_j f_j(x_j)$ is additive even when the separate functions are curved. Here we use $f_j(x_j)=\beta_jx_j$. An interaction term couples predictors and changes this additive structure; [Section 5.4](#sec-ch5-interaction) develops that extension.
 
 :::
 
@@ -217,7 +217,7 @@ An **unadjusted** (or **non-adjusted**) coefficient comes from a model using the
 | Comparison | A one-foot height difference, without holding diameter fixed | A one-foot height difference at the same diameter |
 | Fitted slope | 1.543 cubic feet per foot | 0.339 cubic feet per foot |
 
-The first comparison allows diameter to vary along with height; the second holds diameter fixed in the fitted mean model. These coefficients answer **different questions**, so they need not agree. Neither coefficient by itself establishes a causal effect or predicts the exact difference between two individual trees. In an additive model the adjusted slope is constant; with interactions, its interpretation depends on the interacting predictors, as developed in Section 5.4.
+The first comparison allows diameter to vary along with height; the second holds diameter fixed in the fitted mean model. These coefficients answer **different questions**, so they need not agree. Neither coefficient by itself establishes a causal effect or predicts the exact difference between two individual trees. In an additive model the adjusted slope is constant; with interactions, its interpretation depends on the interacting predictors, as developed in [Section 5.4](#sec-ch5-interaction).
 
 :::
 
@@ -363,6 +363,30 @@ A model contains an intercept, two continuous predictors, and one four-level fac
 ::: {#sol-ch5-rank}
 
 There are $p=1+2+3=6$ parameters and $40-6=34$ residual degrees of freedom. **No:** all four indicators together with the intercept introduce a redundant column.
+
+:::
+
+```{=latex}
+\newpage
+```
+
+::: {#ch5-coding-summary .callout-note title="Summary: coding with and without an intercept"}
+
+For the **group-only model** with groups A, B, and C, the two valid codings differ in what their coefficients represent. Assume every group is observed; A is the reference in the intercept model.
+
+| Feature | With intercept (A as reference) | Without intercept (group means) |
+|:---|:---|:---|
+| R formula | `y ~ group` | `y ~ 0 + group` |
+| Design-matrix columns | $\mathbf 1,\mathbf D_B,\mathbf D_C$ | $\mathbf D_A,\mathbf D_B,\mathbf D_C$ |
+| A term | `(Intercept)`: $\beta_0=\mu_A$, the A mean | `groupA`: $\mu_A$, the A mean |
+| B term | `groupB`: $\beta_B=\mu_B-\mu_A$, the B-minus-A difference | `groupB`: $\mu_B$, the B mean |
+| C term | `groupC`: $\beta_C=\mu_C-\mu_A$, the C-minus-A difference | `groupC`: $\mu_C$, the C mean |
+| B-minus-C comparison | $\beta_B-\beta_C$ | $\mu_B-\mu_C$ |
+| Parameter count for $g$ groups | $1+(g-1)=g$ | $g$ |
+
+**How to read the coefficients.** With an intercept, the reference mean is the intercept and the other coefficients are differences from that mean. Without a separate intercept, each indicator coefficient is its group's mean. The same R coefficient name, such as `groupB`, therefore has different meanings in the two formulas.
+
+**What stays the same.** Both codings represent the same group means and produce the same fitted values, residuals, and SSE. Use either an intercept plus $g-1$ indicators, or all $g$ indicators without an intercept. An intercept plus all $g$ indicators is redundant. [Section 5.3](#sec-ch5-additive) extends the model by adding a continuous predictor.
 
 :::
 
