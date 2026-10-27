@@ -45,11 +45,64 @@ These questions lead from adjusted slopes to group indicators and interactions. 
 
 ## Multiple regression and adjusted interpretation {#sec-ch5-adjusted}
 
+[Chapter 4](04.qmd#def-regression-parameter-meaning) used an additive model with two predictors. We now make the word **additive** explicit and connect the mean function to the matrix notation from Chapters 1–2.
+
+::: {#def-ch5-additive-linear-mean}
+
+## Additive Linear Mean Model
+
+At predictor values $(x_1,\ldots,x_k)$, let $\mu(x_1,\ldots,x_k)$ denote the **mean response** at that predictor profile. An additive linear mean model specifies
+
+$$
+\mu(x_1,\ldots,x_k)=\beta_0+\beta_1x_1+\cdots+\beta_kx_k.
+$$
+
+**Additive** means that the intercept and the separate predictor contributions are added together. There are no interaction terms, such as $\beta_{12}x_1x_2$: the contribution associated with changing one predictor does not depend on the values of the others. **Linear** means that each contribution here has the form $\beta_jx_j$.
+
+:::
+
+::: {.callout-note title="Additivity concerns the mean function"}
+
+Predictors may be correlated; additivity does **not** require their independence. More generally, a mean of the form $\beta_0+\sum_j f_j(x_j)$ is additive even when the separate functions are curved. Here we use $f_j(x_j)=\beta_jx_j$. An interaction term couples predictors and changes this additive structure; Section 5.4 develops that extension.
+
+:::
+
+**Connection with the earlier notation.** As in Chapters 1–2, first treat predictor values as fixed. For observation $i$, write $\mu_i=\mu(x_{i1},\ldots,x_{ik})$ and
+
+$$
+Y_i=\mu_i+\varepsilon_i,
+\qquad
+\mu_i=\beta_0+\sum_{j=1}^k\beta_jx_{ij}
+=\mathbf x_i^\top\boldsymbol\beta,
+\qquad \mathbb E(\varepsilon_i)=0.
+$$
+
+Following [Chapter 2](02_LSE.qmd), $\mathbf x_i=(1,x_{i1},\ldots,x_{ik})$ is the **column vector including the intercept entry**. Its transpose $\mathbf x_i^\top=(1\;x_{i1}\;\cdots\;x_{ik})$ is row $i$ of the design matrix. Thus $\mu_i$ is the systematic mean part, while $\varepsilon_i$ is the individual deviation from it.
+
+**Design matrix and parameter count.** Stacking these rows gives the familiar matrix form:
+
+$$
+\mathbf X=
+\begin{pmatrix}
+1&x_{11}&\cdots&x_{1k}\\
+\vdots&\vdots&&\vdots\\
+1&x_{n1}&\cdots&x_{nk}
+\end{pmatrix}
+\in\mathbb R^{n\times(k+1)},
+\qquad
+\boldsymbol\beta=(\beta_0,\beta_1,\ldots,\beta_k),
+\qquad p=k+1.
+$$
+
+The mean vector is $\boldsymbol\mu=(\mu_1,\ldots,\mu_n)=\mathbb E(\mathbf Y)=\mathbf X\boldsymbol\beta$, so $\mathbf Y=\boldsymbol\mu+\boldsymbol\varepsilon=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon$. This is the same model as before, now written to show what each mean contains. If predictors are random, use the conditional statements $\mathbb E(\mathbf Y\mid\mathbf X)=\mathbf X\boldsymbol\beta$ and $\mathbb E(\boldsymbol\varepsilon\mid\mathbf X)=\mathbf0$.
+
+We assume full column rank, so $\operatorname{rank}(\mathbf X)=p$. Here $k$ counts **predictor columns**, not necessarily named variables: a factor can contribute several indicator columns. The tree model below has height and diameter, giving $k=2$ and $p=3$. Later, adding interaction columns preserves the matrix form but changes the additive mean structure.
+
 ::: {#def-ch5-adjusted-coefficient}
 
 ## Adjusted Regression Coefficient
 
-For the additive mean model $\mu(\mathbf x)=\mathbb E(Y\mid\mathbf x)=\beta_0+\sum_{\ell=1}^k\beta_\ell x_\ell$, choose $j\in\{1,\ldots,k\}$. Then $\beta_j$ is the mean-response difference for a one-unit increase in $x_j$, **holding the other predictors fixed**:
+In the additive linear mean model of @def-ch5-additive-linear-mean, choose $j\in\{1,\ldots,k\}$. Then $\beta_j$ is the mean-response difference for a one-unit increase in $x_j$, **holding the other predictors fixed**:
 
 $$
 \mu(x_1,\ldots,x_j+1,\ldots,x_k)
@@ -67,26 +120,10 @@ $$
 
 The intercept and all unchanged predictor contributions cancel, leaving $\beta_j[(x_j+1)-x_j]=\beta_j$. A change of $h$ units gives the mean difference $h\beta_j$ in this additive model.
 
-The intercept is the mean at $\mathbf x=\mathbf 0$; see [Chapter 4's coefficient interpretation](04.qmd#def-regression-parameter-meaning).
+The intercept is the mean when $x_1=\cdots=x_k=0$; see [Chapter 4's coefficient interpretation](04.qmd#def-regression-parameter-meaning).
 
 :::
 
-**Design matrix and parameter count.** For $n$ observations and $k$ predictor columns, the model has one intercept column and $k$ predictor columns:
-
-$$
-\mathbf X=
-\begin{pmatrix}
-1&x_{11}&\cdots&x_{1k}\\
-\vdots&\vdots&&\vdots\\
-1&x_{n1}&\cdots&x_{nk}
-\end{pmatrix}
-\in\mathbb R^{n\times(k+1)},
-\qquad
-\boldsymbol\beta=(\beta_0,\beta_1,\ldots,\beta_k),
-\qquad p=k+1.
-$$
-
-We assume full column rank, so $\operatorname{rank}(\mathbf X)=p$. Here $k$ counts **predictor columns**, not necessarily named variables: a factor or interaction can contribute several columns. In the tree model below, height and diameter give $k=2$ and $p=3$.
 
 ::: {#exm-ch5-tree-adjustment}
 
