@@ -356,26 +356,11 @@ knitr::kable(data.frame(
 
 The two full-rank codings each estimate three group means; the four-column coding adds a redundant coefficient, not another identifiable mean.
 
-::: {#exm-ch5-reference-change}
-
-## Different Coefficients, the Same Group Means
-
-Suppose the fitted means for A, B, and C are 18, 22, and 19.
-
-| Reference | Intercept | Other coefficients |
-|:---:|:---:|:---:|
-| A | 18 | B minus A: 4; C minus A: 1 |
-| B | 22 | A minus B: -4; C minus B: -3 |
-
-Changing the reference changes the coefficient meanings, but preserves fitted means, residuals, and SSE. An individual coefficient test now addresses a different comparison.
-
-:::
-
 ::: {#exm-ch5-coding-output}
 
-## Compare Two Codings in R
+## Different Codings, the Same Group Means in R
 
-Use nine illustrative observations, three per group. Their sample group means are 18, 22, and 19, matching the preceding example. To interpret the printed t tests, assume independent normal errors with a common variance, as in [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model).
+Suppose we have nine observations, divided into three groups of three. The sample means for A, B, and C are 18, 22, and 19. To interpret the printed t tests, assume independent normal errors with a common variance, as in [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model).
 
 ```{r}
 #| label: ch5-coding-output-data
@@ -409,17 +394,36 @@ Now `groupA`, `groupB`, and `groupC` estimate $\mu_A$, $\mu_B$, and $\mu_C$ dire
 
 **Read the null hypothesis before comparing p-values.** In the intercept model, the `groupB` row tests $H_0:\mu_B-\mu_A=0$ (p-value about 0.0498). In the no-intercept model, its row tests $H_0:\mu_B=0$ (p-value about $1.35\times10^{-6}$). These are different tests. To test B versus A with the no-intercept model, use the contrast $\mu_B-\mu_A$, whose estimate is still $22-18=4$; see the [contrasts appendix](App_I-contrasts.qmd).
 
-**Check that the fitted models agree.**
+[**Change the reference group to B.**]{#exm-ch5-reference-change} We keep the same observations and make B the first factor level:
+
+```{r}
+#| label: ch5-coding-reference-B
+ch5_coding_B <- ch5_coding_data
+ch5_coding_B$group <- relevel(ch5_coding_B$group, ref = "B")
+ch5_fit_reference_B <- lm(y ~ group, data = ch5_coding_B)
+```
+
+| Reference | Intercept | Other coefficients |
+|:---:|:---:|:---:|
+| A | 18 | B minus A: 4; C minus A: 1 |
+| B | 22 | A minus B: -4; C minus B: -3 |
+
+With B as the reference, the intercept is the B mean, 22. The other coefficients compare A and C with B. Changing the reference changes those comparisons, while the fitted group means remain 18, 22, and 19.
+
+**Check that all three codings give the same fit.**
 
 ```{r}
 #| label: ch5-coding-output-equivalence
 all.equal(fitted(ch5_fit_reference), fitted(ch5_fit_means))
 all.equal(residuals(ch5_fit_reference), residuals(ch5_fit_means))
-c(SSE_with_intercept = deviance(ch5_fit_reference),
-  SSE_without_intercept = deviance(ch5_fit_means))
+all.equal(fitted(ch5_fit_reference), fitted(ch5_fit_reference_B))
+all.equal(residuals(ch5_fit_reference), residuals(ch5_fit_reference_B))
+c(SSE_reference_A = deviance(ch5_fit_reference),
+  SSE_no_intercept = deviance(ch5_fit_means),
+  SSE_reference_B = deviance(ch5_fit_reference_B))
 ```
 
-Both equality checks return `TRUE`, and both SSEs are 24. The coefficient meanings and their individual tests change, while the fitted group means, residuals, and overall fit stay the same.
+All four equality checks return `TRUE`, and all three SSEs are 24. The coefficient meanings and their individual tests change, while the fitted group means, residuals, and overall fit stay the same.
 
 :::
 
@@ -482,7 +486,7 @@ Both methods have 10 animals at each dose, allowing comparisons at the same obse
 \end{minipage}
 ```
 
-::: {#ch5-centering-dose .callout-note title="Why define centered dose as $x_c = x - 1$?"}
+::: {#ch5-centering-dose .callout-note title="Define centered dose as $x_c = x - 1$"}
 
 We choose **1 mg/day as a reference dose** and let $x_c=x-1$ measure the difference from it, in mg/day:
 
@@ -543,7 +547,7 @@ At a fixed method, a one-mg/day increase corresponds to **9.764** more units of 
 \noindent\begin{minipage}{\linewidth}
 ```
 
-**Fitted values at the observed doses.** For animal $i$, the fitted value is $\hat y_i=\widehat\mu(x_i,z_i)$. Animals with the same method and dose receive the same fitted value, although their observed lengths can differ. Compare the observed cell means with predictions from the fitted parallel lines:
+**Fitted values at the observed doses.** For animal $i$, the fitted value is $\hat y_i=\widehat\mu(x_i,z_i)$. Animals with the same method and dose receive the same fitted value, although their observed lengths can differ. Compare the mean length in each method-dose group with predictions from the fitted parallel lines:
 
 ```{r}
 #| label: ch5-additive-predictions
@@ -556,10 +560,10 @@ ch5_additive_fitted$fitted <- predict(
 knitr::kable(
   ch5_additive_fitted[c("supp", "dose", "mean", "fitted")],
   digits = 2, row.names = FALSE, align = "c",
-  col.names = c("Method", "Dose (mg/day)", "Observed mean", "Fitted value"))
+  col.names = c("Method", "Dose (mg/day)", "Mean length", "Fitted value"))
 ```
 
-The fitted OJ-minus-VC difference is 3.70 at every dose. Fitted values need not equal the observed cell means: the additive model fits all six cells using two parallel straight lines.
+The fitted OJ-minus-VC difference is 3.70 at every dose. Fitted values need not equal the group mean lengths: the additive model fits all six cells using two parallel straight lines.
 
 ```{=latex}
 \end{minipage}
@@ -615,7 +619,7 @@ $$
 The OJ-minus-VC mean difference now depends on dose:
 
 $$
-\boxed{\Delta(x)=\beta_g+\beta_{xg}(x-1).}
+\Delta(x)=\beta_g+\beta_{xg}(x-1).
 $$
 
 Here $\beta_g$ is the difference at 1 mg/day, and $\beta_{xg}$ is the difference in slopes. The design row is $(1\;x_c\;z\;x_cz)$, giving $p=4$ when full rank.
@@ -786,7 +790,11 @@ knitr::kable(ch5_test_results, row.names = FALSE, align = "c",
              col.names = c("Comparison", "F degrees of freedom", "F", "p-value"))
 ```
 
-At the 5% level, the two-line analysis rejects both equal slopes and identical lines. However, the last comparison also rejects the straight-line restriction. The plot shows the departure: the means at 1 mg/day lie above the fitted lines. Thus the lines illustrate coefficient interpretation, but the **six-cell model** is a better starting point for [dose-specific comparisons](App_I-contrasts.qmd#sec-ch6-tooth). [Chapter 6](06.qmd) takes up the broader question: [how can we revise the functional form and choose model terms?](06.qmd)
+At the **5% significance level**, the three tests lead to these conclusions:
+
+- **Equal slopes:** $H_0:\beta_{xg}=0$. With $F_{1,56}=5.333$ and $p=0.0246<0.05$, reject equal slopes. Within the straight-line model, allowing different slopes improves the fit; the additive model's parallel-line restriction is not supported.
+- **Identical lines:** $H_0:\beta_g=\beta_{xg}=0$. With $F_{2,56}=8.825$ and $p=0.000466<0.05$, reject a single common line. Within the two-line model, the methods differ in intercept, slope, or both. This joint test alone does not establish that both coefficients are nonzero.
+- **Straight-line means:** $H_0$ says that the three population means for each method lie on a straight line. With $F_{2,54}=8.399$ and $p=0.000667<0.05$, reject this restriction. Even allowing different slopes does not adequately describe the six method-dose means. Use the **six-cell factor-dose model** for [dose-specific comparisons](App_I-contrasts.qmd#sec-ch6-tooth). The first two tests compare line models; this third test shows why separate lines are still insufficient. In the plot below, the mean lengths at 1 mg/day lie above the fitted lines.
 
 ```{r}
 #| label: fig-ch5-dose-shape
@@ -814,7 +822,7 @@ ggplot(ch5_means, aes(dose, len, colour = supp)) +
 \newpage
 ```
 
-## Summary {.unnumbered}
+## Summary {#summary}
 
 **Choose the model by the question you want to answer.**
 
