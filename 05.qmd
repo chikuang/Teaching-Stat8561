@@ -466,7 +466,40 @@ R's [`ToothGrowth` data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/
 
 ![Each cell represents 10 animals. Compare doses across a row and OJ versus VC within each column. Does the mean gap change across columns? This is a schematic, not observed outcomes.](illustrations/ch5-toothgrowth-overview.png){#fig-ch5-toothgrowth-overview width=100% fig-pos="H" fig-alt="A two-by-three grid of cute guinea pigs: orange juice (OJ) and ascorbic acid (VC) at vitamin C doses 0.5, 1, and 2 mg/day, with 10 animals in each cell. The recorded response is odontoblast length. Compare doses within a method and methods at each dose."}
 
-::: {#ch5-centering-dose .callout-note title="Why define centered dose as x_c = x - 1?"}
+```{r}
+#| label: ch5-tooth-data
+ch5_tooth <- datasets::ToothGrowth
+ch5_tooth$supp <- factor(ch5_tooth$supp, levels = c("VC", "OJ"))
+ch5_tooth$dose_f <- factor(ch5_tooth$dose, levels = c(0.5, 1, 2))
+contrasts(ch5_tooth$supp) <-
+  contr.treatment(levels(ch5_tooth$supp), base = 1)
+contrasts(ch5_tooth$dose_f) <-
+  contr.treatment(levels(ch5_tooth$dose_f), base = 1)
+stopifnot(!anyNA(ch5_tooth))
+ch5_cell_summary <- aggregate(
+  len ~ supp + dose, data = ch5_tooth,
+  FUN = function(y) c(n = length(y), mean = mean(y)))
+ch5_summary_table <- data.frame(ch5_cell_summary[1:2],
+                                 ch5_cell_summary$len)
+```
+
+```{=latex}
+\noindent\begin{minipage}{\linewidth}
+```
+
+```{r}
+#| label: ch5-tooth-summary
+knitr::kable(ch5_summary_table, digits = 2,
+  col.names = c("Method", "Dose (mg/day)", "n", "Mean length"))
+```
+
+Both methods have 10 animals at each dose, allowing comparisons at the same observed dose.
+
+```{=latex}
+\end{minipage}
+```
+
+::: {#ch5-centering-dose .callout-note title="Why define centered dose as $x_c = x - 1$?"}
 
 We choose **1 mg/day as a reference dose** and let $x_c=x-1$ measure the difference from it, in mg/day:
 
@@ -485,26 +518,9 @@ With an intercept and the corresponding model terms retained, centering changes 
 :::
 
 ```{r}
-#| label: ch5-tooth-data
-ch5_tooth <- datasets::ToothGrowth
-ch5_tooth$supp <- factor(ch5_tooth$supp, levels = c("VC", "OJ"))
+#| label: ch5-center-dose
 ch5_tooth$dose_c <- ch5_tooth$dose - 1
-ch5_tooth$dose_f <- factor(ch5_tooth$dose, levels = c(0.5, 1, 2))
-contrasts(ch5_tooth$supp) <-
-  contr.treatment(levels(ch5_tooth$supp), base = 1)
-contrasts(ch5_tooth$dose_f) <-
-  contr.treatment(levels(ch5_tooth$dose_f), base = 1)
-stopifnot(!anyNA(ch5_tooth))
-ch5_cell_summary <- aggregate(
-  len ~ supp + dose, data = ch5_tooth,
-  FUN = function(y) c(n = length(y), mean = mean(y)))
-ch5_summary_table <- data.frame(ch5_cell_summary[1:2],
-                                 ch5_cell_summary$len)
-knitr::kable(ch5_summary_table, digits = 2,
-  col.names = c("Method", "Dose (mg/day)", "n", "Mean length"))
 ```
-
-Both methods have 10 animals at each dose, allowing comparisons at the same observed dose.
 
 ::: {#def-ch5-additive-model}
 
@@ -538,6 +554,36 @@ $$
 
 At a fixed method, a one-mg/day increase corresponds to **9.764** more units of fitted mean length. At a fixed dose, OJ exceeds VC by **3.700** units. This model imposes a straight-line dose response and the same slope for both methods.
 
+::: {#ch5-additive-fitted}
+
+```{=latex}
+\noindent\begin{minipage}{\linewidth}
+```
+
+**Fitted values at the observed doses.** For animal $i$, the fitted value is $\hat y_i=\widehat\mu(x_i,z_i)$. Animals with the same method and dose receive the same fitted value, although their observed lengths can differ. Compare the observed cell means with predictions from the fitted parallel lines:
+
+```{r}
+#| label: ch5-additive-predictions
+ch5_additive_fitted <- ch5_summary_table[c("supp", "dose", "mean")]
+ch5_additive_fitted$supp <- factor(ch5_additive_fitted$supp,
+                                 levels = c("VC", "OJ"))
+ch5_additive_fitted$dose_c <- ch5_additive_fitted$dose - 1
+ch5_additive_fitted$fitted <- predict(
+  ch5_fit_add, newdata = ch5_additive_fitted)
+knitr::kable(
+  ch5_additive_fitted[c("supp", "dose", "mean", "fitted")],
+  digits = 2, row.names = FALSE,
+  col.names = c("Method", "Dose (mg/day)", "Observed mean", "Fitted value"))
+```
+
+The fitted OJ-minus-VC difference is 3.70 at every dose. Fitted values need not equal the observed cell means: the additive model fits all six cells using two parallel straight lines.
+
+```{=latex}
+\end{minipage}
+```
+
+:::
+
 **Read the new zero point in the additive model.** At $x=1$, we have $x_c=0$, so the VC mean is $\beta_0$ and the OJ mean is $\beta_0+\beta_g$. The constant OJ-minus-VC difference is still $\beta_g$ at every dose. If we instead use uncentered $x$, the intercept is the VC mean at $x=0$, namely $\beta_0-\beta_x$.
 
 Compare the same fit in R using the two dose variables:
@@ -557,6 +603,12 @@ all.equal(fitted(ch5_fit_add_raw), fitted(ch5_fit_add))
 The intercept moves from about 5.57 (the fitted VC mean at zero dose) to 15.34 (the fitted VC mean at 1 mg/day). The common dose slope and the constant group difference are unchanged. `TRUE` confirms that both parameterizations give the same fitted values.
 
 ## Interactions and conditional comparisons {#sec-ch5-interaction}
+
+**Why consider an interaction?** The additive model in [Section 5.3](#sec-ch5-additive) assumes that increasing dose has the same effect for VC and OJ. Its fitted lines are parallel, so its OJ-minus-VC difference must stay at 3.70 for every dose. That is a restriction imposed by the model.
+
+The observed mean differences are 5.25 at 0.5 mg/day, 5.93 at 1 mg/day, and -0.08 at 2 mg/day. These sample differences can vary because of random error, but they motivate a question: **does the dose slope depend on the delivery method?** Equivalently, does the OJ-minus-VC mean difference change with dose?
+
+Adding $x_cz$ lets the two groups have different slopes. For VC ($z=0$), the term is zero; for OJ ($z=1$), it adds $\beta_{xg}$ to the dose slope. Thus $\beta_{xg}=0$ recovers the additive model, while a nonzero interaction allows the group difference to vary linearly with dose. Comparing the models evaluates whether the data support this extra flexibility; unequal sample differences alone do not establish an interaction. Both models still assume straight lines within each group.
 
 ::: {#def-ch5-interaction}
 
@@ -757,10 +809,30 @@ ggplot(ch5_means, aes(dose, len, colour = supp)) +
 
 ## Summary {.unnumbered}
 
-- State what is held fixed when interpreting a slope.
-- A $g$-level factor uses $g-1$ indicators with an intercept; the reference group determines the coefficient meanings.
-- An additive model gives parallel lines; an interaction allows the group difference to vary with dose.
-- Equal slopes, identical lines, and straight-line shape are different restrictions. Choose the model comparison to match the question.
+**Start with the question you want the model to answer.** Use the following guide; `x` is numeric, `w` denotes other predictors, `group` is a factor, and `dose_f` treats the three doses as categories.
+
+| When the question is ... | Use ... | What the model estimates or assumes |
+|:---|:---|:---|
+| How does the response vary with `x` overall? | `y ~ x` | An unadjusted association; other predictors are allowed to vary with `x`. See [Section 5.1](#sec-ch5-adjusted). |
+| How does the response vary with `x` at the same values of specified other predictors? | `y ~ x + w` | An adjusted slope, holding `w` fixed; this additive form assumes no interaction with `w`. See [Section 5.1](#sec-ch5-adjusted). |
+| What are the means of several groups, with no continuous predictor? | `y ~ group` | Group means; choose the coefficient coding as described below. See [Section 5.2](#sec-ch5-factor-coding). |
+| Can two groups share one straight-line dose slope, with a constant gap? | `len ~ dose_c + supp` | Parallel lines; the group coefficient is the same-dose OJ-minus-VC difference at every dose. See [Section 5.3](#sec-ch5-additive). |
+| Could the straight-line dose slope differ between groups? | `len ~ dose_c * supp` | Separate slopes; the group difference can change linearly with dose. See [Section 5.4](#sec-ch5-interaction). |
+| Do we want separate means at the observed doses, without imposing straight lines? | `len ~ dose_f * supp` | Six method-dose means; no rule for interpolation to unobserved doses. See [Section 5.5](#sec-ch5-comparisons). |
+
+**Choose coding to make the desired quantities easy to read.** For the group-only model, use an intercept with reference-group coding when comparisons with a control or baseline are the focus: the intercept is the reference mean, and other coefficients are differences from it. Use no intercept with all group indicators when reporting each group's mean directly is the focus. These choices give the same fitted values and SSE; their individual coefficient tests concern different null hypotheses. An intercept plus all group indicators is redundant. See [Section 5.2](#sec-ch5-factor-coding).
+
+**Center at the value where you want to interpret the intercept and group comparison.** Define $x_c=x-c$ when a scientifically meaningful reference $c$ is more useful than zero; here $c=1$ mg/day is observed in both groups. In the additive model, the intercept becomes the VC mean at $c$, while the constant group gap stays unchanged. With an interaction, the group coefficient becomes the OJ-minus-VC difference specifically at $c$; at another dose use $\Delta(x)=\beta_g+\beta_{xg}(x-c)$. Centering changes the reference point, not the fitted lines. See [Section 5.3](#sec-ch5-additive) and [Section 5.4](#sec-ch5-interaction).
+
+**Match the model comparison to the restriction.** The [partial F test in Chapter 4](04.qmd#thm-partial-f) compares nested models fitted to the same observations, under the stated linear-model assumptions:
+
+| To assess ... | Compare reduced versus full models | Null hypothesis |
+|:---|:---|:---|
+| A common slope for both methods | `dose_c + supp` versus `dose_c * supp` | $\beta_{xg}=0$: remove the slope difference only. |
+| One identical line for both methods | `dose_c` versus `dose_c * supp` | $\beta_g=\beta_{xg}=0$: remove both group differences. |
+| Straight-line mean functions at the three observed doses | `dose_c * supp` versus `dose_f * supp` | The six cell means lie on two straight lines. |
+
+Rejecting equal slopes does not establish that straight lines fit well. For these `ToothGrowth` data, [Section 5.5](#sec-ch5-comparisons) finds evidence against both equal slopes and straight-line shape. Use the six-cell model as the starting point for comparisons at the three observed doses, then form the desired [contrasts](App_I-contrasts.qmd#sec-ch6-tooth). The additive and interaction fits remain useful for understanding how coefficients encode assumptions; adjusted associations alone do not establish causation.
 
 ## Practice Problems {#sec-ch5-practice}
 
