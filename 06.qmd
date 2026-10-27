@@ -413,20 +413,25 @@ The internal residual $r_i$ uses the full-fit $s$, which shares the contribution
 
 :::
 
-**Compare the same three added points.**
+**Compare the same three added points.** Each row uses its own augmented fit. The $s$ column uses all seven observations; $s_{(-i)}$ comes from refitting after removing that row's added point. The last column is the externally studentized residual.
 
 ```{r}
 #| label: ch6-story-residuals
 #| echo: false
 ch6_residual_comparison <- t(vapply(ch6_story_fits, function(m) {
+  d <- model.frame(m)
+  deleted_fit <- lm(formula(m), data = d[-nrow(d), , drop = FALSE])
   c(Residual = unname(tail(residuals(m), 1)),
+    Full_fit_SD = sigma(m), Deleted_fit_SD = sigma(deleted_fit),
     Standardized = unname(tail(rstandard(m), 1)),
     Studentized = unname(tail(rstudent(m), 1)))
-}, numeric(3)))
+}, numeric(5)))
 knitr::kable(data.frame(Point = c("A", "B", "C"),
   ch6_residual_comparison, row.names = NULL),
-  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
-  col.names = c("Point", "Residual", "Standardized", "Externally studentized"))
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE,
+  align = "c", escape = FALSE,
+  col.names = c("Point", "Residual $e_i$", "$s$", "$s_{(-i)}$",
+    "Standardized $r_i$", "Studentized $t_i$"))
 ```
 
 For A, the full-fit residual SD is $s=2.078$, but deleting A gives $s_{(-A)}=0.200$. The same full-fit residual and leverage therefore produce $r_A=2.228$ and $t_A=23.146$. A was inflating the noise estimate used to assess itself. For C the scales are 1.899 and 0.200, with the same effect. Deleting either point returns the six baseline observations from [Section 6.1](#sec-ch6-influence). B has zero residual, so both scaled residuals are zero regardless of the different scales. These diagnostics identify a response discrepancy under the model; they do not establish a recording error.
@@ -518,23 +523,54 @@ $D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has gre
 
 :::
 
-## Investigate a flag and report the sensitivity {#sec-ch6-investigate}
+## Decide what is unusual, influential, and worth investigating {#sec-ch6-investigate}
 
-A diagnostic flag starts an investigation. It is not an instruction to remove a row.
+Make two separate judgments: **is the response unusual under the model, and does the observation materially affect the fitted result?** A point can satisfy both. A diagnostic flag tells us what to investigate; it does not by itself tell us to remove the observation.
 
-1. **Check the observation.** Verify units, transcription, measurement conditions, and whether it belongs to the population being studied. Correct a confirmed error from the original record when possible.
-2. **Read the three measures together.** Use the residual to assess the response discrepancy, leverage to assess predictor position, and Cook's distance to assess the change in fit.
-3. **Refit the same model with and without the point.** Compare the coefficients, uncertainty, and predictions that answer the scientific question. Keep both results available.
-4. **Investigate the model as well as the data.** A valid observation may reveal an omitted group, an inadequate mean function, or a different error pattern. Several unusual points can also mask one another in single-case diagnostics.
-5. **Report what changes and why.** Explain any exclusion using evidence. If a valid point materially changes the conclusion, report that sensitivity rather than silently choosing the more convenient fit.
+**1. Use a criterion that matches the question.**
 
-::: {.callout-important title="Investigate a flag; do not delete by a cutoff"}
+- **Response outlier:** inspect the externally studentized residual $t_i$ from [Section 6.3](#sec-ch6-outliers). A large $|t_i|$ indicates an unusual response given the predictors and model. The familiar $|t_i|>2$ rule is only a rough screen; use the t-based rule below when making a formal outlier assessment.
+- **High leverage:** compare $h_{ii}$ with the average $p/n$. The rule $h_{ii}>2p/n$ flags unusual predictor positions for inspection. It does not establish a response outlier or actual influence.
+- **Possible influence:** inspect Cook's distances and flag values that stand out, with $D_i>4/n$ as one rough screening guide. **Confirm the practical importance by comparing fits with and without the point.** There is no universal significance cutoff for Cook's distance, and a value below $4/n$ does not establish that a point is harmless.
 
-Values such as $|t_i|>2$, $h_{ii}>2p/n$, or $D_i>4/n$ are rough **screening guides**, not universal tests or deletion rules. Check units, transcription, measurement conditions, and omitted structure; a valid unusual observation may be scientifically valuable. Compare fits and relevant predictions with and without a flagged case, and explain any exclusion. Inspect related groups of observations too: several unusual cases can mask one another in single-case diagnostics.
+**A formal outlier check under the normal linear model.** Let $d=n-p-1$ and let $t_{d,q}$ denote the $q$ quantile of the t distribution with $d$ degrees of freedom. Under the fixed, correctly specified normal model in [Section 6.3](#deriv-ch6-student-t), a two-sided level-$\alpha$ check for **one pre-specified observation** uses $|t_i|>t_{d,1-\alpha/2}$. If all $n$ observations are inspected, use a multiplicity adjustment. A Bonferroni rule controlling the probability of at least one false flag at at most $\alpha$ under the model is
 
-:::
+$$
+|t_i|>t_{d,\,1-\alpha/(2n)}.
+$$
 
-For the small example, a concrete report is: “Adding C changes the estimated slope from 1.000 to 0.170 and the fitted mean at $x=6$ from 8.000 to 5.553. C has high leverage and Cook's distance 6.395. This fit is sensitive to C; whether C should be corrected or excluded requires information about how it was observed.”
+Equivalently, compute the two-sided t p-value and multiply it by $n$, capped at 1. This is the approach used by [`car::outlierTest()`](https://rdrr.io/cran/car/man/outlierTest.html). Rejection is evidence of a response outlier **relative to the specified model**, not proof of a data error. Failure to reject does not prove that the observation is ordinary; poor model fit and multiple unusual points can hide one another.
+
+```{r}
+#| label: ch6-screening-cutoffs
+#| echo: false
+ch6_screen_n <- nobs(ch6_story_fits$A)
+ch6_screen_p <- length(coef(ch6_story_fits$A))
+ch6_screen_df <- ch6_screen_n - ch6_screen_p - 1
+ch6_screen_alpha <- 0.05
+ch6_single_cutoff <- qt(1 - ch6_screen_alpha / 2, ch6_screen_df)
+ch6_bonf_cutoff <- qt(1 - ch6_screen_alpha / (2 * ch6_screen_n),
+  ch6_screen_df)
+ch6_leverage_cutoff <- 2 * ch6_screen_p / ch6_screen_n
+ch6_cook_cutoff <- 4 / ch6_screen_n
+```
+
+**Apply the rules to A, B, and C.** Within each separate augmented dataset, $n=7$, $p=2$, and $d=4$. At $\alpha=0.05$, the pre-specified-point cutoff is `r sprintf("%.3f", ch6_single_cutoff)`, whereas inspecting all seven points gives a Bonferroni cutoff of **`r sprintf("%.3f", ch6_bonf_cutoff)`**. The leverage and Cook screening values happen to be the same here: $2p/n=4/n=$ `r sprintf("%.3f", ch6_cook_cutoff)`.
+
+- **A is a response outlier with ordinary leverage.** Its $|t_A|=23.146$ exceeds 5.068, while $h_{AA}=0.143$ is not high. Its $D_A=0.414$ does not cross the Cook screen, but [Section 6.1](#sec-ch6-influence) shows changes in the intercept and noise estimate. Report those effects; do not conclude that A has no impact merely because it does not cross that screen.
+- **B has high leverage but is not a response outlier and does not change the fitted mean.** Its $h_{BB}=0.721$ is high, but $t_B=0$ and $D_B=0$. It still affects precision. If its measurements and membership in the target population are valid, its high leverage alone is no reason to exclude it.
+- **C is both a response outlier and influential, with high leverage.** Its $|t_C|=21.138$ exceeds 5.068, $h_{CC}=0.721$, and $D_C=6.395$. Omitting C changes the slope from 0.170 back to 1.000 and the fitted mean at $x=6$ from 5.553 back to 8.000. The observed change in the fit confirms the influence suggested by Cook's distance.
+
+**2. Quantify influence for the question being answered.** Refit the same model with and without each flagged point. Compare the relevant coefficients, standard errors or confidence intervals, and predictions at the same predictor values. State the size of the change in the original units and whether it alters a scientific conclusion or decision. A small effect on one slope does not imply a small effect on every coefficient, prediction, or uncertainty estimate. Single-case deletion can also miss the joint effect of several unusual observations.
+
+**3. Decide what to do using evidence about the data and model.**
+
+- **Confirmed recording or measurement error:** correct it from the original record, then refit and repeat the diagnostics. If it cannot be recovered and is unusable, document the data-quality reason for excluding it.
+- **Observation outside the intended population or study protocol:** apply the same justified eligibility rule to every observation, and report the exclusion. Do not invent a rule because a result is inconvenient.
+- **Valid but unusual observation:** retain it in the main analysis. If it materially changes the result, also report the analysis without it as a sensitivity check and explain the difference. A small p-value or large Cook's distance alone is not a reason to delete valid data.
+- **Valid observations exposing an inadequate model:** investigate the mean function, error pattern, and omitted structure. Revise the model when scientifically justified and repeat the diagnostics; [Chapter 7](07.qmd) develops transformations and model terms. Do not try to repair a systematic model problem by removing individual rows.
+
+**4. Report the decision and the sensitivity.** For example: “C has externally studentized residual $-21.138$ and Cook's distance 6.395. With C, the slope is 0.170 and the fitted mean at $x=6$ is 5.553; without C, they are 1.000 and 8.000. If the record is verified as valid and eligible, we retain C and report both fits because the conclusion is sensitive to it.” State what was checked, what was retained, corrected, or excluded, and why.
 
 ## Summary {#sec-ch6-summary}
 
@@ -544,7 +580,7 @@ For the small example, a concrete report is: “Adding C changes the estimated s
 | High leverage | Is the predictor configuration unusual? | Hat-matrix diagonal $h_{ii}$ | That the observation actually changes the estimated line. |
 | Influence | Does omitting the observation change the fitted result? | Coefficient/prediction comparison and Cook's distance | That the observation is a data error. |
 
-Use **all three questions**, then investigate the data and report sensitivity. [Chapter 7](07.qmd) considers how to change the functional form and select model terms when developing a regression model.
+Follow [Section 6.5](#sec-ch6-investigate): **screen, verify the data, compare fits, act on evidence, and report sensitivity**. Outlier evidence concerns the response under the model; influence concerns changes in the fitted result. [Chapter 7](07.qmd) considers how to revise the functional form and select model terms.
 
 ## Practice Problems {#sec-ch6-practice}
 
