@@ -523,9 +523,11 @@ $D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has gre
 
 :::
 
-## Diagnostic criteria and actions {#sec-ch6-investigate}
+## Summary {#sec-ch6-summary}
 
-A point can belong to more than one category. Use the criterion that matches the question, then decide what the evidence supports.
+:::: {#sec-ch6-investigate}
+
+Keep the three questions separate: **unusual response, unusual predictors, or a changed fit**. A point can belong to more than one category. Use the table to choose the appropriate diagnostic and follow-up.
 
 ::: {.balanced-table tbl-colwidths="[18,46,36]"}
 
@@ -541,9 +543,9 @@ For the formal outlier checks, use the assumptions in [Section 6.3](#deriv-ch6-s
 
 **For all three:** correct verified errors and repeat the diagnostics. Retain valid, eligible observations; exclude only for a documented data-quality or eligibility reason, not a diagnostic value alone. If valid observations reveal an inadequate model, revise it and recheck. Report the decision and its effect on the conclusion.
 
-## Summary {#sec-ch6-summary}
+[Chapter 7](07.qmd) develops transformations and variable selection.
 
-Keep the three questions separate: **unusual response, unusual predictors, or a changed fit**. Use the decision table in [Section 6.5](#sec-ch6-investigate) to choose the follow-up. [Chapter 7](07.qmd) develops transformations and variable selection.
+::::
 
 ## Practice Problems {#sec-ch6-practice}
 
