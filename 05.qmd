@@ -21,7 +21,7 @@ execute:
 
 ::: {.callout-note title="Recap of the Linear Model"}
 
-Chapters 1–3 gave us the [design-matrix notation](01_matrix_representation.qmd) and [least-squares estimator](02_LSE.qmd#sec-lse). For a full-column-rank design,
+[Chapter 1](01_matrix_representation.qmd), [Chapter 2](02_LSE.qmd#sec-lse), and [Chapter 3](03_OLS_inference.qmd) gave us the [design-matrix notation](01_matrix_representation.qmd) and [least-squares estimator](02_LSE.qmd#sec-lse). For a full-column-rank design,
 
 $$
 \mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon,
@@ -29,13 +29,13 @@ $$
 \hat{\boldsymbol\beta}=(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf Y.
 $$
 
-The fitted means are $\hat{\mathbf Y}=\mathbf X\hat{\boldsymbol\beta}$. Under the [normal-model assumptions](03_OLS_inference.qmd#def-normal-linear-model), Chapter 4's [partial F test](04.qmd#thm-partial-f) compares nested mean models. We now use these tools to interpret the columns and coefficients: **which mean responses are being compared, and what is held fixed?** An adjusted association alone does not establish causation.
+The fitted means are $\hat{\mathbf Y}=\mathbf X\hat{\boldsymbol\beta}$. Under the [normal-model assumptions](03_OLS_inference.qmd#def-normal-linear-model), [Chapter 4's partial F test](04.qmd#thm-partial-f) compares nested mean models. We now use these tools to interpret the columns and coefficients: **which mean responses are being compared, and what is held fixed?** An adjusted association alone does not establish causation.
 
 :::
 
 ::: {.callout-note title="Motivation: what comparison does a coefficient describe?"}
 
-**Trees.** Chapter 4 asked whether height adds information about timber volume beyond diameter. Now compare two trees of the same diameter: what mean-volume difference corresponds to one extra foot of height? Why might that answer differ from a regression using height alone?
+**Trees.** [Chapter 4](04.qmd#exm-timber-volume) asked whether height adds information about timber volume beyond diameter. Now compare two trees of the same diameter: what mean-volume difference corresponds to one extra foot of height? Why might that answer differ from a regression using height alone?
 
 **Vitamin C.** At the same dose, how does mean odontoblast length differ between orange juice and ascorbic acid? Could that difference change with dose?
 
@@ -45,7 +45,7 @@ These questions lead from adjusted slopes to group indicators and interactions. 
 
 ## Multiple regression and adjusted interpretation {#sec-ch5-adjusted}
 
-[Chapter 4](04.qmd#def-regression-parameter-meaning) used an additive model with two predictors. We now make the word **additive** explicit and connect the mean function to the matrix notation from Chapters 1–2.
+[Chapter 4](04.qmd#def-regression-parameter-meaning) used an additive model with two predictors. We now make the word **additive** explicit and connect the mean function to the matrix notation from [Chapter 1](01_matrix_representation.qmd#the-linear-regression-model) and [Chapter 2](02_LSE.qmd#sec-lse).
 
 ::: {#def-ch5-additive-linear-mean}
 
@@ -67,7 +67,7 @@ Predictors may be correlated; additivity does **not** require their independence
 
 :::
 
-**Connection with the earlier notation.** As in Chapters 1–2, first treat predictor values as fixed. For observation $i$, write $\mu_i=\mu(x_{i1},\ldots,x_{ik})$ and
+**Connection with the earlier notation.** As in [Chapter 1](01_matrix_representation.qmd#the-linear-regression-model) and [Chapter 2](02_LSE.qmd#sec-lse), first treat predictor values as fixed. For observation $i$, write $\mu_i=\mu(x_{i1},\ldots,x_{ik})$ and
 
 $$
 Y_i=\mu_i+\varepsilon_i,
@@ -483,7 +483,7 @@ knitr::kable(ch5_test_results, row.names = FALSE,
              col.names = c("Comparison", "F degrees of freedom", "F", "p-value"))
 ```
 
-At the 5% level, the two-line analysis rejects both equal slopes and identical lines. However, the last comparison also rejects the straight-line restriction. The plot shows the departure: the means at 1 mg/day lie above the fitted lines. Thus the lines illustrate coefficient interpretation, but the **six-cell model** is a better starting point for [dose-specific comparisons](App_I-contrasts.qmd#sec-ch6-tooth). Chapter 6 takes up the broader question: [how can we revise the functional form and choose model terms?](06.qmd)
+At the 5% level, the two-line analysis rejects both equal slopes and identical lines. However, the last comparison also rejects the straight-line restriction. The plot shows the departure: the means at 1 mg/day lie above the fitted lines. Thus the lines illustrate coefficient interpretation, but the **six-cell model** is a better starting point for [dose-specific comparisons](App_I-contrasts.qmd#sec-ch6-tooth). [Chapter 6](06.qmd) takes up the broader question: [how can we revise the functional form and choose model terms?](06.qmd)
 
 ```{r}
 #| label: fig-ch5-dose-shape
