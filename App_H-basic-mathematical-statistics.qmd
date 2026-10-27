@@ -19,7 +19,7 @@ $$
 Each squared standardized component contributes one degree of freedom. Thus $U$ measures a total squared distance from zero. Its density is
 
 $$
-\boxed{f_U(u)=\frac{u^{r/2-1}e^{-u/2}}{2^{r/2}\Gamma(r/2)},\qquad u>0.}
+{f_U(u)=\frac{u^{r/2-1}e^{-u/2}}{2^{r/2}\Gamma(r/2)},\qquad u>0.}
 $$
 
 This is a gamma density with shape $r/2$ and **scale** $2$. Here
@@ -76,7 +76,7 @@ In particular, $U/r$ has mean $1$ and variance $2/r$: it estimates a unit varian
 Let $\mathbf Z\sim N_n(\mathbf0,\mathbf I_n)$, and let $\mathbf A$ be symmetric and idempotent, with rank $r\geq1$. Then
 
 $$
-\boxed{\mathbf Z^\top\mathbf A\mathbf Z\sim\chi^2_r.}
+{\mathbf Z^\top\mathbf A\mathbf Z\sim\chi^2_r.}
 $$
 
 :::
@@ -158,7 +158,7 @@ A jointly normal vector with zero cross-covariance has a characteristic function
 Let $Z\sim N(0,1)$ and $U\sim\chi^2_\nu$ be independent, with $\nu>0$. Then
 
 $$
-\boxed{T=\frac{Z}{\sqrt{U/\nu}}\sim t_\nu.}
+{T=\frac{Z}{\sqrt{U/\nu}}\sim t_\nu.}
 $$
 
 The denominator is a random estimate of a standard deviation. It can be small, producing larger standardized values than a normal denominator fixed at $1$ would produce. The result is a symmetric density with heavier tails than the standard normal density.
@@ -192,7 +192,7 @@ $$
 Using $\int_0^\infty u^{a-1}e^{-bu}\,du=\Gamma(a)b^{-a}$ for $a,b>0$, we obtain
 
 $$
-\boxed{f_T(t)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\nu\pi}\,\Gamma(\nu/2)}
+{f_T(t)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\nu\pi}\,\Gamma(\nu/2)}
 \left(1+\frac{t^2}{\nu}\right)^{-(\nu+1)/2},\qquad t\in\mathbb R.}
 $$
 
@@ -232,7 +232,7 @@ Under $H_0:\mathbf a^\top\boldsymbol\beta=d$, replace the true contrast in the n
 If $U_1\sim\chi^2_r$ and $U_2\sim\chi^2_\nu$ are independent, with $r,\nu>0$, then
 
 $$
-\boxed{F=\frac{U_1/r}{U_2/\nu}\sim F_{r,\nu}.}
+{F=\frac{U_1/r}{U_2/\nu}\sim F_{r,\nu}.}
 $$
 
 The two degrees of freedom have different roles: $r$ belongs to the numerator and $\nu$ to the denominator. Both normalized sums of squares have expectation $1$. Their ratio is positive and can be large when the numerator is unusually large or the denominator is small. The ratio itself does not have mean $1$: its mean is $\nu/(\nu-2)$ when $\nu>2$.
@@ -271,7 +271,7 @@ $$
 Substituting the definitions of $a,b,c$ gives the $F$ density:
 
 $$
-\boxed{f_F(f)=\frac{\Gamma((r+\nu)/2)}{\Gamma(r/2)\Gamma(\nu/2)}
+{f_F(f)=\frac{\Gamma((r+\nu)/2)}{\Gamma(r/2)\Gamma(\nu/2)}
 \left(\frac r\nu\right)^{r/2}
 f^{r/2-1}\left(1+\frac r\nu f\right)^{-(r+\nu)/2},\quad f>0.}
 $$
@@ -330,7 +330,7 @@ The quantity $Q$ is a function of $\hat{\boldsymbol\beta}$, whereas $U$ is a fun
 **Step 3: form the ratio.** Apply the [F ratio result](#sec-bms-f) and cancel $\sigma^2$:
 
 $$
-\boxed{F=\frac{Q/r}{U/\nu}
+{F=\frac{Q/r}{U/\nu}
 =\frac{\mathbf L^\top\mathbf D^{-1}\mathbf L}{r\hat\sigma^2}
 \sim F_{r,n-p}\quad\text{under }H_0.}
 $$

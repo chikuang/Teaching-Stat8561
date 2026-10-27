@@ -359,7 +359,7 @@ $$
 so
 
 $$
-\boxed{
+{
 \hat{\beta}_0
 =
 \bar{Y}
@@ -472,7 +472,7 @@ $$
 we obtain
 
 $$
-\boxed{
+{
 \hat{\beta}_1
 =
 \frac{
@@ -488,7 +488,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \hat{\beta}_0
 =
 \bar{Y}
@@ -520,7 +520,7 @@ $$
 Then
 
 $$
-\boxed{
+{
 \hat{\beta}_1
 =
 \frac{S_{xy}}{S_{xx}}
@@ -530,7 +530,7 @@ $$
 and
 
 $$
-\boxed{
+{
 \hat{\beta}_0
 =
 \bar{Y}
@@ -542,7 +542,7 @@ $$
 Thus, the fitted regression line is
 
 $$
-\boxed{
+{
 \hat{Y}_i
 =
 \hat{\beta}_0
@@ -598,7 +598,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 S(\boldsymbol{\beta})
 =
 \mathbf{Y}^\top\mathbf{Y}
@@ -641,7 +641,7 @@ $$
 Thus,
 
 $$
-\boxed{
+{
 \mathbf{X}^\top\mathbf{X}
 \hat{\boldsymbol{\beta}}
 =
@@ -774,7 +774,7 @@ then $\mathbf{X}^\top\mathbf{X}$ is invertible and the least squares
 estimator is unique:
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 =
 (\mathbf{X}^\top\mathbf{X})^{-1}
@@ -896,7 +896,7 @@ $$
 which gives exactly
 
 $$
-\boxed{
+{
 \hat{\beta}_1
 =
 \frac{
@@ -910,7 +910,7 @@ $$
 and
 
 $$
-\boxed{
+{
 \hat{\beta}_0
 =
 \bar{Y}-\hat{\beta}_1\bar{x}
@@ -1038,7 +1038,7 @@ After obtaining the LSE, define the **residual
 vector**
 
 $$
-\boxed{
+{
 \mathbf{e}
 =
 \mathbf{Y}
@@ -1092,7 +1092,7 @@ $$
 we obtain the fundamental least squares property
 
 $$
-\boxed{
+{
 \mathbf{X}^\top\mathbf{e}
 =
 \mathbf{0}.
@@ -1147,7 +1147,7 @@ Thus, the residual vector is orthogonal to every column of $\mathbf{X}$.
 Because the column space $\mathcal{C}(\mathbf{X})$ consists of all linear combinations of the columns of $\mathbf{X}$, it follows that
 
 $$
-\boxed{
+{
 \mathbf{e}
 \perp
 \mathcal{C}(\mathbf{X}).
@@ -1176,7 +1176,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \hat{\mathbf{Y}}
 \in
 \mathcal{C}(\mathbf{X}).
@@ -1198,7 +1198,7 @@ $$
 we can write
 
 $$
-\boxed{
+{
 \mathbf{Y}
 =
 \hat{\mathbf{Y}}
@@ -1226,7 +1226,7 @@ $$
 Hence,
 
 $$
-\boxed{
+{
 \hat{\mathbf{Y}}^\top\mathbf{e}
 =
 0.
@@ -1246,7 +1246,7 @@ $$
 Because the two components are orthogonal, the Pythagorean theorem gives
 
 $$
-\boxed{
+{
 \|\mathbf{Y}\|^2
 =
 \|\hat{\mathbf{Y}}\|^2
@@ -1470,7 +1470,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \sum_{i=1}^n e_i
 =
 0.
@@ -1496,7 +1496,7 @@ $$
 Thus,
 
 $$
-\boxed{
+{
 \bar{\hat{Y}}
 =
 \bar{Y}.
@@ -1549,7 +1549,7 @@ $$
 Define
 
 $$
-\boxed{
+{
 \mathbf{H}
 =
 \mathbf{X}
@@ -1561,7 +1561,7 @@ $$
 Then
 
 $$
-\boxed{
+{
 \hat{\mathbf{Y}}
 =
 \mathbf{H}\mathbf{Y}.
@@ -1592,7 +1592,7 @@ When $\mathbf{X}$ has full column rank, the hat matrix satisfies:
 **i) Symmetry**
 
 $$
-\boxed{
+{
 \mathbf{H}^\top
 =
 \mathbf{H}.
@@ -1602,7 +1602,7 @@ $$
 **ii) Idempotence**
 
 $$
-\boxed{
+{
 \mathbf{H}^2
 =
 \mathbf{H}.
@@ -1612,7 +1612,7 @@ $$
 **iii) Projection of the design matrix**
 
 $$
-\boxed{
+{
 \mathbf{H}\mathbf{X}
 =
 \mathbf{X}.
@@ -1622,7 +1622,7 @@ $$
 **iv) Rank**
 
 $$
-\boxed{
+{
 \operatorname{rank}(\mathbf{H})
 =
 p.
@@ -1632,7 +1632,7 @@ $$
 **v) Trace**
 
 $$
-\boxed{
+{
 \operatorname{tr}(\mathbf{H})
 =
 p.
@@ -1753,7 +1753,7 @@ $$
 Define
 
 $$
-\boxed{
+{
 \mathbf{M}
 =
 \mathbf{I}_n-\mathbf{H}.
@@ -1763,7 +1763,7 @@ $$
 Then
 
 $$
-\boxed{
+{
 \mathbf{e}
 =
 \mathbf{M}\mathbf{Y}.
@@ -1823,7 +1823,7 @@ $$
 In addition,
 
 $$
-\boxed{
+{
 \mathbf{H}\mathbf{M}
 =
 \mathbf{M}\mathbf{H}
@@ -1876,7 +1876,7 @@ $$
 Thus,
 
 $$
-\boxed{
+{
 \mathbf{H}+\mathbf{M}
 =
 \mathbf{I}_n.
@@ -1908,7 +1908,7 @@ squares, we can explain the name **ordinary least squares**, or **OLS**.
 Thus,
 
 $$
-\boxed{
+{
 \text{OLS}
 =
 \text{minimize the ordinary sum of squared residuals}.
@@ -1975,7 +1975,7 @@ we have
 Therefore,
 
 $$
-\boxed{
+{
 \|\mathbf{Y}\|_2^2
 =
 \|\hat{\mathbf{Y}}\|_2^2
@@ -2010,7 +2010,7 @@ $$
 The two components are orthogonal, giving
 
 $$
-\boxed{
+{
 \sum_{i=1}^n
 (Y_i-\bar{Y})^2
 =
@@ -2048,7 +2048,7 @@ These quantities will later be called
 Thus,
 
 $$
-\boxed{
+{
 \mathrm{SST}
 =
 \mathrm{SSR}
@@ -2216,7 +2216,7 @@ $$
 and the fitted regression line is
 
 $$
-\boxed{
+{
 \hat{Y}
 =
 1.2+1.2x.
@@ -2314,7 +2314,7 @@ $$
 Thus,
 
 $$
-\boxed{
+{
 \mathbf{X}^\top\mathbf{e}
 =
 \mathbf{0}.
@@ -2541,7 +2541,7 @@ When $\mathbf{X}$ does not have full column rank,
 Thus,
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 \text{ may not be unique, but }
 \hat{\mathbf{Y}}
@@ -2583,7 +2583,7 @@ $\mathbf{Y}$.
 The central relationships are
 
 $$
-\boxed{
+{
 \min_{\boldsymbol{\beta}}
 \|
 \mathbf{Y}-\mathbf{X}\boldsymbol{\beta}
@@ -2596,7 +2596,7 @@ $$
 $$
 
 $$
-\boxed{
+{
 \mathbf{X}^\top
 (\mathbf{Y}-\mathbf{X}\hat{\boldsymbol{\beta}})
 =
@@ -2609,7 +2609,7 @@ $$
 $$
 
 $$
-\boxed{
+{
 \mathbf{e}
 \perp
 \mathcal{C}(\mathbf{X})
@@ -2621,7 +2621,7 @@ $$
 $$
 
 $$
-\boxed{
+{
 \hat{\mathbf{Y}}
 =
 \mathbf{H}\mathbf{Y}
@@ -2633,7 +2633,7 @@ $$
 $$
 
 $$
-\boxed{
+{
 \mathbf{Y}
 =
 \hat{\mathbf{Y}}
@@ -2827,7 +2827,7 @@ $$
 and therefore
 
 $$
-\boxed{
+{
 \frac{\partial}
 {\partial\boldsymbol{\beta}}
 \left(

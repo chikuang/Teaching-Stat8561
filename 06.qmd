@@ -57,6 +57,110 @@ Let $n$ be the number of observations and $p$ the number of coefficient columns,
 
 Start with a fitted model and ask: **does an unusual observation substantially change what we conclude?** A response far from its fitted mean, an unusual predictor value, and a point that moves the fitted line describe different features. Distinguishing them helps us decide what to inspect before changing the model or selecting variables. A pattern shared by many observations and a fit pulled by one unusual point call for different investigations.
 
+::: {#exm-ch6-three-points}
+
+## Three Points, Three Different Stories
+
+**Look at the lines first.** Every panel starts with the same six green observations, whose fitted line is $\hat y=2+x$. We add **one orange point at a time**. The dashed gray line omits that point; the solid purple line includes it. Compare the point's vertical position, its horizontal position, and how much the line moves.
+
+```{r}
+#| label: fig-ch6-influence-stories
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.6
+#| fig-cap: "The same six baseline observations appear in every panel. A shifts the line upward without changing its slope. B lies far to the right but leaves the line unchanged. C is equally far to the right and pulls the line downward, sharply reducing its slope."
+#| fig-alt: "Three panels compare a dashed baseline line with a solid line after adding one point. A adds (3.5, 10.5) near the predictor center and shifts the line upward. B adds (10, 12) on the baseline line and the lines coincide. C adds (10, 4), pulling the right side of the line downward."
+library(ggplot2)
+ch6_base <- data.frame(x = 1:6, y = c(2.8, 4.2, 5, 6, 7.2, 7.8))
+ch6_base_fit <- lm(y ~ x, data = ch6_base)
+ch6_cases <- c("A: response outlier", "B: high leverage", "C: influential point")
+ch6_added <- data.frame(x = c(3.5, 10, 10), y = c(10.5, 12, 4))
+ch6_story_fits <- vector("list", 3)
+ch6_story_data <- ch6_story_lines <- vector("list", 3)
+for (j in seq_along(ch6_cases)) {
+  d <- rbind(ch6_base, ch6_added[j, ])
+  fit <- lm(y ~ x, data = d)
+  ch6_story_fits[[j]] <- fit
+  d$Case <- ch6_cases[j]
+  d$Added <- seq_len(nrow(d)) == nrow(d)
+  ch6_story_data[[j]] <- d
+  grid <- data.frame(x = seq(0.7, 10.7, length.out = 100))
+  ch6_story_lines[[j]] <- rbind(
+    data.frame(grid, y = predict(fit, grid), Case = ch6_cases[j],
+      Fit = "Including orange point"),
+    data.frame(grid, y = predict(ch6_base_fit, grid), Case = ch6_cases[j],
+      Fit = "Omitting orange point"))
+}
+names(ch6_story_fits) <- c("A", "B", "C")
+ch6_story_data <- do.call(rbind, ch6_story_data)
+ch6_story_lines <- do.call(rbind, ch6_story_lines)
+ch6_story_labels <- data.frame(Case = ch6_cases,
+  Label = c("Near center in x\nAbove the original line",
+    "Far to the right\nOn the original line",
+    "Far to the right\nBelow the original line"))
+ggplot(ch6_story_data, aes(x, y)) +
+  geom_line(data = ch6_story_lines, aes(colour = Fit, linetype = Fit),
+    linewidth = 0.75) +
+  geom_point(data = subset(ch6_story_data, !Added), colour = "#247A6B", size = 1.8) +
+  geom_point(data = subset(ch6_story_data, Added), shape = 21,
+    fill = "#E5A14A", colour = "#8A4700", size = 3.2, stroke = 0.8) +
+  geom_text(data = ch6_story_labels, aes(x = 0.9, y = 13.7, label = Label),
+    inherit.aes = FALSE, hjust = 0, vjust = 1, size = 2.8) +
+  facet_wrap(~ Case, nrow = 1) +
+  scale_colour_manual(values = c(`Including orange point` = "#593196",
+    `Omitting orange point` = "#777777")) +
+  scale_linetype_manual(values = c(`Including orange point` = "solid",
+    `Omitting orange point` = "dashed")) +
+  coord_cartesian(xlim = c(0.7, 10.7), ylim = c(2, 14)) +
+  labs(x = "Predictor x", y = "Response y", colour = NULL, linetype = NULL) +
+  theme_minimal(base_size = 10) + theme(legend.position = "bottom")
+```
+
+- **A: unusual response, ordinary predictor value.** At $x=3.5$, the original line predicts 5.5, but the orange response is 10.5. This point is near the center of the predictor values and far above the line. It mainly shifts the line upward.
+- **B: high leverage without a change in the fitted line.** The new $x=10$ lies beyond the original range of 1 to 6. Its response, 12, lies exactly on the extension of the original line. The point has the potential to pull the fit, but here the two lines coincide.
+- **C: high leverage with a large change in the fitted line.** The predictor is again $x=10$, but the response is 4 instead of 12. The point pulls down the right side of the line, substantially reducing the estimated slope.
+
+These descriptions can overlap. C is also a high-leverage point; its **actual effect on the fit** makes it influential. A also affects the fit, even though its effect on the slope differs from C's.
+
+**Now put numbers on the changes.** The six baseline observations are:
+
+```{r}
+#| label: ch6-influence-baseline-data
+#| echo: false
+ch6_baseline_display <- data.frame(Variable = c("x", "y"),
+  as.data.frame(rbind(ch6_base$x, ch6_base$y)))
+knitr::kable(ch6_baseline_display, row.names = FALSE,
+  col.names = c("Variable", paste0("Obs. ", 1:6)),
+  digits = 1, format.args = list(nsmall = 1), align = "c")
+```
+
+Fit `lm(y ~ x)` to the baseline data, then add A, B, or C separately. The table reports the intercept, slope, fitted mean at $x=6$, and residual standard deviation $s$. Removing the orange point from any of the three augmented datasets returns the baseline fit.
+
+```{r}
+#| label: ch6-influence-estimate-changes
+#| echo: false
+ch6_compare_fits <- c(list(Baseline = ch6_base_fit), ch6_story_fits)
+ch6_estimate_changes <- t(vapply(ch6_compare_fits, function(m) {
+  c(Intercept = unname(coef(m)[1]), Slope = unname(coef(m)[2]),
+    Fitted_at_6 = unname(predict(m, newdata = data.frame(x = 6))),
+    Residual_SD = sigma(m))
+}, numeric(4)))
+knitr::kable(data.frame(
+  Fit = c("Baseline", "Baseline + A", "Baseline + B", "Baseline + C"),
+  ch6_estimate_changes, row.names = NULL),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
+  col.names = c("Fit", "Intercept", "Slope", "Fitted mean at 6", "Residual SD"))
+```
+
+- **A changes the intercept and the noise estimate.** The intercept rises from 2.000 to 2.714, while the slope stays at 1.000. Here $x=3.5$ is the baseline mean of $x$, so this added point does not change the slope. The residual SD rises from 0.200 to 2.078: an outlying response can inflate estimated noise even when the slope is unchanged.
+- **B leaves both coefficient estimates unchanged.** The fitted mean at $x=6$ remains 8.000. High leverage alone does not imply that a point changes the estimated line; it can still affect the precision of the estimates.
+- **C changes the estimated relationship.** The slope falls from 1.000 to 0.170 and the intercept rises to 4.532. The fitted mean at $x=6$ falls from 8.000 to 5.553. This is a substantial change in a prediction within the original predictor range, not just at the distant added point.
+
+:::
+
+The plots and coefficient comparisons motivate the following definitions. We then quantify the movement of the fitted line with Cook's distance.
+
 ::: {#def-ch6-outlier-leverage-influence}
 
 ## Outlier, Leverage, and Influence
@@ -96,68 +200,23 @@ Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted 
 
 **Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
 
-::: {#exm-ch6-three-points}
-
-## Three Points, Three Different Stories
-
-Each panel starts with the same 12 observations and adds one orange point. The dashed line omits that point; the solid line includes it. Compare **vertical discrepancy**, **horizontal position**, and **movement of the line** separately.
+**Apply Cook's distance to the same three points.** In each augmented fit, $n=7$ and $p=2$. The diagnostics for its orange point are:
 
 ```{r}
-#| label: fig-ch6-influence-stories
+#| label: ch6-influence-diagnostic-values
 #| echo: false
-#| fig-pos: "H"
-#| fig-width: 7
-#| fig-height: 3.6
-#| fig-cap: "The same baseline data appear in each panel. A has a large residual but less influence than C. B has high leverage and essentially zero Cook's distance. C strongly rotates the fit. Annotations describe the orange point; p = 2."
-#| fig-alt: "Three side-by-side scatterplots compare fitted lines including and omitting an orange point: an outlying response near the center, a far-right point on the baseline line, and a far-right point below that line. The third point rotates the line most."
-library(ggplot2)
-ch6_base_x <- seq(1, 5, length.out = 12)
-ch6_base <- data.frame(x = ch6_base_x,
-  y = 2 + ch6_base_x + rep(c(-0.3, 0.2, 0.1), 4))
-ch6_base_fit <- lm(y ~ x, data = ch6_base)
-ch6_cases <- c("A: response outlier", "B: high leverage", "C: influential point")
-ch6_added <- data.frame(x = c(3, 9, 9),
-  y = c(9, as.numeric(predict(ch6_base_fit, data.frame(x = 9))), 6))
-ch6_story_data <- ch6_story_lines <- ch6_story_labels <- vector("list", 3)
-for (j in seq_along(ch6_cases)) {
-  d <- rbind(ch6_base, ch6_added[j, ])
-  fit <- lm(y ~ x, data = d)
-  d$Case <- ch6_cases[j]
-  d$Added <- seq_len(nrow(d)) == nrow(d)
-  ch6_story_data[[j]] <- d
-  grid <- data.frame(x = seq(0.7, 9.3, length.out = 100))
-  ch6_story_lines[[j]] <- rbind(
-    data.frame(grid, y = predict(fit, grid), Case = ch6_cases[j],
-      Fit = "Including orange point"),
-    data.frame(grid, y = predict(ch6_base_fit, grid), Case = ch6_cases[j],
-      Fit = "Omitting orange point"))
-  ch6_story_labels[[j]] <- data.frame(Case = ch6_cases[j],
-    Label = sprintf("h = %.2f\nr = %.2f\nD = %.2f",
-      tail(hatvalues(fit), 1), tail(rstandard(fit), 1),
-      tail(cooks.distance(fit), 1)))
-}
-ch6_story_data <- do.call(rbind, ch6_story_data)
-ch6_story_lines <- do.call(rbind, ch6_story_lines)
-ch6_story_labels <- do.call(rbind, ch6_story_labels)
-ggplot(ch6_story_data, aes(x, y)) +
-  geom_line(data = ch6_story_lines, aes(colour = Fit, linetype = Fit),
-    linewidth = 0.75) +
-  geom_point(data = subset(ch6_story_data, !Added), colour = "#247A6B", size = 1.8) +
-  geom_point(data = subset(ch6_story_data, Added), shape = 21,
-    fill = "#E5A14A", colour = "#8A4700", size = 3.2, stroke = 0.8) +
-  geom_text(data = ch6_story_labels, aes(x = 0.9, y = 11.7, label = Label),
-    inherit.aes = FALSE, hjust = 0, vjust = 1, size = 3) +
-  facet_wrap(~ Case, nrow = 1) +
-  scale_colour_manual(values = c(`Including orange point` = "#593196",
-    `Omitting orange point` = "#777777")) +
-  scale_linetype_manual(values = c(`Including orange point` = "solid",
-    `Omitting orange point` = "dashed")) +
-  coord_cartesian(xlim = c(0.7, 9.3), ylim = c(2, 12)) +
-  labs(x = "Predictor x", y = "Response y", colour = NULL, linetype = NULL) +
-  theme_minimal(base_size = 10) + theme(legend.position = "bottom")
+ch6_story_diagnostics <- t(vapply(ch6_story_fits, function(m) {
+  c(Leverage = unname(tail(hatvalues(m), 1)),
+    Standardized_residual = unname(tail(rstandard(m), 1)),
+    Cooks_distance = unname(tail(cooks.distance(m), 1)))
+}, numeric(3)))
+knitr::kable(data.frame(Point = c("A", "B", "C"),
+  ch6_story_diagnostics, row.names = NULL),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
+  col.names = c("Point", "Leverage", "Standardized residual", "Cook's distance"))
 ```
 
-:::
+A and C have almost the same absolute standardized residual, but C has much higher leverage and a much larger Cook's distance: 6.395 versus 0.414. B has the same leverage as C, yet its zero residual gives zero Cook's distance. These numbers quantify what the plots and coefficient table already showed: **influence depends on both the response discrepancy and the predictor position**.
 
 ::: {#exr-ch6-influence}
 

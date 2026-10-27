@@ -496,7 +496,7 @@ $$
 ::: {#a2-solution-5b .callout-tip collapse="true" title="Solution 5(b)"}
 
 $$
-\hat\sigma^2=\frac{34}{20-3}=\boxed{2.000}.
+\hat\sigma^2=\frac{34}{20-3}={2.000}.
 $$
 
 :::
@@ -533,11 +533,11 @@ B.  Fail to reject $H_0$
 Use the second diagonal entry of $(\mathbf{X}^\top\mathbf{X})^{-1}$, which is $0.05$:
 
 $$
-\mathrm{SE}(\hat\beta_1)=\sqrt{2(0.05)}=0.3162278\approx\boxed{0.316},
+\mathrm{SE}(\hat\beta_1)=\sqrt{2(0.05)}=0.3162278\approx{0.316},
 $$
 
 $$
-t=\frac{1.5-0}{\sqrt{0.1}}=4.7434165\approx\boxed{4.743}.
+t=\frac{1.5-0}{\sqrt{0.1}}=4.7434165\approx{4.743}.
 $$
 
 Since $|t|>2.110$, choose **A: Reject $H_0$** at the 5% significance level.
@@ -567,7 +567,7 @@ D.  $(0,\;3.0000)$
 $$
 1.5\pm2.110\sqrt{0.1}
 =(0.832759,\;2.167241)
-\approx\boxed{(0.833,\;2.167)}.
+\approx{(0.833,\;2.167)}.
 $$
 
 These endpoints agree with option A at the requested three decimal places.

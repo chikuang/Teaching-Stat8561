@@ -992,7 +992,7 @@ $$
 and hence
 
 $$
-\boxed{\mathrm{SSE}_R-\mathrm{SSE}_F
+{\mathrm{SSE}_R-\mathrm{SSE}_F
 =\|\hat{\mathbf Y}_F-\hat{\mathbf Y}_R\|^2
 =\mathbf Y^\top(\mathbf P_F-\mathbf P_R)\mathbf Y.}
 $$

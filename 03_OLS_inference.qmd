@@ -218,7 +218,7 @@ Substituting this into the OLS estimator gives
 Thus,
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 =
 \boldsymbol{\beta}
@@ -255,7 +255,7 @@ $$
 the OLS estimator satisfies
 
 $$
-\boxed{
+{
 \mathbb{E}
 \left(
 \hat{\boldsymbol{\beta}}
@@ -268,7 +268,7 @@ $$
 and
 
 $$
-\boxed{
+{
 \operatorname{Var}
 \left(
 \hat{\boldsymbol{\beta}}
@@ -319,7 +319,7 @@ we obtain
 Thus,
 
 $$
-\boxed{
+{
 \mathbb{E}
 \left(
 \hat{\boldsymbol{\beta}}
@@ -494,7 +494,7 @@ assumptions.
 The **normal linear model** assumes
 
 $$
-\boxed{
+{
 \mathbf{Y}
 \sim
 N_n
@@ -508,7 +508,7 @@ $$
 Equivalently,
 
 $$
-\boxed{
+{
 \boldsymbol{\varepsilon}
 \sim
 N_n
@@ -633,7 +633,7 @@ multivariate normal.
 Under the normal linear model,
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 \sim
 N_p
@@ -682,7 +682,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \frac{
 \hat{\beta}_j-\beta_j
 }{
@@ -721,7 +721,7 @@ If $c_{jj}$ is the $j$th diagonal element of $\mathbf{C}$:
 The variance is
 
 $$
-\boxed{
+{
 \operatorname{Var}(\hat{\beta}_j)
 =
 \sigma^2c_{jj}.
@@ -833,7 +833,7 @@ we have
 Thus,
 
 $$
-\boxed{
+{
 \mathbf{e}
 =
 \mathbf{M}\boldsymbol{\varepsilon}.
@@ -880,7 +880,7 @@ and $\mathbf{M}$ is symmetric and idempotent,
 Therefore,
 
 $$
-\boxed{
+{
 \mathrm{SSE}
 =
 \boldsymbol{\varepsilon}^\top
@@ -940,7 +940,7 @@ Therefore,
 Under the normal linear model,
 
 $$
-\boxed{
+{
 \frac{\mathrm{SSE}}{\sigma^2}
 \sim
 \chi^2_{n-p}.
@@ -991,7 +991,7 @@ $$
 Therefore, the residual variation has
 
 $$
-\boxed{
+{
 n-p
 }
 $$
@@ -1108,7 +1108,7 @@ This gives us an unbiased estimator of the error variance.
 The **mean squared error** is defined as
 
 $$
-\boxed{
+{
 \mathrm{MSE}
 =
 \hat{\sigma}^2
@@ -1131,7 +1131,7 @@ $$
 The estimated error standard deviation is
 
 $$
-\boxed{
+{
 \hat{\sigma}
 =
 \sqrt{\mathrm{MSE}}.
@@ -1193,7 +1193,7 @@ $$
 Hence,
 
 $$
-\boxed{
+{
 \hat{\sigma}
 =
 \sqrt{2}
@@ -1210,7 +1210,7 @@ $$
 A crucial result under the normal linear model is
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 \quad\text{and}\quad
 \mathrm{SSE}
@@ -1338,7 +1338,7 @@ $$
 is a function of $\mathbf{e}$,
 
 $$
-\boxed{
+{
 \hat{\boldsymbol{\beta}}
 \perp\!\!\!\perp
 \mathrm{SSE}.
@@ -1434,7 +1434,7 @@ The estimated standard deviation of $\hat{\beta}_j$ is
 The standard error of $\hat{\beta}_j$ is
 
 $$
-\boxed{
+{
 \operatorname{SE}
 \left(
 \hat{\beta}_j
@@ -1505,7 +1505,7 @@ Substituting the regression quantities gives
 Under the normal linear model,
 
 $$
-\boxed{
+{
 T
 =
 \frac{
@@ -1585,7 +1585,7 @@ statistic from a normal distribution to a $t$ distribution.
 A $100(1-\alpha)\%$ confidence interval for $\beta_j$ is
 
 $$
-\boxed{
+{
 \hat{\beta}_j
 \pm
 t_{1-\alpha/2,\;n-p}
@@ -1599,7 +1599,7 @@ $$
 Equivalently,
 
 $$
-\boxed{
+{
 \hat{\beta}_j
 \pm
 t_{1-\alpha/2,\;n-p}
@@ -1631,7 +1631,7 @@ $$
 The test statistic is
 
 $$
-\boxed{
+{
 T
 =
 \frac{
@@ -1742,7 +1742,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \frac{
 \mathbf{a}^\top\hat{\boldsymbol{\beta}}
 -
@@ -1764,7 +1764,7 @@ A $100(1-\alpha)\%$ confidence interval for
 $\mathbf{a}^\top\boldsymbol{\beta}$ is
 
 $$
-\boxed{
+{
 \mathbf{a}^\top\hat{\boldsymbol{\beta}}
 \pm
 t_{1-\alpha/2,\;n-p}
@@ -1815,7 +1815,7 @@ What vector $\mathbf{a}$ would you choose so that $\mathbf{a}^\top\boldsymbol{\b
 Choose
 
 $$
-\boxed{
+{
 \mathbf{a}
 =
 \begin{pmatrix}
@@ -1872,7 +1872,7 @@ $$
 Under $H_0$,
 
 $$
-\boxed{
+{
 F
 \sim
 F_{r,\;n-p}.
@@ -1886,7 +1886,7 @@ For the distribution background, see @sec-ols-side-fact; the full derivations ar
 When only one restriction is being tested, $r=1$. In this case,
 
 $$
-\boxed{
+{
 F=T^2.
 }
 $$
@@ -1906,7 +1906,7 @@ Suppose we want to test only $H_0: \beta_2=0$. Could we use either a $t$ test or
 Yes. Because there is only one linear restriction, either test can be used. The corresponding statistics satisfy
 
 $$
-\boxed{
+{
 F=T^2.
 }
 $$
@@ -1973,7 +1973,7 @@ Therefore, a $100(1-\alpha)\%$ confidence interval for the mean response
 is
 
 $$
-\boxed{
+{
 \mathbf{x}_0^\top\hat{\boldsymbol{\beta}}
 \pm
 t_{1-\alpha/2,\;n-p}
@@ -2049,7 +2049,7 @@ $$
 Therefore, a $100(1-\alpha)\%$ prediction interval is
 
 $$
-\boxed{
+{
 \mathbf{x}_0^\top\hat{\boldsymbol{\beta}}
 \pm
 t_{1-\alpha/2,\;n-p}
@@ -2193,7 +2193,7 @@ The residual sum of squares is
 Since $n=4$ and $p=2$, the residual degrees of freedom are $n-p=2$. Thus,
 
 $$
-\boxed{
+{
 \hat{\sigma}^2
 =
 \frac{0.8}{2}
@@ -2205,7 +2205,7 @@ $$
 Therefore,
 
 $$
-\boxed{
+{
 \hat{\sigma}
 =
 \sqrt{0.4}
@@ -2282,7 +2282,7 @@ The estimated slope $\hat{\beta}_1=1.2$ is relatively large. However, there are 
 A 95% confidence interval is $1.2 \pm 4.303(0.283)$, which gives approximately
 
 $$
-\boxed{
+{
 (-0.017,\;2.417).
 }
 $$
@@ -2356,7 +2356,7 @@ $$
 The 95% confidence interval for the mean response is approximately
 
 $$
-\boxed{
+{
 (2.110,\;5.090).
 }
 $$
@@ -2378,7 +2378,7 @@ $$
 Therefore, the 95% prediction interval is approximately
 
 $$
-\boxed{
+{
 (0.497,\;6.703).
 }
 $$
