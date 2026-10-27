@@ -6,27 +6,180 @@ execute:
 
 # Transformations and Variable Selection {#sec-transform-selection}
 
-[Chapter 5](05.qmd) built models from predictors, groups, and interactions. Its final example also showed that straight lines can miss the pattern. We now ask **which functions of the predictors to use, and which terms to retain**. We first fit and check a plausible functional form, then examine whether unusual observations drive it, and finally select terms. A transformation changes the model representation; diagnostics assess its adequacy and sensitivity; selection decides which terms remain.
+[Chapter 5](05.qmd) built models from predictors, groups, and interactions. Its final example also showed that straight lines can miss the pattern. We now ask **which functions of the predictors to use, and which terms to retain**. We begin by distinguishing outliers, leverage, and influence, and use Cook's distance to assess whether individual observations drive a fit. We then study transformations and recheck the revised model before selecting terms. Diagnostics assess model adequacy and sensitivity; transformations change the model representation; selection decides which terms remain.
 
 > **Learning Objectives**
 >
 > By the end of this chapter, students should be able to:
 >
+> - distinguish outliers, high leverage, and influence, and use Cook's distance for a sensitivity check;
 > - distinguish a curved relationship from a model nonlinear in its parameters;
 > - choose, fit, and check a suitable transformation;
 > - interpret predictions after transforming the response;
-> - distinguish outliers, high leverage, and influence, and use Cook's distance for a sensitivity check;
 > - carry out forward selection, backward elimination, and stepwise selection;
 > - explain ridge and lasso, and choose a penalty using cross-validation;
 > - separate model development from final prediction assessment.
 
-::: {.callout-note title="Recap of the Linear Model"}
+::: {#ch6-prerequisite-recap .callout-note title="Quick Recap: What We Will Use"}
 
-We keep [Chapter 2's least-squares machinery](02_LSE.qmd#sec-lse), [Chapter 3's inference for a specified model](03_OLS_inference.qmd), and [Chapter 4's nested-model comparisons](04.qmd#thm-partial-f). [Chapter 5](05.qmd#sec-ch5-factor-coding) supplies the rules for factor coding and interactions. Here we change the model specification; we do not rederive OLS or the F test.
+Let $n$ be the number of observations and $p$ the number of coefficient columns, **including the intercept when present**. For the formulas below, assume $\mathbf X$ has full column rank and $n>p$.
+
+- **Model and design matrix — [Chapter 1](01_matrix_representation.qmd#the-linear-regression-model).** Write $\mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon$, with mean $\boldsymbol\mu=\mathbf X\boldsymbol\beta$ and $\mathbb E(\boldsymbol\varepsilon\mid\mathbf X)=\mathbf0$. Each row describes one observation; each column multiplies one coefficient. Count columns, not variable names. Changing the columns changes the set of mean patterns the model can represent.
+
+- **OLS, fitted values, and residuals — [Chapter 2](02_LSE.qmd#sec-lse).** OLS minimizes $\mathrm{SSE}=\mathbf e^\top\mathbf e$:
+
+  $$
+  \hat{\boldsymbol\beta}=(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf Y,
+  \qquad
+  \hat{\mathbf Y}=\mathbf H\mathbf Y,
+  \qquad
+  \mathbf e=(\mathbf I-\mathbf H)\mathbf Y.
+  $$
+
+  The [hat matrix](02_LSE.qmd#the-hat-matrix) is $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$, and $\mathbf X^\top\mathbf e=\mathbf0$. Residuals are observed deviations from the fitted mean; they are not the unobserved errors $\boldsymbol\varepsilon$.
+
+- **Assumptions and uncertainty — [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model).** The normal model assumes $\boldsymbol\varepsilon\mid\mathbf X\sim N(\mathbf0,\sigma^2\mathbf I)$: a correct mean, independent normal errors, and constant variance. OLS itself does not require normality, but our exact $t$ and $F$ inference uses it. Estimate $\sigma^2$ by $s^2=\mathrm{SSE}/(n-p)$; estimated coefficient covariance is $s^2(\mathbf X^\top\mathbf X)^{-1}$. Nearly dependent columns can make coefficient estimates unstable. These inference results concern a specified model.
+
+- **Model comparison and fit — [Chapter 4](04.qmd#thm-partial-f).** For nested reduced and full models fitted to the **same observations and response**, test the added terms jointly using
+
+  $$
+  F=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}{\mathrm{SSE}_F/(n-p_F)}
+  \quad\text{with null degrees of freedom }(p_F-p_R,\ n-p_F).
+  $$
+
+  Adding columns cannot increase SSE; with an intercept, training $R^2$ cannot decrease. [Adjusted $R^2$](04.qmd#def-adjusted-r-squared) penalizes model size and can decrease. Neither fit summary alone measures prediction performance on new observations.
+
+- **Coefficient meanings and model structure — [Chapter 5](05.qmd#summary).** An additive slope compares means while holding other predictors fixed. A $g$-level factor uses an intercept plus $g-1$ indicators, or all $g$ indicators without an intercept. An interaction makes a predictor's contribution depend on another predictor; retain its lower-order terms. Centering or changing the reference group changes coefficient meanings but preserves fitted values when the equivalent model is retained.
 
 :::
 
-**Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from [Chapter 5](05.qmd#exm-ch5-tree-adjustment) suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
+## Outliers, leverage, and influential observations {#sec-ch6-influence}
+
+Start with a fitted model and ask: **does an unusual observation substantially change what we conclude?** A response far from its fitted mean, an unusual predictor value, and a point that moves the fitted line describe different features. Distinguishing them helps us decide what to inspect before changing the model or selecting variables. A pattern shared by many observations and a fit pulled by one unusual point call for different investigations.
+
+::: {#def-ch6-outlier-leverage-influence}
+
+## Outlier, Leverage, and Influence
+
+- A **response outlier** has an unusual response *given its predictor values and the specified model*. A large volume alone does not make a large tree an outlier.
+- A **high-leverage observation** has an unusual configuration of predictor values. Its leverage is $h_{ii}$, diagonal entry $i$ of the [hat matrix from Chapter 2](02_LSE.qmd#the-hat-matrix), $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$. Leverage depends on $\mathbf X$, not on the observed responses.
+- An **influential observation** changes the fitted coefficients or predictions substantially when omitted. Influence concerns the sensitivity of the analysis, rather than unusualness alone.
+
+:::
+
+**Put residuals on a comparable scale.** Use $p$ for the number of coefficients **including the intercept**, and $s^2=\mathrm{SSE}/(n-p)$. Under the model with $\operatorname{Var}(\boldsymbol\varepsilon\mid\mathbf X)=\sigma^2\mathbf I$, the residual geometry from [Chapter 2](02_LSE.qmd#def-residual-maker-matrix) gives
+
+$$
+\operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}),
+\qquad r_i=\frac{e_i}{s\sqrt{1-h_{ii}}}.
+$$
+
+The **standardized residual** $r_i$ accounts for unequal residual variances; it does not make residuals independent. A high-leverage point can pull the fit toward itself, leaving a deceptively small raw residual. For outlier assessment, the **externally studentized residual** $t_i=e_i/\{s_{(-i)}\sqrt{1-h_{ii}}\}$ instead uses the residual standard deviation estimated *without* observation $i$, so that observation does not inflate its own variance estimate. The deleted variance estimate requires $n-p-1>0$. R provides `rstandard(fit)` and `rstudent(fit)`, respectively. [R diagnostic documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html).
+
+Since $\sum_i h_{ii}=p$, average leverage is $p/n$. This gives context for judging an unusually large $h_{ii}$; leverage measures the **potential** to influence a fit, not the realized change.
+
+::: {#def-ch6-cook}
+
+## Cook's Distance
+
+Let $\hat{\boldsymbol\beta}_{(-i)}$ be the OLS estimate after omitting observation $i$, and let $\hat Y_{j(-i)}=\mathbf x_j^\top\hat{\boldsymbol\beta}_{(-i)}$ be its prediction at **each of the original $n$ predictor rows**, including row $i$. Cook's distance is
+
+$$
+D_i=\frac{\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2}{p s^2}
+=\frac{e_i^2}{p s^2}\frac{h_{ii}}{(1-h_{ii})^2}
+=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}}.
+$$
+
+Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted least squares with full column rank and positive residual degrees of freedom; the deleted fit must also be estimable ($h_{ii}<1$).
+
+:::
+
+**Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
+
+::: {#exm-ch6-three-points}
+
+## Three Points, Three Different Stories
+
+Each panel starts with the same 12 observations and adds one orange point. The dashed line omits that point; the solid line includes it. Compare **vertical discrepancy**, **horizontal position**, and **movement of the line** separately.
+
+```{r}
+#| label: fig-ch6-influence-stories
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 7
+#| fig-height: 3.6
+#| fig-cap: "The same baseline data appear in each panel. A has a large residual but less influence than C. B has high leverage and essentially zero Cook's distance. C strongly rotates the fit. Annotations describe the orange point; p = 2."
+#| fig-alt: "Three side-by-side scatterplots compare fitted lines including and omitting an orange point: an outlying response near the center, a far-right point on the baseline line, and a far-right point below that line. The third point rotates the line most."
+library(ggplot2)
+ch6_base_x <- seq(1, 5, length.out = 12)
+ch6_base <- data.frame(x = ch6_base_x,
+  y = 2 + ch6_base_x + rep(c(-0.3, 0.2, 0.1), 4))
+ch6_base_fit <- lm(y ~ x, data = ch6_base)
+ch6_cases <- c("A: response outlier", "B: high leverage", "C: influential point")
+ch6_added <- data.frame(x = c(3, 9, 9),
+  y = c(9, as.numeric(predict(ch6_base_fit, data.frame(x = 9))), 6))
+ch6_story_data <- ch6_story_lines <- ch6_story_labels <- vector("list", 3)
+for (j in seq_along(ch6_cases)) {
+  d <- rbind(ch6_base, ch6_added[j, ])
+  fit <- lm(y ~ x, data = d)
+  d$Case <- ch6_cases[j]
+  d$Added <- seq_len(nrow(d)) == nrow(d)
+  ch6_story_data[[j]] <- d
+  grid <- data.frame(x = seq(0.7, 9.3, length.out = 100))
+  ch6_story_lines[[j]] <- rbind(
+    data.frame(grid, y = predict(fit, grid), Case = ch6_cases[j],
+      Fit = "Including orange point"),
+    data.frame(grid, y = predict(ch6_base_fit, grid), Case = ch6_cases[j],
+      Fit = "Omitting orange point"))
+  ch6_story_labels[[j]] <- data.frame(Case = ch6_cases[j],
+    Label = sprintf("h = %.2f\nr = %.2f\nD = %.2f",
+      tail(hatvalues(fit), 1), tail(rstandard(fit), 1),
+      tail(cooks.distance(fit), 1)))
+}
+ch6_story_data <- do.call(rbind, ch6_story_data)
+ch6_story_lines <- do.call(rbind, ch6_story_lines)
+ch6_story_labels <- do.call(rbind, ch6_story_labels)
+ggplot(ch6_story_data, aes(x, y)) +
+  geom_line(data = ch6_story_lines, aes(colour = Fit, linetype = Fit),
+    linewidth = 0.75) +
+  geom_point(data = subset(ch6_story_data, !Added), colour = "#247A6B", size = 1.8) +
+  geom_point(data = subset(ch6_story_data, Added), shape = 21,
+    fill = "#E5A14A", colour = "#8A4700", size = 3.2, stroke = 0.8) +
+  geom_text(data = ch6_story_labels, aes(x = 0.9, y = 11.7, label = Label),
+    inherit.aes = FALSE, hjust = 0, vjust = 1, size = 3) +
+  facet_wrap(~ Case, nrow = 1) +
+  scale_colour_manual(values = c(`Including orange point` = "#593196",
+    `Omitting orange point` = "#777777")) +
+  scale_linetype_manual(values = c(`Including orange point` = "solid",
+    `Omitting orange point` = "dashed")) +
+  coord_cartesian(xlim = c(0.7, 9.3), ylim = c(2, 12)) +
+  labs(x = "Predictor x", y = "Response y", colour = NULL, linetype = NULL) +
+  theme_minimal(base_size = 10) + theme(legend.position = "bottom")
+```
+
+:::
+
+::: {#exr-ch6-influence}
+
+## Which Point Moves the Fit More?
+
+In a model with $p=2$, point A has $r_A=3$ and $h_{AA}=0.05$; point B has $r_B=1$ and $h_{BB}=0.50$. Compute their Cook's distances. Which point is more influential by this measure? Does either number establish a data error?
+
+:::
+
+::: {#sol-ch6-influence}
+
+$D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has greater influence despite its smaller standardized residual. Neither value establishes an error or justifies deletion; inspect the observations and the scientific consequences of the changed fit.
+
+:::
+
+::: {.callout-important title="Investigate a flag; do not delete by a cutoff"}
+
+Values such as $|t_i|>2$, $h_{ii}>2p/n$, or $D_i>4/n$ are rough **screening guides**, not universal tests or deletion rules. Check units, transcription, measurement conditions, and omitted structure; a valid unusual observation may be scientifically valuable. Compare fits and relevant predictions with and without a flagged case, and explain any exclusion. Inspect related groups of observations too: several unusual cases can mask one another in single-case diagnostics.
+
+:::
+
+Next, ask whether the mean pattern needs a different functional form. Investigating individual observations and checking the overall shape are complementary steps.
 
 ## A curved relationship can still be a linear model {#sec-ch6-linearity}
 
@@ -73,6 +226,8 @@ Models 1 and 3 are linear in their coefficients. Model 2 has an unknown exponent
 
 ## Choose a transformation, fit, and check again {#sec-ch6-transform-procedure}
 
+**Motivation: measuring tree volume.** Measuring a standing tree's diameter and height is easier than measuring its timber volume. The trees from [Chapter 5](05.qmd#exm-ch5-tree-adjustment) suggest a physical starting point: volume is roughly proportional to cross-sectional area times height, so a power relationship such as $V\approx aD^bH^c$ may be more natural than an additive straight-line model. The exponents are to be estimated, not fixed by the cylinder analogy. [Data documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html).
+
 **A practical procedure.**
 
 1. **State the goal and inspect the data.** Identify the response units, positive/zero values, measurement process, and a scientifically plausible shape. For prediction, reserve test observations before exploring relationships.
@@ -98,7 +253,6 @@ Here $D$ is diameter in inches, $H$ is height in feet, and $V$ is volume in cubi
 
 ```{r}
 #| label: ch6-tree-models
-library(ggplot2)
 ch6_trees <- transform(datasets::trees, Diameter = Girth)
 ch6_raw <- lm(Volume ~ Diameter + Height, data = ch6_trees)
 ch6_log <- lm(log(Volume) ~ log(Diameter) + log(Height), data = ch6_trees)
@@ -206,124 +360,7 @@ The median is $e^2\approx7.39$ and the mean is $e^{2+0.25/2}\approx8.37$. A one-
 
 :::
 
-## Check unusual observations before selecting variables {#sec-ch6-influence}
-
-The residual plots above ask whether a pattern remains **across the data**. A different question is whether **one observation** drives the fitted relationship. A curve supported by many observations and a line pulled by one unusual tree call for different investigations. Check both baseline and revised models. Transforming the response changes residuals; changing predictor columns can also change leverage.
-
-::: {#def-ch6-outlier-leverage-influence}
-
-## Outlier, Leverage, and Influence
-
-- A **response outlier** has an unusual response *given its predictor values and the specified model*. A large volume alone does not make a large tree an outlier.
-- A **high-leverage observation** has an unusual configuration of predictor values. Its leverage is $h_{ii}$, diagonal entry $i$ of the [hat matrix from Chapter 2](02_LSE.qmd#the-hat-matrix), $\mathbf H=\mathbf X(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top$. Leverage depends on $\mathbf X$, not on the observed responses.
-- An **influential observation** changes the fitted coefficients or predictions substantially when omitted. Influence concerns the sensitivity of the analysis, rather than unusualness alone.
-
-:::
-
-**Put residuals on a comparable scale.** Use $p$ for the number of coefficients **including the intercept**, and $s^2=\mathrm{SSE}/(n-p)$. Under the model with $\operatorname{Var}(\boldsymbol\varepsilon\mid\mathbf X)=\sigma^2\mathbf I$, the residual geometry from [Chapter 2](02_LSE.qmd#def-residual-maker-matrix) gives
-
-$$
-\operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}),
-\qquad r_i=\frac{e_i}{s\sqrt{1-h_{ii}}}.
-$$
-
-The **standardized residual** $r_i$ accounts for unequal residual variances; it does not make residuals independent. A high-leverage point can pull the fit toward itself, leaving a deceptively small raw residual. For outlier assessment, the **externally studentized residual** $t_i=e_i/\{s_{(-i)}\sqrt{1-h_{ii}}\}$ instead uses the residual standard deviation estimated *without* observation $i$, so that observation does not inflate its own variance estimate. The deleted variance estimate requires $n-p-1>0$. R provides `rstandard(fit)` and `rstudent(fit)`, respectively. [R diagnostic documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html).
-
-Since $\sum_i h_{ii}=p$, average leverage is $p/n$. This gives context for judging an unusually large $h_{ii}$; leverage measures the **potential** to influence a fit, not the realized change.
-
-::: {#def-ch6-cook}
-
-## Cook's Distance
-
-Let $\hat{\boldsymbol\beta}_{(-i)}$ be the OLS estimate after omitting observation $i$, and let $\hat Y_{j(-i)}=\mathbf x_j^\top\hat{\boldsymbol\beta}_{(-i)}$ be its prediction at **each of the original $n$ predictor rows**, including row $i$. Cook's distance is
-
-$$
-D_i=\frac{\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2}{p s^2}
-=\frac{e_i^2}{p s^2}\frac{h_{ii}}{(1-h_{ii})^2}
-=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}}.
-$$
-
-Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted least squares with full column rank and positive residual degrees of freedom; the deleted fit must also be estimable ($h_{ii}<1$).
-
-:::
-
-**Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
-
-::: {#exm-ch6-three-points}
-
-## Three Points, Three Different Stories
-
-Each panel starts with the same 12 observations and adds one orange point. The dashed line omits that point; the solid line includes it. Compare **vertical discrepancy**, **horizontal position**, and **movement of the line** separately.
-
-```{r}
-#| label: fig-ch6-influence-stories
-#| echo: false
-#| fig-pos: "H"
-#| fig-width: 7
-#| fig-height: 3.6
-#| fig-cap: "The same baseline data appear in each panel. A has a large residual but less influence than C. B has high leverage and essentially zero Cook's distance. C strongly rotates the fit. Annotations describe the orange point; p = 2."
-#| fig-alt: "Three side-by-side scatterplots compare fitted lines including and omitting an orange point: an outlying response near the center, a far-right point on the baseline line, and a far-right point below that line. The third point rotates the line most."
-ch6_base_x <- seq(1, 5, length.out = 12)
-ch6_base <- data.frame(x = ch6_base_x,
-  y = 2 + ch6_base_x + rep(c(-0.3, 0.2, 0.1), 4))
-ch6_base_fit <- lm(y ~ x, data = ch6_base)
-ch6_cases <- c("A: response outlier", "B: high leverage", "C: influential point")
-ch6_added <- data.frame(x = c(3, 9, 9),
-  y = c(9, as.numeric(predict(ch6_base_fit, data.frame(x = 9))), 6))
-ch6_story_data <- ch6_story_lines <- ch6_story_labels <- vector("list", 3)
-for (j in seq_along(ch6_cases)) {
-  d <- rbind(ch6_base, ch6_added[j, ])
-  fit <- lm(y ~ x, data = d)
-  d$Case <- ch6_cases[j]
-  d$Added <- seq_len(nrow(d)) == nrow(d)
-  ch6_story_data[[j]] <- d
-  grid <- data.frame(x = seq(0.7, 9.3, length.out = 100))
-  ch6_story_lines[[j]] <- rbind(
-    data.frame(grid, y = predict(fit, grid), Case = ch6_cases[j],
-      Fit = "Including orange point"),
-    data.frame(grid, y = predict(ch6_base_fit, grid), Case = ch6_cases[j],
-      Fit = "Omitting orange point"))
-  ch6_story_labels[[j]] <- data.frame(Case = ch6_cases[j],
-    Label = sprintf("h = %.2f\nr = %.2f\nD = %.2f",
-      tail(hatvalues(fit), 1), tail(rstandard(fit), 1),
-      tail(cooks.distance(fit), 1)))
-}
-ch6_story_data <- do.call(rbind, ch6_story_data)
-ch6_story_lines <- do.call(rbind, ch6_story_lines)
-ch6_story_labels <- do.call(rbind, ch6_story_labels)
-ggplot(ch6_story_data, aes(x, y)) +
-  geom_line(data = ch6_story_lines, aes(colour = Fit, linetype = Fit),
-    linewidth = 0.75) +
-  geom_point(data = subset(ch6_story_data, !Added), colour = "#247A6B", size = 1.8) +
-  geom_point(data = subset(ch6_story_data, Added), shape = 21,
-    fill = "#E5A14A", colour = "#8A4700", size = 3.2, stroke = 0.8) +
-  geom_text(data = ch6_story_labels, aes(x = 0.9, y = 11.7, label = Label),
-    inherit.aes = FALSE, hjust = 0, vjust = 1, size = 3) +
-  facet_wrap(~ Case, nrow = 1) +
-  scale_colour_manual(values = c(`Including orange point` = "#593196",
-    `Omitting orange point` = "#777777")) +
-  scale_linetype_manual(values = c(`Including orange point` = "solid",
-    `Omitting orange point` = "dashed")) +
-  coord_cartesian(xlim = c(0.7, 9.3), ylim = c(2, 12)) +
-  labs(x = "Predictor x", y = "Response y", colour = NULL, linetype = NULL) +
-  theme_minimal(base_size = 10) + theme(legend.position = "bottom")
-```
-
-:::
-
-::: {#exr-ch6-influence}
-
-## Which Point Moves the Fit More?
-
-In a model with $p=2$, point A has $r_A=3$ and $h_{AA}=0.05$; point B has $r_B=1$ and $h_{BB}=0.50$. Compute their Cook's distances. Which point is more influential by this measure? Does either number establish a data error?
-
-:::
-
-::: {#sol-ch6-influence}
-
-$D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has greater influence despite its smaller standardized residual. Neither value establishes an error or justifies deletion; inspect the observations and the scientific consequences of the changed fit.
-
-:::
+**Recheck influence after transforming.** A new response scale changes residuals, and new predictor columns can change leverage. Apply the diagnostics from [Section 6.1](#sec-ch6-influence) to the fitted log model as well.
 
 ::: {#exm-ch6-tree-influence}
 
@@ -381,13 +418,7 @@ Tree **18** has $D_i\approx0.224$. Omitting it changes the diameter exponent fro
 
 :::
 
-::: {.callout-important title="Investigate a flag; do not delete by a cutoff"}
-
-Values such as $|t_i|>2$, $h_{ii}>2p/n$, or $D_i>4/n$ are rough **screening guides**, not universal tests or deletion rules. Check units, transcription, measurement conditions, and omitted structure; a valid unusual observation may be scientifically valuable. Compare fits and relevant predictions with and without a flagged case, and explain any exclusion. Inspect related groups of observations too: several unusual cases can mask one another in single-case diagnostics.
-
-:::
-
-**Why this comes before selection.** One influential observation can make a predictor appear useful or change which term a search retains. Resolve data-quality questions and inspect model form first, then assess whether the selection is stable. Recheck the final selected model as well. Ridge and lasso still use squared-error loss here; shrinkage is not an automatic remedy for outliers. For prediction assessment, all outcome-driven diagnostic and model-development decisions belong within training data, not the held-out test set.
+**Why recheck before selection?** One influential observation can make a predictor appear useful or change which term a search retains. Resolve data-quality questions and inspect model form first, then assess whether the selection is stable. Recheck the final selected model as well. Ridge and lasso still use squared-error loss here; shrinkage is not an automatic remedy for outliers. For prediction assessment, all outcome-driven diagnostic and model-development decisions belong within training data, not the held-out test set.
 
 
 ## From candidate terms to variable selection {#sec-ch6-selection}
@@ -622,9 +653,9 @@ Only the second keeps test outcomes out of model development, provided the test 
 
 ## Summary {.unnumbered}
 
+- Outliers concern the response given predictors; leverage concerns predictor configuration; Cook's distance measures the change in the fit after deleting one observation. Investigate flags and report sensitivity.
 - A linear model is linear in its coefficients; transformed predictors can describe curved relationships.
 - Choose a transformation for a stated reason, refit, inspect residuals, and interpret the new response scale.
-- Outliers concern the response given predictors; leverage concerns predictor configuration; Cook's distance measures the change in the fit after deleting one observation. Investigate flags and report sensitivity.
 - Forward, backward, and stepwise searches use a candidate set and a stopping rule; they need not find the globally best subset.
 - Ridge shrinks; lasso can also select. Scale predictors and tune penalties within training data.
 - Compare predictions on the same observations and response scale. Keep the entire development procedure out of final test outcomes.
