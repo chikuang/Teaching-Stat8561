@@ -2,6 +2,9 @@
 execute:
   cache: false
   freeze: false
+format:
+  html:
+    include-in-header: derivation-fold.html
 ---
 
 # Outliers, Leverage, and Influence {#sec-regression-diagnostics}
@@ -139,7 +142,7 @@ These pictures motivate three distinct definitions.
 
 ## Outlier, Leverage, and Influence
 
-- A **response outlier** has an unusual response *given its predictor values and the specified model*. A large volume alone does not make a large tree an outlier.
+- A **response outlier** has an unusual response *given its predictor values and the specified model*. An extreme response value alone does not make an observation a response outlier.
 - A **high-leverage observation** has an unusual configuration of predictor values. Leverage concerns the predictors jointly and does not depend on the observed responses. It measures the potential to pull the fit.
 - An **influential observation** changes the fitted coefficients or predictions substantially when omitted. Influence concerns the sensitivity of the analysis, rather than unusualness alone.
 
@@ -173,29 +176,244 @@ For A, $x=3.5$ remains the predictor mean, so its leverage is $1/7=0.143$. B and
 
 Because $\sum_i h_{ii}=p$, average leverage is $p/n$. In this example, $p=2$ and $n=7$, so the average is $2/7=0.286$. Comparing a value with $2p/n$ is a rough screening rule, not a test or a reason to delete an observation. R returns leverages with `hatvalues(fit)`.
 
+::: {#deriv-ch6-leverage .derivation}
+
+**Derivation: leverage and its average**
+
+**1. Center the predictor without changing the fitted model.** Set $z_i=x_i-\bar x$, $\mathbf z=(z_1,\ldots,z_n)^\top$, and $S_{xx}=\sum_i z_i^2>0$. The columns of $\mathbf Z=(\mathbf1,\mathbf z)$ span the same space as $(\mathbf1,\mathbf x)$, so they give the same hat matrix. Since $\mathbf1^\top\mathbf z=0$,
+
+$$
+\mathbf Z^\top\mathbf Z=
+\begin{pmatrix}n&0\\0&S_{xx}\end{pmatrix},
+\qquad
+\mathbf H=\mathbf Z(\mathbf Z^\top\mathbf Z)^{-1}\mathbf Z^\top
+=\frac{\mathbf1\mathbf1^\top}{n}+\frac{\mathbf z\mathbf z^\top}{S_{xx}}.
+$$
+
+**2. Read diagonal entry $i$.** It is
+
+$$
+h_{ii}=\frac1n+\frac{z_i^2}{S_{xx}}
+=\frac1n+\frac{(x_i-\bar x)^2}{\sum_j(x_j-\bar x)^2}.
+$$
+
+**3. Sum the leverages in a general full-rank model.** By the cyclic property of the trace,
+
+$$
+\sum_i h_{ii}=\operatorname{tr}(\mathbf H)
+=\operatorname{tr}\!\left[(\mathbf X^\top\mathbf X)^{-1}\mathbf X^\top\mathbf X\right]
+=\operatorname{tr}(\mathbf I_p)=p.
+$$
+
+Thus average leverage is $p/n$. This uses the [projection matrix from Chapter 2](02_LSE.qmd#the-hat-matrix), not the responses.
+
+:::
+
 A well-measured high-leverage observation can be useful: under an appropriate model it can provide information about the slope. In B, the slope estimate stays at 1.000 while its estimated standard error falls from 0.048 to 0.024. Whether the model is credible at that distant predictor value still needs scientific judgment.
 
 ## Outliers: unusual responses given the predictors {#sec-ch6-outliers}
 
 An outlier is unusual **relative to the mean predicted by the specified model**. B has the largest response in the example, 12, yet it lies on the fitted line and has zero residual. A's response is smaller, 10.5, but is far above the expected response near $x=3.5$. Looking only at the distribution of $Y$ would miss this distinction.
 
-**Put residuals on a comparable scale.** From the [residual geometry in Chapter 2](02_LSE.qmd#def-residual-maker-matrix),
+**First fix the notation.** Let $e_i=Y_i-\hat Y_i$ be the raw residual from the full fit, $h_{ii}$ its leverage, and $\nu=n-p$ its residual degrees of freedom. Under the mean model and constant error variance,
 
 $$
-\operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}),
-\qquad
+\operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}).
+$$
+
+Different observations therefore have different residual variances. Both residuals below account for this using $\sqrt{1-h_{ii}}$; they differ in **how the unknown error standard deviation $\sigma$ is estimated**. Assume $h_{ii}<1$ and positive estimated error variance.
+
+::: {#def-ch6-standardized-residual}
+
+## Standardized Residual (Internally Studentized)
+
+Estimate the error variance using **all $n$ observations**:
+
+$$
+s^2=\frac{\mathrm{SSE}}{n-p}
+=\frac{\sum_{j=1}^n e_j^2}{n-p}.
+$$
+
+The standardized residual is
+
+$$
 r_i=\frac{e_i}{s\sqrt{1-h_{ii}}}.
 $$
 
-The standardized residual $r_i$ accounts for unequal residual variances; it does not make residuals independent. A high-leverage point can pull the fitted line toward itself and leave a small raw residual, so raw residual size alone can be misleading.
+Observation $i$ helps determine both the fitted line and $s$. An unusual response can inflate $s$ and make its own scaled residual appear less extreme. This residual is also called **internally studentized**. In R, use `rstandard(fit)` with its default settings.
 
-**Keep the point from inflating its own noise estimate.** The externally studentized residual uses the residual standard deviation from the fit without observation $i$:
+:::
+
+::: {#def-ch6-studentized-residual}
+
+## Externally Studentized Residual (Studentized Deleted Residual)
+
+Refit the **same model after removing observation $i$**, giving $\hat{\boldsymbol\beta}_{(-i)}$. Estimate the error variance from the remaining $n-1$ observations:
+
+$$
+s_{(-i)}^2=\frac{\mathrm{SSE}_{(-i)}}{n-p-1},
+\qquad
+\mathrm{SSE}_{(-i)}=\sum_{j\ne i}
+\left(Y_j-\mathbf x_j^\top\hat{\boldsymbol\beta}_{(-i)}\right)^2.
+$$
+
+The externally studentized residual is
 
 $$
 t_i=\frac{e_i}{s_{(-i)}\sqrt{1-h_{ii}}}.
 $$
 
-The numerator and leverage come from the full fit; only the noise estimate is replaced by $s_{(-i)}$. The deleted fit must be estimable and have positive residual degrees of freedom, $n-p-1>0$. R provides `rstandard(fit)` and `rstudent(fit)`. [R diagnostic documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html).
+Here **$e_i$ and $h_{ii}$ still come from the full fit**; only the error-scale estimate is replaced. The deleted fit must retain rank $p$, with $n-p-1>0$ and $s_{(-i)}>0$. In R, use `rstudent(fit)`.
+
+:::
+
+In this chapter, **standardized** means internally studentized, and **studentized** by itself means externally studentized, matching these two [R diagnostic functions](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html). Other texts may use *studentized* for either type; check which variance estimate appears in the denominator.
+
+| Feature | Standardized $r_i$ | Externally studentized $t_i$ |
+|:---:|:---:|:---:|
+| Numerator and leverage | Full-fit $e_i$, $h_{ii}$ | Same full-fit $e_i$, $h_{ii}$ |
+| Error-scale estimate | $s$, using all observations | $s_{(-i)}$, refitting without $i$ |
+| Error degrees of freedom | $n-p$ | $n-p-1$ |
+| Main use | Compare residual sizes on a common scale | Assess a response without letting it inflate its own noise estimate |
+
+Neither scaling makes residuals independent. With independent normal errors and a correctly specified, fixed model, each pre-specified $t_i$ has a $t_{n-p-1}$ distribution; $r_i$ does **not** have that exact t distribution. Checking many points also requires accounting for multiple comparisons.
+
+::: {#deriv-ch6-residual-variance .derivation}
+
+**Derivation: why divide by the square root of one minus leverage?**
+
+**1. Express the residual vector using the errors.** From the [residual maker in Chapter 2](02_LSE.qmd#def-residual-maker-matrix), $\mathbf M=\mathbf I-\mathbf H$ is symmetric and idempotent, and $\mathbf M\mathbf X=\mathbf0$. Therefore
+
+$$
+\mathbf e=\mathbf M\mathbf Y
+=\mathbf M(\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon)
+=\mathbf M\boldsymbol\varepsilon.
+$$
+
+**2. Compute its covariance.** Under $\operatorname{Var}(\boldsymbol\varepsilon\mid\mathbf X)=\sigma^2\mathbf I$,
+
+$$
+\operatorname{Var}(\mathbf e\mid\mathbf X)
+=\mathbf M(\sigma^2\mathbf I)\mathbf M^\top
+=\sigma^2\mathbf M^2
+=\sigma^2(\mathbf I-\mathbf H).
+$$
+
+The $i$th diagonal entry is $\sigma^2(1-h_{ii})$, so the true standard deviation of $e_i$ is $\sigma\sqrt{1-h_{ii}}$. Replacing $\sigma$ with $s$ gives $r_i$; replacing it with $s_{(-i)}$ gives $t_i$.
+
+**3. Keep variance scaling separate from independence.** For $i\ne j$, $\operatorname{Cov}(e_i,e_j\mid\mathbf X)=-\sigma^2 h_{ij}$, generally nonzero. Dividing residuals by estimated scales does not remove their shared dependence on the fitted model. A high-leverage point has a smaller raw-residual variance, which is why raw residuals alone are not comparable.
+
+:::
+
+::: {#deriv-ch6-deletion .derivation}
+
+**Derivation: deleting one observation and relating the two residuals**
+
+**1. Find the coefficient change.** Write $\mathbf A=\mathbf X^\top\mathbf X$ and let $\mathbf x_i$ be the column vector whose transpose is row $i$. The full and deleted normal equations are
+
+$$
+\mathbf A\hat{\boldsymbol\beta}=\mathbf X^\top\mathbf Y,
+\qquad
+(\mathbf A-\mathbf x_i\mathbf x_i^\top)\hat{\boldsymbol\beta}_{(-i)}
+=\mathbf X^\top\mathbf Y-\mathbf x_iY_i.
+$$
+
+For $\boldsymbol\delta_i=\hat{\boldsymbol\beta}-\hat{\boldsymbol\beta}_{(-i)}$, subtracting gives
+
+$$
+(\mathbf A-\mathbf x_i\mathbf x_i^\top)\boldsymbol\delta_i=\mathbf x_i e_i.
+$$
+
+Since $h_{ii}=\mathbf x_i^\top\mathbf A^{-1}\mathbf x_i$,
+$(\mathbf A-\mathbf x_i\mathbf x_i^\top)\mathbf A^{-1}\mathbf x_i=(1-h_{ii})\mathbf x_i$.
+When the deleted fit is estimable, this identifies the solution:
+
+$$
+\boldsymbol\delta_i=\frac{\mathbf A^{-1}\mathbf x_i e_i}{1-h_{ii}}.
+$$
+
+**2. Distinguish a deleted residual from a full-fit residual.** Predict the omitted response from the deleted fit:
+
+$$
+d_i=Y_i-\mathbf x_i^\top\hat{\boldsymbol\beta}_{(-i)}
+=e_i+\mathbf x_i^\top\boldsymbol\delta_i
+=\frac{e_i}{1-h_{ii}}.
+$$
+
+Thus $d_i$ is not the numerator $e_i$ in the displayed definition of $t_i$.
+
+**3. Recalculate the residual sum of squares.** At all original rows, the deleted-fit residual vector is $\mathbf e+\mathbf X\boldsymbol\delta_i$. Remove its $i$th squared component $d_i^2$ and use $\mathbf X^\top\mathbf e=\mathbf0$:
+
+$$
+\begin{aligned}
+\mathrm{SSE}_{(-i)}
+&=\|\mathbf e+\mathbf X\boldsymbol\delta_i\|^2-d_i^2\\
+&=\mathrm{SSE}+\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i-d_i^2\\
+&=\mathrm{SSE}+\frac{e_i^2h_{ii}}{(1-h_{ii})^2}
+-\frac{e_i^2}{(1-h_{ii})^2}\\
+&=\mathrm{SSE}-\frac{e_i^2}{1-h_{ii}}.
+\end{aligned}
+$$
+
+It is **not** simply $\mathrm{SSE}-e_i^2$: refitting changes the other residuals too.
+
+**4. Relate the two scales and residuals.** With $\nu=n-p$, $\mathrm{SSE}=\nu s^2$, and $r_i^2=e_i^2/[s^2(1-h_{ii})]$,
+
+$$
+s_{(-i)}^2=s^2\frac{\nu-r_i^2}{\nu-1},
+\qquad
+t_i=r_i\frac{s}{s_{(-i)}}
+=r_i\sqrt{\frac{\nu-1}{\nu-r_i^2}}.
+$$
+
+For positive deleted-fit variance, $r_i^2<\nu$. A very unusual point can make $r_i$ approach its finite bound while $t_i$ becomes much larger. The two values have the same sign, but need not have similar magnitudes; $|t_i|$ is not always larger than $|r_i|$.
+
+:::
+
+::: {#deriv-ch6-student-t .derivation}
+
+**Derivation: why the externally studentized residual has a t distribution**
+
+Assume $\boldsymbol\varepsilon\mid\mathbf X\sim N_n(\mathbf0,\sigma^2\mathbf I)$ and fix the model and index $i$ in advance. Use the [normal-theory OLS results in Chapter 3](03_OLS_inference.qmd) on the deleted dataset.
+
+**1. Standardize the deleted prediction error.** Because $Y_i$ is independent of the observations used to fit $\hat{\boldsymbol\beta}_{(-i)}$,
+
+$$
+\begin{aligned}
+\mathbb E(d_i\mid\mathbf X)&=0,\\
+\operatorname{Var}(d_i\mid\mathbf X)
+&=\sigma^2\!\left[1+\mathbf x_i^\top
+(\mathbf A-\mathbf x_i\mathbf x_i^\top)^{-1}\mathbf x_i\right]\\
+&=\sigma^2\!\left(1+\frac{h_{ii}}{1-h_{ii}}\right)
+=\frac{\sigma^2}{1-h_{ii}}.
+\end{aligned}
+$$
+
+The inverse identity follows from step 1 of the [deletion derivation](#deriv-ch6-deletion). As a linear combination of normal observations,
+$Z_i=d_i\sqrt{1-h_{ii}}/\sigma\sim N(0,1)$.
+
+**2. Use an independent variance estimate.** The deleted fit has $n-1-p=\nu-1$ residual degrees of freedom, so
+
+$$
+U_i=\frac{(\nu-1)s_{(-i)}^2}{\sigma^2}\sim\chi^2_{\nu-1}.
+$$
+
+Under normality, the deleted-fit coefficient estimate is independent of its SSE. Also, the held-out $Y_i$ is independent of that entire deleted dataset. Hence $d_i$, and therefore $Z_i$, is independent of $U_i$.
+
+**3. Form the t ratio.** By the definition of the t distribution,
+
+$$
+\frac{Z_i}{\sqrt{U_i/(\nu-1)}}
+=\frac{d_i\sqrt{1-h_{ii}}}{s_{(-i)}}
+=\frac{e_i}{s_{(-i)}\sqrt{1-h_{ii}}}
+=t_i\sim t_{\nu-1}.
+$$
+
+The internal residual $r_i$ uses the full-fit $s$, which shares the contribution from observation $i$ with its numerator. This independence argument does not apply to $r_i$; its bound $|r_i|\le\sqrt{\nu}$ also rules out an exact t distribution, whose support is unbounded.
+
+:::
+
+**Compare the same three added points.**
 
 ```{r}
 #| label: ch6-story-residuals
@@ -211,7 +429,7 @@ knitr::kable(data.frame(Point = c("A", "B", "C"),
   col.names = c("Point", "Residual", "Standardized", "Externally studentized"))
 ```
 
-For A and C, the full fit's residual SD is much larger than the baseline value 0.200, as the coefficient table in [Section 6.1](#sec-ch6-influence) showed. Removing either added point returns those six baseline observations and their small noise estimate. This explains the much larger externally studentized residuals. These values flag a response discrepancy under the model; they do not establish a recording error.
+For A, the full-fit residual SD is $s=2.078$, but deleting A gives $s_{(-A)}=0.200$. The same full-fit residual and leverage therefore produce $r_A=2.228$ and $t_A=23.146$. A was inflating the noise estimate used to assess itself. For C the scales are 1.899 and 0.200, with the same effect. Deleting either point returns the six baseline observations from [Section 6.1](#sec-ch6-influence). B has zero residual, so both scaled residuals are zero regardless of the different scales. These diagnostics identify a response discrepancy under the model; they do not establish a recording error.
 
 A and C have similar absolute standardized residuals, yet C changes the slope much more. **Outlyingness and influence answer different questions.**
 
@@ -236,6 +454,42 @@ Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted 
 :::
 
 **Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
+
+::: {#deriv-ch6-cook .derivation}
+
+**Derivation: the equivalent formulas for Cook's distance**
+
+**1. Express movement of the fitted means through the coefficient change.** Use $\boldsymbol\delta_i=\hat{\boldsymbol\beta}-\hat{\boldsymbol\beta}_{(-i)}$ from the [deletion derivation in Section 6.3](#deriv-ch6-deletion). Predictions are evaluated at **all $n$ original rows**, so
+
+$$
+\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2
+=\|\mathbf X\boldsymbol\delta_i\|^2
+=\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i.
+$$
+
+**2. Substitute the deleted-coefficient identity.** With $\mathbf A=\mathbf X^\top\mathbf X$,
+
+$$
+\begin{aligned}
+\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i
+&=\frac{e_i^2}{(1-h_{ii})^2}
+\mathbf x_i^\top\mathbf A^{-1}\mathbf A\mathbf A^{-1}\mathbf x_i\\
+&=\frac{e_i^2h_{ii}}{(1-h_{ii})^2}.
+\end{aligned}
+$$
+
+**3. Scale the change and rewrite using $r_i$.** Dividing by $ps^2$ gives
+
+$$
+D_i=\frac{e_i^2}{ps^2}\frac{h_{ii}}{(1-h_{ii})^2}
+=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}},
+\qquad
+r_i^2=\frac{e_i^2}{s^2(1-h_{ii})}.
+$$
+
+Cook's distance uses the **full-fit** noise scale $s$, so this expression uses the internally studentized $r_i$. Substituting the externally studentized $t_i$ into the same expression would not give Cook's distance. The algebra does not require normal errors; the variance model supplies the interpretation of the scaling.
+
+:::
 
 **Apply Cook's distance to the same three points.** In each augmented fit, $n=7$ and $p=2$. The diagnostics for its orange point are:
 

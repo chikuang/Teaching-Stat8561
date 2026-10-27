@@ -1,0 +1,57 @@
+<style>
+details.derivation { margin: 1.1rem 0; }
+details.derivation > summary {
+  width: fit-content;
+  max-width: 100%;
+  padding: .5rem .85rem;
+  border: 1px solid #d8c5ef;
+  border-radius: .45rem;
+  background: #f1e8fb;
+  color: #4e2879;
+  font-weight: 600;
+  cursor: pointer;
+}
+details.derivation > summary:hover { background: #e7d8f6; }
+details.derivation > summary:focus-visible {
+  outline: 3px solid #7d53ac;
+  outline-offset: 3px;
+}
+.derivation-body { padding-top: .85rem; }
+@media print {
+  details.derivation > .derivation-body { display: block !important; }
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("div.derivation").forEach(function (source) {
+    const heading = source.querySelector(":scope > p:first-child");
+    if (!heading) return;
+    const title = heading.textContent.trim().replace(/^Derivation:\s*/i, "");
+    const details = document.createElement("details");
+    details.className = "derivation";
+    details.id = source.id;
+    const summary = document.createElement("summary");
+    const body = document.createElement("div");
+    body.className = "derivation-body";
+    heading.remove();
+    while (source.firstChild) body.appendChild(source.firstChild);
+    function updateLabel() {
+      summary.textContent = (details.open ? "Hide derivation: " : "Show derivation: ") + title;
+    }
+    updateLabel();
+    details.addEventListener("toggle", updateLabel);
+    details.append(summary, body);
+    source.replaceWith(details);
+  });
+  function revealLinkedDerivation() {
+    let id;
+    try { id = decodeURIComponent(window.location.hash.slice(1)); }
+    catch (_) { return; }
+    const target = document.getElementById(id);
+    const details = target && target.closest("details.derivation");
+    if (details) details.open = true;
+  }
+  revealLinkedDerivation();
+  window.addEventListener("hashchange", revealLinkedDerivation);
+});
+</script>
