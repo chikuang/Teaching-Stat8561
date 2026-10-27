@@ -223,7 +223,7 @@ The first comparison allows diameter to vary along with height; the second holds
 
 ## Categorical predictors are columns of a design matrix {#sec-ch5-factor-coding}
 
-Group labels have no numerical spacing. Coding unordered groups A, B, and C as 1, 2, and 3 and fitting one slope would impose equally spaced means.
+For **nominal (unordered) groups**, labels A, B, and C identify membership without specifying numerical distances. Treating scores 1, 2, and 3 as one linear predictor imposes $\mu_B-\mu_A=\mu_C-\mu_B$; indicator coding does not. Ordinal categories specify an order, but not necessarily equal spacing. Measured group levels such as doses can have meaningful distances; fitting them linearly remains a modeling assumption.
 
 ::: {#def-ch5-treatment-coding}
 
@@ -243,6 +243,10 @@ $$
 \mathbb E(Y_i\mid G_i)=\beta_0+\beta_BD_{Bi}+\beta_CD_{Ci}.
 $$
 
+```{=latex}
+\noindent\begin{minipage}{\linewidth}
+```
+
 The row of the design matrix is $(1\;D_{Bi}\;D_{Ci})$:
 
 | Group | Intercept column | $D_{Bi}$ | $D_{Ci}$ | Mean |
@@ -250,6 +254,10 @@ The row of the design matrix is $(1\;D_{Bi}\;D_{Ci})$:
 | A | 1 | 0 | 0 | $\beta_0$ |
 | B | 1 | 1 | 0 | $\beta_0+\beta_B$ |
 | C | 1 | 0 | 1 | $\beta_0+\beta_C$ |
+
+```{=latex}
+\end{minipage}
+```
 
 Writing $\mu_A,\mu_B,\mu_C$ for the three group means gives
 
@@ -265,7 +273,7 @@ Thus the B-minus-C difference is $\beta_B-\beta_C$. More generally, for $g$ grou
 
 **A is represented, not omitted.** An A observation has $D_{Bi}=D_{Ci}=0$, so its mean is $\beta_0$. Omitting a separate A indicator does not remove any A observations. The intercept column is 1 for **every** observation: its contribution is $1\times\beta_0$. This does not mean that the intercept coefficient equals 1.
 
-Use [`model.matrix()`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/model.matrix.html) to check the coding; `(Intercept)`, `groupB`, and `groupC` correspond to $\mathbf 1$, $\mathbf D_B$, and $\mathbf D_C$:
+Use [`model.matrix()`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/model.matrix.html) to check the coding; `(Intercept)`, `groupB`, and `groupC` correspond to $\mathbf 1$, $\mathbf D_B$, and $\mathbf D_C$. The **Group** column in the displayed tables labels the rows; it is not an additional column of the design matrix:
 
 ```{r}
 #| label: ch5-indicator-matrix
@@ -273,7 +281,9 @@ ch5_groups <- data.frame(group = factor(c("A", "B", "C"),
                                        levels = c("A", "B", "C")))
 contrasts(ch5_groups$group) <- contr.treatment(levels(ch5_groups$group), base = 1)
 ch5_X_reference <- model.matrix(~ group, data = ch5_groups)
-knitr::kable(ch5_X_reference, row.names = FALSE)
+knitr::kable(
+  data.frame(Group = ch5_groups$group, ch5_X_reference,
+             check.names = FALSE), row.names = FALSE)
 ```
 
 ::: {.callout-important title="Why adding an A indicator would be redundant"}
@@ -299,7 +309,7 @@ The original matrix $[\mathbf 1\;\mathbf D_B\;\mathbf D_C]$ has no such redundan
 :::
 
 ```{=latex}
-\newpage
+\noindent\begin{minipage}{\linewidth}
 ```
 
 **An equivalent model without a separate intercept.** We can instead use all three indicators and write
@@ -308,12 +318,18 @@ $$
 \mathbb E(Y_i\mid G_i)=\mu_A D_{Ai}+\mu_B D_{Bi}+\mu_C D_{Ci}.
 $$
 
+```{=latex}
+\end{minipage}
+```
+
 Each coefficient now represents its group's mean directly. In R, `y ~ 0 + group` [removes the intercept term](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html). Its design matrix makes the distinction clear:
 
 ```{r}
 #| label: ch5-indicator-no-intercept
 ch5_X_means <- model.matrix(~ 0 + group, data = ch5_groups)
-knitr::kable(ch5_X_means, row.names = FALSE)
+knitr::kable(
+  data.frame(Group = ch5_groups$group, ch5_X_means,
+             check.names = FALSE), row.names = FALSE)
 ```
 
 Here `groupA`, `groupB`, and `groupC` are the three indicator columns. Both valid codings span the same mean vectors and give the same fitted values, residuals, and SSE. Removing the separate intercept here does **not** force the A mean to zero; it is estimated by the `groupA` coefficient.
@@ -345,6 +361,58 @@ Suppose the fitted means for A, B, and C are 18, 22, and 19.
 | B | 22 | A minus B: -4; C minus B: -3 |
 
 Changing the reference changes the coefficient meanings, but preserves fitted means, residuals, and SSE. An individual coefficient test now addresses a different comparison.
+
+:::
+
+::: {#exm-ch5-coding-output}
+
+## Compare Two Codings in R
+
+Use nine illustrative observations, three per group. Their sample group means are 18, 22, and 19, matching the preceding example. To interpret the printed t tests, assume independent normal errors with a common variance, as in [Chapter 3](03_OLS_inference.qmd#def-normal-linear-model).
+
+```{r}
+#| label: ch5-coding-output-data
+ch5_coding_data <- data.frame(
+  group = factor(rep(c("A", "B", "C"), each = 3),
+                 levels = c("A", "B", "C")),
+  y = c(16, 18, 20, 20, 22, 24, 17, 19, 21))
+contrasts(ch5_coding_data$group) <-
+  contr.treatment(levels(ch5_coding_data$group), base = 1)
+ch5_fit_reference <- lm(y ~ group, data = ch5_coding_data)
+ch5_fit_means <- lm(y ~ 0 + group, data = ch5_coding_data)
+```
+
+**With an intercept: A is the reference.** Display the coefficient table from R's `summary()` output:
+
+```{r}
+#| label: ch5-coding-output-reference
+coef(summary(ch5_fit_reference))
+```
+
+The estimates are $\hat\beta_0=18$, $\hat\beta_B=4$, and $\hat\beta_C=1$. The intercept estimates the A mean; `groupB` estimates the B-minus-A difference $22-18$; `groupC` estimates the C-minus-A difference $19-18$.
+
+**Without an intercept: each coefficient is a group mean.**
+
+```{r}
+#| label: ch5-coding-output-means
+coef(summary(ch5_fit_means))
+```
+
+Now `groupA`, `groupB`, and `groupC` estimate $\mu_A$, $\mu_B$, and $\mu_C$ directly: 18, 22, and 19. The `groupB` standard error is about 1.155 here, compared with 1.633 for the B-minus-A coefficient above, because the two standard errors refer to different quantities.
+
+**Read the null hypothesis before comparing p-values.** In the intercept model, the `groupB` row tests $H_0:\mu_B-\mu_A=0$ (p-value about 0.0498). In the no-intercept model, its row tests $H_0:\mu_B=0$ (p-value about $1.35\times10^{-6}$). These are different tests. To test B versus A with the no-intercept model, use the contrast $\mu_B-\mu_A$, whose estimate is still $22-18=4$; see the [contrasts appendix](App_I-contrasts.qmd).
+
+**Check that the fitted models agree.**
+
+```{r}
+#| label: ch5-coding-output-equivalence
+all.equal(fitted(ch5_fit_reference), fitted(ch5_fit_means))
+all.equal(residuals(ch5_fit_reference), residuals(ch5_fit_means))
+c(SSE_with_intercept = deviance(ch5_fit_reference),
+  SSE_without_intercept = deviance(ch5_fit_means))
+```
+
+Both equality checks return `TRUE`, and both SSEs are 24. The coefficient meanings and their individual tests change, while the fitted group means, residuals, and overall fit stay the same.
 
 :::
 
@@ -397,6 +465,24 @@ R's [`ToothGrowth` data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/
 **Question.** How does the mean response vary with dose, and is the OJ-minus-VC mean difference the same at every dose?
 
 ![Each cell represents 10 animals. Compare doses across a row and OJ versus VC within each column. Does the mean gap change across columns? This is a schematic, not observed outcomes.](illustrations/ch5-toothgrowth-overview.png){#fig-ch5-toothgrowth-overview width=100% fig-pos="H" fig-alt="A two-by-three grid of cute guinea pigs: orange juice (OJ) and ascorbic acid (VC) at vitamin C doses 0.5, 1, and 2 mg/day, with 10 animals in each cell. The recorded response is odontoblast length. Compare doses within a method and methods at each dose."}
+
+::: {#ch5-centering-dose .callout-note title="Why define centered dose as x_c = x - 1?"}
+
+We choose **1 mg/day as a reference dose** and let $x_c=x-1$ measure the difference from it, in mg/day:
+
+| Actual dose $x$ | Centered dose $x_c$ |
+|:---:|:---:|
+| 0.5 | -0.5 |
+| 1 | 0 |
+| 2 | 1 |
+
+Thus $x_c=0$ means **1 mg/day**, and $x_c=-0.5$ means 0.5 mg/day, not a negative administered dose. A one-unit change in $x_c$ is still a one-mg/day change in $x$; we shift the origin without changing the units.
+
+**Why choose 1?** Both methods were observed at 1 mg/day, whereas zero dose was not observed. Using this reference lets the intercept describe a mean within the observed dose range instead of a mean extrapolated to zero dose. Another scientifically useful reference, such as 0.5 or 2 mg/day, could also be used; centering is optional, and the reference need not be the sample mean.
+
+With an intercept and the corresponding model terms retained, centering changes coefficient meanings but leaves fitted values, residuals, and SSE unchanged. In the additive model below only the intercept changes; [Section 5.4](#sec-ch5-interaction) explains why a group coefficient also changes when there is an interaction.
+
+:::
 
 ```{r}
 #| label: ch5-tooth-data
@@ -452,6 +538,24 @@ $$
 
 At a fixed method, a one-mg/day increase corresponds to **9.764** more units of fitted mean length. At a fixed dose, OJ exceeds VC by **3.700** units. This model imposes a straight-line dose response and the same slope for both methods.
 
+**Read the new zero point in the additive model.** At $x=1$, we have $x_c=0$, so the VC mean is $\beta_0$ and the OJ mean is $\beta_0+\beta_g$. The constant OJ-minus-VC difference is still $\beta_g$ at every dose. If we instead use uncentered $x$, the intercept is the VC mean at $x=0$, namely $\beta_0-\beta_x$.
+
+Compare the same fit in R using the two dose variables:
+
+```{r}
+#| label: ch5-additive-centering
+ch5_fit_add_raw <- lm(len ~ dose + supp, data = ch5_tooth)
+knitr::kable(data.frame(
+  Term = c("Intercept", "VC dose slope", "OJ coefficient"),
+  Using_dose = unname(coef(ch5_fit_add_raw)),
+  Using_centered_dose = unname(coef(ch5_fit_add))),
+  digits = 4, row.names = FALSE,
+  col.names = c("Term", "Using dose", "Using dose - 1"))
+all.equal(fitted(ch5_fit_add_raw), fitted(ch5_fit_add))
+```
+
+The intercept moves from about 5.57 (the fitted VC mean at zero dose) to 15.34 (the fitted VC mean at 1 mg/day). The common dose slope and the constant group difference are unchanged. `TRUE` confirms that both parameterizations give the same fitted values.
+
 ## Interactions and conditional comparisons {#sec-ch5-interaction}
 
 ::: {#def-ch5-interaction}
@@ -479,6 +583,22 @@ Here $\beta_g$ is the difference at 1 mg/day, and $\beta_{xg}$ is the difference
 
 :::
 
+::: {#ch5-centering-interaction .callout-note title="With an interaction, the reference dose also defines the group comparison"}
+
+At $x=1$, both $x_c$ and $x_cz$ are zero. Consequently,
+
+$$
+\mu(1,0)=\beta_0,\qquad
+\mu(1,1)=\beta_0+\beta_g,\qquad
+\Delta(1)=\beta_g.
+$$
+
+The intercept is the VC mean at **1 mg/day**, and the group coefficient is the OJ-minus-VC difference **at that same dose**. At another dose the difference is $\Delta(x)=\beta_g+\beta_{xg}(x-1)$, so it need not equal $\beta_g$.
+
+Without centering, the group coefficient would describe the difference at **zero dose**, $\Delta(0)=\beta_g-\beta_{xg}$, outside the observed dose range. This is the key difference from [Section 5.3](#sec-ch5-additive): in an additive model the group difference is constant, but with an interaction changing the reference dose changes which group difference the coefficient represents. The VC slope $\beta_x$ and slope difference $\beta_{xg}$ stay the same.
+
+:::
+
 In R, `dose_c * supp` expands to `dose_c + supp + dose_c:supp`. The last design column is zero for VC and equals centered dose for OJ:
 
 ```{r}
@@ -503,6 +623,24 @@ $$
 $$
 
 The VC slope is **11.716**; the OJ slope is **7.811**, using unrounded estimates. Their fitted mean difference is about **4.351** at 1 mg/day and **0.446** at 2 mg/day. The negative interaction means the gap decreases with dose, while both slopes remain positive.
+
+**Verify what centering changes in the interaction fit.**
+
+```{r}
+#| label: ch5-interaction-centering
+ch5_fit_int_raw <- lm(len ~ dose * supp, data = ch5_tooth)
+knitr::kable(data.frame(
+  Term = c("Intercept", "VC dose slope", "OJ coefficient",
+           "Slope difference"),
+  Using_dose = unname(coef(ch5_fit_int_raw)),
+  Using_centered_dose = unname(coef(ch5_fit_int))),
+  digits = 4, row.names = FALSE,
+  col.names = c("Term", "Using dose", "Using dose - 1"))
+all.equal(fitted(ch5_fit_int_raw), fitted(ch5_fit_int))
+all.equal(deviance(ch5_fit_int_raw), deviance(ch5_fit_int))
+```
+
+The OJ coefficient changes from **8.255**, the model's extrapolated difference at zero dose, to **4.351**, its difference at 1 mg/day. Using the uncentered coefficients gives the same difference at 1 mg/day: approximately $8.255-3.904(1)=4.351$. The VC intercept similarly changes from 3.295 at zero dose to 15.011 at 1 mg/day. Both equality checks return `TRUE`: centering moves the reference point, not the fitted lines or SSE.
 
 ```{r}
 #| label: fig-ch5-parallel-versus-interaction
@@ -536,7 +674,7 @@ ggplot(ch5_tooth, aes(dose_plot, len, colour = supp)) +
        colour = "Method", shape = "Method")
 ```
 
-**Changing the baseline.** Centering at dose $c$ makes the group coefficient the difference at $c$; choosing OJ as reference makes the dose coefficient the OJ slope. With all model terms retained, these recodings preserve fitted values and SSE. We use 1 mg/day because it was observed; zero dose was not.
+**Two choices of reference.** Centering at dose $c$ makes the interaction model's group coefficient the difference at $c$. Separately, choosing OJ instead of VC as the reference group makes the main dose coefficient the OJ slope. With all model terms retained, both recodings preserve fitted values and SSE.
 
 ::: {.callout-important title="Keep the lower-order terms"}
 
