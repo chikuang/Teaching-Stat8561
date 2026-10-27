@@ -54,7 +54,7 @@ $Y=a\exp(bx)\exp(\varepsilon)$ becomes $\log Y=\log a+bx+\varepsilon$. In contra
 
 ::: {#exr-ch6-linear}
 
-## In Class: Linear in Which Sense?
+## Linear in Which Sense?
 
 Which can be fitted by `lm()` using known predictor columns?
 
@@ -193,7 +193,7 @@ Do not rank an `lm(y ~ ...)` fit against an `lm(log(y) ~ ...)` fit using their r
 
 ::: {#exr-ch6-back-transform}
 
-## In Class: What Does Exponentiating Predict?
+## What Does Exponentiating Predict?
 
 Suppose $\log Y=2+0.4x+\varepsilon$, with $\varepsilon\sim N(0,0.25)$. At $x=0$, give the conditional median and mean of $Y$. Does increasing $x$ by one add 0.4 units to the original-scale mean?
 
@@ -284,7 +284,7 @@ Here all three searches retain $x_1,x_2,x_3,x_4$. The first three generate the m
 
 ::: {#exr-ch6-forward}
 
-## In Class: Take One Forward Step
+## Take One Forward Step
 
 The current AIC is 210. Adding $x_2$, $x_3$, or $x_4$ gives 207, 209, or 212. Which move is made? At the next step, the best available AIC is 207.4. Continue or stop? Would a different answer prove that one variable has no scientific role?
 
@@ -423,7 +423,7 @@ Prediction and inference answer different questions. A selected coefficient is n
 
 ::: {#exr-ch6-leakage}
 
-## In Class: Find the Leakage
+## Find the Leakage
 
 A student selects predictors using all 160 outcomes, then splits the observations and reports test RMSE. Another student reserves 40 observations first and runs selection only on the other 120. Which analysis gives an honest held-out assessment of its fitted procedure? Does that make its selected-coefficient p-values valid?
 

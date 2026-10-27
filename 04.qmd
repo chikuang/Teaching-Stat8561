@@ -190,7 +190,7 @@ $$
 
 ::: {#exr-intercept-anova-discussion}
 
-## In-Class Discussion: Why Does the Intercept Matter?
+## Why Does the Intercept Matter?
 
 Why does the usual centered decomposition $\mathrm{SST}=\mathrm{SSR}+\mathrm{SSE}$ require the model space to contain the constant vector? Which step could fail without an intercept? Does this identity require normal errors?
 
@@ -204,7 +204,7 @@ With an intercept, $\mathbf 1$ and therefore $\bar Y\mathbf 1$ belong to the mod
 
 ::: {#exr-identify-anova-deviations}
 
-## In Class: One Observation, Three Deviations
+## One Observation, Three Deviations
 
 For one observation, $y_i=1$, $\hat y_i=1.2$, and $\bar y=3$. In one minute, identify the total, explained, and residual deviations. Does the squared total deviation equal the sum of the other two squared deviations for this observation?
 
@@ -290,7 +290,7 @@ If the predictors have no effect, then both quantities should be of similar size
 
 ::: {#exr-overall-f-question}
 
-## In Class: What Does an Overall Rejection Mean?
+## What Does an Overall Rejection Mean?
 
 An intercept model with two predictors is fitted to $n=25$ observations using a full-rank design. Write the overall null hypothesis and the F reference degrees of freedom under the normal linear model. How does this joint test differ from the individual t tests? If it rejects, must both individual slope tests also reject?
 
@@ -418,7 +418,7 @@ For the models above, the partial F comparison tests $H_0:\beta_2=0$: does $x_2$
 
 ::: {#exr-nested-parameter-interpretation}
 
-## In Class: Which Parameter Is Being Tested?
+## Which Parameter Is Being Tested?
 
 Compare `Volume ~ Height` with `Volume ~ Height + Diameter` on the same trees. Which null hypothesis does their partial F test address?
 
@@ -452,7 +452,7 @@ Its associated degrees of freedom are $p_F-p_R$, where $p_R$ and $p_F$ are the d
 
 ::: {#exr-nested-sse-discussion}
 
-## In-Class Discussion: Can the Larger Model Fit Worse?
+## Can the Larger Model Fit Worse?
 
 Why must $\mathrm{SSE}_F\le\mathrm{SSE}_R$ when nested models are fitted by OLS to the same observations? Must the inequality be strict whenever a genuinely new predictor direction is added?
 
@@ -491,7 +491,7 @@ Different missing-value patterns can cause two R fits to use different observati
 
 ::: {#exr-partial-f-short-calculation}
 
-## In Class: A Better Fit, but Enough Improvement?
+## A Better Fit, but Enough Improvement?
 
 Two nested models use the same $n=30$ observations. The reduced model has rank $p_R=2$ and $\mathrm{SSE}_R=90$; the full model has rank $p_F=4$ and $\mathrm{SSE}_F=78$. Compute the extra sum of squares, its degrees of freedom, the full-model MSE, and the partial F statistic. Does a reduction in SSE by itself justify rejecting the reduced model?
 
@@ -591,7 +591,7 @@ The model has $R^2=7.2/8=0.9$, yet the F-test p-value is $P(F_{1,2}\ge18)\approx
 
 ::: {#exr-r-squared-versus-adjustment}
 
-## In Class: Can Two Fit Summaries Disagree?
+## Can Two Fit Summaries Disagree?
 
 For the same $n=10$ observations with $\mathrm{SST}=100$, an intercept model has rank 2 and SSE 20. Adding a predictor whose column is linearly independent of the existing columns increases the rank to 3 and reduces SSE to 19. Compute $R^2$ and adjusted $R^2$ for both fits. Did the one-unit reduction in SSE improve both summaries? Why can relying on $R^2$ alone be misleading?
 

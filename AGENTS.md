@@ -2,6 +2,8 @@
 
 - Use `set.seed(8561)` for randomized examples in STAT 8561. Normally set the seed once per independent simulation and continue the random-number stream across repetitions. Preserve deliberate demonstrations of resetting the seed.
 
+- Exercise titles use the topic directly; omit prefixes such as `In Class:` or `In-Class Discussion:`.
+
 ## Source and publication
 
 - Primary source: `~/Documents/GitHub/teaching/Teaching-Stat8561`, branch `master`.

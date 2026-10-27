@@ -152,7 +152,7 @@ Taller trees in this sample also tend to have larger diameters. The height-only 
 
 ::: {#exr-ch5-adjusted-interpretation}
 
-## In Class: Interpret 0.339
+## Interpret 0.339
 
 Which interpretation matches the adjusted height coefficient?
 
@@ -227,7 +227,7 @@ Changing the reference changes the coefficient meanings, but preserves fitted me
 
 ::: {#exr-ch5-rank}
 
-## In Class: Count Columns, Not Variable Names
+## Count Columns, Not Variable Names
 
 A model contains an intercept, two continuous predictors, and one four-level factor using reference coding. Assume all columns are independent and $n=40$.
 
@@ -399,7 +399,7 @@ Retain `dose_c` and `supp` when interpreting `dose_c:supp`. Dropping a main effe
 
 ::: {#exr-ch5-interaction-interpretation}
 
-## In Class: Which Difference Is Six?
+## Which Difference Is Six?
 
 Suppose $x_c=x-1$ and $\widehat\mu=10+2x_c+6z-x_cz$.
 
