@@ -83,6 +83,8 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+         |
 |       | Naomi                     |         |
 +-------+---------------------------+---------+
+| 16    | Aidan Tillman             | TBD     |
++-------+---------------------------+---------+
 
 :::
 
