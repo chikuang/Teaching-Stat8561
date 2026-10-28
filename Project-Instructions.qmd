@@ -75,13 +75,13 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 +-------+---------------------------+---------+
 | 14    | Katelyn Truong            | TBD     |
 +-------+---------------------------+---------+
-| 15    | Jennifer                  | TBD     |
+| 15    | Jennifer Guo              | TBD     |
 |       +---------------------------+         |
-|       | Daniel                    |         |
+|       | Daniel Geiger             |         |
 |       +---------------------------+         |
-|       | Duc                       |         |
+|       | Duc Pham                  |         |
 |       +---------------------------+         |
-|       | Naomi                     |         |
+|       | Naomi Fox                 |         |
 +-------+---------------------------+---------+
 | 16    | Aidan Tillman             | TBD     |
 +-------+---------------------------+---------+
