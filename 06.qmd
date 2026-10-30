@@ -215,7 +215,178 @@ A well-measured high-leverage observation can be useful: under an appropriate mo
 
 An outlier is unusual **relative to the mean predicted by the specified model**. B has the largest response in the example, 12, yet it lies on the fitted line and has zero residual. A's response is smaller, 10.5, but is far above the expected response near $x=3.5$. Looking only at the distribution of $Y$ would miss this distinction.
 
-**First fix the notation.** Let $e_i=Y_i-\hat Y_i$ be the raw residual from the full fit, $h_{ii}$ its leverage, and $\nu=n-p$ its residual degrees of freedom. Under the mean model and constant error variance,
+**For the diagnostics below**, write $e_i=Y_i-\hat Y_i$ for the raw residual. We use $r_i=e_i/\{s\sqrt{1-h_{ii}}\}$ for the standardized residual and $t_i=e_i/\{s_{(-i)}\sqrt{1-h_{ii}}\}$ for the externally studentized residual; $s$ uses the full fit and $s_{(-i)}$ uses the fit without observation $i$. Large $|t_i|$ flags a response discrepancy to investigate, while Cook's distance will assess its effect on the fit.
+
+The definitions, choice of residual, worked comparison of A, B, and C, and derivations are collected in [Section 6.7: Supplementary](#sec-ch6-supplementary). Outlyingness and influence answer different questions: a large scaled residual does not by itself tell us how much the fitted relationship changes.
+
+## Influence: changes in estimates and Cook's distance {#sec-ch6-cook}
+
+Influence asks **how much the fitted result changes when an observation is omitted**. Compare the same model on the remaining observations: changes in the slope, intercept, or scientifically relevant prediction describe what that observation was doing. Cook's distance summarizes movement of the fitted mean vector using both the residual and leverage.
+
+::: {#def-ch6-cook}
+
+## Cook's Distance
+
+Let $\hat{\boldsymbol\beta}_{(-i)}$ be the OLS estimate after omitting observation $i$, and let $\hat Y_{j(-i)}=\mathbf x_j^\top\hat{\boldsymbol\beta}_{(-i)}$ be its prediction at **each of the original $n$ predictor rows**, including row $i$. Cook's distance is
+
+$$
+D_i=\frac{\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2}{p s^2}
+=\frac{e_i^2}{p s^2}\frac{h_{ii}}{(1-h_{ii})^2}
+=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}}.
+$$
+
+Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted least squares with full column rank and positive residual degrees of freedom; the deleted fit must also be estimable ($h_{ii}<1$).
+
+:::
+
+**Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
+
+::: {#deriv-ch6-cook .derivation}
+
+**Derivation: the equivalent formulas for Cook's distance**
+
+**1. Express movement of the fitted means through the coefficient change.** Use $\boldsymbol\delta_i=\hat{\boldsymbol\beta}-\hat{\boldsymbol\beta}_{(-i)}$ from the [deletion derivation in Section 6.7](#deriv-ch6-deletion). Predictions are evaluated at **all $n$ original rows**, so
+
+$$
+\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2
+=\|\mathbf X\boldsymbol\delta_i\|^2
+=\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i.
+$$
+
+**2. Substitute the deleted-coefficient identity.** With $\mathbf A=\mathbf X^\top\mathbf X$,
+
+$$
+\begin{aligned}
+\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i
+&=\frac{e_i^2}{(1-h_{ii})^2}
+\mathbf x_i^\top\mathbf A^{-1}\mathbf A\mathbf A^{-1}\mathbf x_i\\
+&=\frac{e_i^2h_{ii}}{(1-h_{ii})^2}.
+\end{aligned}
+$$
+
+**3. Scale the change and rewrite using $r_i$.** Dividing by $ps^2$ gives
+
+$$
+D_i=\frac{e_i^2}{ps^2}\frac{h_{ii}}{(1-h_{ii})^2}
+=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}},
+\qquad
+r_i^2=\frac{e_i^2}{s^2(1-h_{ii})}.
+$$
+
+Cook's distance uses the **full-fit** noise scale $s$, so this expression uses the internally studentized $r_i$. Substituting the externally studentized $t_i$ into the same expression would not give Cook's distance. The algebra does not require normal errors; the variance model supplies the interpretation of the scaling.
+
+:::
+
+**Apply Cook's distance to the same three points.** In each augmented fit, $n=7$ and $p=2$. The diagnostics for its orange point are:
+
+```{r}
+#| label: ch6-influence-diagnostic-values
+#| echo: false
+knitr::kable(data.frame(Point = c("A", "B", "C"),
+  ch6_story_diagnostics, row.names = NULL),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
+  col.names = c("Point", "Leverage", "Standardized residual", "Cook's distance"))
+```
+
+A and C have almost the same absolute standardized residual, but C has much higher leverage and a much larger Cook's distance: 6.395 versus 0.414. B has the same leverage as C, yet its zero residual gives zero Cook's distance. These numbers quantify what the plots and coefficient table already showed: **influence depends on both the response discrepancy and the predictor position**.
+
+::: {#exr-ch6-influence}
+
+## Which Point Moves the Fit More?
+
+In a model with $p=2$, point A has $r_A=3$ and $h_{AA}=0.05$; point B has $r_B=1$ and $h_{BB}=0.50$. Compute their Cook's distances. Which point is more influential by this measure? Does either number establish a data error?
+
+:::
+
+::: {#sol-ch6-influence}
+
+$D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has greater influence despite its smaller standardized residual. Neither value establishes an error or justifies deletion; inspect the observations and the scientific consequences of the changed fit.
+
+:::
+
+## Summary {#sec-ch6-summary}
+
+:::: {#sec-ch6-investigate}
+
+Keep the three questions separate: **unusual response, unusual predictors, or a changed fit**. A point can belong to more than one category. Use the table to choose the appropriate diagnostic and follow-up.
+
+::: {.balanced-table tbl-colwidths="[18,46,36]"}
+
+| Observation | How to identify it | What to do |
+|:---:|:---:|:---:|
+| **Response outlier** | Use the externally studentized residual $t_i$. Rough screen: $\lvert t_i\rvert>2$. Formal check under the normal model: **one pre-specified point**, $\lvert t_i\rvert>t_{d,1-\alpha/2}$; **all $n$ points** (Bonferroni), $\lvert t_i\rvert>t_{d,1-\alpha/(2n)}$. | Verify the response and measurement conditions. Check whether the fitted mean or error model explains the discrepancy. Assess its effect on estimates separately. |
+| **High-leverage point** | Unusual predictor values: $h_{ii}>2p/n$ is a rough screen; average leverage is $p/n$. High leverage alone does not establish an outlier or actual influence. | Verify predictor values and study eligibility. Examine the residual and compare fits to determine whether the point actually changes the result. |
+| **Influential point** | Use $D_i>4/n$ or a Cook's distance that stands out to flag **possible** influence. Confirm it through meaningful changes in coefficients or predictions when the point is omitted. | Refit the same model with and without the point. Compare relevant estimates, uncertainty, and predictions; report both fits when conclusions are sensitive. |
+
+:::
+
+For the formal outlier checks, use the assumptions in [Section 6.7](#deriv-ch6-student-t): $d=n-p-1$, $t_{d,q}$ is the $q$ quantile of the t distribution, and $\alpha$ is the chosen significance level. The leverage and Cook cutoffs are screening guides, not tests; falling below one does not prove that a point is harmless.
+
+**For all three:** correct verified errors and repeat the diagnostics. Retain valid, eligible observations; exclude only for a documented data-quality or eligibility reason, not a diagnostic value alone. If valid observations reveal an inadequate model, revise it and recheck. Report the decision and its effect on the conclusion.
+
+[Chapter 7](07.qmd) develops transformations and variable selection.
+
+::::
+
+## Practice Problems {#sec-ch6-practice}
+
+::: {#exr-ch6-practice}
+
+## Practice: Diagnose and Explain
+
+1. B has a larger response than A but a zero residual. Why is the response value alone insufficient to identify an outlier?
+2. Why do B and C have the same leverage but different Cook's distances?
+3. In A, the slope is unchanged but the intercept and residual SD increase. Is it correct to say the point has no effect on estimation?
+4. A high-leverage point has a small raw residual. Explain why this alone does not establish that it is harmless.
+5. A student deletes every point with $D_i>4/n$. State what information and analysis are missing.
+
+:::
+
+::: {#sol-ch6-practice}
+
+1. Outlyingness concerns the response relative to the fitted conditional mean. B lies on the original line; A lies well above it at an ordinary predictor value.
+2. Their predictor rows are identical, so leverage is identical. Their responses differ: B leaves the line unchanged, while C moves it substantially.
+3. No. A affects the intercept, predictions, and estimated noise even though its position at the predictor mean leaves the slope unchanged.
+4. A high-leverage observation can pull the fit toward itself. Examine a scaled residual and compare the fitted result with and without that observation.
+5. The cutoff is only a screening guide. Verify the observation, examine the model, compare scientifically relevant estimates and predictions with and without the point, and justify any exclusion using evidence.
+
+:::
+
+## Supplementary {#sec-ch6-supplementary}
+
+**Raw, standardized, and studentized residuals: which should I use?** This supplement expands the notation used in [Section 6.3](#sec-ch6-outliers). Choose the residual according to the question; scaling does not replace checking the model or the measurements.
+
+::: {#def-ch6-raw-residual}
+
+## Raw (Ordinary) Residual
+
+The raw residual is $e_i=Y_i-\hat Y_i$, the observed response minus its fitted mean from the full model. It has the **same units as the response being modeled**: $e_i=5$ means the response is five units above its fitted mean. If the model response is $\log Y$, its residual is in log-response units, not the original units of $Y$. In R, use `resid(fit)` or `residuals(fit)`.
+
+A residual estimates an unobserved error; it is not that error itself. Its size also depends on leverage, so raw residuals alone are not a fair way to rank unusual observations.
+
+:::
+
+**Choose by purpose.**
+
+::: {.balanced-table tbl-colwidths="[24,52,24]"}
+
+| Residual | When is it useful? | R function |
+|:---:|:---:|:---:|
+| Raw $e_i$ | Describe discrepancies in response units; inspect curvature, spread, or time patterns in residual plots. | `resid(fit)` |
+| Standardized $r_i$ (internally studentized) | Compare residual sizes after adjusting for leverage and the common noise scale; use in general diagnostic plots and the residual form of Cook's distance. | `rstandard(fit)` |
+| Externally studentized $t_i$ | Investigate an individual response outlier without allowing that observation to inflate its own noise estimate; use for a normal-model outlier test when its assumptions hold. | `rstudent(fit)` |
+
+:::
+
+For ordinary unweighted `lm` fits, `plot(fit, which = 1)` shows **raw residuals versus fitted values**. R's normal Q-Q plot (`which = 2`) and residual-versus-leverage plot (`which = 5`) use **standardized residuals**, not `rstudent(fit)`. These plots assess different aspects of the same model. [R plotting documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/plot.lm.html).
+
+::: {.callout-note title="Scaling a residual is not scaling the response"}
+
+The two scaled residuals are dimensionless. Neither is obtained by calling `scale(resid(fit))`: each uses the observation-specific factor $\sqrt{1-h_{ii}}$. Reporting scaled residuals does not change the original fitted coefficients or response scale, make the residuals independent, or repair nonconstant error variance. The quantities below assume a common error variance; weighted regression and GLMs require diagnostics appropriate to those models.
+
+:::
+
+**Shared notation and assumptions.** Let $h_{ii}$ be the full-fit leverage, $p$ count coefficients including the intercept, and $\nu=n-p$ be the residual degrees of freedom. Assume ordinary unweighted least squares with full column rank. Under the mean model and constant error variance,
 
 $$
 \operatorname{Var}(e_i\mid\mathbf X)=\sigma^2(1-h_{ii}).
@@ -269,14 +440,32 @@ Here **$e_i$ and $h_{ii}$ still come from the full fit**; only the error-scale e
 
 In this chapter, **standardized** means internally studentized, and **studentized** by itself means externally studentized, matching these two [R diagnostic functions](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html). Other texts may use *studentized* for either type; check which variance estimate appears in the denominator.
 
-| Feature | Standardized $r_i$ | Externally studentized $t_i$ |
-|:---:|:---:|:---:|
-| Numerator and leverage | Full-fit $e_i$, $h_{ii}$ | Same full-fit $e_i$, $h_{ii}$ |
-| Error-scale estimate | $s$, using all observations | $s_{(-i)}$, refitting without $i$ |
-| Error degrees of freedom | $n-p$ | $n-p-1$ |
-| Main use | Compare residual sizes on a common scale | Assess a response without letting it inflate its own noise estimate |
-
 Neither scaling makes residuals independent. With independent normal errors and a correctly specified, fixed model, each pre-specified $t_i$ has a $t_{n-p-1}$ distribution; $r_i$ does **not** have that exact t distribution. Checking many points also requires accounting for multiple comparisons.
+
+**Compare the same three added points.** Each row uses its own augmented fit. The $s$ column uses all seven observations; $s_{(-i)}$ comes from refitting after removing that row's added point. The last column is the externally studentized residual.
+
+```{r}
+#| label: ch6-story-residuals
+#| echo: false
+ch6_residual_comparison <- t(vapply(ch6_story_fits, function(m) {
+  d <- model.frame(m)
+  deleted_fit <- lm(formula(m), data = d[-nrow(d), , drop = FALSE])
+  c(Residual = unname(tail(residuals(m), 1)),
+    Full_fit_SD = sigma(m), Deleted_fit_SD = sigma(deleted_fit),
+    Standardized = unname(tail(rstandard(m), 1)),
+    Studentized = unname(tail(rstudent(m), 1)))
+}, numeric(5)))
+knitr::kable(data.frame(Point = c("A", "B", "C"),
+  ch6_residual_comparison, row.names = NULL),
+  digits = 3, format.args = list(nsmall = 3), row.names = FALSE,
+  align = "c", escape = FALSE,
+  col.names = c("Point", "Residual $e_i$", "$s$", "$s_{(-i)}$",
+    "Standardized $r_i$", "Studentized $t_i$"))
+```
+
+For A, the full-fit residual SD is $s=2.078$, but deleting A gives $s_{(-A)}=0.200$. The same full-fit residual and leverage therefore produce $r_A=2.228$ and $t_A=23.146$. A was inflating the noise estimate used to assess itself. For C the scales are 1.899 and 0.200, with the same effect. Deleting either point returns the six baseline observations from [Section 6.1](#sec-ch6-influence). B has zero residual, so both scaled residuals are zero regardless of the different scales. These diagnostics identify a response discrepancy under the model; they do not establish a recording error.
+
+A and C have similar absolute standardized residuals, yet C changes the slope much more. **Outlyingness and influence answer different questions.**
 
 ::: {#deriv-ch6-residual-variance .derivation}
 
@@ -410,163 +599,5 @@ $$
 $$
 
 The internal residual $r_i$ uses the full-fit $s$, which shares the contribution from observation $i$ with its numerator. This independence argument does not apply to $r_i$; its bound $|r_i|\le\sqrt{\nu}$ also rules out an exact t distribution, whose support is unbounded.
-
-:::
-
-**Compare the same three added points.** Each row uses its own augmented fit. The $s$ column uses all seven observations; $s_{(-i)}$ comes from refitting after removing that row's added point. The last column is the externally studentized residual.
-
-```{r}
-#| label: ch6-story-residuals
-#| echo: false
-ch6_residual_comparison <- t(vapply(ch6_story_fits, function(m) {
-  d <- model.frame(m)
-  deleted_fit <- lm(formula(m), data = d[-nrow(d), , drop = FALSE])
-  c(Residual = unname(tail(residuals(m), 1)),
-    Full_fit_SD = sigma(m), Deleted_fit_SD = sigma(deleted_fit),
-    Standardized = unname(tail(rstandard(m), 1)),
-    Studentized = unname(tail(rstudent(m), 1)))
-}, numeric(5)))
-knitr::kable(data.frame(Point = c("A", "B", "C"),
-  ch6_residual_comparison, row.names = NULL),
-  digits = 3, format.args = list(nsmall = 3), row.names = FALSE,
-  align = "c", escape = FALSE,
-  col.names = c("Point", "Residual $e_i$", "$s$", "$s_{(-i)}$",
-    "Standardized $r_i$", "Studentized $t_i$"))
-```
-
-For A, the full-fit residual SD is $s=2.078$, but deleting A gives $s_{(-A)}=0.200$. The same full-fit residual and leverage therefore produce $r_A=2.228$ and $t_A=23.146$. A was inflating the noise estimate used to assess itself. For C the scales are 1.899 and 0.200, with the same effect. Deleting either point returns the six baseline observations from [Section 6.1](#sec-ch6-influence). B has zero residual, so both scaled residuals are zero regardless of the different scales. These diagnostics identify a response discrepancy under the model; they do not establish a recording error.
-
-A and C have similar absolute standardized residuals, yet C changes the slope much more. **Outlyingness and influence answer different questions.**
-
-## Influence: changes in estimates and Cook's distance {#sec-ch6-cook}
-
-Influence asks **how much the fitted result changes when an observation is omitted**. Compare the same model on the remaining observations: changes in the slope, intercept, or scientifically relevant prediction describe what that observation was doing. Cook's distance summarizes movement of the fitted mean vector using both the residual and leverage.
-
-::: {#def-ch6-cook}
-
-## Cook's Distance
-
-Let $\hat{\boldsymbol\beta}_{(-i)}$ be the OLS estimate after omitting observation $i$, and let $\hat Y_{j(-i)}=\mathbf x_j^\top\hat{\boldsymbol\beta}_{(-i)}$ be its prediction at **each of the original $n$ predictor rows**, including row $i$. Cook's distance is
-
-$$
-D_i=\frac{\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2}{p s^2}
-=\frac{e_i^2}{p s^2}\frac{h_{ii}}{(1-h_{ii})^2}
-=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}}.
-$$
-
-Here $s^2$ comes from the full fit. These formulas apply to ordinary unweighted least squares with full column rank and positive residual degrees of freedom; the deleted fit must also be estimable ($h_{ii}<1$).
-
-:::
-
-**Read the two parts.** The first expression asks how much the *whole fitted mean vector* moves after deletion, measured relative to the noise scale and model size. The last combines response discrepancy ($r_i^2$) with leverage ($h_{ii}/(1-h_{ii})$). Thus the largest residual need not produce the largest Cook's distance. $D_i$ is dimensionless; it is not a p-value. [Cook's original article](https://doi.org/10.1080/00401706.1977.10489493).
-
-::: {#deriv-ch6-cook .derivation}
-
-**Derivation: the equivalent formulas for Cook's distance**
-
-**1. Express movement of the fitted means through the coefficient change.** Use $\boldsymbol\delta_i=\hat{\boldsymbol\beta}-\hat{\boldsymbol\beta}_{(-i)}$ from the [deletion derivation in Section 6.3](#deriv-ch6-deletion). Predictions are evaluated at **all $n$ original rows**, so
-
-$$
-\sum_{j=1}^n(\hat Y_j-\hat Y_{j(-i)})^2
-=\|\mathbf X\boldsymbol\delta_i\|^2
-=\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i.
-$$
-
-**2. Substitute the deleted-coefficient identity.** With $\mathbf A=\mathbf X^\top\mathbf X$,
-
-$$
-\begin{aligned}
-\boldsymbol\delta_i^\top\mathbf A\boldsymbol\delta_i
-&=\frac{e_i^2}{(1-h_{ii})^2}
-\mathbf x_i^\top\mathbf A^{-1}\mathbf A\mathbf A^{-1}\mathbf x_i\\
-&=\frac{e_i^2h_{ii}}{(1-h_{ii})^2}.
-\end{aligned}
-$$
-
-**3. Scale the change and rewrite using $r_i$.** Dividing by $ps^2$ gives
-
-$$
-D_i=\frac{e_i^2}{ps^2}\frac{h_{ii}}{(1-h_{ii})^2}
-=\frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}},
-\qquad
-r_i^2=\frac{e_i^2}{s^2(1-h_{ii})}.
-$$
-
-Cook's distance uses the **full-fit** noise scale $s$, so this expression uses the internally studentized $r_i$. Substituting the externally studentized $t_i$ into the same expression would not give Cook's distance. The algebra does not require normal errors; the variance model supplies the interpretation of the scaling.
-
-:::
-
-**Apply Cook's distance to the same three points.** In each augmented fit, $n=7$ and $p=2$. The diagnostics for its orange point are:
-
-```{r}
-#| label: ch6-influence-diagnostic-values
-#| echo: false
-knitr::kable(data.frame(Point = c("A", "B", "C"),
-  ch6_story_diagnostics, row.names = NULL),
-  digits = 3, format.args = list(nsmall = 3), row.names = FALSE, align = "c",
-  col.names = c("Point", "Leverage", "Standardized residual", "Cook's distance"))
-```
-
-A and C have almost the same absolute standardized residual, but C has much higher leverage and a much larger Cook's distance: 6.395 versus 0.414. B has the same leverage as C, yet its zero residual gives zero Cook's distance. These numbers quantify what the plots and coefficient table already showed: **influence depends on both the response discrepancy and the predictor position**.
-
-::: {#exr-ch6-influence}
-
-## Which Point Moves the Fit More?
-
-In a model with $p=2$, point A has $r_A=3$ and $h_{AA}=0.05$; point B has $r_B=1$ and $h_{BB}=0.50$. Compute their Cook's distances. Which point is more influential by this measure? Does either number establish a data error?
-
-:::
-
-::: {#sol-ch6-influence}
-
-$D_A=(9/2)(0.05/0.95)\approx0.237$, while $D_B=(1/2)(0.50/0.50)=0.50$. B has greater influence despite its smaller standardized residual. Neither value establishes an error or justifies deletion; inspect the observations and the scientific consequences of the changed fit.
-
-:::
-
-## Summary {#sec-ch6-summary}
-
-:::: {#sec-ch6-investigate}
-
-Keep the three questions separate: **unusual response, unusual predictors, or a changed fit**. A point can belong to more than one category. Use the table to choose the appropriate diagnostic and follow-up.
-
-::: {.balanced-table tbl-colwidths="[18,46,36]"}
-
-| Observation | How to identify it | What to do |
-|:---:|:---:|:---:|
-| **Response outlier** | Use the externally studentized residual $t_i$. Rough screen: $\lvert t_i\rvert>2$. Formal check under the normal model: **one pre-specified point**, $\lvert t_i\rvert>t_{d,1-\alpha/2}$; **all $n$ points** (Bonferroni), $\lvert t_i\rvert>t_{d,1-\alpha/(2n)}$. | Verify the response and measurement conditions. Check whether the fitted mean or error model explains the discrepancy. Assess its effect on estimates separately. |
-| **High-leverage point** | Unusual predictor values: $h_{ii}>2p/n$ is a rough screen; average leverage is $p/n$. High leverage alone does not establish an outlier or actual influence. | Verify predictor values and study eligibility. Examine the residual and compare fits to determine whether the point actually changes the result. |
-| **Influential point** | Use $D_i>4/n$ or a Cook's distance that stands out to flag **possible** influence. Confirm it through meaningful changes in coefficients or predictions when the point is omitted. | Refit the same model with and without the point. Compare relevant estimates, uncertainty, and predictions; report both fits when conclusions are sensitive. |
-
-:::
-
-For the formal outlier checks, use the assumptions in [Section 6.3](#deriv-ch6-student-t): $d=n-p-1$, $t_{d,q}$ is the $q$ quantile of the t distribution, and $\alpha$ is the chosen significance level. The leverage and Cook cutoffs are screening guides, not tests; falling below one does not prove that a point is harmless.
-
-**For all three:** correct verified errors and repeat the diagnostics. Retain valid, eligible observations; exclude only for a documented data-quality or eligibility reason, not a diagnostic value alone. If valid observations reveal an inadequate model, revise it and recheck. Report the decision and its effect on the conclusion.
-
-[Chapter 7](07.qmd) develops transformations and variable selection.
-
-::::
-
-## Practice Problems {#sec-ch6-practice}
-
-::: {#exr-ch6-practice}
-
-## Practice: Diagnose and Explain
-
-1. B has a larger response than A but a zero residual. Why is the response value alone insufficient to identify an outlier?
-2. Why do B and C have the same leverage but different Cook's distances?
-3. In A, the slope is unchanged but the intercept and residual SD increase. Is it correct to say the point has no effect on estimation?
-4. A high-leverage point has a small raw residual. Explain why this alone does not establish that it is harmless.
-5. A student deletes every point with $D_i>4/n$. State what information and analysis are missing.
-
-:::
-
-::: {#sol-ch6-practice}
-
-1. Outlyingness concerns the response relative to the fitted conditional mean. B lies on the original line; A lies well above it at an ordinary predictor value.
-2. Their predictor rows are identical, so leverage is identical. Their responses differ: B leaves the line unchanged, while C moves it substantially.
-3. No. A affects the intercept, predictions, and estimated noise even though its position at the predictor mean leaves the slope unchanged.
-4. A high-leverage observation can pull the fit toward itself. Examine a scaled residual and compare the fitted result with and without that observation.
-5. The cutoff is only a screening guide. Verify the observation, examine the model, compare scientifically relevant estimates and predictions with and without the point, and justify any exclusion using evidence.
 
 :::
