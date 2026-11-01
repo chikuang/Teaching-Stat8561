@@ -218,14 +218,14 @@ $$
 
 | Item | Answer | Calculation |
 |:---:|---:|:---|
-| (a) | **78.000** | $120-42$ |
+| (a) | **78** | $120-42$ |
 | (b) | **21** | $24-3$ |
-| (c) | **2.000** | $42/21$ |
-| (d) | **19.500** | $(78/2)/2$ |
-| (e) | **0.650** | $1-42/120$ |
+| (c) | **2** | $42/21$ |
+| (d) | **19.5** | $(78/2)/2$ |
+| (e) | **0.65** | $1-42/120$ |
 | (f) | **0.617** | $1-(42/21)/(120/23)$ |
-| (g) | **12.000** | $54-42$ |
-| (h) | **6.000** | $[(54-42)/(3-2)]/(42/21)$ |
+| (g) | **12** | $54-42$ |
+| (h) | **6** | $[(54-42)/(3-2)]/(42/21)$ |
 
 The overall test uses the two slopes jointly ($2$ numerator degrees of freedom); the partial test adds only $z$ ($1$ numerator degree of freedom). Both use the full-model error mean square, $\mathrm{MSE}_F=2$.
 
@@ -246,7 +246,7 @@ For part (h), the null reference distribution is $F_{1,21}$, with 5% upper-tail 
 
 ::: {#a3-solution-2i .callout-tip collapse="true" title="Solution 2(i)"}
 
-**B.** The partial F statistic is $6.000>4.325$, so reject $H_0:\beta_2=0$ at the 5% level. There is evidence that $z$ contributes to the mean after accounting for $x$.
+**B.** The partial F statistic is $6>4.325$, so reject $H_0:\beta_2=0$ at the 5% level. There is evidence that $z$ contributes to the mean after accounting for $x$.
 
 :::
 
@@ -437,7 +437,7 @@ Give the fitted mean height at $x=12$ for **A** and for **B**, in cm (**1 point 
 
 ::: {#a3-solution-4c .callout-tip collapse="true" title="Solution 4(c)"}
 
-**A: 21.000 cm; B: 25.000 cm.** At $x=12$, the centered water volume is $2$, so
+**A: 21 cm; B: 25 cm.** At $x=12$, the centered water volume is $2$, so
 
 $$
 \widehat\mu_A(12)=18+1.5(2)=21,\qquad
@@ -456,7 +456,7 @@ At the same water volume, what is the fitted **B-minus-A** mean difference, in c
 
 ::: {#a3-solution-4d .callout-tip collapse="true" title="Solution 4(d)"}
 
-**4.000 cm.** At the same water volume, the common intercept and water terms cancel:
+**4 cm.** At the same water volume, the common intercept and water terms cancel:
 
 $$
 \widehat\mu_B(x)-\widehat\mu_A(x)
