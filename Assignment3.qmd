@@ -1,5 +1,5 @@
 ---
-show-solutions: false
+show-solutions: true
 pagetitle: Assignment 3
 execute:
   echo: false
@@ -81,6 +81,16 @@ A full OLS model adds an independent predictor column to a reduced model. Which 
 **C.** $\mathrm{SSE}_F>\mathrm{SSE}_R$ because one degree of freedom is lost.\
 **D.** The added predictor has a statistically significant coefficient.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-1a .callout-tip collapse="true" title="Solution 1(a)"}
+
+**B.** The reduced-model space is contained in the full-model space. OLS minimizes SSE over that space, so $\mathrm{SSE}_F\leq\mathrm{SSE}_R$. Equality is possible when the added direction does not improve the fitted response.
+
+:::
+
+::::
+
 ### (b) The overall regression sum of squares [2]
 
 The full model includes an intercept. Which reduced model gives $\mathrm{SSE}_R-\mathrm{SSE}_F=\mathrm{SSR}_F$?
@@ -89,6 +99,16 @@ The full model includes an intercept. Which reduced model gives $\mathrm{SSE}_R-
 **B.** The same full model written with different coefficient names.\
 **C.** The intercept-only model.\
 **D.** The model that fixes every fitted mean at zero.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-1b .callout-tip collapse="true" title="Solution 1(b)"}
+
+**C.** The intercept-only fit is $\bar Y$, so its SSE is $\mathrm{SST}$. Hence $\mathrm{SSE}_R-\mathrm{SSE}_F=\mathrm{SST}-\mathrm{SSE}_F=\mathrm{SSR}_F$.
+
+:::
+
+::::
 
 ### (c) An overall rejection [2]
 
@@ -99,6 +119,16 @@ An overall F test rejects the null that all slopes are zero. What is the appropr
 **C.** Every predictor has a causal effect on the response.\
 **D.** The fitted model has the lowest possible future prediction error.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-1c .callout-tip collapse="true" title="Solution 1(c)"}
+
+**A.** Rejecting the joint null provides evidence that at least one slope is nonzero. It does not establish that every slope is significant, that the associations are causal, or that the model predicts best.
+
+:::
+
+::::
+
 ### (d) Training fit [2]
 
 Both nested models include an intercept and $\mathrm{SST}>0$. What can happen when a predictor is added?
@@ -108,6 +138,16 @@ Both nested models include an intercept and $\mathrm{SST}>0$. What can happen wh
 **C.** Training $R^2$ can decrease because the residual degrees of freedom decrease.\
 **D.** Training $R^2$ cannot decrease, but adjusted $R^2$ may decrease.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-1d .callout-tip collapse="true" title="Solution 1(d)"}
+
+**D.** Since SSE cannot increase and SST is unchanged, training $R^2=1-\mathrm{SSE}/\mathrm{SST}$ cannot decrease. Adjusted $R^2$ also accounts for the loss of a residual degree of freedom, so it may decrease.
+
+:::
+
+::::
+
 ### (e) A missing-data trap [2]
 
 `lm(y ~ x)` uses 30 observations; `lm(y ~ x + z)` uses 26 because `z` is missing for four observations. What should be done before using the nested-model partial F formula?
@@ -116,6 +156,16 @@ Both nested models include an intercept and $\mathrm{SST}>0$. What can happen wh
 **B.** Refit both models to the same complete-case observations for `y`, `x`, and `z`.\
 **C.** Replace the four missing `z` values by zero without further justification.\
 **D.** Divide each SSE by its own sample size before subtracting them.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-1e .callout-tip collapse="true" title="Solution 1(e)"}
+
+**B.** Refit both models using the same complete cases for `y`, `x`, and `z`. Otherwise, the two SSE values describe different response vectors; their difference does not isolate the contribution of `z`.
+
+:::
+
+::::
 
 ::: {.content-visible when-meta="assignment-handout"}
 
@@ -162,6 +212,27 @@ $$
 F_{\mathrm{partial}}=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}{\mathrm{SSE}_F/(n-p_F)}.
 $$
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-2a .callout-tip collapse="true" title="Solution 2(a)-(h)"}
+
+| Item | Answer | Calculation |
+|:---:|---:|:---|
+| (a) | **78.000** | $120-42$ |
+| (b) | **21** | $24-3$ |
+| (c) | **2.000** | $42/21$ |
+| (d) | **19.500** | $(78/2)/2$ |
+| (e) | **0.650** | $1-42/120$ |
+| (f) | **0.617** | $1-(42/21)/(120/23)$ |
+| (g) | **12.000** | $54-42$ |
+| (h) | **6.000** | $[(54-42)/(3-2)]/(42/21)$ |
+
+The overall test uses the two slopes jointly ($2$ numerator degrees of freedom); the partial test adds only $z$ ($1$ numerator degree of freedom). Both use the full-model error mean square, $\mathrm{MSE}_F=2$.
+
+:::
+
+::::
+
 ### (i) Decision [2]
 
 For part (h), the null reference distribution is $F_{1,21}$, with 5% upper-tail critical value **4.325**. Select one conclusion.
@@ -170,6 +241,16 @@ For part (h), the null reference distribution is $F_{1,21}$, with 5% upper-tail 
 **B.** Reject: there is evidence that $z$ contributes to the mean after accounting for $x$.\
 **C.** Reject: this establishes that every slope is individually significant.\
 **D.** The test cannot be performed without fitting the models in R.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-2i .callout-tip collapse="true" title="Solution 2(i)"}
+
+**B.** The partial F statistic is $6.000>4.325$, so reject $H_0:\beta_2=0$ at the 5% level. There is evidence that $z$ contributes to the mean after accounting for $x$.
+
+:::
+
+::::
 
 ::: {.content-visible when-meta="assignment-handout"}
 
@@ -220,15 +301,49 @@ Which null tests whether horsepower adds information after accounting for weight
 
 **A.** $\beta_w=0$; **B.** $\beta_0=0$; **C.** $\beta_h=0$; **D.** $\beta_w=\beta_h=0$.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-3a .callout-tip collapse="true" title="Solution 3(a)"}
+
+**C.** Setting $\beta_h=0$ removes horsepower while retaining weight. Thus the null tests the additional contribution of horsepower after accounting for weight.
+
+:::
+
+::::
+
 ### (b) Reference distribution [2]
 
 Which is the null reference distribution for the partial F test comparing these models?
 
 **A.** $F_{2,29}$; **B.** $F_{1,30}$; **C.** $F_{2,30}$; **D.** $F_{1,29}$.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-3b .callout-tip collapse="true" title="Solution 3(b)"}
+
+**D.** There is one added parameter and $32-3=29$ full-model residual degrees of freedom, giving $F_{1,29}$ under the null.
+
+:::
+
+::::
+
 ### (c) Connect the tests [2]
 
 For this single restriction, $F=t_h^2$. Report the partial F statistic to **three decimal places**.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-3c .callout-tip collapse="true" title="Solution 3(c)"}
+
+**12.381.** For one restriction, the partial F statistic equals the square of the corresponding $t$ statistic:
+
+$$
+F=t_h^2=(-3.518712)^2\approx12.381.
+$$
+
+:::
+
+::::
 
 ### (d) What does the result establish? [2]
 
@@ -242,6 +357,16 @@ Enter `T` or `F` for each statement (**1 point each**).
 | (ii) | This result proves that changing horsepower causes a change in fuel economy. | _____ |
 
 :::
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-3d .callout-tip collapse="true" title="Solution 3(d)"}
+
+**(i) T; (ii) F.** The p-value $0.001451<0.05$ supports a horsepower contribution after accounting for weight. These are observational data, so the result alone does not establish a causal effect.
+
+:::
+
+::::
 
 ::: {.content-visible when-meta="assignment-handout"}
 
@@ -275,6 +400,16 @@ Which expression is $\mu_B(x)$?
 **A.** $\beta_0+\beta_x(x-10)$; **B.** $\beta_0+\beta_g+\beta_x(x-10)$.\
 **C.** $\beta_0+(\beta_x+\beta_g)(x-10)$; **D.** $\beta_g+\beta_x x$.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4a .callout-tip collapse="true" title="Solution 4(a)"}
+
+**B.** Substituting $z=1$ gives $\mu_B(x)=\beta_0+\beta_g+\beta_x(x-10)$. The group coefficient shifts the intercept; the water slope remains $\beta_x$.
+
+:::
+
+::::
+
 ### (b) Design rows [2]
 
 Which pair gives the rows for **A at $x=8$** and **B at $x=12$**, in that order?
@@ -284,13 +419,55 @@ Which pair gives the rows for **A at $x=8$** and **B at $x=12$**, in that order?
 **C.** $(1,-2,0)$ and $(1,2,1)$.\
 **D.** $(0,-2,0)$ and $(1,2,1)$.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4b .callout-tip collapse="true" title="Solution 4(b)"}
+
+**C.** The columns are the intercept, centered water volume $x_c=x-10$, and the indicator for B. At $x=8$, $x_c=-2$ and A has $z=0$; at $x=12$, $x_c=2$ and B has $z=1$.
+
+:::
+
+::::
+
 ### (c) Fitted means [2]
 
 Give the fitted mean height at $x=12$ for **A** and for **B**, in cm (**1 point each**).
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4c .callout-tip collapse="true" title="Solution 4(c)"}
+
+**A: 21.000 cm; B: 25.000 cm.** At $x=12$, the centered water volume is $2$, so
+
+$$
+\widehat\mu_A(12)=18+1.5(2)=21,\qquad
+\widehat\mu_B(12)=18+1.5(2)+4=25.
+$$
+
+:::
+
+::::
+
 ### (d) Adjusted group difference [2]
 
 At the same water volume, what is the fitted **B-minus-A** mean difference, in cm? Give one number.
+
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4d .callout-tip collapse="true" title="Solution 4(d)"}
+
+**4.000 cm.** At the same water volume, the common intercept and water terms cancel:
+
+$$
+\widehat\mu_B(x)-\widehat\mu_A(x)
+=[18+1.5(x-10)+4]-[18+1.5(x-10)]=4.
+$$
+
+This is a difference in fitted means, not an exact difference between two individual plants.
+
+:::
+
+::::
 
 ### (e) Interpret the slope [2]
 
@@ -301,6 +478,16 @@ Which statement correctly interprets the fitted coefficient 1.5?
 **C.** At the same water volume, B has a fitted mean height 1.5 cm higher than A.\
 **D.** The water slope is 1.5 for A and $1.5+4=5.5$ for B.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4e .callout-tip collapse="true" title="Solution 4(e)"}
+
+**A.** Holding fertilizer group fixed, one additional mL/day of water is associated with a 1.5-cm increase in fitted mean height. The additive model gives both groups the same slope; it does not prescribe every individual plant's response.
+
+:::
+
+::::
+
 ### (f) Connect to Chapter 4 [2]
 
 Which null hypothesis and reduced model test the fertilizer contribution after accounting for water, **within this additive model**?
@@ -310,6 +497,15 @@ Which null hypothesis and reduced model test the fertilizer contribution after a
 **C.** $H_0:\beta_x=\beta_g=0$; reduced mean $\alpha_0$.\
 **D.** $H_0:\beta_g=0$; reduced mean $\alpha_0+\alpha_x(x-10)$.
 
+:::: {.content-visible when-meta="show-solutions"}
+
+::: {#a3-solution-4f .callout-tip collapse="true" title="Solution 4(f)"}
+
+**D.** Under $H_0:\beta_g=0$, the fertilizer indicator is removed while centered water remains. The reduced mean is $\alpha_0+\alpha_x(x-10)$; its coefficients are estimated again when the reduced model is fitted.
+
+:::
+
+::::
 
 ::: {.content-visible unless-meta="assignment-handout"}
 
