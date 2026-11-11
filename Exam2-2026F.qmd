@@ -1,0 +1,718 @@
+---
+show-exam-solutions: true
+---
+
+# Exam 2 {.unnumbered}
+
+**Term:** 2026F (Fall 2026)  
+**Instructor:** [Chi-Kuang Yeh](https://chikuang.github.io/)  
+**Date:** November 11, 2026  
+**Status:** Completed  
+**Time:** 75 minutes  
+**Total:** [100] points  
+**Coverage:** Everything through [Section 6.3: Outliers](06.qmd#sec-ch6-outliers), emphasizing material covered after Exam 1.  
+**Emphasis:** Conceptual understanding, model interpretation, statistical reasoning, and brief calculations.  
+**Notation:** $p$ counts independent design columns, including any intercept. Vectors and matrices are boldfaced. $\mathrm{SSE}=\sum_i e_i^2$ denotes the error (residual) sum of squares.
+
+::: {tbl-colwidths="[16,72,12]"}
+
+| Question | Format | Points |
+|:---:|:---|:---:|
+| 1 | Multiple Choice (10 parts, [5] points each) | [50] |
+| 2 | True or False (5 parts, [4] points each) | [20] |
+| 3 | Short Answer (3 parts, [10] points each) | [30] |
+| **Total** | | **[100]** |
+
+:::
+
+::: {.callout-note title="Exam instructions"}
+
+1. Work independently. Only a **non-programmable calculator** is permitted as an electronic device. No code execution or statistical-table lookup is required.
+2. Record Questions 1-2 on the separate answer sheet: one letter A-D or T/F per part. Only the grid is graded; no explanations are required.
+3. For Question 3, show brief calculations and give concise explanations; equations or 1-2 clear sentences are sufficient. Formulas and any needed critical value are supplied.
+4. Submit only the answer sheet. You may keep the question paper.
+
+**Answer sheet:** Write all final answers on the separate answer sheet.
+
+:::
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::::: {.content-visible when-format="html"}
+
+::: {.callout-important title="Solutions"}
+
+Expand the **Answer** below each question to view the solution and explanation. A compact answer key and grading rubric appear at the end.
+
+:::
+
+:::::
+
+::::
+
+{{< pagebreak >}}
+
+## Question 1: Multiple Choice [50] {#exam2-2026-q1}
+
+Each part is worth **[5] points**. Select the **single best answer** under the stated conditions. Record it on the separate answer sheet. No explanation is required.
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1a) {#exam2-2026-1a}
+
+Two OLS mean models are $M_A:\mu_A(x)=\alpha_0+\alpha_1x$ and $M_B:\mu_B(z)=\gamma_0+\gamma_1z$. On the same observations, $\mathbf1$, $\mathbf x$, and $\mathbf z$ are linearly independent, and $\mathrm{SSE}_A=84$, $\mathrm{SSE}_B=72$. Which statement is correct?
+
+A. The usual partial $F$ test comparing A directly with B has one added degree of freedom.  
+B. The lower $\mathrm{SSE}_B$ establishes that $z$ contributes after accounting for $x$.  
+C. Neither mean space contains the other, so their SSE difference does not give a valid nested-model $F$ test.  
+D. The SSE values must be equal because both models have two coefficients.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: C.**
+The independence of $\mathbf1$, $\mathbf x$, and $\mathbf z$ means neither two-dimensional mean space contains the other. The partial $F$ formula requires nested models, not merely two SSE values. To test $z$ after $x$, compare $\alpha_0+\alpha_1x$ with $\beta_0+\beta_1x+\beta_2z$.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1b) {#exam2-2026-1b}
+
+Consider $\mu(x,z)=\beta_0+\beta_xx+\beta_gz+\beta_{xg}xz$, with $z=0$ or $1$. Rewrite the same model using $x_c=x-5$, retaining all terms. Which statement is correct?
+
+A. The coefficient of $z$ becomes $\beta_g+5\beta_{xg}$; fitted values and SSE are unchanged.  
+B. The coefficient of $z$ must remain $\beta_g$, even when $\beta_{xg}\ne0$.  
+C. Centering changes the fitted mean for each observation.  
+D. The coefficient of $x_cz$ becomes $5\beta_{xg}$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: A.**
+Substitute $x=x_c+5$. The coefficient of $z$ is $\beta_g+5\beta_{xg}$, the group difference $\Delta(5)$. The intercept becomes $\beta_0+5\beta_x$, while the slope difference remains $\beta_{xg}$. Centering moves the reference point; fitted values, residuals, and SSE stay the same.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1c) {#exam2-2026-1c}
+
+For the same observations, consider $M_0:\mu=\alpha_0$, $M_1:\mu=\alpha_0+\alpha_1x_1$, and $M_2:\mu=\beta_0+\beta_1x_1+\beta_2x_2$. Which comparison tests whether $x_2$ contributes to the mean after accounting for $x_1$?
+
+A. $M_0$ versus $M_2$.  
+B. $M_1$ versus $M_2$.  
+C. $M_0$ versus $M_1$.  
+D. Compare only the two fitted coefficients of $x_1$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: B.**
+The reduced model retains $x_1$ and removes $x_2$. The partial $F$ test addresses $H_0:\beta_2=0$ in the full model: does $x_2$ contribute after accounting for $x_1$? It does not test equality of the two fitted $x_1$ coefficients.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1d) {#exam2-2026-1d}
+
+Two full-rank nested OLS models use the same observations and include an intercept, with $\mathrm{SST}>0$ and $\mathrm{SSE}_F>0$. Adding one coefficient gives partial $F=0.8$. Which change from the reduced to the full model follows? (The formulas are given in 3a.)
+
+A. Both $R^2$ and $R^2_{\mathrm{adj}}$ increase.  
+B. $R^2$ decreases, while $R^2_{\mathrm{adj}}$ increases.  
+C. Both measures remain unchanged because $F<1$.  
+D. $R^2$ increases, while $R^2_{\mathrm{adj}}$ decreases.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+Here $F>0$, so $\mathrm{SSE}_R>\mathrm{SSE}_F$ and $R^2$ increases. For one added coefficient, $F<1$ means the SSE reduction is less than $\mathrm{MSE}_F$, so $\mathrm{MSE}_R<\mathrm{MSE}_F$. With the same SST, adjusted $R^2$ therefore decreases.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1e) {#exam2-2026-1e}
+
+Two predictors $x$ and $z$ are correlated. In sequential ANOVA on the same observations, the sum of squares for $z$ is 45 when $z$ enters first, but 12 when it enters after $x$. Why can both values be correct?
+
+A. They use the same reduced model but different estimates of the error variance.  
+B. They use different reduced models: intercept only versus intercept plus $x$.  
+C. They estimate the noise variance before and after adjustment for $x$.  
+D. They use different final fits because reversing the term order changes fitted values.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: B.**
+A sequential sum of squares is the reduction in SSE when a term is added after the preceding terms. Adding $z$ first compares intercept only with intercept plus $z$; adding it after $x$ compares intercept plus $x$ with intercept plus $x$ and $z$. Correlated predictors can give different reductions, while the final fitted values are unchanged.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1f) {#exam2-2026-1f}
+
+A group-only model uses A as reference: $\mathbb E(Y_i\mid G_i)=\beta_0+\beta_BD_{Bi}+\beta_CD_{Ci}$, where $D_{Bi}$ and $D_{Ci}$ indicate membership in B and C. All three groups are observed. With B as the new reference, which intercept and C coefficient preserve the same group means?
+
+A. Intercept $\beta_0$; C coefficient $\beta_C$.  
+B. Intercept $\beta_B$; C coefficient $\beta_C$.  
+C. Intercept $\beta_0+\beta_B$; C coefficient $\beta_C$.  
+D. Intercept $\beta_0+\beta_B$; C coefficient $\beta_C-\beta_B$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+With A as reference, $\mu_A=\beta_0$, $\mu_B=\beta_0+\beta_B$, and $\mu_C=\beta_0+\beta_C$. With B as reference, the intercept is $\mu_B$ and the C coefficient is $\mu_C-\mu_B=\beta_C-\beta_B$. The coefficient meanings change, while fitted group means, residuals, and SSE stay the same.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1g) {#exam2-2026-1g}
+
+Let $z=0$ for group A, $z=1$ for group B, and $x_c=x-2$. A fitted interaction model is $\widehat\mu(x,z)=12+3x_c+5z-x_cz$. Which pair gives the fitted slope for B and the B-minus-A fitted mean difference at $x=4$, respectively?
+
+A. Slope $2$; mean difference $3$.  
+B. Slope $-1$; mean difference $3$.  
+C. Slope $2$; mean difference $5$.  
+D. Slope $8$; mean difference $3$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: A.**
+Setting $z=0$ gives slope 3; setting $z=1$ gives slope $3-1=2$. The B-minus-A fitted mean difference is $\widehat\Delta(x)=5-(x-2)$, giving 3 at $x=4$. The negative interaction means this gap decreases with $x$, while both fitted slopes remain positive.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1h) {#exam2-2026-1h}
+
+For full-rank OLS, $\hat{\mathbf Y}=\mathbf H\mathbf Y$ and $\mathbf e=(\mathbf I-\mathbf H)\mathbf Y$. Keep $\mathbf X$ fixed and increase only $Y_i$ by 10. If $h_{ii}=0.8$, which statement must hold after refitting?
+
+A. The raw residual $e_i$ increases by 10, and $h_{ii}$ is unchanged.  
+B. The raw residual $e_i$ increases by 2, and $h_{ii}$ increases.  
+C. The raw residual $e_i$ increases by 2, and $h_{ii}$ is unchanged.  
+D. The fitted value $\hat Y_i$ is unchanged, and $e_i$ increases by 8.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: C.**
+The hat matrix depends only on $\mathbf X$, so $h_{ii}$ is unchanged. Row $i$ of $\hat{\mathbf Y}=\mathbf H\mathbf Y$ gives a fitted-value increase of $10h_{ii}=8$. Hence $e_i=Y_i-\hat Y_i$ increases by $10-8=2$, rather than by the full response change.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1i) {#exam2-2026-1i}
+
+With an intercept and one nonconstant predictor, $h_{ii}=1/n+(x_i-\bar x)^2/\sum_j(x_j-\bar x)^2$. Replace every $x_i$ by $u_i=10+2x_i$ and refit with an intercept to the same observations. What happens to leverage?
+
+A. Every leverage doubles because the predictor is multiplied by 2.  
+B. Every leverage is divided by 4.  
+C. Adding 10 makes every observation have higher leverage.  
+D. Every leverage is unchanged.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: D.**
+The new mean is $\bar u=10+2\bar x$, so $u_i-\bar u=2(x_i-\bar x)$. Both the squared numerator and the sum in the denominator multiply by 4; the ratio and $1/n$ are unchanged. A change of predictor origin or units does not change leverage.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 1j) {#exam2-2026-1j}
+
+An observation has the largest response $Y_i$ in the sample, but $Y_i=\hat Y_i$. Assume $h_{ii}<1$, $s>0$, and $s_{(-i)}>0$. Which conclusion follows?
+
+A. It must be a response outlier because its response is largest.  
+B. $e_i=r_i=t_i=0$; its response size alone does not make it a response outlier.  
+C. Its leverage must be zero because its residual is zero.  
+D. Its standardized residual must be large because $Y_i$ is large.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: B.**
+A response outlier is unusual given its predictor values and the specified model. Here the raw residual $e_i=Y_i-\hat Y_i=0$, so the standardized residual $r_i$ and externally studentized residual $t_i$ are also zero. An extreme response alone does not make an observation an outlier; zero residual does not imply zero leverage.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+{{< pagebreak >}}
+
+## Question 2: True or False [20] {#exam2-2026-q2}
+
+Each part is worth **[4] points**. Record **T** or **F** on the separate answer sheet. No explanation is required.
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 2a) {#exam2-2026-2a}
+
+For a nested normal-model comparison on the same observations that adds one coefficient, the partial $F$ statistic equals $T^2$, where $T$ is the corresponding two-sided $t$-test statistic from the full model, regardless of its sign.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: True.**
+For one coefficient restriction, $F=T^2$, as in Chapter 3. Squaring removes the sign. Both tests address the same null hypothesis; the $F$ reference degrees of freedom are $(1,n-p_F)$.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 2b) {#exam2-2026-2b}
+
+With all four groups observed, an intercept plus all four group indicators gives five identifiable coefficients in a group-only regression model.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+The four indicators sum to the intercept column, so the design has rank 4 rather than 5. Use an intercept plus three indicators or all four indicators without a separate intercept.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 2c) {#exam2-2026-2c}
+
+For the additive linear mean model $\mu(x_1,x_2)=\beta_0+\beta_1x_1+\beta_2x_2$, the difference $\mu(x_1+1,x_2)-\mu(x_1,x_2)$ equals $\beta_1+\beta_2x_2$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+Holding $x_2$ fixed, the intercept and unchanged contribution $\beta_2x_2$ cancel. The mean-response difference is $\beta_1$. Additivity means this difference does not depend on $x_2$; it does not require independent predictors.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 2d) {#exam2-2026-2d}
+
+For a full-rank design with $p$ columns, $\sum_i h_{ii}=p$ implies that every observation has leverage $p/n$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: False.**
+Because $\sum_i h_{ii}=p$, average leverage is $p/n$. Individual leverages can differ because they describe the positions of the predictor rows. The identity does not make each leverage equal to the average.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 2e) {#exam2-2026-2e}
+
+Convert every response from centimeters to meters and refit the same OLS model, keeping $\mathbf X$ fixed. If $s>0$ and all $h_{ii}<1$, every standardized residual $r_i$ is unchanged.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer: True.**
+OLS fitted values, raw residuals, and $s$ all divide by 100, while $\mathbf H$ and $h_{ii}$ stay the same. Thus $r_i=(e_i/100)/\{(s/100)\sqrt{1-h_{ii}}\}$ is unchanged. The numerical response units cancel.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+{{< pagebreak >}}
+
+## Question 3: Short Answer [30] {#exam2-2026-q3}
+
+Each part is worth **[10] points**. Show brief calculations and concise reasoning on the separate answer sheet.
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 3a) Better fit versus evidence [10] {#exam2-2026-3a}
+
+Two full-rank nested OLS models with intercepts use the same $n=28$ observations, with $\mathrm{SST}>0$. The reduced model has $p_R=2$, $\mathrm{SSE}_R=84$; the full model has $p_F=4$, $\mathrm{SSE}_F=72$. Assume independent normal errors with common variance under the full model. Use
+
+$$
+F=\frac{(\mathrm{SSE}_R-\mathrm{SSE}_F)/(p_F-p_R)}{\mathrm{SSE}_F/(n-p_F)},\qquad
+R^2_{\mathrm{adj}}=1-\frac{\mathrm{SSE}/(n-p)}{\mathrm{SST}/(n-1)}.
+$$
+
+#### 3a(i) [4] {#exam2-2026-3a-i}
+
+Compute $F$ and give its null reference degrees of freedom.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** $F=\{(84-72)/(4-2)\}/\{72/(28-4)\}=6/3=2$ [2]. Under the reduced-model null, $F\sim F_{2,24}$ [2].
+
+:::
+
+::::
+
+#### 3a(ii) [6] {#exam2-2026-3a-ii}
+
+A classmate claims, "Adjusted $R^2$ increases, so we must reject the reduced model at 5%." Assess both parts using the formulas; only the direction of change in adjusted $R^2$ is needed. The 5% upper-tail critical value is 3.40. Explain why the two criteria need not agree.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** The same positive $\mathrm{SST}/(n-1)$ is used for both fits. Since $\mathrm{MSE}_R=84/26\approx3.231>3=\mathrm{MSE}_F$, adjusted $R^2$ increases [2]. However, $2<3.40$, so fail to reject the reduced model at 5% [2]. Adjusted $R^2$ compares residual mean squares; the test asks whether improvement is sufficiently large relative to sampling variation under the null [2]. In fact, adjusted $R^2$ increases when $F>1$, a weaker condition than $F>3.40$. The classmate's implication is false.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 3b) Agreement at one point or everywhere [10] {#exam2-2026-3b}
+
+Let $z=0$ for group A, $z=1$ for group B, and $x_c=x-8$. Consider the full-rank interaction model
+
+$$
+\mu(x,z)=\beta_0+\beta_xx_c+\beta_gz+\beta_{xg}x_cz.
+$$
+
+#### 3b(i) [4] {#exam2-2026-3b-i}
+
+Write $\Delta(x)=\mu_B(x)-\mu_A(x)$ and the null restriction for equal group means at $x=10$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** Subtracting the two group mean functions gives $\Delta(x)=\mu_B(x)-\mu_A(x)=\beta_g+\beta_{xg}(x-8)$ [2]. Equality at $x=10$ is the single restriction $\beta_g+2\beta_{xg}=0$ [2].
+
+:::
+
+::::
+
+#### 3b(ii) [6] {#exam2-2026-3b-ii}
+
+Give and verify one numerical pair $(\beta_g,\beta_{xg})$ for which the group means agree at $x=10$ but the two lines are not identical. Then state and justify the coefficient restrictions implied by agreement at both $x=6$ and $x=10$.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** For example, $\beta_g=-2$ and $\beta_{xg}=1$ give $\Delta(10)=0$ but $\Delta(8)=-2$, so the lines intersect without being identical [2]. Equality at 6 and 10 gives $\beta_g-2\beta_{xg}=0$ and $\beta_g+2\beta_{xg}=0$. Subtraction yields $4\beta_{xg}=0$; then $\beta_g=0$ [2 for the restrictions, 2 for the reasoning]. Thus two distinct points of agreement force these two straight mean lines to be identical.
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+```{=latex}
+\par\begingroup
+\tcbset{breakable/.style={breakable@false}}
+\noindent\begin{minipage}{\linewidth}
+```
+
+### 3c) Which residual answers the question? [10] {#exam2-2026-3c}
+
+Use the Section 6.3 standardized and externally studentized residuals:
+
+$$
+r_i=\frac{e_i}{s\sqrt{1-h_{ii}}},\qquad t_i=\frac{e_i}{s_{(-i)}\sqrt{1-h_{ii}}}.
+$$
+
+One full fit has $n=9$, $p=4$, $s=2$, and the following diagnostics:
+
+| Observation | Raw residual $e_i$ | Leverage $h_{ii}$ |
+|:---:|:---:|:---:|
+| A | 2 | 0.75 |
+| B | 3 | 0.36 |
+
+#### 3c(i) [6] {#exam2-2026-3c-i}
+
+Compute $r_A$ and $r_B$. Which is more unusual by absolute standardized residual? Explain why the larger raw residual gives the opposite ranking.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** $r_A=2/(2\sqrt{0.25})=2$ [2]; $r_B=3/(2\sqrt{0.64})=1.875$ [2]. A has the larger absolute standardized residual [1], despite its smaller raw residual: A's larger leverage makes its denominator smaller [1].
+
+:::
+
+::::
+
+#### 3c(ii) [4] {#exam2-2026-3c-ii}
+
+Refitting without A gives $s_{(-A)}=1$ and retains full column rank. Compute $t_A$. A student attributes $|t_A|>|r_A|$ to a deleted-fit residual in the numerator. Correct the explanation: identify what changes and what stays the same.
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+::: {.callout-tip collapse="true" title="Answer"}
+
+**Answer:** $t_A=2/(1\sqrt{0.25})=4$ [2]. The claim is incorrect: the numerator remains the full-fit raw residual $e_A$, and leverage also comes from the full fit [1]. Only the residual SD is replaced, from $s=2$ to $s_{(-A)}=1$, doubling the scaled residual [1].
+
+:::
+
+::::
+
+```{=latex}
+\end{minipage}\par
+\endgroup
+\medskip
+```
+
+{{< pagebreak >}}
+
+:::: {.content-visible when-meta="show-exam-solutions"}
+
+## Answer Key and Grading Rubric {#exam2-2026-answer-key}
+
+### Question 1: Multiple Choice [50]
+
+| Part | 1a | 1b | 1c | 1d | 1e | 1f | 1g | 1h | 1i | 1j |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Answer | C | A | B | D | B | D | A | C | D | B |
+
+Award **[5] points** for each correct answer and **[0] points** otherwise. No explanations are required.
+
+### Question 2: True or False [20]
+
+| Part | 2a | 2b | 2c | 2d | 2e |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Answer | True | False | False | False | True |
+
+Award **[4] points** for each correct answer and **[0] points** otherwise. No explanations are required.
+
+### Question 3: Short Answer [30]
+
+Accept equivalent reasoning, concise equations, and any verified counterexample in 3b. Grade statistical content, not English style. A short correct explanation earns full reasoning credit. Deduct an arithmetic error once and give follow-through credit. No proof of the $F>1$ equivalence, residual-deletion identity, or formal outlier test is required.
+
+::: {tbl-colwidths="[14,74,12]"}
+
+| Part | Grading criteria | Points |
+|:---:|:---|:---:|
+| 3a(i) | $F=2$ [2]; null reference $F_{2,24}$ [2]. | [4] |
+| 3a(ii) | $\mathrm{MSE}_R=84/26>\mathrm{MSE}_F=72/24=3$, so adjusted $R^2$ increases [2]; fail to reject since $2<3.40$ [2]; improving adjusted $R^2$ is a fit criterion, not sufficient evidence at the 5% level [2]. | [6] |
+| 3b(i) | $\Delta(x)=\beta_g+\beta_{xg}(x-8)$ [2]; equality at $x=10$: $\beta_g+2\beta_{xg}=0$ [2]. | [4] |
+| 3b(ii) | Verified counterexample, e.g., $\beta_g=-2$, $\beta_{xg}=1$ [2]; equality at both 6 and 10 implies $\beta_g=\beta_{xg}=0$ [2]; subtracting the restrictions gives $4\beta_{xg}=0$, hence identical lines [2]. | [6] |
+| 3c(i) | $r_A=2$ [2]; $r_B=1.875$ [2]; A has larger $\lvert r\rvert$ [1]; its smaller leverage factor outweighs its smaller raw residual [1]. | [6] |
+| 3c(ii) | $t_A=4$ [2]; $e_A$ and $h_{AA}$ still come from the full fit [1]; only the residual SD changes from $s$ to $s_{(-A)}$ [1]. | [4] |
+| **Total** | | **[30]** |
+
+:::
+
+::::

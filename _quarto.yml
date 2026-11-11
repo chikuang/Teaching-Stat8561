@@ -12,7 +12,7 @@ project:
 # Release assignment solutions in the combined PDF as well as HTML.
 show-solutions: true
 
-# Include released Exam 1 answers in both HTML and the combined course PDF.
+# Include released exam answers in both HTML and the combined course PDF.
 show-exam-solutions: true
 
 book:
@@ -55,6 +55,7 @@ book:
     - part: "Exam"
       chapters:
         - Exam1-2026F.qmd
+        - Exam2-2026F.qmd
 
     - part: "Project"
       chapters:
