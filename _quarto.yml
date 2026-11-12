@@ -108,6 +108,7 @@ format:
       - pdf-page-style.tex
     filters:
       - filters/pdf-callouts.lua
+      - filters/project-groups.lua
       - filters/course-links.lua
     cache: true
 

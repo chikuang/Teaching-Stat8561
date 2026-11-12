@@ -41,7 +41,7 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 ## Exam
 
 - [x] [Exam 1](Exam1-2026F.qmd): October 14, 2026
-- [x] [Exam 2](Exam2-2026F.qmd): November 11, 2026 (questions and answers posted)
+- [x] [Exam 2](Exam2-2026F.qmd): November 11, 2026
 
 ## Project
 
@@ -55,8 +55,6 @@ See [Instruction](Project-Instructions.qmd) for the project description, require
 
 Those chapters are based on the lecture notes. This part will be updated frequently.
 
-**Progress after Lecture 21:** Chapter 5 is complete. Chapter 6 has reached [Section 6.3: Outliers](06.qmd#sec-ch6-outliers).
-
 | Status | Chapter |        Topic         | Lecture |
 |:------:|:---------:|:------------------------------------------------:|:---------:|
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | | [Welcome and Overview](intro.qmd)|    1    |
@@ -67,8 +65,8 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 1](Exam1-2026F.qmd) | 15 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | 18--21 |
 | `r if (knitr::is_latex_output()) "In progress" else "⏳"` | Ch. 6 | [Outliers, Leverage, and Influence](06.qmd) | 21-- |
-| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 7 | [Transformations and Variable Selection](07.qmd) | TBA |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 2](Exam2-2026F.qmd) | 23 |
+| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 7 | [Transformations and Variable Selection](07.qmd) | TBA |
 <!-- Future lecture coverage will be updated after class. -->
 
 ```{=latex}
