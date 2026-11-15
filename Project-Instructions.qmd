@@ -74,7 +74,11 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+                                |
 |       | Halimah Akinoso           |                                |
 +-------+---------------------------+--------------------------------+
-| 12    | Taiwo Ayeni               | TBD                            |
+| 12    | Taiwo Ayeni               | Weight Gain After Quitting     |
+|       |                           | Smoking: Adjusted Associations |
+|       |                           | and Out-of-Sample Prediction   |
+|       |                           | in the NHANES I Epidemiologic  |
+|       |                           | Follow-up Study                |
 +-------+---------------------------+--------------------------------+
 | 13    | Nicholas White            | TBD                            |
 +-------+---------------------------+--------------------------------+
