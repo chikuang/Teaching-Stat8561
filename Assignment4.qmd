@@ -1,5 +1,5 @@
 ---
-show-assignment4-solutions: false
+show-assignment4-solutions: true
 pagetitle: Assignment 4
 ---
 
@@ -46,6 +46,17 @@ The PDF must be generated from the submitted source. **HTML alone does not satis
 :::
 
 
+
+:::: {.content-visible when-meta="show-assignment4-solutions" when-format="html"}
+
+::: {.callout-important title="Solutions"}
+
+Solutions are provided below each part. On this page, expand a **Solution** to see the answer and explanation. Solutions are also included in the [course PDF](https://chikuang.github.io/teaching/2026F_stat8561/STAT8561---Linear-Statistical-Analysis-I.pdf).
+
+:::
+
+::::
+
 {{< pagebreak >}}
 
 ## Question 1: Interaction Models and Interpretation [12]
@@ -71,21 +82,71 @@ What does $\beta_x$ represent in this interaction model?
 **C.** The common temperature slope for both machines.  
 **D.** The exact change in every individual processing time per $1^\circ$C.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1a .callout-tip collapse="true" title="Solution 1(a)"}
+
+**B [2].** In group A, $z=0$ and $\mu_A(x)=\beta_0+\beta_x(x-50)$. The B slope is $\beta_x+\beta_{xg}$.
+
+:::
+
+::::
+
 ### (b) Machine B [2]
 
 Report the fitted **B slope** (seconds per ${}^\circ$C) and the fitted **B mean time at $60^\circ$C** (seconds), in that order (**1 point each**).
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1b .callout-tip collapse="true" title="Solution 1(b)"}
+
+**$-0.700$ and $39.000$ [1 each].** $\widehat\mu_B(x)=46-0.7(x-50)$.
+
+:::
+
+::::
 
 ### (c) The group coefficient [2]
 
 Interpret the fitted group coefficient **6** in one sentence. State both the comparison and the temperature at which it applies.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1c .callout-tip collapse="true" title="Solution 1(c)"}
+
+**[2].** At $50^\circ$C **[1]**, machine B has a fitted mean processing time 6 seconds higher than A **[1]**. The comparison concerns conditional means, not every pair of individual observations.
+
+:::
+
+::::
+
 ### (d) Challenge a claim [2]
 
 A student says, "The coefficient 6 means that B always has a fitted mean time 6 seconds higher than A throughout the observed temperature range." Use **one temperature other than $50^\circ$C** to construct a numerical counterexample **[1]**, and give a one-sentence explanation **[1]**.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1d .callout-tip collapse="true" title="Solution 1(d)"}
+
+**Example [1]:** at $60^\circ$C, A has fitted mean $36$ and B has $39$, a difference of $3$ seconds. **Reason [1]:** the interaction makes the B-minus-A difference $6-0.3(x-50)$ depend on temperature. Any temperature within 40-60 other than $50^\circ$C provides a valid counterexample.
+
+:::
+
+::::
+
 ### (e) Change the centering point [2]
 
 Rewrite the **same fitted model** using $w=x-60$, retaining the intercept, $w$, $z$, and $wz$. Report the new **intercept** and the new **coefficient of $z$**, in that order (**1 point each**).
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1e .callout-tip collapse="true" title="Solution 1(e)"}
+
+**36.000 and 3.000 [1 each].** Since $x-50=w+10$, the fitted equation becomes $36-0.4w+3z-0.3wz$. The new group coefficient compares the means at $60^\circ$C.
+
+:::
+
+::::
 
 ### (f) What changes? [2]
 
@@ -93,6 +154,16 @@ Enter `T` or `F` (**1 point each**).
 
 1. The recentering in part (e), with all terms retained, changes the fitted values and SSE.
 2. The fitted association alone does not establish that switching machine type causes the corresponding change in processing time.
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-1f .callout-tip collapse="true" title="Solution 1(f)"}
+
+**F, T [1 each].** Recentring changes coefficient interpretation but not the model space. A fitted association alone does not establish causation.
+
+:::
+
+::::
 
 
 {{< pagebreak >}}
@@ -122,9 +193,29 @@ Which comparison tests whether the two machine types have equal temperature slop
 **C.** Additive versus interaction; $H_0:\beta_{xg}=0$.  
 **D.** Additive versus interaction; $H_0:\beta_g=0$.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-2a .callout-tip collapse="true" title="Solution 2(a)"}
+
+**C [2].** Equal slopes removes the interaction while retaining the group intercept difference and the temperature main effect.
+
+:::
+
+::::
+
 ### (b) Carry out the comparison [3]
 
 For the equal-slopes test, report the **F statistic** **[1]**, the ordered pair of **numerator and denominator degrees of freedom** **[1]**, and **reject** or **do not reject** **[1]**.
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-2b .callout-tip collapse="true" title="Solution 2(b)"}
+
+**6.000 [1]; $(1,32)$ [1]; reject [1].** $F=(152-128)/(128/32)=6>4.149$. Under the stated assumptions, this is evidence against parallel mean lines.
+
+:::
+
+::::
 
 ### (c) Assess a claim [3]
 
@@ -136,6 +227,16 @@ In 1-2 sentences:
 - State why the models must use the same response and observations for this comparison **[1]**.
 - State the error assumption that justifies the exact F reference distribution here **[1]**.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-2c .callout-tip collapse="true" title="Solution 2(c)"}
+
+**Example:** The larger nested model cannot have higher training SSE even under equal population slopes **[1]**; the SSE reduction must be assessed relative to noise and degrees of freedom. The same response and observations are needed to compare projections of the same response vector, rather than differences caused by changing the data **[1]**, and the exact F reference uses independent normal errors with zero mean and common variance conditional on the fixed design **[1]**.
+
+:::
+
+::::
+
 ### (d) A different question [2]
 
 Which null hypothesis tests whether the two population mean lines are identical within the interaction model?
@@ -144,6 +245,16 @@ Which null hypothesis tests whether the two population mean lines are identical 
 **B.** $H_0:\beta_{xg}=0$, comparing additive with interaction.  
 **C.** $H_0:\beta_x=0$, deleting only the temperature main effect.  
 **D.** $H_0:\beta_0=\beta_x=0$, deleting the reference-group line.
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-2d .callout-tip collapse="true" title="Solution 2(d)"}
+
+**A [2].** Identical lines require both equal slopes and zero group difference. This is a two-restriction comparison, not the one-restriction equal-slopes test.
+
+:::
+
+::::
 
 
 {{< pagebreak >}}
@@ -171,21 +282,71 @@ Here $r_i$ is the standardized (internally studentized) residual and $t_i$ is th
 
 Report the raw residuals for **A** and **B**, in that order (**1 point each**).
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3a .callout-tip collapse="true" title="Solution 3(a)"}
+
+**6.000 and 1.000 [1 each].** Subtract the full-fit prediction from each response.
+
+:::
+
+::::
+
 ### (b) Two scaled residuals [2]
 
 For **observation A**, calculate $r_A$ and $t_A$, in that order (**1 point each**).
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3b .callout-tip collapse="true" title="Solution 3(b)"}
+
+**3.162 and 4.183 [1 each].** $r_A=6/(2\sqrt{0.9})=3.1622777$ and $t_A=6/(\sqrt{16/7}\sqrt{0.9})=4.1833001$.
+
+:::
+
+::::
 
 ### (c) Predictor position [2]
 
 Which observation, A or B, has greater leverage **[1]**? In one sentence, explain why this conclusion does not depend on the observed response values **[1]**.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3c .callout-tip collapse="true" title="Solution 3(c)"}
+
+**B [1].** Leverages are diagonal entries of $X(X^\top X)^{-1}X^\top$, determined only by the predictor design **[1]**. Here 0.60 exceeds 0.10; average leverage is $3/25=0.12$.
+
+:::
+
+::::
+
 ### (d) An unusually large response? [2]
 
 A student labels B a response outlier solely because its observed response is 61, larger than A's 36. Give a 1-2 sentence correction using the fitted means and residuals.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3d .callout-tip collapse="true" title="Solution 3(d)"}
+
+**[2].** Response outlyingness concerns discrepancy from the conditional mean for the given predictors **[1]**, not the marginal size of $Y$. B is only 1 unit above its fitted mean of 60, whereas A is 6 above its fitted mean of 30 **[1]**. The scaled residuals give the same comparison: $r_B\approx0.791$ versus $r_A\approx3.162$.
+
+:::
+
+::::
+
 ### (e) Does external studentization always enlarge a residual? [2]
 
 Without further fitting, determine whether $|t_B|$ is **larger or smaller** than $|r_B|$ **[1]** by comparing $s_{(-B)}$ with $s$. Use this case to assess the claim that external studentization **always increases** the absolute standardized residual, giving a one-sentence reason **[1]**.
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3e .callout-tip collapse="true" title="Solution 3(e)"}
+
+**Smaller [1].** Here $s_{(-B)}=\sqrt{57/14}\approx2.018>s=2$. **Reason [1]:** the numerator and leverage factor are the same, but the external scale is larger, so $|t_B|<|r_B|$; this is a counterexample to the claim. Numerically, $|r_B|\approx0.791$ and $|t_B|\approx0.784$, but those numerical calculations are not required.
+
+:::
+
+::::
 
 ### (f) A shift in measurement origin [2]
 
@@ -195,6 +356,16 @@ Add 100 to every response, retain the same predictor matrix and intercept, and r
 **B.** All raw residuals increase by 100.  
 **C.** Only the externally studentized residuals change.  
 **D.** Leverages and both types of scaled residual remain unchanged.
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-3f .callout-tip collapse="true" title="Solution 3(f)"}
+
+**D [2].** The fitted intercept shifts by 100, preserving raw residuals and the full/deleted residual scales. The design and its leverages are unchanged.
+
+:::
+
+::::
 
 
 {{< pagebreak >}}
@@ -220,6 +391,16 @@ In a full-rank fit with $p=3$, two candidate observations have:
 
 Report $D_C$ and $D_D$, in that order (**1 point each**).
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-4a .callout-tip collapse="true" title="Solution 4(a)"}
+
+**0.261 and 0.500 [1 each].** $D_C=(9/3)(0.08/0.92)=0.2608696$ and $D_D=(1/3)(0.60/0.40)=0.5$.
+
+:::
+
+::::
+
 ### (b) Compare the diagnostics [2]
 
 Which interpretation agrees with these results?
@@ -229,9 +410,30 @@ Which interpretation agrees with these results?
 **C.** Both observations have the same Cook's distance.  
 **D.** D must be a recording error.
 
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-4b .callout-tip collapse="true" title="Solution 4(b)"}
+
+**B [2].** Cook's distance combines both components. The largest residual need not correspond to the greatest influence.
+
+:::
+
+::::
+
 ### (c) What to do next [2]
 
 A student proposes deleting D immediately. Give **two appropriate next steps**, in 1-2 sentences (**1 point each**).
+
+:::: {.content-visible when-meta="show-assignment4-solutions"}
+
+::: {#a4-solution-4c .callout-tip collapse="true" title="Solution 4(c)"}
+
+**[1 each].** Investigate data accuracy, measurement context, and model suitability; then compare the fit and substantive conclusions with and without D and report sensitivity. A large diagnostic alone does not justify deleting an observation.
+
+:::
+
+::::
+
 
 ```{=latex}
 \par\endgroup

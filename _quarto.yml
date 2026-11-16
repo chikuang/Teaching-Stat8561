@@ -11,6 +11,7 @@ project:
 
 # Release assignment solutions in the combined PDF as well as HTML.
 show-solutions: true
+show-assignment4-solutions: true
 
 # Include released exam answers in both HTML and the combined course PDF.
 show-exam-solutions: true
@@ -51,6 +52,7 @@ book:
         - Assignment2.qmd
         - Assignment3.qmd
         - Assignment4.qmd
+        - Assignment5.qmd
 
     - part: "Exam"
       chapters:
