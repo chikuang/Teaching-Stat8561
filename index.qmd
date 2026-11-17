@@ -65,9 +65,9 @@ Those chapters are based on the lecture notes. This part will be updated frequen
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 4 | [Model Comparison, Partial F Tests, and ANOVA](04.qmd) | 11--17 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 1](Exam1-2026F.qmd) | 15 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 5 | [Multiple Regression and Categorical Predictors](05.qmd) | 18--21 |
-| `r if (knitr::is_latex_output()) "In progress" else "⏳"` | Ch. 6 | [Outliers, Leverage, and Influence](06.qmd) | 21-- |
+| `r if (knitr::is_latex_output()) "Done" else "✅"` | Ch. 6 | [Outliers, Leverage, and Influence](06.qmd) | 21--24 |
 | `r if (knitr::is_latex_output()) "Done" else "✅"` |  | [Exam 2](Exam2-2026F.qmd) | 23 |
-| `r if (knitr::is_latex_output()) "Planned" else "⏳"` | Ch. 7 | [Transformations and Variable Selection](07.qmd) | TBA |
+| `r if (knitr::is_latex_output()) "In progress" else "⏳"` | Ch. 7 | [Transformations and Variable Selection](07.qmd) | 24-- |
 <!-- Future lecture coverage will be updated after class. -->
 
 ```{=latex}
