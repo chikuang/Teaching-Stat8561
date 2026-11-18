@@ -239,6 +239,8 @@ For a unique full-model OLS estimate, also require $\operatorname{rank}(\mathbf 
 
 **Why distinguish them?** With a correct mean and full column rank, OLS is unbiased even without normal errors. Constant variance and uncorrelated errors give $\operatorname{Var}(\hat{\boldsymbol\beta}\mid\mathbf X)=\sigma^2(\mathbf X^\top\mathbf X)^{-1}$. Normal errors additionally justify the exact finite-sample $t$ and $F$ distributions used in [Chapters 3](03_OLS_inference.qmd) and [4](04.qmd). Computing least squares does not itself verify any of these assumptions.
 
+**How the four assumptions fit together.** At a given predictor value, the mean model locates the **centre** of the responses, constant variance specifies their **spread**, and normality specifies the **shape** around that centre. Independence concerns **relationships between different observations**, not the shape of one observation's distribution. A bell-shaped distribution with equal spread can still arise from dependent measurements, such as repeated readings from the same person.
+
 ::: {.callout-important title="Normality is not the same as constant variance"}
 
 **Normality describes shape; constant variance describes spread.** Normal errors can have variances that grow with $x$, and nonnormal errors can have constant variance. Neither the predictors nor the marginal distribution of $Y$ must be normal. The assumptions concern errors **conditional on the predictors**; a mixture of normal responses with different conditional means need not have a normal histogram.
@@ -274,16 +276,60 @@ ggplot(ch7_error_curves, aes(Error, Density, colour = Predictor,
     strip.text = element_text(size = 9))
 ```
 
-**Use diagnostics to identify the problem.** Continue the graphical checks from [Chapter 6](06.qmd), but give each plot a specific job:
+**From assumptions about errors to checks using residuals.** We cannot observe $\varepsilon_i=Y_i-m(\mathbf x_i)$ because the true mean $m$ is unknown. After fitting, we inspect $e_i=y_i-\hat y_i$ instead. A residual contains both random error and any mean pattern the model missed. A wrong mean can therefore make the spread or Q-Q plot look problematic too. This connects the assumptions to the [Chapter 6 diagnostics](06.qmd): first identify the feature that fails, then choose a response to that feature.
 
-| Feature to check | Useful evidence | Possible response |
-|---|---|---|
-| Mean form | A curve in residuals versus fitted values or a predictor | Add a meaningful predictor function or interaction; consider a transformation. |
-| Constant variance | Residual spread changes with the fitted mean or a predictor | Consider a response transformation or a variance model such as weighted least squares. |
-| Normality | Systematic departures in a normal Q-Q plot, especially in the tails | Investigate unusual observations and the error model; consider whether a meaningful response transformation helps. |
-| Independence | Study design, time-order patterns, or clustering within people or sites | Model the dependence; changing scale alone does not remove it. |
+::: {.callout-note title="A useful checking order"}
 
-Residuals are estimated errors, not independent copies of the errors: even under the normal model their covariance is $\sigma^2(\mathbf I_n-\mathbf H)$. Use the [Chapter 6 supplement](06.qmd#sec-ch6-supplementary) for residual scaling. Plots can reveal problems but cannot prove an assumption. If the mean is adequate but variance is not constant, heteroscedasticity-robust standard errors are another option for coefficient inference; they do not change the fitted mean or automatically supply valid individual prediction intervals.
+**Study design and dependence → mean pattern → conditional spread → distributional shape → refit and repeat.**
+
+Check how observations were collected before fitting. Then inspect the residual mean pattern before interpreting spread and normality. The checks are related, so revisit all of them after changing the model. Here “check” means assess compatibility with the assumptions; neither a tidy plot nor a nonsignificant test proves them true.
+
+:::
+
+**1. Correct mean: is the residual pattern centred near zero?** Plot residuals against fitted values and against each relevant predictor. Look for a roughly horizontal smooth around zero throughout the predictor range, without a curve or systematic group differences. A U-shaped smooth suggests missing curvature; different group centres may suggest a missing group effect or interaction. These are reasons to revise the mean model. Inspect individual predictors as well: a residual-versus-fitted plot can hide a pattern in one predictor.
+
+With an intercept, OLS automatically gives $\sum_i e_i=0$ and makes residuals orthogonal to the fitted design columns. Thus a residual mean of zero, or zero sample correlation with an included predictor, **does not verify** $E(\varepsilon_i\mid\mathbf X)=0$. The question is whether a systematic pattern remains locally. Residual plots also cannot establish that an unmeasured confounder is absent.
+
+**2. Constant variance: is the conditional spread stable?** Compare the widths of the residual clouds across fitted values and predictors after accounting for the mean. A fan suggests that conditional variance changes. R's **Scale-Location** plot displays $\sqrt{|r_i|}$ against fitted values, where $r_i$ is a standardized residual; a roughly level smooth is compatible with constant variance. Its vertical axis is nonnegative, so the reference is a **level trend, not a line at zero**. Check group-specific spread when groups matter.
+
+Standardization accounts for the leverage-related residual variance under the working model; it does not automatically remove heteroscedasticity. See the [Chapter 6 supplement](06.qmd#sec-ch6-supplementary) for the scaling details. If spread still changes after fixing the mean, consider a meaningful response transformation or a variance model such as weighted least squares. Heteroscedasticity-robust standard errors are another option for coefficient inference; they do not repair a wrong mean or automatically give valid individual prediction intervals.
+
+**3. Independence: are observations linked?** Could one observation's error help predict another's? Begin with the sampling units: are observations from different people, or repeated visits to the same person? Are measurements ordered in time, grouped by site, or spatially close? For a genuine time sequence, plot residuals in **collection order** and look for long runs, cycles, or drift; an autocorrelation plot can help for an equally spaced series. For repeated or clustered observations, inspect within-unit patterns and account for the grouping in the model.
+
+Arbitrary row numbers, or observations sorted by their predictor values, are not a substitute for collection order. Absence of an obvious pattern does not establish independence. Even under a correct mean model with independent, constant-variance errors, fitted residuals have covariance $\sigma^2(\mathbf I_n-\mathbf H)$, so some residual dependence is induced by fitting. Interpret patterns together with the design; a transformation alone does not remove repeated-measurement dependence. A correlation model or the [optional mixed-effects material](App_G-mixed-effects.qmd) may be appropriate.
+
+**4. Normality: is the remaining error shape approximately normal?** After checking mean and spread, inspect a **normal Q-Q plot of standardized residuals**. It compares ordered residuals with theoretical normal quantiles. Points should follow an approximately straight reference line, allowing sampling variability; the slope need not be 1. Systematic curvature suggests skewness or tail differences, while one isolated departure calls for the [Chapter 6 outlier and influence checks](06.qmd).
+
+A near-straight Q-Q plot does not establish constant variance or independence. Conversely, a fan-shaped variance pattern can distort a pooled Q-Q plot even when errors at each predictor value are normal. Revisit mean and spread before attributing every Q-Q departure to error shape. The relevant distribution is the conditional error distribution, not a histogram of the raw response or predictors. [NIST's guide to model checking](https://www.itl.nist.gov/div898/handbook/pmd/section4/pmd44.htm) explains why residual graphics complement numerical fit summaries.
+
+**See the checks in R.** Fit the original-scale tree-volume model that we will revisit in [Section 7.3](#sec-ch7-transform-procedure). These three panels address mean form, spread, and normality:
+
+```{r}
+#| label: fig-ch7-assumption-checks
+#| fig-pos: "H"
+#| fig-width: 7.2
+#| fig-height: 3.1
+#| fig-cap: "Original-scale tree-volume diagnostics: mean pattern (left), spread (middle), and normality (right). Read the mean pattern first, then reconsider spread and shape after refitting. None of these panels establishes independence between trees."
+#| fig-alt: "Three standard lm diagnostic panels for tree volume regressed on diameter and height: residuals versus fitted values, Scale-Location, and a normal Q-Q plot. The residual smooth is curved, motivating a review of the mean model."
+ch7_check_data <- transform(datasets::trees, Diameter = Girth)
+ch7_check_fit <- lm(Volume ~ Diameter + Height,
+  data = ch7_check_data, na.action = na.fail)
+ch7_check_par <- par(mfrow = c(1, 3), mar = c(4, 4, 2, 1),
+  mgp = c(2.4, 0.7, 0), cex = 0.75)
+for (ch7_panel in c(1, 3, 2)) {
+  plot(ch7_check_fit, which = ch7_panel, ask = FALSE,
+    sub.caption = "", id.n = 0, pch = 19, col = "#247D77")
+}
+par(ch7_check_par)
+```
+
+The curved residual smooth is a reason to revisit the mean specification. A reasonable-looking Q-Q plot would not remove that concern. The `trees` dataset provides no collection-time or repeated-unit identifiers, so these plots cannot verify independence; that requires information about how the trees were sampled.
+
+::: {.callout-important title="Four default R plots do not check four assumptions"}
+
+For `plot(fit)`, `which = 1` checks residual mean patterns, `which = 3` helps assess spread, and `which = 2` assesses normal shape. The fourth default panel, `which = 5`, concerns residuals, leverage, and influence; it is **not an independence check**. Study-design information and appropriate order/group diagnostics must be added separately. [R diagnostic-plot documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/plot.lm.html).
+
+:::
 
 ::: {#exr-ch7-assumptions}
 
