@@ -54,7 +54,7 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+                                |
 |       | Juliet Seadey             |                                |
 +-------+---------------------------+--------------------------------+
-| 8     | Qiaoting Gao              | TBD                            |
+| 8     | Qiaoting Gao              | Car Evaluation and Price       |
 |       +---------------------------+                                |
 |       | Zidu Peng                 |                                |
 |       +---------------------------+                                |
