@@ -37,7 +37,7 @@ Wednesdays, 9:00 a.m. to 12:00 p.m., or by appointment.
 - [x] [Assignment 2](Assignment2.qmd): September 30, 2026
 - [x] [Assignment 3](Assignment3.qmd): October 30, 2026
 - [x] [Assignment 4](Assignment4.qmd): November 13, 2026
-- [ ] [Assignment 5](Assignment5.qmd): TBA
+- [ ] [Assignment 5](Assignment5.qmd): December 7, 2026
 
 ## Exam
 

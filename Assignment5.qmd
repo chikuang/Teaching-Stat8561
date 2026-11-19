@@ -1,14 +1,41 @@
 ---
 pagetitle: Assignment 5
+execute:
+  cache: false
+  freeze: false
+  warning: false
+  message: false
+format:
+  html:
+    code-fold: false
 ---
 
 # Assignment 5 {.unnumbered}
 
-**STAT 8561 | Fall 2026**  
-**Due date:** TBA  
-**Content:** TBA
+```{=latex}
+\begingroup
+\small
+\setlength{\parskip}{3pt plus 1pt minus 1pt}
+```
 
-::: {.callout-note title="Instruction"}
+**STAT 8561 | Fall 2026**  
+**Due date:** Monday, December 7, 2026  
+**Total:** 40 points  
+**Coverage:** [Chapter 7: Transformations and Variable Selection](https://chikuang.github.io/teaching/2026F_stat8561/07.html).
+
+Read R code, interpret supplied analysis results, and explain modelling decisions. All numerical output needed to answer the questions is provided. You do **not** need to fit new models or run the supplied code.
+
+| Question | Topic | Points |
+|:---:|:---|:---:|
+| 1 | Transformations, predictions, and diagnostics | 10 |
+| 2 | Reading an AIC model search | 10 |
+| 3 | Ridge, lasso, and cross-validation | 10 |
+| 4 | Assessing prediction and finding leakage | 10 |
+| **Total** | | **40** |
+
+[Assignment PDF](https://chikuang.github.io/teaching/2026F_stat8561/Assignment5.pdf) | [Response template (.qmd)](https://chikuang.github.io/teaching/2026F_stat8561/Assignment5-response-template.qmd) | [Reproducible analysis (.R)](https://chikuang.github.io/teaching/2026F_stat8561/Assignment5-analysis.R)
+
+::: {.callout-note title="Instructions"}
 
 Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 5** folder on **iCollege**:
 
@@ -17,8 +44,277 @@ Use **Quarto** or **R Markdown**. Upload **both** files to the **Assignment 5** 
 
 The PDF must be generated from the submitted source. **HTML alone does not satisfy the submission requirement.**
 
-- Put your name and course number at the beginning, and label every question and subpart.
-- Include any R code used to obtain your answers in executable chunks. Before generating random values, use `set.seed(8561)`.
-- Your source must render from beginning to end without errors. Use LaTeX for mathematics; do not submit screenshots of answers or code.
+- Put your name and course number at the beginning, and label every question and subpart. You may use the response template or your own layout.
+- For a calculation, show the expression and result. For an interpretation or critique, **1-3 sentences** normally suffice. Tie your answer to the code, output, or model assumptions. Long derivations and copied software output are unnecessary.
+- Equivalent correct explanations and defensible alternatives receive credit. A conclusion without a requested reason receives only the conclusion's credit. Method credit is available for a correct calculation with a minor arithmetic error.
+- Round numerical answers to **three decimal places**; counts are integers. The displayed precision is sufficient, and small rounding differences are accepted. In Question 3, a displayed zero is an exact zero.
+- R code and new plots are optional. If you use R, include it in executable chunks; use `set.seed(8561)` before generating random values. Do not replace the supplied results with a different random split.
+- Your source must render without errors. Use LaTeX for mathematics; do not submit screenshots of answers or code.
 
 :::
+
+{{< pagebreak >}}
+
+## Question 1: Transformations and Predictions [10]
+
+The built-in [`trees` dataset](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) records 31 black cherry trees. `Volume` is timber volume in cubic feet, `Height` is in feet, and the column named `Girth` actually records **diameter in inches**. The code renames that measurement. These are observational data.
+
+```{r}
+#| label: a5-tree-fits
+#| results: hide
+a5_trees <- transform(datasets::trees, Diameter = Girth)
+a5_raw <- lm(Volume ~ Diameter + Height, data = a5_trees)
+a5_log <- lm(log(Volume) ~ log(Diameter) + log(Height),
+             data = a5_trees)
+a5_new <- data.frame(Diameter = 12, Height = 75)
+a5_eta <- as.numeric(predict(a5_log, newdata = a5_new))
+a5_s <- sigma(a5_log)
+```
+
+The following output is generated from these fits. In R, `log()` is the natural logarithm, and `sigma()` is the residual standard deviation on the fitted response scale.
+
+```{r}
+#| label: a5-tree-output
+#| echo: false
+knitr::kable(data.frame(Term = names(coef(a5_log)),
+  Estimate = unname(coef(a5_log))), digits = 6,
+  row.names = FALSE, align = c("l", "r"))
+knitr::kable(data.frame(
+  Quantity = c("Predicted log volume at diameter 12, height 75",
+    "Residual SD of the log model", "SSE of the raw-volume model",
+    "SSE of the log-volume model"),
+  Value = c(a5_eta, a5_s, deviance(a5_raw), deviance(a5_log))),
+  digits = 6, row.names = FALSE, align = c("l", "r"))
+```
+
+For parts (b)-(c), assume the log model has independent $N(0,\sigma^2)$ errors with the same variance at every predictor value. You may use
+
+$$
+\widehat{\operatorname{Median}}(Y\mid\mathbf x)=\exp(\hat\eta),
+\qquad
+\widehat{E}(Y\mid\mathbf x)=\exp(\hat\eta+s^2/2).
+$$
+
+**(a) Read the formula [2].** Write the population regression equation fitted by `a5_log`, including its error term **[1]**. Explain why it is linear in its regression coefficients even though logarithms appear **[1]**.
+
+**(b) Interpret the diameter coefficient [2].** Holding height fixed, what is the estimated **percentage change in median volume** for a **10% increase in diameter**? Give the expression and numerical percentage **[1]**, and state the interpretation **[1]**.
+
+**(c) Back-transform [2].** At diameter 12 inches and height 75 feet, calculate the predicted **median** and the plug-in predicted **mean** volume, in cubic feet (**1 point each**).
+
+**(d) Compare scales [2].** A student says, "The log model must predict volume better because its SSE is much smaller." Explain the problem **[1]** and describe a fair prediction comparison, specifying the evaluation observations and response units **[1]**.
+
+{{< pagebreak >}}
+
+### Question 1 continued: Read the diagnostics
+
+The panels below come from the same two fitted models. Standardized residuals are used to make the patterns easier to inspect; the fitted-value axes still represent different response scales.
+
+```{r}
+#| label: fig-a5-tree-diagnostics
+#| echo: false
+#| fig-pos: "H"
+#| fig-width: 6.5
+#| fig-height: 3.6
+#| fig-cap: "Top: standardized residuals versus fitted values, with a smooth trend. Bottom: normal Q-Q plots with quartile reference lines. Left: raw-volume fit. Right: log-volume fit."
+#| fig-alt: "Four diagnostic panels compare raw-volume and log-volume fits for 31 trees. The raw fit has a curved residual smooth; the log fit has a less pronounced mean pattern but some tail departures remain."
+a5_par <- par(mfrow = c(2, 2), mar = c(4, 4, 2, 1),
+              mgp = c(2.4, 0.7, 0), cex = 0.8)
+for (j in 1:2) {
+  m <- list(a5_raw, a5_log)[[j]]
+  plot(fitted(m), rstandard(m), pch = 19, col = "#247D77",
+       xlab = c("Fitted volume (cubic feet)", "Fitted log volume")[j],
+       ylab = "Standardized residual", main = c("Raw-volume fit", "Log-volume fit")[j])
+  abline(h = 0, lty = 2, col = "grey60")
+  lines(lowess(fitted(m), rstandard(m)), col = "#B45F06", lwd = 2)
+}
+for (j in 1:2) {
+  m <- list(a5_raw, a5_log)[[j]]
+  qqnorm(rstandard(m), pch = 19, col = "#247D77",
+         main = c("Raw fit: normal Q-Q", "Log fit: normal Q-Q")[j],
+         ylab = "Standardized residual")
+  qqline(rstandard(m), col = "#593196", lwd = 2)
+}
+par(a5_par)
+```
+
+**(e) Diagnose without overclaiming [2].** Identify one visible feature that would motivate revisiting a model's mean form or error distribution, naming the panel and the feature **[1]**. Explain why even an approximately straight Q-Q plot would **not establish independence between trees** **[1]**. More than one well-supported diagnostic observation is acceptable; do not claim that a plot proves an assumption.
+
+**Reading:** [Sections 7.2-7.3: assumptions and transformations](https://chikuang.github.io/teaching/2026F_stat8561/07.html#sec-ch7-assumptions).
+
+{{< pagebreak >}}
+
+## Question 2: Read an AIC Model Search [10]
+
+The [`swiss` dataset](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/swiss.html) contains a fertility measure and five socioeconomic indicators for 47 Swiss provinces around 1888. Here all 47 complete rows are used for an **exploratory model search**. Each candidate uses the same untransformed response. No held-out assessment has been performed in this question.
+
+```{r}
+#| label: a5-swiss-search
+#| results: hide
+a5_swiss <- datasets::swiss
+a5_null <- lm(Fertility ~ 1, data = a5_swiss, na.action = na.fail)
+a5_full <- lm(Fertility ~ ., data = a5_swiss, na.action = na.fail)
+a5_selected <- step(a5_null,
+  scope = list(lower = formula(a5_null), upper = formula(a5_full)),
+  direction = "forward", k = 2, trace = 0)
+```
+
+`Fertility ~ .` uses the other five columns as candidate main effects. Smaller AIC is preferred. The first-step scores and final comparison below all use **`AIC()`**; the `step()` trace uses an equivalent score with a different additive constant for these `lm` fits.
+
+```{r}
+#| label: a5-swiss-scores
+#| echo: false
+a5_candidates <- lapply(names(a5_swiss)[-1], function(term)
+  lm(reformulate(term, response = "Fertility"), data = a5_swiss))
+knitr::kable(data.frame(
+  `First-step candidate` = c("Intercept only", names(a5_swiss)[-1]),
+  AIC = c(AIC(a5_null), vapply(a5_candidates, AIC, numeric(1))),
+  check.names = FALSE), digits = 3, row.names = FALSE)
+knitr::kable(data.frame(
+  Model = c("Final forward model", "All five predictors"),
+  SSE = c(deviance(a5_selected), deviance(a5_full)),
+  AIC = c(AIC(a5_selected), AIC(a5_full))),
+  digits = 3, row.names = FALSE)
+```
+
+The final forward model retains **Education, Catholic, Infant.Mortality, and Agriculture**, in that order of entry. Examination is the only unused candidate.
+
+**(a) Read the search [2].** State the starting model **[1]** and whether this code can remove a term after adding it **[1]**.
+
+**(b) Take the first step [2].** Which term is added first **[1]**, and by how much does its AIC improve over the intercept-only model **[1]**? Report the decrease as a positive number.
+
+**(c) Explain the stopping decision [2].** Should the next forward step add Examination? State the decision using the displayed AIC values **[1]**, and explain why the lower full-model SSE does not override it **[1]**.
+
+**(d) Evaluate inference [2].** A student reports an ordinary coefficient p-value from `summary(a5_selected)` as if the model had been specified before seeing these outcomes. Explain why that reference is not automatically justified **[1]**. State a defensible way to describe the selected association or to obtain a separate confirmatory assessment **[1]**. You need not propose a specific selective-inference method.
+
+**(e) Evaluate the search claim [2].** Does this forward search guarantee the lowest AIC among **all possible subsets**? Give a conclusion **[1]** and explain it using the allowed search moves **[1]**.
+
+**Reading:** [Section 7.4: variable selection](https://chikuang.github.io/teaching/2026F_stat8561/07.html#sec-ch7-selection).
+
+{{< pagebreak >}}
+
+## Question 3: Ridge, Lasso, and Cross-Validation [10]
+
+A separate teaching simulation contains 120 independent observations of a continuous response and six sensor readings. Sensors `x1` and `x2` are correlated. The supplied analysis script generates the data with `set.seed(8561)`, reserves 30 observations for final assessment, and uses the other 90 as `a5_train`. Neither the held-out responses nor the simulation's generating coefficients are used to tune the models. The five folds each contain 18 training observations.
+
+```{r}
+#| label: a5-sensor-data
+#| include: false
+set.seed(8561)
+a5_n <- 120
+a5_x <- matrix(rnorm(a5_n * 6), nrow = a5_n)
+a5_x[, 2] <- 0.75 * a5_x[, 1] + sqrt(1 - 0.75^2) * a5_x[, 2]
+colnames(a5_x) <- paste0("x", 1:6)
+a5_dat <- data.frame(y = 2 + 2 * a5_x[, 1] - a5_x[, 2] +
+  a5_x[, 3] + rnorm(a5_n, sd = 1.5), a5_x)
+a5_id <- sample(seq_len(a5_n), 90)
+a5_train <- a5_dat[a5_id, ]
+a5_test <- a5_dat[-a5_id, ]
+a5_folds <- sample(rep(1:5, each = 18))
+```
+
+```{r}
+#| label: a5-sensor-cv
+#| results: hide
+library(glmnet)
+a5_xtrain <- model.matrix(y ~ ., data = a5_train)[, -1]
+a5_xtest <- model.matrix(y ~ ., data = a5_test)[, -1]
+a5_lasso <- cv.glmnet(a5_xtrain, a5_train$y,
+  family = "gaussian", alpha = 1, foldid = a5_folds,
+  lambda = c(0.80, 0.40, 0.20, 0.10, 0.05),
+  standardize = TRUE, type.measure = "mse")
+a5_ridge <- cv.glmnet(a5_xtrain, a5_train$y,
+  family = "gaussian", alpha = 0, foldid = a5_folds,
+  standardize = TRUE, type.measure = "mse")
+```
+
+For transparency, the lasso uses only the five candidate penalties listed below; all references to its minimum and one-SE choice concern **this grid**. Ridge uses its own default penalty grid. Each method is tuned separately, using the same folds.
+
+```{r}
+#| label: a5-cv-table
+#| echo: false
+knitr::kable(data.frame(Lambda = a5_lasso$lambda,
+  `CV MSE` = a5_lasso$cvm, `CV SE` = a5_lasso$cvsd,
+  `Nonzero slopes` = a5_lasso$nzero, check.names = FALSE),
+  digits = c(2, 3, 3, 0), row.names = FALSE)
+```
+
+`lambda.min` minimizes average CV MSE. `lambda.1se` is the **largest candidate lambda** whose CV MSE is no more than the minimum CV MSE plus the **SE at the minimum**. This is a tuning rule, not a significance test.
+
+**(a) Read the inputs [2].** What column does `[, -1]` remove from `model.matrix()` **[1]**? Does that mean the fitted `glmnet` model has no intercept? Explain **[1]**. Use the default intercept behaviour of `glmnet`.
+
+**(b) Apply the one-SE rule [3].** Report `lambda.min` **[1]**, the MSE threshold for the one-SE rule **[1]**, and `lambda.1se` **[1]**. Use the supplied table; do not choose the largest SE or the largest number of nonzero slopes.
+
+{{< pagebreak >}}
+
+### Question 3 continued: Read the coefficients
+
+These are coefficients from models refitted to **all 90 training observations** at the indicated tuning choices. They are expressed in the original sensor units. Displayed zeros below are exact zeros; all other entries are rounded to three decimals.
+
+```{r}
+#| label: a5-coefficient-table
+#| echo: false
+a5_coef_table <- data.frame(Term = rownames(coef(a5_lasso)),
+  `Ridge: one-SE` = as.numeric(coef(a5_ridge, s = "lambda.1se")),
+  `Lasso: minimum` = as.numeric(coef(a5_lasso, s = "lambda.min")),
+  `Lasso: one-SE` = as.numeric(coef(a5_lasso, s = "lambda.1se")),
+  check.names = FALSE)
+knitr::kable(a5_coef_table, digits = 3, row.names = FALSE)
+```
+
+**(c) Shrinkage and selection [2].** Name the sensors retained by the one-SE lasso **[1]**. Describe one difference between the ridge and lasso columns that illustrates shrinkage versus variable selection **[1]**. Do not count the intercept as a sensor.
+
+**(d) Read `standardize = TRUE` [2].** Explain why predictor units matter for a coefficient penalty **[1]**, and state where the centring/scaling information must be learned during cross-validation **[1]**. Assume the inputs here have not already been standardized using the full dataset.
+
+**(e) Read `alpha` [1].** If `alpha = 1` were replaced by `alpha = 0.5`, what penalty family would be fitted? Explain the role of 0.5. A single call would still tune lambda at that fixed alpha.
+
+**Reading:** [Section 7.5: ridge, lasso, and elastic net](https://chikuang.github.io/teaching/2026F_stat8561/07.html#sec-ch7-regularization). The [glmnet CV documentation](https://glmnet.stanford.edu/reference/cv.glmnet.html) describes the supplied R arguments.
+
+{{< pagebreak >}}
+
+## Question 4: Prediction Assessment and Leakage [10]
+
+Continue the sensor example. **Before looking at the 30 held-out outcomes**, the analyst fixes the one-SE lasso from Question 3 as the prediction procedure. The following code is then run once. The baseline uses the **training-response mean**.
+
+```{r}
+#| label: a5-test-assessment
+#| results: hide
+a5_pred <- as.numeric(predict(a5_lasso,
+  newx = a5_xtest, s = "lambda.1se"))
+a5_rmse <- sqrt(mean((a5_test$y - a5_pred)^2))
+a5_baseline <- sqrt(mean((a5_test$y - mean(a5_train$y))^2))
+```
+
+```{r}
+#| label: a5-test-table
+#| echo: false
+knitr::kable(data.frame(Procedure = c("Prespecified one-SE lasso",
+  "Training-mean baseline"), `Test RMSE` = c(a5_rmse, a5_baseline),
+  check.names = FALSE), digits = 3, row.names = FALSE)
+```
+
+**(a) Track the observations [2].** How many observations fit a model in **one CV training fold** **[1]**? How many observations fit the final model used by `predict()` above **[1]**? Do not include held-out assessment observations in either count.
+
+**(b) Interpret the result [2].** Which procedure has lower observed test RMSE, and by how much **[1]**? State what this comparison supports while acknowledging that it is based on a single held-out sample **[1]**.
+
+**(c) Find and repair leakage [3].** A different analyst proposes the following workflow, using the **same simulation data and split**. This is deliberately flawed code for you to read, not code to run.
+
+```{r}
+#| eval: false
+#| purl: false
+all_fit <- lm(y ~ ., data = a5_dat)
+chosen <- step(all_fit, direction = "backward", trace = 0)
+refit <- lm(formula(chosen), data = a5_train)
+pred_bad <- predict(refit, newdata = a5_test)
+```
+
+Identify the step that lets held-out outcomes influence model development **[1]**. Explain why refitting the chosen formula on `a5_train` does not undo the problem **[1]**. Give a corrected order of operations; prose or R-like pseudocode is sufficient **[1]**.
+
+**(d) Reusing the test set [2].** After seeing the test RMSE, the first analyst tries many new alpha values and repeatedly keeps whichever performs best on those same 30 outcomes. Explain why the resulting minimum RMSE is no longer an untouched final assessment **[1]**, and give one appropriate way to tune and evaluate the revised procedure **[1]**.
+
+**(e) Compare error scales [1].** Question 3 reports CV **MSE**, whereas this question reports test **RMSE**. State the units of each relative to the response and the conversion needed before comparing their numerical scales. Matching units alone does not turn a selected CV score into an independent final assessment.
+
+**Reading:** [Section 7.6: evaluate the complete procedure](https://chikuang.github.io/teaching/2026F_stat8561/07.html#sec-ch7-validation).
+
+```{=latex}
+\par\endgroup
+```

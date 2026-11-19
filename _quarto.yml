@@ -3,6 +3,9 @@ project:
   resources:
     - Assignment4-response-template.qmd
     - Assignment4.pdf
+    - Assignment5-response-template.qmd
+    - Assignment5-analysis.R
+    - Assignment5.pdf
     - project-report-template.zip
     - project-report-template.pdf
     - project-report-template-preview.png
