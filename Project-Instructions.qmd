@@ -40,7 +40,12 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+                                |
 |       | Airianna Jones            |                                |
 +-------+---------------------------+--------------------------------+
-| 5     | Shaswat Bhushan Jangam    | TBD                            |
+| 5     | Shaswat Bhushan Jangam    | How Are Temperature and        |
+|       |                           | Humidity Associated with       |
+|       |                           | Carbon Monoxide Air Pollution? |
+|       |                           | A Comparison of Multiple       |
+|       |                           | Linear Regression and Random   |
+|       |                           | Forest.                        |
 |       +---------------------------+                                |
 |       | Prakash Karki             |                                |
 |       +---------------------------+                                |
