@@ -53,7 +53,11 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 +-------+---------------------------+--------------------------------+
 | 6     | Seoyoung Kim              | TBD                            |
 +-------+---------------------------+--------------------------------+
-| 7     | Hovor Moses Kwame         | TBD                            |
+| 7     | Hovor Moses Kwame         | The association between        |
+|       |                           | tobacco smoke exposure and     |
+|       |                           | lung function in children and  |
+|       |                           | adolescents, using NHANES      |
+|       |                           | 2007–2012 data                 |
 |       +---------------------------+                                |
 |       | Shudeshna Nandy           |                                |
 |       +---------------------------+                                |
