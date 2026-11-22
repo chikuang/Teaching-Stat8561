@@ -73,9 +73,10 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       +---------------------------+                                |
 |       | Yasmeen Babagana          |                                |
 +-------+---------------------------+--------------------------------+
-| 10    | Emmanuel Torzen           | TBD                            |
-|       +---------------------------+                                |
-|       | Enock Ackaah              |                                |
+| 10    | Enock Ackaah              | An Explainable                 |
+|       |                           | Decision-Support System for    |
+|       |                           | Predicting Medical Insurance   |
+|       |                           | Expenditures.                  |
 +-------+---------------------------+--------------------------------+
 | 11    | Elton Kwashie             | TBD                            |
 |       +---------------------------+                                |
@@ -108,6 +109,8 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       | Daniel Geiger             |                                |
 +-------+---------------------------+--------------------------------+
 | 18    | Aram Mathivanan           | TBD                            |
++-------+---------------------------+--------------------------------+
+| 19    | Emmanuel Torzen           | TBD                            |
 +-------+---------------------------+--------------------------------+
 
 :::
