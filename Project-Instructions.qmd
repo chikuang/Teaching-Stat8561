@@ -83,6 +83,8 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       | Seth Kwarteng             |                                |
 |       +---------------------------+                                |
 |       | Halimah Akinoso           |                                |
+|       +---------------------------+                                |
+|       | Emmanuel Torzen           |                                |
 +-------+---------------------------+--------------------------------+
 | 12    | Taiwo Ayeni               | Weight Gain After Quitting     |
 |       |                           | Smoking: Adjusted Associations |
@@ -109,8 +111,6 @@ Analyze a **real dataset with a continuous response** using multiple linear regr
 |       | Daniel Geiger             |                                |
 +-------+---------------------------+--------------------------------+
 | 18    | Aram Mathivanan           | TBD                            |
-+-------+---------------------------+--------------------------------+
-| 19    | Emmanuel Torzen           | TBD                            |
 +-------+---------------------------+--------------------------------+
 
 :::
